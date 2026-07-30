@@ -26,6 +26,17 @@ npm run build
 npm run validate:catalog
 ```
 
+## Preparar para Hostinger
+
+```bash
+npm run build:hostinger
+```
+
+La salida queda en `hostinger-ready/`. Subir el contenido de esa carpeta a
+`public_html`, incluido el archivo oculto `.htaccess`. Ver
+[`HOSTINGER.md`](./HOSTINGER.md) para el paso a paso y las limitaciones de esta
+versión sin base de datos.
+
 Para la prueba de navegador, iniciar la aplicación en el puerto 3111 y luego
 ejecutar:
 

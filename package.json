@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && node scripts/prepare-sites-dist.mjs",
+    "build:hostinger": "next build && node scripts/prepare-hostinger-dist.mjs",
+    "preview:hostinger": "node scripts/preview-hostinger.mjs",
     "start": "next start",
     "lint": "eslint",
     "import:sheet": "node scripts/import-google-sheet.mjs",

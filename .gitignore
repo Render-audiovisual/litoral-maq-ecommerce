@@ -17,6 +17,7 @@
 /.next/
 /out/
 /dist/
+/hostinger-ready/
 
 # production
 /build
