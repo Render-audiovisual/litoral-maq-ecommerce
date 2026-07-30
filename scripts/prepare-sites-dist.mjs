@@ -1,12 +1,14 @@
-import { copyFile, mkdir, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readdir, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
 const dist = path.join(root, "dist");
 const serverDirectory = path.join(dist, "server");
+const clientDirectory = path.join(dist, "client");
 const hostingDirectory = path.join(dist, ".openai");
 
 await mkdir(serverDirectory, { recursive: true });
+await mkdir(clientDirectory, { recursive: true });
 await mkdir(hostingDirectory, { recursive: true });
 await copyFile(
   path.join(root, ".openai", "hosting.json"),
@@ -34,4 +36,8 @@ const worker = `export default {
 `;
 
 await writeFile(path.join(serverDirectory, "index.js"), worker);
+for (const entry of await readdir(dist)) {
+  if (["client", "server", ".openai"].includes(entry)) continue;
+  await rename(path.join(dist, entry), path.join(clientDirectory, entry));
+}
 console.log("Sites artifact prepared in dist/.");
