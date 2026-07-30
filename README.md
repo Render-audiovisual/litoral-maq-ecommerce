@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Litoral Maq · e-commerce MVP
 
-## Getting Started
+MVP funcional de tienda y panel administrativo construido con Next.js. El
+catálogo inicial contiene 460 productos importados de la planilla comercial
+`Lista de precios - LitoralMaq`.
 
-First, run the development server:
+## Ejecutar
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Acceso administrador de demostración:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Email: `admin@litoralmaq.com`
+- Contraseña: `admin123`
 
-## Learn More
+## Validar
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+npm run build
+npm run validate:catalog
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Para la prueba de navegador, iniciar la aplicación en el puerto 3111 y luego
+ejecutar:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev -- --port 3111
+npm run validate:e2e
+```
 
-## Deploy on Vercel
+La validación E2E recorre catálogo, filtros, carrito persistente, checkout,
+registro, login, protección del panel, CRUD de productos, visibilidad pública,
+pedidos y vistas de escritorio/celular.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Datos simulados
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Mientras no haya servicios reales, productos editados, carrito, sesiones,
+clientes y pedidos se guardan en `localStorage`. Esto permite probar el MVP de
+punta a punta en un navegador, pero no sincroniza información entre dispositivos.
+
+Los 460 códigos, nombres y precios son reales y provienen del Sheet. Stock,
+categorías, marcas, imágenes asociadas, productos destacados y descripciones son
+datos iniciales simulados o inferidos.
+
+## Adaptadores preparados
+
+Las interfaces están en `src/services/adapters.ts` y las implementaciones demo
+en `src/services/mock.ts`.
+
+- Autenticación: sustituir `mockAuthAdapter` por el proveedor real y proteger
+  rutas en servidor.
+- Base de datos: implementar `DatabaseAdapter` y reemplazar `localStorage`.
+- Mercado Pago: sustituir `mockPaymentAdapter`; agregar preferencia, retorno y
+  webhook.
+- Envíos: sustituir `mockShippingAdapter`.
+- Imágenes: sustituir `mockImageStorageAdapter` por S3, Cloudinary o equivalente.
+- Google Sheets: sustituir `mockSheetSyncAdapter` por sincronización autenticada.
+
+Copiar `.env.example` a `.env.local` y completar únicamente las credenciales
+del servicio que se vaya conectando.
+
+## Importación del catálogo
+
+`npm run import:sheet` descarga el CSV público y regenera:
+
+- `src/data/products.json`
+- `src/data/import-report.json`
+
+`npm run validate:catalog` compara nuevamente las 460 filas comerciales del
+Sheet con el JSON importado y falla ante diferencias, datos inválidos o pérdidas.
