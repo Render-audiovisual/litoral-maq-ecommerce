@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "litoral-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "litoral-preview-store",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview:hostinger"],
+      "port": 3111
+    },
+    {
+      "name": "litoral-preview-admin",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview:admin"],
+      "port": 3112
+    }
+  ]
+}

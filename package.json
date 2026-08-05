@@ -1,0 +1,40 @@
+{
+  "name": "litoral-maq-ecommerce",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && node scripts/prepare-sites-dist.mjs",
+    "build:hostinger": "next build && node scripts/prepare-hostinger-dist.mjs",
+    "build:admin": "next build && node scripts/prepare-admin-dist.mjs",
+    "validate:separation": "node scripts/validate-separation.mjs",
+    "preview:hostinger": "node scripts/preview-hostinger.mjs",
+    "preview:admin": "ROOT_DIR=admin-ready PORT=3112 node scripts/preview-hostinger.mjs",
+    "start": "next start",
+    "lint": "eslint",
+    "import:sheet": "node scripts/import-google-sheet.mjs",
+    "validate:catalog": "node scripts/validate-catalog.mjs",
+    "validate:e2e": "node scripts/e2e-validation.mjs",
+    "prepare:products-migration": "node scripts/prepare-products-migration.mjs",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.111.0",
+    "next": "16.2.12",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.12",
+    "playwright": "^1.59.1",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

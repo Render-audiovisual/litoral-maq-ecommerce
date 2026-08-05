@@ -1,0 +1,214 @@
+import { normalizeEmail } from "@/lib/auth";
+import type { Session } from "@/lib/types";
+import type { TypedSupabaseClient } from "@/services/persistence/supabase/client";
+import type { GuestCapableAuthAdapter, SessionRestorableAuthAdapter } from "./types";
+
+const GENERIC_LOGIN_ERROR = "Email o contraseña incorrectos.";
+const ADMIN_REJECTED_ERROR = "Ese email corresponde al acceso administrativo. Ingresá desde /admin/login.";
+const ADMIN_GENERIC_ERROR = "Credenciales de administrador incorrectas.";
+const EMAIL_TAKEN_ERROR =
+  "Ya existe una cuenta con ese email. Iniciá sesión con ella — por seguridad, no unimos automáticamente " +
+  "un carrito de invitado a una cuenta ajena solo porque coincide el email escrito en el checkout.";
+
+/**
+ * DEMO: perfil fijo para simular "Google" reutilizando infraestructura real
+ * de Supabase Auth (email+password contra una cuenta conocida), no un
+ * redirect OAuth real — eso requiere configurar un proyecto de Google Cloud
+ * y sigue fuera de alcance (ver Etapa 3). Reemplazar por
+ * `client.auth.signInWithOAuth({ provider: "google" })` cuando corresponda.
+ */
+const GOOGLE_DEMO_EMAIL = "cliente.demo@gmail.com";
+const GOOGLE_DEMO_PASSWORD = "google-demo-password-1234";
+const GOOGLE_DEMO_NAME = "Cliente Google Demo";
+
+type ProfileRole = "admin" | "customer";
+
+async function fetchProfile(client: TypedSupabaseClient, userId: string, retries = 3) {
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    const { data, error } = await client.from("profiles").select("*").eq("id", userId).maybeSingle();
+    if (error) throw error;
+    if (data) return data;
+    // El trigger handle_new_user corre en la misma transacción que el
+    // signup — esto es una red de seguridad, no el camino esperado.
+    await new Promise((resolve) => setTimeout(resolve, 150 * (attempt + 1)));
+  }
+  throw new Error("No se pudo leer el perfil recién creado. Reintentá en unos segundos.");
+}
+
+function sessionFromAuth(
+  authSession: { access_token: string; expires_at?: number },
+  userId: string,
+  profile: { name: string | null; email: string | null; role: ProfileRole; is_anonymous?: boolean },
+): Session {
+  return {
+    user: {
+      id: userId,
+      name: profile.name ?? "",
+      email: profile.email ?? "",
+      role: profile.role,
+      isAnonymous: profile.is_anonymous ?? false,
+    },
+    token: authSession.access_token,
+    expiresAt: authSession.expires_at ? authSession.expires_at * 1000 : Date.now() + 60 * 60 * 1000,
+  };
+}
+
+function isEmailAlreadyRegistered(error: unknown): boolean {
+  const message = error instanceof Error ? error.message.toLowerCase() : "";
+  const code = (error as { code?: string } | undefined)?.code;
+  return (
+    code === "email_exists" ||
+    code === "user_already_exists" ||
+    message.includes("already registered") ||
+    message.includes("already been registered") ||
+    message.includes("user already exists")
+  );
+}
+
+export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCapableAuthAdapter & SessionRestorableAuthAdapter {
+  return {
+    async restoreSession() {
+      // client.auth.getSession() ya refresca el access_token internamente
+      // si venció pero el refresh token sigue vivo — a diferencia de la
+      // caché propia del store, que solo conoce el expires_at capturado en
+      // el último login. Sin sesión real (nunca hubo, expiró del todo, o
+      // fue reemplazada por otro signIn en este mismo cliente), null.
+      const { data, error } = await client.auth.getSession();
+      if (error || !data.session) return null;
+      const profile = await fetchProfile(client, data.session.user.id);
+      return sessionFromAuth(data.session, data.session.user.id, profile);
+    },
+
+    async ensureGuestSession() {
+      const { data: existing } = await client.auth.getSession();
+      if (existing.session) {
+        const profile = await fetchProfile(client, existing.session.user.id);
+        return sessionFromAuth(existing.session, existing.session.user.id, profile);
+      }
+      const { data, error } = await client.auth.signInAnonymously();
+      if (error) throw error;
+      if (!data.session) throw new Error("No se pudo crear una sesión de invitado.");
+      const profile = await fetchProfile(client, data.session.user.id);
+      return sessionFromAuth(data.session, data.session.user.id, profile);
+    },
+
+    async signInCustomer(email, password) {
+      const normalizedEmail = normalizeEmail(email);
+      const { data, error } = await client.auth.signInWithPassword({ email: normalizedEmail, password });
+      if (error || !data.session) throw new Error(GENERIC_LOGIN_ERROR);
+      const profile = await fetchProfile(client, data.session.user.id);
+      if (profile.role === "admin") {
+        await client.auth.signOut();
+        throw new Error(ADMIN_REJECTED_ERROR);
+      }
+      return sessionFromAuth(data.session, data.session.user.id, profile);
+    },
+
+    async signUpCustomer(name, email, password) {
+      const normalizedEmail = normalizeEmail(email);
+      if (name.trim().length < 2 || !normalizedEmail.includes("@") || password.length < 6) {
+        throw new Error("Completá nombre, email válido y una clave de 6 caracteres.");
+      }
+
+      // Si ya hay una sesión anónima activa (vino de un carrito de
+      // invitado), la convertimos en cuenta permanente EN EL MISMO uid en
+      // vez de crear un usuario nuevo — así el historial de pedidos, ya
+      // vinculado a ese uid, queda automáticamente asociado sin reasignar
+      // nada. Ver supabase/README.md §12 para el detalle del mecanismo.
+      const { data: existingSession } = await client.auth.getSession();
+      if (existingSession.session?.user.is_anonymous) {
+        const { data, error } = await client.auth.updateUser({
+          email: normalizedEmail,
+          password,
+          data: { name: name.trim() },
+        });
+        if (error) {
+          if (isEmailAlreadyRegistered(error)) throw new Error(EMAIL_TAKEN_ERROR);
+          throw error;
+        }
+        const userId = data.user.id;
+        // Actualizar name/email en profiles explícitamente: el trigger de
+        // creación no corre de nuevo en un update de auth.users.
+        const { error: profileError } = await client
+          .from("profiles")
+          .update({ name: name.trim(), email: normalizedEmail, is_anonymous: false })
+          .eq("id", userId);
+        if (profileError) throw profileError;
+        const { data: refreshed, error: refreshError } = await client.auth.getSession();
+        if (refreshError || !refreshed.session) {
+          throw refreshError ?? new Error("No se pudo obtener la sesión luego de convertir la cuenta.");
+        }
+        const profile = await fetchProfile(client, userId);
+        return sessionFromAuth(refreshed.session, userId, {
+          ...profile,
+          name: name.trim(),
+          email: normalizedEmail,
+        });
+      }
+
+      const { data, error } = await client.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: { data: { name: name.trim() } },
+      });
+      if (error) {
+        if (isEmailAlreadyRegistered(error)) throw new Error(EMAIL_TAKEN_ERROR);
+        throw error;
+      }
+      if (!data.user) throw new Error("No se pudo crear la cuenta.");
+      // Supabase evita filtrar si un email ya existe devolviendo un "éxito"
+      // con identities vacío cuando ya estaba registrado.
+      if (data.user.identities && data.user.identities.length === 0) {
+        throw new Error(EMAIL_TAKEN_ERROR);
+      }
+      if (!data.session) {
+        throw new Error(
+          "Cuenta creada. Según la configuración del proyecto puede requerir confirmar el email antes de ingresar.",
+        );
+      }
+      const profile = await fetchProfile(client, data.user.id);
+      return sessionFromAuth(data.session, data.user.id, profile);
+    },
+
+    async signInCustomerWithGoogle() {
+      // Reutiliza el mismo flujo de conversión que signUpCustomer para que
+      // el carrito anónimo activo (si lo hay) no se pierda.
+      const { data: existingSession } = await client.auth.getSession();
+      if (existingSession.session?.user.is_anonymous) {
+        return this.signUpCustomer(GOOGLE_DEMO_NAME, GOOGLE_DEMO_EMAIL, GOOGLE_DEMO_PASSWORD).catch(async (err) => {
+          if (err instanceof Error && err.message === EMAIL_TAKEN_ERROR) {
+            return this.signInCustomer(GOOGLE_DEMO_EMAIL, GOOGLE_DEMO_PASSWORD);
+          }
+          throw err;
+        });
+      }
+      try {
+        return await this.signInCustomer(GOOGLE_DEMO_EMAIL, GOOGLE_DEMO_PASSWORD);
+      } catch {
+        return this.signUpCustomer(GOOGLE_DEMO_NAME, GOOGLE_DEMO_EMAIL, GOOGLE_DEMO_PASSWORD);
+      }
+    },
+
+    async signInAdmin(email, password) {
+      const normalizedEmail = normalizeEmail(email);
+      const { data, error } = await client.auth.signInWithPassword({ email: normalizedEmail, password });
+      if (error || !data.session) throw new Error(ADMIN_GENERIC_ERROR);
+      const profile = await fetchProfile(client, data.session.user.id);
+      if (profile.role !== "admin") {
+        await client.auth.signOut();
+        throw new Error(ADMIN_GENERIC_ERROR);
+      }
+      return sessionFromAuth(data.session, data.session.user.id, profile);
+    },
+
+    async signOut() {
+      // scope: "local" asegura limpiar tokens de Supabase del localStorage de
+      // este cliente, evitando conflictos entre signOut → signIn repetidos.
+      // Sin esto, Supabase Auth mantiene el refresh token y entra en conflicto
+      // cuando el usuario intenta loguear nuevamente — la sesión vieja
+      // interfiere con el nuevo login.
+      const { error } = await client.auth.signOut({ scope: "local" });
+      if (error) throw error;
+    },
+  };
+}

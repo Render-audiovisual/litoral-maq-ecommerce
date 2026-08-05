@@ -1,0 +1,51 @@
+import { copyFile, mkdir, readdir, rename, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+const root = process.cwd();
+const dist = path.join(root, "dist");
+const serverDirectory = path.join(dist, "server");
+const clientDirectory = path.join(dist, "client");
+const hostingDirectory = path.join(dist, ".openai");
+const hostingConfigSource = path.join(root, ".openai", "hosting.json");
+const hostingConfigDestination = path.join(hostingDirectory, "hosting.json");
+
+await mkdir(serverDirectory, { recursive: true });
+await mkdir(clientDirectory, { recursive: true });
+await mkdir(hostingDirectory, { recursive: true });
+
+try {
+  await copyFile(hostingConfigSource, hostingConfigDestination);
+} catch (error) {
+  if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+    console.log("No hosting config found at .openai/hosting.json; skipping copy.");
+  } else {
+    throw error;
+  }
+}
+
+const worker = `export default {
+  async fetch(request, env) {
+    const response = await env.ASSETS.fetch(request);
+    if (response.status !== 404) return response;
+
+    const url = new URL(request.url);
+    if (
+      request.method === "GET" &&
+      !url.pathname.endsWith("/") &&
+      !url.pathname.split("/").at(-1)?.includes(".")
+    ) {
+      url.pathname += ".html";
+      return env.ASSETS.fetch(new Request(url, request));
+    }
+
+    return response;
+  },
+};
+`;
+
+await writeFile(path.join(serverDirectory, "index.js"), worker);
+for (const entry of await readdir(dist)) {
+  if (["client", "server", ".openai"].includes(entry)) continue;
+  await rename(path.join(dist, entry), path.join(clientDirectory, entry));
+}
+console.log("Sites artifact prepared in dist/.");

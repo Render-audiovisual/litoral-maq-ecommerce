@@ -1,0 +1,27 @@
+# Dependencias
+node_modules/
+
+# Next.js
+.next/
+dist/
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# Artefactos de build generados (Etapa 6 — despliegue separado)
+hostinger-ready/
+admin-ready/
+
+# Entorno local (nunca credenciales reales versionadas)
+.env.local
+.env.migration.local
+.env*.local
+
+# Sistema
+.DS_Store
+
+# Tests
+test-results/
+playwright-report/
+
+# Config local de Claude Code (permisos por máquina, no compartir)
+.claude/settings.local.json
