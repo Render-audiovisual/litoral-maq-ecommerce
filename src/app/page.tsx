@@ -96,6 +96,13 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="trust-strip commerce-trust">
+        <div><span>🚚</span><strong>Envíos nacionales</strong><small>A todo el país</small></div>
+        <div><span>💳</span><strong>Mercado Pago</strong><small>Próximamente</small></div>
+        <div><span>✓</span><strong>Precios reales</strong><small>Actualizados desde el Sheet</small></div>
+        <div><span>☎</span><strong>Asesoramiento</strong><small>Compra con confianza</small></div>
+      </section>
+
       <section className="winner-section" id="productos-ganadores">
         <div className="section-heading winner-heading">
           <div>
@@ -110,13 +117,6 @@ export default function Home() {
             <WinnerCard product={product} rank={index + 1} key={product.id} />
           ))}
         </div>
-      </section>
-
-      <section className="trust-strip commerce-trust">
-        <div><span>🚚</span><strong>Envíos nacionales</strong><small>A todo el país</small></div>
-        <div><span>💳</span><strong>Mercado Pago</strong><small>Próximamente</small></div>
-        <div><span>✓</span><strong>Precios reales</strong><small>Actualizados desde el Sheet</small></div>
-        <div><span>☎</span><strong>Asesoramiento</strong><small>Compra con confianza</small></div>
       </section>
 
       <section className="section">
