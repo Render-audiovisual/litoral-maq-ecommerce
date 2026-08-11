@@ -60,10 +60,10 @@ describe("local persistence adapter", () => {
     installLocalStorageShim();
   });
 
-  it("listProducts arranca del seed de 460 cuando nunca se guardó nada", async () => {
+  it("listProducts arranca del catálogo completo cuando nunca se guardó nada", async () => {
     const adapter = createLocalPersistenceAdapter();
     const products = await adapter.listProducts();
-    expect(products.length).toBe(460);
+    expect(products.length).toBe(495);
   });
 
   it("respeta un catálogo vacío guardado explícitamente (no re-siembra)", async () => {

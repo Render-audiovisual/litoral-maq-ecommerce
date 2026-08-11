@@ -38,6 +38,12 @@ export interface ImageStorageAdapter {
 }
 
 export interface SheetSyncAdapter {
-  preview(): Promise<{ products: Product[]; source: string }>;
-  sync(): Promise<{ created: number; updated: number; warnings: string[] }>;
+  sync(currentProducts: Product[]): Promise<{
+    products: Product[];
+    source: string;
+    created: number;
+    updated: number;
+    removed: number;
+    warnings: string[];
+  }>;
 }

@@ -45,7 +45,7 @@ type Store = {
   setAdminSession: (session: Session | null) => void;
   saveProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
-  replaceProducts: (products: Product[]) => void;
+  replaceProducts: (products: Product[]) => Promise<Product[]>;
   createOrder: (order: Order) => void;
   updateOrderStatus: (id: string, status: Order["status"]) => void;
   addCustomer: (customer: Customer) => void;
@@ -306,16 +306,20 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   );
 
   const replaceProducts = useCallback(
-    (next: Product[]) => {
+    async (next: Product[]) => {
       const result = applyReplaceProducts(products, adminSession, next);
       if (!result.applied || !result.auditEntry) {
-        console.warn("Intento de reemplazar el catálogo sin sesión de administrador válida.");
-        return;
+        throw new Error("La sesión de administrador venció. Volvé a ingresar antes de sincronizar.");
       }
-      setProducts(result.next);
+      const persisted = await adapter.replaceCatalog(result.next);
+      setProducts(persisted);
       setAuditLog((current) => appendAuditEntry(current, result.auditEntry as AuditEntry));
-      void adapter.replaceCatalog(next);
-      void adapter.appendAuditEntry(result.auditEntry);
+      try {
+        await adapter.appendAuditEntry(result.auditEntry);
+      } catch (error) {
+        console.warn("El catálogo se sincronizó, pero no se pudo guardar la auditoría.", error);
+      }
+      return persisted;
     },
     [products, adminSession, adapter],
   );

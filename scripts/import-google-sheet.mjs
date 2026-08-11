@@ -110,8 +110,12 @@ if (!response.ok) {
 }
 const rows = parseCsv(await response.text());
 const [headers, ...body] = rows;
-const expected = ["CODIGO", "ARTICULO", "PRECIO"];
-if (!expected.every((header, index) => headers[index]?.trim() === header)) {
+const normalizedHeaders = headers.map((header) => header.trim().toLowerCase().replace(/[^a-z0-9]/g, ""));
+const validHeaders =
+  ["codigo", "cod", "sku"].includes(normalizedHeaders[0]) &&
+  ["articulo", "producto", "nombre"].includes(normalizedHeaders[1]) &&
+  ["preciocon", "precio", "preciocontado"].includes(normalizedHeaders[2]);
+if (!validHeaders) {
   throw new Error(`Encabezados inesperados: ${headers.join(", ")}`);
 }
 
