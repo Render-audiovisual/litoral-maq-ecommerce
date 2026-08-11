@@ -6,7 +6,7 @@ import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, badge }: { product: Product; badge?: string }) {
   const { addToCart } = useStore();
   const productHref = `/producto?slug=${encodeURIComponent(product.slug)}`;
   return (
@@ -25,7 +25,7 @@ export function ProductCard({ product }: { product: Product }) {
             <small>Imagen pendiente</small>
           </div>
         )}
-        {product.featured && <span className="product-badge">Destacado</span>}
+        {(badge || product.featured) && <span className="product-badge">{badge || "Destacado"}</span>}
       </Link>
       <div className="product-card-body">
         <span className="eyebrow">{product.brand}</span>
