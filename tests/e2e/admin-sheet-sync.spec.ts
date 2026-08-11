@@ -17,6 +17,7 @@ test("el administrador sincroniza y persiste el catálogo del Google Sheet", asy
   await page.getByLabel("Email").fill("admin@litoralmaq.com");
   await page.getByLabel("Contraseña").fill("admin123");
   await page.getByRole("button", { name: "Ingresar" }).click();
+  await expect(page).toHaveURL(/\/admin$/);
   await page.goto("/admin/productos");
 
   await page.getByRole("button", { name: "Actualizar desde Sheet" }).click();
