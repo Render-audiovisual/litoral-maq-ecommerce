@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { useStore } from "@/store/store";
 
+const PAGE_SIZE = 24;
+
 export function CatalogClient() {
   const params = useSearchParams();
   const initialCategory = params.get("categoria") || "";
@@ -16,7 +18,7 @@ export function CatalogClient() {
   );
   const [sort, setSort] = useState("featured");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(120);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.category))].sort(),
     [products],
@@ -47,7 +49,7 @@ export function CatalogClient() {
   }, [products, query, category, onlyAvailable, offersOnly, sort]);
 
   function resetVisibleCount() {
-    setVisibleCount(120);
+    setVisibleCount(PAGE_SIZE);
   }
 
   return (
@@ -60,7 +62,7 @@ export function CatalogClient() {
       <div className="catalog-layout">
         <aside className="filters">
           <strong>Filtrar productos</strong>
-          <label>Buscar
+          <label className="catalog-search">Buscar
             <input value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="Producto, marca o código" />
           </label>
           <label>Categoría
@@ -98,7 +100,7 @@ export function CatalogClient() {
             <button
               type="button"
               className="button secondary catalog-load-more"
-              onClick={() => setVisibleCount((count) => count + 120)}
+              onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
             >
               Mostrar más productos
             </button>

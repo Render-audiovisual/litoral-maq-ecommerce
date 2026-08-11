@@ -49,7 +49,7 @@ export function Header() {
             </span>
           </Link>
           <Link href="/carrito" className="cart-link" aria-label={`Carrito, ${cartCount} productos`}>
-            <span aria-hidden>🛒</span>
+            <Image src="/icons/cart.svg" alt="" width={22} height={22} aria-hidden />
             {cartCount > 0 && <strong>{cartCount}</strong>}
           </Link>
           <button
