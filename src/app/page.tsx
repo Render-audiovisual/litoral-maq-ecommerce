@@ -1,6 +1,7 @@
 import Link from "next/link";
 import productsSeed from "@/data/products.json";
 import type { Product } from "@/lib/types";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { ProductCard } from "@/components/product-card";
 
 export default function Home() {
@@ -91,7 +92,14 @@ export default function Home() {
           <h2>Te ayudamos a elegir la herramienta correcta.</h2>
           <p>Contanos qué trabajo necesitás hacer y te orientamos.</p>
         </div>
-        <span className="cta-pending">WhatsApp comercial pendiente de configurar</span>
+        <a
+          className="cta-whatsapp"
+          href={getWhatsAppUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Consultar por WhatsApp →
+        </a>
       </section>
     </main>
   );

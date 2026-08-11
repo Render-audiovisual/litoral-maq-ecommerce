@@ -137,7 +137,8 @@ textarea { min-height: 100px; resize: vertical; }
 .empty-state.roomy { min-height: 520px; }
 .results-note { padding: 18px; text-align: center; color: var(--muted); background: #f8f9fa; }
 .catalog-load-more { display: block; margin: 28px auto 0; }
-.cta-pending { border: 1px solid rgba(255,255,255,.38); border-radius: 10px; color: #fff; font-size: .84rem; font-weight: 700; padding: 14px 18px; text-align: center; }
+.cta-whatsapp { border: 1px solid rgba(255,255,255,.38); border-radius: 10px; color: #fff; font-size: .84rem; font-weight: 700; padding: 14px 18px; text-align: center; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
+.cta-whatsapp:hover { background: #25d366; border-color: #25d366; color: #fff; transform: translateY(-2px); }
 .spinner { width: 34px; height: 34px; border: 3px solid #dce4e8; border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .product-detail-page, .standard-page { max-width: 1320px; min-height: 650px; margin: auto; padding: 45px 5vw 90px; }
