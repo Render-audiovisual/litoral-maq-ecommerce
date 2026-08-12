@@ -82,6 +82,10 @@ en `src/services/mock.ts`.
 - Imágenes: sustituir `mockImageStorageAdapter` por S3, Cloudinary o equivalente.
 - Google Sheets: sustituir `mockSheetSyncAdapter` por sincronización autenticada.
 
+El análisis completo para llevar pagos, pedidos, envíos, stock, imágenes y
+notificaciones a producción está en
+[`docs/PLAN_CONEXIONES_PRODUCCION.md`](./docs/PLAN_CONEXIONES_PRODUCCION.md).
+
 Copiar `.env.example` a `.env.local` y completar únicamente las credenciales
 del servicio que se vaya conectando.
 
