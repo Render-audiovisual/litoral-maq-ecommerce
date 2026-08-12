@@ -1,13 +1,13 @@
-import productsSeed from "@/data/products.json";
-import type { Order, Product } from "@/lib/types";
-import type { ImageStorageAdapter, PaymentAdapter, SheetSyncAdapter, ShippingAdapter } from "./adapters";
+import type { Order } from "@/lib/types";
+import type { ImageStorageAdapter, PaymentAdapter, ShippingAdapter } from "./adapters";
 
 const wait = (duration = 350) => new Promise((resolve) => setTimeout(resolve, duration));
 
 // El AuthAdapter (local y Supabase) vive en `services/auth/` — ver
 // `services/auth/index.ts` (`getAuthAdapter()`). Este archivo conserva solo
 // los mocks que no tienen todavía un adaptador real (pago, envío, imágenes,
-// sincronización de catálogo).
+// sincronización de catálogo ahora vive en `services/sheet-sync.ts` y lee
+// el Google Sheet real. Este archivo conserva únicamente mocks operativos.
 
 export const mockPaymentAdapter: PaymentAdapter = {
   async createPreference(order: Order) {
@@ -41,26 +41,5 @@ export const mockImageStorageAdapter: ImageStorageAdapter = {
   async upload(file) {
     await wait();
     return { url: URL.createObjectURL(file), simulated: true };
-  },
-};
-
-export const mockSheetSyncAdapter: SheetSyncAdapter = {
-  async preview() {
-    await wait();
-    return {
-      products: productsSeed as Product[],
-      source: "Google Sheet · Lista de precios - LitoralMaq",
-    };
-  },
-  async sync() {
-    await wait(700);
-    return {
-      created: 0,
-      updated: (productsSeed as Product[]).length,
-      warnings: [
-        "El Sheet no informa stock: se conserva el stock del panel.",
-        "El Sheet no informa imágenes ni descripciones.",
-      ],
-    };
   },
 };

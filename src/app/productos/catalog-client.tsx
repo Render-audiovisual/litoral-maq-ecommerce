@@ -3,7 +3,10 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
+import { getWinnerRankMap } from "@/lib/winning-products";
 import { useStore } from "@/store/store";
+
+const PAGE_SIZE = 24;
 
 export function CatalogClient() {
   const params = useSearchParams();
@@ -16,7 +19,8 @@ export function CatalogClient() {
   );
   const [sort, setSort] = useState("featured");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(120);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const winnerRanks = useMemo(() => getWinnerRankMap(products), [products]);
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.category))].sort(),
     [products],
@@ -33,7 +37,7 @@ export function CatalogClient() {
         return (
           product.active &&
           matches &&
-          (!offersOnly || product.featured) &&
+          (!offersOnly || winnerRanks.has(product.id)) &&
           (!category || product.category === category) &&
           (!onlyAvailable || product.stock > 0)
         );
@@ -42,12 +46,14 @@ export function CatalogClient() {
         if (sort === "price-asc") return (a.price || 0) - (b.price || 0);
         if (sort === "price-desc") return (b.price || 0) - (a.price || 0);
         if (sort === "name") return a.name.localeCompare(b.name);
-        return Number(b.featured) - Number(a.featured);
+        const rankA = winnerRanks.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+        const rankB = winnerRanks.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+        return rankA - rankB || Number(b.featured) - Number(a.featured) || b.stock - a.stock;
       });
-  }, [products, query, category, onlyAvailable, offersOnly, sort]);
+  }, [products, query, category, onlyAvailable, offersOnly, sort, winnerRanks]);
 
   function resetVisibleCount() {
-    setVisibleCount(120);
+    setVisibleCount(PAGE_SIZE);
   }
 
   return (
@@ -60,7 +66,7 @@ export function CatalogClient() {
       <div className="catalog-layout">
         <aside className="filters">
           <strong>Filtrar productos</strong>
-          <label>Buscar
+          <label className="catalog-search">Buscar
             <input value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="Producto, marca o código" />
           </label>
           <label>Categoría
@@ -89,7 +95,10 @@ export function CatalogClient() {
           </div>
           {filtered.length ? (
             <div className="product-grid catalog-grid">
-              {filtered.slice(0, visibleCount).map((product) => <ProductCard product={product} key={product.id} />)}
+              {filtered.slice(0, visibleCount).map((product) => {
+                const winnerRank = winnerRanks.get(product.id);
+                return <ProductCard product={product} badge={winnerRank ? "Más vendido" : undefined} key={product.id} />;
+              })}
             </div>
           ) : (
             <div className="empty-state"><span>⌕</span><h2>No encontramos productos</h2><p>Probá con otro término o limpiá los filtros.</p></div>
@@ -98,7 +107,7 @@ export function CatalogClient() {
             <button
               type="button"
               className="button secondary catalog-load-more"
-              onClick={() => setVisibleCount((count) => count + 120)}
+              onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
             >
               Mostrar más productos
             </button>

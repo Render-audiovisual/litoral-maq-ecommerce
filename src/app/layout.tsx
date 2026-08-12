@@ -4,6 +4,7 @@ import "./globals.css";
 import { StoreProvider } from "@/store/store";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { FloatingWhatsApp } from "@/components/floating-whatsapp";
 
 const montserrat = Montserrat({
   variable: "--font-main",
@@ -23,11 +24,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={montserrat.variable}>
+    <html lang="es" className={montserrat.variable} data-scroll-behavior="smooth">
       <body>
         <StoreProvider>
           <Header />
           {children}
+          <FloatingWhatsApp />
           <Footer />
         </StoreProvider>
       </body>

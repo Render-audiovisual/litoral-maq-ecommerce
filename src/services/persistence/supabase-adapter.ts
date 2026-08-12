@@ -145,6 +145,14 @@ export function createSupabasePersistenceAdapter(client: TypedSupabaseClient): P
       const rows = products.map(productToInsert);
       const { data, error } = await client.from("products").upsert(rows, { onConflict: "id" }).select();
       if (error) throw error;
+      const desiredIds = new Set(products.map((product) => product.id));
+      const { data: existing, error: listError } = await client.from("products").select("id");
+      if (listError) throw listError;
+      const staleIds = (existing ?? []).map((row) => row.id).filter((id) => !desiredIds.has(id));
+      if (staleIds.length) {
+        const { error: deleteError } = await client.from("products").delete().in("id", staleIds);
+        if (deleteError) throw deleteError;
+      }
       return (data ?? []).map(rowToProduct);
     },
 

@@ -1,54 +1,122 @@
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
-import productsSeed from "@/data/products.json";
+import { formatCurrency } from "@/lib/utils";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { getWinningProducts, HOME_WINNER_LIMIT } from "@/lib/winning-products";
 import type { Product } from "@/lib/types";
-import { ProductCard } from "@/components/product-card";
+import { useStore } from "@/store/store";
+
+const categories = [
+  ["Amoladoras", "Potencia para corte y desbaste", "⚙"],
+  ["Soldadura", "Equipos e insumos", "✦"],
+  ["Taladros y atornilladores", "Para obra y taller", "⌁"],
+  ["Jardín", "Máquinas para exterior", "♧"],
+];
+
+function compactName(product: Product) {
+  const name = product.name.split(" - ")[0].replace(/\s+/g, " ").trim();
+  return name.length > 54 ? `${name.slice(0, 51).trim()}…` : name;
+}
+
+function WinnerCard({ product, rank }: { product: Product; rank: number }) {
+  const href = `/producto?slug=${encodeURIComponent(product.slug)}`;
+  return (
+    <Link href={href} className={`winner-card winner-card-${(rank - 1) % 3}`}>
+      <div className="winner-card-media">
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            sizes="(max-width: 560px) 50vw, (max-width: 900px) 33vw, 28vw"
+            priority={rank === 1}
+          />
+        ) : (
+          <div className="winner-placeholder">LM</div>
+        )}
+        <span className="winner-rank">{rank === 1 ? "EL MÁS ELEGIDO" : "SELECCIÓN LITORAL"}</span>
+      </div>
+      <div className="winner-card-copy">
+        <span>{product.category}</span>
+        <h3>{compactName(product)}</h3>
+        <small>Precio del catálogo</small>
+        <strong>{formatCurrency(product.price)}</strong>
+        <b>Ver producto <span aria-hidden>→</span></b>
+      </div>
+    </Link>
+  );
+}
 
 export default function Home() {
-  const products = productsSeed as Product[];
-  const featured = products.filter((product) => product.featured).slice(0, 8);
-  const categories = [
-    ["Amoladoras", "Potencia para corte y desbaste", "⚙"],
-    ["Soldadura", "Equipos e insumos", "✦"],
-    ["Taladros y atornilladores", "Para obra y taller", "⌁"],
-    ["Jardín", "Máquinas para exterior", "♧"],
-  ];
+  const { products } = useStore();
+  const winners = getWinningProducts(products);
+  const homeWinners = winners.slice(0, HOME_WINNER_LIMIT);
+  const heroProducts = homeWinners.slice(0, 3);
+  const categoryCount = new Set(products.filter((product) => product.active).map((product) => product.category)).size;
 
   return (
     <main>
-      <section className="hero">
-        <div className="hero-content">
-          <span className="hero-pill">PRECIOS REALES DEL CATÁLOGO</span>
-          <h1>Equipá tu taller.<br /><em>Hacelo vos mismo.</em></h1>
+      <section className="commerce-hero">
+        <div className="commerce-hero-copy">
+          <span className="hero-pill">LOS MÁS ELEGIDOS DE LITORAL MAQ</span>
+          <h1>Precios para <em>equipar tu taller.</em></h1>
           <p>
-            Máquinas y herramientas seleccionadas para trabajar mejor, con
-            asesoramiento y envío a todo el país.
+            Productos seleccionados, precios reales del catálogo y atención
+            personalizada para elegir mejor.
           </p>
           <div className="hero-actions">
-            <Link href="/productos" className="button primary large">Ver productos</Link>
-            <Link href="/productos?categoria=Amoladoras" className="button ghost large">
-              Explorar categorías
-            </Link>
+            <a href="#productos-ganadores" className="button primary large">Ver los más elegidos</a>
+            <Link href="/productos" className="button ghost large">Explorar catálogo</Link>
           </div>
-          <div className="hero-metrics">
-            <span><strong>460</strong> productos reales</span>
-            <span><strong>11</strong> categorías iniciales</span>
-            <span><strong>100%</strong> precios del Sheet</span>
+          <div className="commerce-metrics">
+            <span><strong>{products.filter((product) => product.active).length}</strong> productos</span>
+            <span><strong>{categoryCount}</strong> categorías</span>
+            <span><strong>10</strong> seleccionados</span>
           </div>
         </div>
-        <div className="hero-visual">
-          <div className="hero-orbit orbit-one" />
-          <div className="hero-orbit orbit-two" />
-          <div className="hero-tool">⚙</div>
-          <span className="hero-price">Desde $39.980</span>
-          <span className="hero-note">ENERGY · NEO · GLADIATOR</span>
+        <div className="commerce-hero-showcase" aria-label="Productos destacados">
+          <div className="showcase-copy">
+            <span>PRODUCTO PRINCIPAL</span>
+            <strong>Taladro Energy</strong>
+            <small>El caballito de batalla</small>
+          </div>
+          {heroProducts.map((product, index) => (
+            <Link
+              href={`/producto?slug=${encodeURIComponent(product.slug)}`}
+              className={`showcase-product showcase-product-${index + 1}`}
+              key={product.id}
+              aria-label={`Ver ${product.name}`}
+            >
+              {product.image ? <Image src={product.image} alt="" fill sizes="28vw" priority={index === 0} /> : null}
+            </Link>
+          ))}
+          <span className="showcase-price">Desde {formatCurrency(heroProducts[0]?.price ?? null)}</span>
         </div>
       </section>
 
-      <section className="trust-strip">
+      <section className="trust-strip commerce-trust">
         <div><span>🚚</span><strong>Envíos nacionales</strong><small>A todo el país</small></div>
-        <div><span>💳</span><strong>Mercado Pago</strong><small>Preparado para conectar</small></div>
-        <div><span>✓</span><strong>Stock visible</strong><small>Control desde el panel</small></div>
+        <div><span>💳</span><strong>Mercado Pago</strong><small>Próximamente</small></div>
+        <div><span>✓</span><strong>Precios reales</strong><small>Actualizados desde el Sheet</small></div>
         <div><span>☎</span><strong>Asesoramiento</strong><small>Compra con confianza</small></div>
+      </section>
+
+      <section className="winner-section" id="productos-ganadores">
+        <div className="section-heading winner-heading">
+          <div>
+            <span className="eyebrow orange">PRODUCTOS GANADORES</span>
+            <h2>Los que más salen</h2>
+            <p>Una selección provisoria según la disponibilidad actual.</p>
+          </div>
+          <Link href="/productos?categoria=Ofertas" className="text-link">Ver los 10 seleccionados →</Link>
+        </div>
+        <div className="winner-grid">
+          {homeWinners.map((product, index) => (
+            <WinnerCard product={product} rank={index + 1} key={product.id} />
+          ))}
+        </div>
       </section>
 
       <section className="section">
@@ -72,26 +140,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section soft">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow orange">SELECCIÓN LITORAL MAQ</span>
-            <h2>Productos destacados</h2>
-          </div>
-          <Link href="/productos" className="text-link">Ver todos →</Link>
-        </div>
-        <div className="product-grid">
-          {featured.map((product) => <ProductCard product={product} key={product.id} />)}
-        </div>
-      </section>
-
       <section className="cta-banner">
         <div>
           <span className="eyebrow">¿TENÉS DUDAS?</span>
           <h2>Te ayudamos a elegir la herramienta correcta.</h2>
           <p>Contanos qué trabajo necesitás hacer y te orientamos.</p>
         </div>
-        <span className="cta-pending">WhatsApp comercial pendiente de configurar</span>
+        <a className="cta-whatsapp" href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
+          Consultar por WhatsApp →
+        </a>
       </section>
     </main>
   );

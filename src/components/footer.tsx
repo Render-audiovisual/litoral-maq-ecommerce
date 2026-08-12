@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 
 export function Footer() {
   const pathname = usePathname();
@@ -26,7 +27,9 @@ export function Footer() {
         <strong>Ayuda</strong>
         <span>Envíos a todo el país</span>
         <span>Retiro en sucursal</span>
-        <span>WhatsApp comercial</span>
+        <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
+          WhatsApp comercial
+        </a>
       </div>
     </footer>
   );

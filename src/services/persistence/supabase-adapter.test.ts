@@ -30,6 +30,9 @@ class FakeQueryBuilder {
   eq(...args: unknown[]) {
     return this.record("eq", args);
   }
+  in(...args: unknown[]) {
+    return this.record("in", args);
+  }
   limit(...args: unknown[]) {
     return this.record("limit", args);
   }

@@ -6,11 +6,12 @@ import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, badge }: { product: Product; badge?: string }) {
   const { addToCart } = useStore();
+  const productHref = `/producto?slug=${encodeURIComponent(product.slug)}`;
   return (
     <article className="product-card">
-      <Link href={`/productos/${product.slug}`} className="product-image">
+      <Link href={productHref} className="product-image">
         {product.image ? (
           <Image
             src={product.image}
@@ -24,11 +25,11 @@ export function ProductCard({ product }: { product: Product }) {
             <small>Imagen pendiente</small>
           </div>
         )}
-        {product.featured && <span className="product-badge">Destacado</span>}
+        {(badge || product.featured) && <span className="product-badge">{badge || "Destacado"}</span>}
       </Link>
       <div className="product-card-body">
         <span className="eyebrow">{product.brand}</span>
-        <Link href={`/productos/${product.slug}`} className="product-name">
+        <Link href={productHref} className="product-name">
           {product.name}
         </Link>
         <span className="product-code">Cód. {product.code}</span>

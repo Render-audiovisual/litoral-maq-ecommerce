@@ -1,0 +1,21 @@
+# Errors
+
+## 2026-08-11 — El build detectó un type guard demasiado amplio
+
+El primer build del nuevo importador falló porque el predicado de filtrado no era asignable al tipo inferido. Se reemplazó `map + filter` por un `reduce<Product[]>` explícito y se volvió a ejecutar lint, tests y build completos.
+
+## 2026-08-11 — La prueba remota navegó antes de completar el login
+
+Una prueba contra la preview hizo `goto` inmediatamente después del clic de acceso y se adelantó al enrutamiento asíncrono. Se agregó una espera explícita por la URL `/admin` antes de abrir Productos.
+
+## 2026-08-12 — ImageMagick no está instalado en el entorno
+
+El comando `identify` no estaba disponible al inspeccionar dimensiones de imágenes. Para verificaciones simples de formato y resolución, usar `file`; reservar una herramienta de imágenes solo si hace falta procesamiento visual.
+
+## 2026-08-12 — El preset móvil de Playwright intentó usar WebKit ausente
+
+El preset `iPhone 13` del comando de capturas seleccionó un binario WebKit no instalado. Para revisar CSS responsive sin instalar navegadores adicionales, usar Chromium con `--viewport-size "390,844"`.
+
+## 2026-08-12 — No ejecutar build y servidor dev sobre el mismo `distDir`
+
+El build de producción se ejecutó mientras Next dev seguía abierto y ambos tocaron `dist/`, corrompiendo la caché generada de Turbopack. Para este proyecto, cerrar el servidor de capturas antes de `npm run build`; si ya ocurrió, apartar `dist/dev/cache` y dejar que Next la regenere.
