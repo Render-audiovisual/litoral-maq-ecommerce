@@ -72,7 +72,17 @@ jobs:
           install -d -m 700 "$HOME/.ssh"
           printf '%s\n' "$HOSTINGER_SSH_KEY" > "$HOME/.ssh/litoral_maq"
           chmod 600 "$HOME/.ssh/litoral_maq"
-          ssh-keyscan -p "$HOSTINGER_PORT" "$HOSTINGER_HOST" >> "$HOME/.ssh/known_hosts"
+          for attempt in 1 2 3 4 5; do
+            if ssh-keyscan -T 15 -p "$HOSTINGER_PORT" "$HOSTINGER_HOST" >> "$HOME/.ssh/known_hosts"; then
+              break
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              echo "Hostinger no respondió al escaneo SSH después de 5 intentos." >&2
+              exit 1
+            fi
+            sleep 5
+          done
+          sort -u -o "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts"
 
       - name: Publicar tienda y administración
         env:
