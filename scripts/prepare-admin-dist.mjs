@@ -62,18 +62,21 @@ async function keepOnlyAdminSurface(dir) {
 }
 
 const ADMIN_HTACCESS = `Options -MultiViews
+DirectoryIndex admin.html
 RewriteEngine On
-
-# Entrega archivos y carpetas existentes sin reescribirlos.
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
 
 # Next exporta las rutas como archivos .html. Permite abrir /admin/productos,
 # /admin/pedidos, etc. sin mostrar la extensión, y que el refresh del
-# navegador siga funcionando en cualquier ruta profunda.
+# navegador siga funcionando en cualquier ruta profunda. Debe evaluarse antes
+# que la carpeta homónima generada por Next para evitar redirects con barra y
+# un 403 de Apache.
 RewriteCond %{DOCUMENT_ROOT}/$1.html -f
 RewriteRule ^(.+?)/?$ $1.html [L]
+
+# Entrega los demás archivos y carpetas existentes sin reescribirlos.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
 # Raíz del subdominio → ruta real de inicio admin ("/admin", detectada en
 # src/app/admin/page.tsx). AdminShell decide desde ahí, en el cliente, si

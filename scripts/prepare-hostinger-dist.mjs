@@ -45,6 +45,7 @@ async function removeAdminRoutes(dir) {
 }
 
 const STORE_HTACCESS = `Options -MultiViews
+DirectoryIndex index.html
 RewriteEngine On
 
 # Bloquea cualquier intento de acceder a rutas de administración desde el
@@ -52,15 +53,18 @@ RewriteEngine On
 # regla además evita que Apache intente resolverlas de otra forma.
 RewriteRule ^admin(/.*)?$ - [F,L]
 
-# Entrega archivos y carpetas existentes sin reescribirlos.
+# Next exporta las rutas como archivos .html. Esto permite abrir /productos
+# y las fichas individuales sin mostrar la extensión. Esta regla debe ir antes
+# de la excepción de carpetas porque Next también crea una carpeta homónima
+# con los datos RSC; si Apache prioriza esa carpeta, agrega una barra y termina
+# respondiendo 403 por falta de DirectoryIndex.
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+# Entrega los demás archivos y carpetas existentes sin reescribirlos.
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
-
-# Next exporta las rutas como archivos .html. Esto permite abrir /productos
-# y las fichas individuales sin mostrar la extensión.
-RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-RewriteRule ^(.+?)/?$ $1.html [L]
 
 # Inicio del sitio.
 RewriteRule ^$ index.html [L]
