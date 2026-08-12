@@ -1,5 +1,33 @@
 # Publicar en Hostinger — tienda y administración por separado (Etapa 6)
 
+## Despliegue automático actual
+
+El workflow `.github/workflows/deploy-hostinger.yml` publica automáticamente
+las dos superficies después de cada push a `main` (por ejemplo, al fusionar
+una rama aprobada):
+
+| Superficie | URL | Directorio remoto |
+|---|---|---|
+| Tienda | `litoralmaqrender.rendercorrientes.com` | `public_html/litoralmaqrender/` |
+| Administración | `admin-litoralmaqrender.rendercorrientes.com` | `public_html/admin-litoralmaqrender/` |
+
+Antes de publicar ejecuta TypeScript, ESLint, tests, validación del catálogo,
+los dos builds y la validación de separación. Si cualquiera falla no modifica
+Hostinger. La publicación usa `rsync --delete`, por lo que reemplaza el
+contenido anterior de esas dos carpetas sin crear un backup automático.
+
+Supabase queda expresamente fuera de esta etapa: el workflow fuerza
+`NEXT_PUBLIC_PERSISTENCE_PROVIDER=local`. Como tienda y administración están
+en orígenes distintos, los cambios hechos en el admin local no aparecen en la
+tienda pública hasta conectar una persistencia compartida.
+
+Secrets requeridos en el environment de GitHub `production`:
+
+- `HOSTINGER_HOST`
+- `HOSTINGER_PORT`
+- `HOSTINGER_USER`
+- `HOSTINGER_SSH_KEY`
+
 Este MVP se aloja como **dos sitios estáticos independientes**, cada uno con
 su propia raíz de publicación en Hostinger:
 

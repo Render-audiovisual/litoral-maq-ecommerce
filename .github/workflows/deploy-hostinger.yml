@@ -1,0 +1,85 @@
+name: Publicar Litoral Maq en Hostinger
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: litoral-maq-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    name: Compilar y publicar tienda + admin
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v6
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Verificar el proyecto
+        run: |
+          npx tsc --noEmit
+          npm run lint
+          npm test
+
+      - name: Importar catálogo vigente desde Google Sheets
+        run: npm run import:sheet
+
+      - name: Validar catálogo importado
+        run: |
+          npm run validate:catalog
+
+      - name: Compilar tienda
+        env:
+          NEXT_PUBLIC_STORE_DOMAIN: litoralmaqrender.rendercorrientes.com
+          NEXT_PUBLIC_ADMIN_DOMAIN: admin-litoralmaqrender.rendercorrientes.com
+          # Supabase se habilitará en una etapa posterior.
+          NEXT_PUBLIC_PERSISTENCE_PROVIDER: local
+        run: npm run build:hostinger
+
+      - name: Compilar administración
+        env:
+          NEXT_PUBLIC_STORE_DOMAIN: litoralmaqrender.rendercorrientes.com
+          NEXT_PUBLIC_ADMIN_DOMAIN: admin-litoralmaqrender.rendercorrientes.com
+          NEXT_PUBLIC_PERSISTENCE_PROVIDER: local
+        run: npm run build:admin
+
+      - name: Validar separación de artefactos
+        run: npm run validate:separation
+
+      - name: Preparar acceso SSH
+        env:
+          HOSTINGER_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+          HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+        run: |
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$HOSTINGER_SSH_KEY" > "$HOME/.ssh/litoral_maq"
+          chmod 600 "$HOME/.ssh/litoral_maq"
+          ssh-keyscan -p "$HOSTINGER_PORT" "$HOSTINGER_HOST" >> "$HOME/.ssh/known_hosts"
+
+      - name: Publicar tienda y administración
+        env:
+          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+          HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+          HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+        run: |
+          SSH_COMMAND="ssh -i $HOME/.ssh/litoral_maq -p $HOSTINGER_PORT"
+          rsync -az --delete -e "$SSH_COMMAND" hostinger-ready/ "$HOSTINGER_USER@$HOSTINGER_HOST:/home/u471562620/domains/rendercorrientes.com/public_html/litoralmaqrender/"
+          rsync -az --delete -e "$SSH_COMMAND" admin-ready/ "$HOSTINGER_USER@$HOSTINGER_HOST:/home/u471562620/domains/rendercorrientes.com/public_html/admin-litoralmaqrender/"
