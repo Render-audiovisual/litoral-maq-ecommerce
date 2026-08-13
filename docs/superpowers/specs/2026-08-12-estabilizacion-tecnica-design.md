@@ -35,8 +35,9 @@ independiente; este plan no cambia el comportamiento de la app en producción.
 
 ### 1. Rotar credencial filtrada
 
-- El usuario rota la contraseña del admin real (`renderctes@gmail.com`) en el
-  dashboard de Supabase — acción externa, fuera del alcance de este agente.
+- El usuario rota la contraseña del admin real (ver `REPORTE_ETAPA_7.md` antes
+  de su redacción para el email exacto) en el dashboard de Supabase — acción
+  externa, fuera del alcance de este agente.
 - Reemplazar el email/password en texto plano de `REPORTE_ETAPA_7.md` por un
   placeholder, conservando el resto del reporte como registro histórico.
 - Sin reescritura de historia de git (la password vieja queda en el

@@ -20,7 +20,7 @@
 
 ### Task 1: Purgar la credencial filtrada de REPORTE_ETAPA_7.md
 
-**Prerequisito manual (fuera de este repo):** antes de este task, el usuario debe haber rotado la contraseña del admin real (`renderctes@gmail.com`) en el dashboard de Supabase (Project Settings → Auth → Users → reset password). Este plan no puede hacer esa parte — es una acción en un sistema externo. Confirmar con el usuario que ya la rotó antes de ejecutar este task.
+**Prerequisito manual (fuera de este repo):** antes de este task, el usuario debe haber rotado la contraseña del admin real (email visible en `REPORTE_ETAPA_7.md` antes de este task, no reproducido acá) en el dashboard de Supabase (Project Settings → Auth → Users → reset password). Este plan no puede hacer esa parte — es una acción en un sistema externo. Confirmar con el usuario que ya la rotó antes de ejecutar este task.
 
 **Files:**
 - Modify: `REPORTE_ETAPA_7.md`
@@ -33,21 +33,17 @@ No es un comando — es una pregunta directa al usuario antes de tocar el archiv
 
 - [ ] **Step 2: Verificar las apariciones actuales del secreto**
 
-Run: `grep -n "renderctes@gmail.com\|LitoralMaq2026!" REPORTE_ETAPA_7.md`
+Run: `grep -n "<email-real>\|<password-real>" REPORTE_ETAPA_7.md` (usar los valores reales del archivo, no reproducidos en este plan)
 
-Expected: varias líneas con coincidencias (email en la sección "Primer admin real", en el bloque SQL de promoción, en la sección de verificación funcional, y en "Próximos pasos"; password solo en la línea `- Contraseña: LitoralMaq2026!`).
+Expected: varias líneas con coincidencias (email en la sección "Primer admin real", en el bloque SQL de promoción, en la sección de verificación funcional, y en "Próximos pasos"; password solo en la línea `- Contraseña: <password-real>`).
 
 - [ ] **Step 3: Redactar el email real**
 
-Reemplazar **todas** las apariciones de `renderctes@gmail.com` en `REPORTE_ETAPA_7.md` por `[email-admin-redactado]` (edición con reemplazo global, no una por una).
+Reemplazar **todas** las apariciones del email real en `REPORTE_ETAPA_7.md` por `[email-admin-redactado]` (edición con reemplazo global, no una por una).
 
 - [ ] **Step 4: Redactar la password real**
 
-Reemplazar la línea:
-
-```
-- Contraseña: LitoralMaq2026!
-```
+Reemplazar la línea con la contraseña real (formato `- Contraseña: <password-real>`, valor no reproducido en este plan):
 
 por:
 
@@ -57,7 +53,7 @@ por:
 
 - [ ] **Step 5: Verificar que no queden coincidencias**
 
-Run: `grep -n "renderctes@gmail.com\|LitoralMaq2026!" REPORTE_ETAPA_7.md`
+Run: `grep -n "<email-real>\|<password-real>" REPORTE_ETAPA_7.md` (usar los valores reales del archivo, no reproducidos en este plan)
 
 Expected: sin salida (ninguna coincidencia).
 
