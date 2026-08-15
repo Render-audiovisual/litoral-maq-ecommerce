@@ -38,8 +38,8 @@ node --env-file=.env.migration.local scripts/prepare-products-migration.mjs --ap
 ### 3. Primer admin real
 **Estado: ✅ CREADO Y PROMOVIDO**
 
-- Email: renderctes@gmail.com
-- Contraseña: LitoralMaq2026!
+- Email: [email-admin-redactado]
+- Contraseña: [redactada — rotada tras detectar filtración, ver commit de estabilización técnica]
 - Rol: admin (promovido en BD)
 - Creación: via `/registro` → BD via trigger handle_new_user → promoción manual en SQL Editor
 
@@ -48,11 +48,11 @@ node --env-file=.env.migration.local scripts/prepare-products-migration.mjs --ap
 -- Desactivar trigger temporalmente (para bypass auto-revert)
 ALTER TABLE public.profiles DISABLE TRIGGER profiles_role_guard;
 -- Promover a admin
-UPDATE public.profiles SET role = 'admin' WHERE email = 'renderctes@gmail.com';
+UPDATE public.profiles SET role = 'admin' WHERE email = '[email-admin-redactado]';
 -- Reactivar trigger
 ALTER TABLE public.profiles ENABLE TRIGGER profiles_role_guard;
 -- Verificar
-SELECT email, role FROM public.profiles WHERE email = 'renderctes@gmail.com';
+SELECT email, role FROM public.profiles WHERE email = '[email-admin-redactado]';
 -- Resultado: administración (admin)
 ```
 
@@ -61,7 +61,7 @@ SELECT email, role FROM public.profiles WHERE email = 'renderctes@gmail.com';
 
 Login en `/login` rechazó credenciales válidas con "Email o contraseña incorrectos" — causas posibles:
 - Supabase requiere confirmación de email antes de permitir login (configuración por defecto)
-- El usuario debe revisar su bandeja en renderctes@gmail.com y clickear el enlace de confirmación
+- El usuario debe revisar su bandeja en [email-admin-redactado] y clickear el enlace de confirmación
 
 Una vez confirmado el email, el flujo de login → catálogo → carrito → checkout → admin debería funcionar contra Supabase real.
 
@@ -96,7 +96,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ## Lo que falta para corte a producción
 
-1. **Confirmación de email del admin** — usuario debe confirmar renderctes@gmail.com en su bandeja
+1. **Confirmación de email del admin** — usuario debe confirmar [email-admin-redactado] en su bandeja
 2. **Verificación funcional completa** — una vez confirmado el email:
    - Login admin en `/admin/login`
    - Tests manuales: catálogo, carrito, checkout, panel admin, audit log
