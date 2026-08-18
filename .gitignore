@@ -25,3 +25,6 @@ playwright-report/
 
 # Config local de Claude Code (permisos por máquina, no compartir)
 .claude/settings.local.json
+
+# Estado local del CLI de Supabase (link al proyecto, versiones detectadas)
+supabase/.temp/
