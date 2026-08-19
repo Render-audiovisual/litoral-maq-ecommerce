@@ -1,0 +1,118 @@
+import type { Product } from "@/lib/types";
+
+export const LAUNCH_PRODUCT_MODELS = [
+  "OEH04",
+  "OEAC04",
+  "EMA804",
+  "VC35/220",
+  "VC18/1/220",
+  "A1170/220",
+  "CS58",
+  "ID13/2/220",
+  "TP413/7/220K",
+  "TP813/18C1",
+  "P20C1",
+  "DDI10/2/12C1",
+  "AG115/1/220",
+  "AA415/2/220VVM",
+  "AA518/220PLUS",
+  "A20C1",
+  "P12/2/25",
+  "EVP818/43-1",
+  "HL7000/220M",
+  "LI1065/20C1",
+] as const;
+
+export const LAUNCH_BEST_SELLER_MODELS = [
+  "ID13/2/220",
+  "TP413/7/220K",
+  "TP813/18C1",
+  "P20C1",
+  "DDI10/2/12C1",
+  "AG115/1/220",
+  "AA415/2/220VVM",
+  "AA518/220PLUS",
+  "A20C1",
+  "CS58",
+] as const;
+
+export const LAUNCH_FEATURED_MODELS = [
+  "OEH04",
+  "OEAC04",
+  "EMA804",
+  "VC35/220",
+  "VC18/1/220",
+  "A1170/220",
+  "P12/2/25",
+  "EVP818/43-1",
+  "HL7000/220M",
+  "LI1065/20C1",
+] as const;
+
+export const LAUNCH_FAMILIES = [
+  { slug: "taladros", label: "Taladros", description: "Perforación y atornillado", icon: "⌁", pattern: /TALADRO/ },
+  { slug: "aspiradoras", label: "Aspiradoras", description: "Limpieza para taller y obra", icon: "◉", pattern: /ASPIRADOR/ },
+  { slug: "amoladoras", label: "Amoladoras", description: "Corte y desbaste", icon: "⚙", pattern: /AMOLADOR/ },
+  { slug: "hidrolavadoras", label: "Hidrolavadoras", description: "Limpieza con agua a presión", icon: "≈", pattern: /HIDROLAV/ },
+  { slug: "escaleras", label: "Escaleras", description: "Para el hogar y la obra", icon: "↥", pattern: /ESCALERA/ },
+  { slug: "motosierras", label: "Motosierras", description: "Potencia para corte exterior", icon: "♧", pattern: /MOTOSIERRA/ },
+] as const;
+
+export type LaunchFamilySlug = (typeof LAUNCH_FAMILIES)[number]["slug"];
+
+function normalizedName(product: Product) {
+  return product.name.toUpperCase();
+}
+
+function hasExactModel(name: string, model: string) {
+  const escaped = model.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^A-Z0-9])${escaped}([^A-Z0-9]|$)`).test(name);
+}
+
+function productsInModelOrder(products: Product[], models: readonly string[]) {
+  const activeProducts = products.filter((product) => product.active);
+  return models.flatMap((model) => {
+    const product = activeProducts.find((item) => hasExactModel(normalizedName(item), model));
+    return product ? [product] : [];
+  });
+}
+
+export function isLaunchProduct(product: Product) {
+  const name = normalizedName(product);
+  return LAUNCH_PRODUCT_MODELS.some((model) => hasExactModel(name, model));
+}
+
+export function getLaunchProducts(products: Product[]) {
+  return products.filter((product) => product.active && isLaunchProduct(product));
+}
+
+export function getLaunchBestSellers(products: Product[]) {
+  return productsInModelOrder(products, LAUNCH_BEST_SELLER_MODELS);
+}
+
+export function getLaunchFeaturedProducts(products: Product[]) {
+  return productsInModelOrder(products, LAUNCH_FEATURED_MODELS);
+}
+
+export function getLaunchBestSellerRankMap(products: Product[]) {
+  return new Map(getLaunchBestSellers(products).map((product, index) => [product.id, index + 1]));
+}
+
+export function matchesLaunchFamily(product: Product, slug: string) {
+  const family = LAUNCH_FAMILIES.find((item) => item.slug === slug);
+  return family ? family.pattern.test(normalizedName(product)) : true;
+}
+
+export function getLaunchFamilyCards(products: Product[]) {
+  return LAUNCH_FAMILIES.map((family) => {
+    const familyProducts = products.filter((product) => family.pattern.test(normalizedName(product)));
+    const prices = familyProducts
+      .map((product) => product.price)
+      .filter((price): price is number => price !== null);
+    return {
+      ...family,
+      productCount: familyProducts.length,
+      priceFrom: prices.length ? Math.min(...prices) : null,
+    };
+  });
+}

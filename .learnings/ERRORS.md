@@ -19,3 +19,11 @@ El preset `iPhone 13` del comando de capturas seleccionó un binario WebKit no i
 ## 2026-08-12 — No ejecutar build y servidor dev sobre el mismo `distDir`
 
 El build de producción se ejecutó mientras Next dev seguía abierto y ambos tocaron `dist/`, corrompiendo la caché generada de Turbopack. Para este proyecto, cerrar el servidor de capturas antes de `npm run build`; si ya ocurrió, apartar `dist/dev/cache` y dejar que Next la regenere.
+
+## 2026-08-19 — Validar el catálogo puede fallar por cambios remotos del Sheet
+
+El build y TypeScript pasaron, pero `validate:catalog` detectó que la planilla fuente cambió a 478 productos mientras el JSON local conserva 495. Antes de atribuir el fallo a un cambio de interfaz, comparar los conteos del reporte. No reimportar ni reemplazar el catálogo automáticamente: revisar primero las diferencias porque puede eliminar o desplazar productos reales.
+
+## 2026-08-19 — La separación requiere construir los dos artefactos
+
+`validate:separation` no puede ejecutarse después del build general: necesita `hostinger-ready/` y `admin-ready/`. Ejecutar primero `build:hostinger` y `build:admin`; después validar la separación.

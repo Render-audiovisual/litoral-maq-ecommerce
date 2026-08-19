@@ -2,18 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { ProductCard } from "@/components/product-card";
 import { formatCurrency } from "@/lib/utils";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
-import { getWinningProducts, HOME_WINNER_LIMIT } from "@/lib/winning-products";
+import { HOME_WINNER_LIMIT } from "@/lib/winning-products";
+import {
+  getLaunchBestSellers,
+  getLaunchFamilyCards,
+  getLaunchFeaturedProducts,
+  getLaunchProducts,
+} from "@/lib/launch-catalog";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
-
-const categories = [
-  ["Amoladoras", "Potencia para corte y desbaste", "⚙"],
-  ["Soldadura", "Equipos e insumos", "✦"],
-  ["Taladros y atornilladores", "Para obra y taller", "⌁"],
-  ["Jardín", "Máquinas para exterior", "♧"],
-];
 
 function compactName(product: Product) {
   const name = product.name.split(" - ")[0].replace(/\s+/g, " ").trim();
@@ -51,10 +51,12 @@ function WinnerCard({ product, rank }: { product: Product; rank: number }) {
 
 export default function Home() {
   const { products } = useStore();
-  const winners = getWinningProducts(products);
+  const launchProducts = getLaunchProducts(products);
+  const winners = getLaunchBestSellers(products);
+  const featuredProducts = getLaunchFeaturedProducts(products);
   const homeWinners = winners.slice(0, HOME_WINNER_LIMIT);
   const heroProducts = homeWinners.slice(0, 3);
-  const categoryCount = new Set(products.filter((product) => product.active).map((product) => product.category)).size;
+  const categories = getLaunchFamilyCards(launchProducts);
 
   return (
     <main>
@@ -71,8 +73,8 @@ export default function Home() {
             <Link href="/productos" className="button ghost large">Explorar catálogo</Link>
           </div>
           <div className="commerce-metrics">
-            <span><strong>{products.filter((product) => product.active).length}</strong> productos</span>
-            <span><strong>{categoryCount}</strong> categorías</span>
+            <span><strong>{launchProducts.length}</strong> productos</span>
+            <span><strong>{categories.length}</strong> categorías</span>
             <span><strong>10</strong> seleccionados</span>
           </div>
         </div>
@@ -108,7 +110,7 @@ export default function Home() {
           <div>
             <span className="eyebrow orange">PRODUCTOS GANADORES</span>
             <h2>Los que más salen</h2>
-            <p>Una selección provisoria según la disponibilidad actual.</p>
+            <p>Taladros y herramientas elegidas por su movimiento comercial.</p>
           </div>
           <Link href="/productos?categoria=Ofertas" className="text-link">Ver los 10 seleccionados →</Link>
         </div>
@@ -122,19 +124,35 @@ export default function Home() {
       <section className="section">
         <div className="section-heading">
           <div>
+            <span className="eyebrow orange">PRODUCTOS DESTACADOS</span>
+            <h2>Más opciones para equiparte</h2>
+          </div>
+          <Link href="/productos" className="text-link">Ver los 20 productos →</Link>
+        </div>
+        <div className="product-grid">
+          {featuredProducts.map((product) => (
+            <ProductCard product={product} badge="Destacado" key={product.id} />
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-heading">
+          <div>
             <span className="eyebrow orange">ENCONTRÁ LO QUE NECESITÁS</span>
             <h2>Comprá por categoría</h2>
           </div>
           <Link href="/productos" className="text-link">Ver catálogo completo →</Link>
         </div>
         <div className="category-grid">
-          {categories.map(([name, description, icon]) => (
+          {categories.map(({ slug, label, description, icon, priceFrom }) => (
             <Link
-              href={`/productos?categoria=${encodeURIComponent(name)}`}
+              href={`/productos?familia=${encodeURIComponent(slug)}`}
               className="category-card"
-              key={name}
+              key={slug}
             >
-              <span>{icon}</span><strong>{name}</strong><small>{description}</small><b>Explorar →</b>
+              <span>{icon}</span><strong>{label}</strong><small>{description}</small>
+              <b>{priceFrom === null ? "Explorar" : `Desde ${formatCurrency(priceFrom)}`} →</b>
             </Link>
           ))}
         </div>

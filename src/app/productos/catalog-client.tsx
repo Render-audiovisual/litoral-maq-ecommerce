@@ -3,7 +3,12 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
-import { getWinnerRankMap } from "@/lib/winning-products";
+import {
+  getLaunchBestSellerRankMap,
+  getLaunchProducts,
+  LAUNCH_FAMILIES,
+  matchesLaunchFamily,
+} from "@/lib/launch-catalog";
 import { useStore } from "@/store/store";
 
 const PAGE_SIZE = 24;
@@ -11,23 +16,22 @@ const PAGE_SIZE = 24;
 export function CatalogClient() {
   const params = useSearchParams();
   const initialCategory = params.get("categoria") || "";
+  const initialFamily = params.get("familia") || "";
   const offersOnly = initialCategory === "Ofertas";
   const { products } = useStore();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(
     initialCategory === "Ofertas" ? "" : initialCategory,
   );
+  const [family, setFamily] = useState(initialFamily);
   const [sort, setSort] = useState("featured");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const winnerRanks = useMemo(() => getWinnerRankMap(products), [products]);
-  const categories = useMemo(
-    () => [...new Set(products.map((product) => product.category))].sort(),
-    [products],
-  );
+  const launchProducts = useMemo(() => getLaunchProducts(products), [products]);
+  const winnerRanks = useMemo(() => getLaunchBestSellerRankMap(launchProducts), [launchProducts]);
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    return products
+    return launchProducts
       .filter((product) => {
         const matches =
           !normalized ||
@@ -38,6 +42,7 @@ export function CatalogClient() {
           product.active &&
           matches &&
           (!offersOnly || winnerRanks.has(product.id)) &&
+          (!family || matchesLaunchFamily(product, family)) &&
           (!category || product.category === category) &&
           (!onlyAvailable || product.stock > 0)
         );
@@ -50,7 +55,7 @@ export function CatalogClient() {
         const rankB = winnerRanks.get(b.id) ?? Number.MAX_SAFE_INTEGER;
         return rankA - rankB || Number(b.featured) - Number(a.featured) || b.stock - a.stock;
       });
-  }, [products, query, category, onlyAvailable, offersOnly, sort, winnerRanks]);
+  }, [launchProducts, query, family, category, onlyAvailable, offersOnly, sort, winnerRanks]);
 
   function resetVisibleCount() {
     setVisibleCount(PAGE_SIZE);
@@ -70,9 +75,9 @@ export function CatalogClient() {
             <input value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="Producto, marca o código" />
           </label>
           <label>Categoría
-            <select value={category} onChange={(event) => { setCategory(event.target.value); resetVisibleCount(); }}>
+            <select value={family} onChange={(event) => { setFamily(event.target.value); resetVisibleCount(); }}>
               <option value="">Todas las categorías</option>
-              {categories.map((item) => <option value={item} key={item}>{item}</option>)}
+              {LAUNCH_FAMILIES.map((item) => <option value={item.slug} key={item.slug}>{item.label}</option>)}
             </select>
           </label>
           <label className="check-row">
@@ -80,7 +85,7 @@ export function CatalogClient() {
             Solo disponibles
           </label>
           <button type="button" className="button secondary full" onClick={() => {
-            setQuery(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
+            setQuery(""); setFamily(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
           }}>Limpiar filtros</button>
         </aside>
         <section>
