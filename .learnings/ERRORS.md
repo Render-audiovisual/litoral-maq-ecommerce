@@ -27,3 +27,7 @@ El build y TypeScript pasaron, pero `validate:catalog` detectó que la planilla 
 ## 2026-08-19 — La separación requiere construir los dos artefactos
 
 `validate:separation` no puede ejecutarse después del build general: necesita `hostinger-ready/` y `admin-ready/`. Ejecutar primero `build:hostinger` y `build:admin`; después validar la separación.
+
+## 2026-08-19 — No fijar el total del catálogo en una prueba
+
+Una prueba del adaptador local esperaba exactamente 495 productos y falló cuando el Sheet vigente pasó a 478. La prueba debe comparar lo cargado con `productsSeed.length`; el total comercial puede cambiar sin que falle el adaptador.

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import productsSeed from "@/data/products.json";
 import type { Order, Product } from "@/lib/types";
 import { createLocalPersistenceAdapter } from "./local-adapter";
 
@@ -63,7 +64,7 @@ describe("local persistence adapter", () => {
   it("listProducts arranca del catálogo completo cuando nunca se guardó nada", async () => {
     const adapter = createLocalPersistenceAdapter();
     const products = await adapter.listProducts();
-    expect(products.length).toBe(495);
+    expect(products).toHaveLength(productsSeed.length);
   });
 
   it("respeta un catálogo vacío guardado explícitamente (no re-siembra)", async () => {
