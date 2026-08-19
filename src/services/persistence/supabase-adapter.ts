@@ -224,8 +224,13 @@ export function createSupabasePersistenceAdapter(client: TypedSupabaseClient): P
       return (data ?? []).map(rowToAudit);
     },
     async appendAuditEntry(entry) {
+      // No se manda `id`: el id que genera createAuditEntry() (string
+      // "audit-<timestamp>-<random>") es para la key local del adapter
+      // local — audit_log.id en Postgres es uuid con gen_random_uuid() por
+      // default (ver 0001_schema.sql), y mandar el string causaba
+      // "invalid input syntax for type uuid" en cada insert (fire-and-forget,
+      // por eso no se notaba en la UI: el log simplemente nunca se grababa).
       const { error } = await client.from("audit_log").insert({
-        id: entry.id,
         at: entry.at,
         admin_id: entry.adminId,
         admin_email: entry.adminEmail,

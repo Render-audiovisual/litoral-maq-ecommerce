@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 import { useStore } from "@/store/store";
 import { isValidAdminSession, isValidCustomerSession } from "@/lib/auth";
 import { getStoreUrl } from "@/lib/domain-config";
+import { resolveRequestedProvider } from "@/services/provider";
 
 const links = [
   ["/admin", "Resumen", "◫"],
@@ -113,7 +114,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <header className="admin-topbar">
           <div>
             <strong>Gestión Litoral Maq</strong>
-            <span>Datos demo persistidos en este navegador</span>
+            <span>
+              {resolveRequestedProvider() === "supabase"
+                ? "Datos reales — Supabase"
+                : "Datos demo persistidos en este navegador"}
+            </span>
           </div>
           {isExternalStoreLink ? (
             <a href={storeUrl} className="button secondary" target="_blank" rel="noopener noreferrer">
