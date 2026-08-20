@@ -50,12 +50,12 @@ export const LAUNCH_FEATURED_MODELS = [
 ] as const;
 
 export const LAUNCH_FAMILIES = [
-  { slug: "taladros", label: "Taladros", description: "Perforación y atornillado", icon: "⌁", pattern: /TALADRO/, showOnHome: true },
-  { slug: "aspiradoras", label: "Aspiradoras", description: "Limpieza para taller y obra", icon: "◉", pattern: /ASPIRADOR/, showOnHome: true },
-  { slug: "amoladoras", label: "Amoladoras", description: "Corte y desbaste", icon: "⚙", pattern: /AMOLADOR/, showOnHome: true },
-  { slug: "hidrolavadoras", label: "Hidrolavadoras", description: "Limpieza con agua a presión", icon: "≈", pattern: /HIDROLAV/, showOnHome: true },
-  { slug: "escaleras", label: "Escaleras", description: "Para el hogar y la obra", icon: "↥", pattern: /ESCALERA/, showOnHome: true },
-  { slug: "motosierras", label: "Motosierras", description: "Potencia para corte exterior", icon: "♧", pattern: /MOTOSIERRA/, showOnHome: false },
+  { slug: "taladros", label: "Taladros", description: "Perforación y atornillado", icon: "⌁", pattern: /TALADRO/ },
+  { slug: "aspiradoras", label: "Aspiradoras", description: "Limpieza para taller y obra", icon: "◉", pattern: /ASPIRADOR/ },
+  { slug: "amoladoras", label: "Amoladoras", description: "Corte y desbaste", icon: "⚙", pattern: /AMOLADOR/ },
+  { slug: "hidrolavadoras", label: "Hidrolavadoras", description: "Limpieza con agua a presión", icon: "≈", pattern: /HIDROLAV/ },
+  { slug: "escaleras", label: "Escaleras", description: "Para el hogar y la obra", icon: "↥", pattern: /ESCALERA/ },
+  { slug: "motosierras", label: "Motosierras", description: "Potencia para corte exterior", icon: "♧", pattern: /MOTOSIERRA/ },
 ] as const;
 
 export type LaunchFamilySlug = (typeof LAUNCH_FAMILIES)[number]["slug"];

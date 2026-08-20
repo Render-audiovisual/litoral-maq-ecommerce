@@ -2,23 +2,61 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { ProductCard } from "@/components/product-card";
 import { formatCurrency } from "@/lib/utils";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { HOME_WINNER_LIMIT } from "@/lib/winning-products";
 import {
   getLaunchBestSellers,
   getLaunchFamilyCards,
+  getLaunchFeaturedProducts,
   getLaunchProducts,
 } from "@/lib/launch-catalog";
+import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
+
+function compactName(product: Product) {
+  const name = product.name.split(" - ")[0].replace(/\s+/g, " ").trim();
+  return name.length > 54 ? `${name.slice(0, 51).trim()}…` : name;
+}
+
+function WinnerCard({ product, rank }: { product: Product; rank: number }) {
+  const href = `/producto?slug=${encodeURIComponent(product.slug)}`;
+  return (
+    <Link href={href} className={`winner-card winner-card-${(rank - 1) % 3}`}>
+      <div className="winner-card-media">
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            sizes="(max-width: 560px) 50vw, (max-width: 900px) 33vw, 28vw"
+            priority={rank === 1}
+          />
+        ) : (
+          <div className="winner-placeholder">LM</div>
+        )}
+        <span className="winner-rank">{rank === 1 ? "EL MÁS ELEGIDO" : "SELECCIÓN LITORAL"}</span>
+      </div>
+      <div className="winner-card-copy">
+        <span>{product.category}</span>
+        <h3>{compactName(product)}</h3>
+        <small>Precio del catálogo</small>
+        <strong>{formatCurrency(product.price)}</strong>
+        <b>Ver producto <span aria-hidden>→</span></b>
+      </div>
+    </Link>
+  );
+}
 
 export default function Home() {
   const { products } = useStore();
   const launchProducts = getLaunchProducts(products);
   const winners = getLaunchBestSellers(products);
+  const featuredProducts = getLaunchFeaturedProducts(products);
   const homeWinners = winners.slice(0, HOME_WINNER_LIMIT);
   const heroProducts = homeWinners.slice(0, 3);
-  const categories = getLaunchFamilyCards(launchProducts).filter((category) => category.showOnHome);
+  const categories = getLaunchFamilyCards(launchProducts);
 
   return (
     <main>
@@ -31,7 +69,7 @@ export default function Home() {
             personalizada para elegir mejor.
           </p>
           <div className="hero-actions">
-            <a href="#categorias" className="button primary large">Ver los más elegidos</a>
+            <a href="#productos-ganadores" className="button primary large">Ver los más elegidos</a>
             <Link href="/productos" className="button ghost large">Explorar catálogo</Link>
           </div>
           <div className="commerce-metrics">
@@ -67,7 +105,38 @@ export default function Home() {
         <div><span>☎</span><strong>Asesoramiento</strong><small>Compra con confianza</small></div>
       </section>
 
-      <section className="section" id="categorias">
+      <section className="winner-section" id="productos-ganadores">
+        <div className="section-heading winner-heading">
+          <div>
+            <span className="eyebrow orange">PRODUCTOS GANADORES</span>
+            <h2>Los que más salen</h2>
+            <p>Taladros y herramientas elegidas por su movimiento comercial.</p>
+          </div>
+          <Link href="/productos?categoria=Ofertas" className="text-link">Ver los 10 seleccionados →</Link>
+        </div>
+        <div className="winner-grid">
+          {homeWinners.map((product, index) => (
+            <WinnerCard product={product} rank={index + 1} key={product.id} />
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow orange">PRODUCTOS DESTACADOS</span>
+            <h2>Más opciones para equiparte</h2>
+          </div>
+          <Link href="/productos" className="text-link">Ver los 20 productos →</Link>
+        </div>
+        <div className="product-grid">
+          {featuredProducts.map((product) => (
+            <ProductCard product={product} badge="Destacado" key={product.id} />
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
         <div className="section-heading">
           <div>
             <span className="eyebrow orange">ENCONTRÁ LO QUE NECESITÁS</span>

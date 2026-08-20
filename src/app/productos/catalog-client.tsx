@@ -26,16 +26,9 @@ export function CatalogClient() {
   const [family, setFamily] = useState(initialFamily);
   const [sort, setSort] = useState("featured");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const launchProducts = useMemo(() => getLaunchProducts(products), [products]);
   const winnerRanks = useMemo(() => getLaunchBestSellerRankMap(launchProducts), [launchProducts]);
-  const brands = useMemo(
-    () => Array.from(new Set(launchProducts.map((product) => product.brand).filter(Boolean))).sort(),
-    [launchProducts],
-  );
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return launchProducts
@@ -51,10 +44,7 @@ export function CatalogClient() {
           (!offersOnly || winnerRanks.has(product.id)) &&
           (!family || matchesLaunchFamily(product, family)) &&
           (!category || product.category === category) &&
-          (!onlyAvailable || product.stock > 0) &&
-          (!selectedBrands.length || selectedBrands.includes(product.brand)) &&
-          (!minPrice || (product.price ?? 0) >= Number(minPrice)) &&
-          (!maxPrice || (product.price ?? 0) <= Number(maxPrice))
+          (!onlyAvailable || product.stock > 0)
         );
       })
       .sort((a, b) => {
@@ -65,17 +55,10 @@ export function CatalogClient() {
         const rankB = winnerRanks.get(b.id) ?? Number.MAX_SAFE_INTEGER;
         return rankA - rankB || Number(b.featured) - Number(a.featured) || b.stock - a.stock;
       });
-  }, [launchProducts, query, family, category, onlyAvailable, selectedBrands, minPrice, maxPrice, offersOnly, sort, winnerRanks]);
+  }, [launchProducts, query, family, category, onlyAvailable, offersOnly, sort, winnerRanks]);
 
   function resetVisibleCount() {
     setVisibleCount(PAGE_SIZE);
-  }
-
-  function toggleBrand(brand: string) {
-    setSelectedBrands((current) =>
-      current.includes(brand) ? current.filter((item) => item !== brand) : [...current, brand],
-    );
-    resetVisibleCount();
   }
 
   return (
@@ -101,36 +84,8 @@ export function CatalogClient() {
             <input type="checkbox" checked={onlyAvailable} onChange={(event) => { setOnlyAvailable(event.target.checked); resetVisibleCount(); }} />
             Solo disponibles
           </label>
-          {brands.length > 0 && (
-            <div className="filter-group">
-              <strong>Marca</strong>
-              {brands.map((brand) => (
-                <label className="check-row" key={brand}>
-                  <input type="checkbox" checked={selectedBrands.includes(brand)} onChange={() => toggleBrand(brand)} />
-                  {brand}
-                </label>
-              ))}
-            </div>
-          )}
-          <label>Precio
-            <div className="price-range">
-              <input
-                type="number"
-                value={minPrice}
-                onChange={(event) => { setMinPrice(event.target.value); resetVisibleCount(); }}
-                placeholder="Mín"
-              />
-              <input
-                type="number"
-                value={maxPrice}
-                onChange={(event) => { setMaxPrice(event.target.value); resetVisibleCount(); }}
-                placeholder="Máx"
-              />
-            </div>
-          </label>
           <button type="button" className="button secondary full" onClick={() => {
-            setQuery(""); setFamily(""); setCategory(""); setOnlyAvailable(false);
-            setSelectedBrands([]); setMinPrice(""); setMaxPrice(""); resetVisibleCount();
+            setQuery(""); setFamily(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
           }}>Limpiar filtros</button>
         </aside>
         <section>

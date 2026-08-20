@@ -172,10 +172,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--orange); box-sha
 textarea { min-height: 100px; resize: vertical; }
 .check-row { flex-direction: row; align-items: center; gap: 9px; }
 .check-row input { min-height: 0; accent-color: var(--orange); }
-.filter-group { display: flex; flex-direction: column; gap: 9px; }
-.filter-group > strong { color: var(--navy); font-weight: 700; font-size: 12px; }
-.price-range { display: flex; gap: 8px; }
-.price-range input { flex: 1; min-width: 0; }
 .catalog-toolbar { min-height: 50px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .catalog-toolbar select { min-width: 190px; }
 .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
