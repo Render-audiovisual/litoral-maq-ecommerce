@@ -77,11 +77,6 @@ export default function Home() {
             <a href="#categorias-mas-vendidas" className="button primary large">Ver categorías</a>
             <Link href="/productos" className="button ghost large">Explorar catálogo</Link>
           </div>
-          <div className="commerce-metrics">
-            <span><strong>{launchProducts.length}</strong> productos</span>
-            <span><strong>{categories.length}</strong> categorías</span>
-            <span><strong>10</strong> seleccionados</span>
-          </div>
         </div>
         <div className="commerce-hero-showcase" aria-label="Productos destacados">
           <div className="showcase-copy">
