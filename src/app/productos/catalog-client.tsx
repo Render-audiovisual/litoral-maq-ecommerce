@@ -24,13 +24,27 @@ export function CatalogClient() {
     initialCategory === "Ofertas" ? "" : initialCategory,
   );
   const [family, setFamily] = useState(initialFamily);
+  const [brand, setBrand] = useState("");
+  const [minimumPrice, setMinimumPrice] = useState("");
+  const [maximumPrice, setMaximumPrice] = useState("");
   const [sort, setSort] = useState("featured");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const launchProducts = useMemo(() => getLaunchProducts(products), [products]);
   const winnerRanks = useMemo(() => getLaunchBestSellerRankMap(launchProducts), [launchProducts]);
+  const availableBrands = useMemo(
+    () => Array.from(new Set(
+      launchProducts
+        .filter((product) => !family || matchesLaunchFamily(product, family))
+        .map((product) => product.brand)
+        .filter(Boolean),
+    )).sort((a, b) => a.localeCompare(b)),
+    [launchProducts, family],
+  );
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
+    const minimum = minimumPrice === "" ? null : Number(minimumPrice);
+    const maximum = maximumPrice === "" ? null : Number(maximumPrice);
     return launchProducts
       .filter((product) => {
         const matches =
@@ -43,6 +57,9 @@ export function CatalogClient() {
           matches &&
           (!offersOnly || winnerRanks.has(product.id)) &&
           (!family || matchesLaunchFamily(product, family)) &&
+          (!brand || product.brand === brand) &&
+          (minimum === null || (product.price !== null && product.price >= minimum)) &&
+          (maximum === null || (product.price !== null && product.price <= maximum)) &&
           (!category || product.category === category) &&
           (!onlyAvailable || product.stock > 0)
         );
@@ -55,7 +72,7 @@ export function CatalogClient() {
         const rankB = winnerRanks.get(b.id) ?? Number.MAX_SAFE_INTEGER;
         return rankA - rankB || Number(b.featured) - Number(a.featured) || b.stock - a.stock;
       });
-  }, [launchProducts, query, family, category, onlyAvailable, offersOnly, sort, winnerRanks]);
+  }, [launchProducts, query, family, brand, minimumPrice, maximumPrice, category, onlyAvailable, offersOnly, sort, winnerRanks]);
 
   function resetVisibleCount() {
     setVisibleCount(PAGE_SIZE);
@@ -75,17 +92,31 @@ export function CatalogClient() {
             <input value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="Producto, marca o código" />
           </label>
           <label>Categoría
-            <select value={family} onChange={(event) => { setFamily(event.target.value); resetVisibleCount(); }}>
+            <select value={family} onChange={(event) => { setFamily(event.target.value); setBrand(""); resetVisibleCount(); }}>
               <option value="">Todas las categorías</option>
               {LAUNCH_FAMILIES.map((item) => <option value={item.slug} key={item.slug}>{item.label}</option>)}
             </select>
           </label>
+          <label>Marca
+            <select value={brand} onChange={(event) => { setBrand(event.target.value); resetVisibleCount(); }}>
+              <option value="">Todas las marcas</option>
+              {availableBrands.map((item) => <option value={item} key={item}>{item}</option>)}
+            </select>
+          </label>
+          <div className="price-filter-grid">
+            <label>Precio mínimo
+              <input type="number" min="0" step="1000" inputMode="numeric" value={minimumPrice} onChange={(event) => { setMinimumPrice(event.target.value); resetVisibleCount(); }} placeholder="$ 0" />
+            </label>
+            <label>Precio máximo
+              <input type="number" min="0" step="1000" inputMode="numeric" value={maximumPrice} onChange={(event) => { setMaximumPrice(event.target.value); resetVisibleCount(); }} placeholder="Sin límite" />
+            </label>
+          </div>
           <label className="check-row">
             <input type="checkbox" checked={onlyAvailable} onChange={(event) => { setOnlyAvailable(event.target.checked); resetVisibleCount(); }} />
             Solo disponibles
           </label>
           <button type="button" className="button secondary full" onClick={() => {
-            setQuery(""); setFamily(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
+            setQuery(""); setFamily(""); setBrand(""); setMinimumPrice(""); setMaximumPrice(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
           }}>Limpiar filtros</button>
         </aside>
         <section>

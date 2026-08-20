@@ -2,48 +2,56 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ProductCard } from "@/components/product-card";
 import { formatCurrency } from "@/lib/utils";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
-import { HOME_WINNER_LIMIT } from "@/lib/winning-products";
 import {
   getLaunchBestSellers,
   getLaunchFamilyCards,
-  getLaunchFeaturedProducts,
   getLaunchProducts,
 } from "@/lib/launch-catalog";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 
-function compactName(product: Product) {
-  const name = product.name.split(" - ")[0].replace(/\s+/g, " ").trim();
-  return name.length > 54 ? `${name.slice(0, 51).trim()}…` : name;
-}
-
-function WinnerCard({ product, rank }: { product: Product; rank: number }) {
-  const href = `/producto?slug=${encodeURIComponent(product.slug)}`;
+function CategoryWinnerCard({
+  slug,
+  label,
+  description,
+  priceFrom,
+  productCount,
+  representativeProduct,
+  rank,
+}: {
+  slug: string;
+  label: string;
+  description: string;
+  priceFrom: number | null;
+  productCount: number;
+  representativeProduct: Product | null;
+  rank: number;
+}) {
+  const href = `/productos?familia=${encodeURIComponent(slug)}`;
   return (
     <Link href={href} className={`winner-card winner-card-${(rank - 1) % 3}`}>
       <div className="winner-card-media">
-        {product.image ? (
+        {representativeProduct?.image ? (
           <Image
-            src={product.image}
-            alt={product.name}
+            src={representativeProduct.image}
+            alt={`Ver productos de ${label}`}
             fill
             sizes="(max-width: 560px) 50vw, (max-width: 900px) 33vw, 28vw"
-            priority={rank === 1}
+            priority={rank <= 2}
           />
         ) : (
           <div className="winner-placeholder">LM</div>
         )}
-        <span className="winner-rank">{rank === 1 ? "EL MÁS ELEGIDO" : "SELECCIÓN LITORAL"}</span>
+        <span className="winner-rank">CATEGORÍA MÁS VENDIDA</span>
       </div>
       <div className="winner-card-copy">
-        <span>{product.category}</span>
-        <h3>{compactName(product)}</h3>
-        <small>Precio del catálogo</small>
-        <strong>{formatCurrency(product.price)}</strong>
-        <b>Ver producto <span aria-hidden>→</span></b>
+        <span>{productCount} {productCount === 1 ? "producto" : "productos"}</span>
+        <h3>{label}</h3>
+        <small>{description}</small>
+        <strong>{priceFrom === null ? "Consultar" : `Desde ${formatCurrency(priceFrom)}`}</strong>
+        <b>Ver {label.toLowerCase()} <span aria-hidden>→</span></b>
       </div>
     </Link>
   );
@@ -53,9 +61,7 @@ export default function Home() {
   const { products } = useStore();
   const launchProducts = getLaunchProducts(products);
   const winners = getLaunchBestSellers(products);
-  const featuredProducts = getLaunchFeaturedProducts(products);
-  const homeWinners = winners.slice(0, HOME_WINNER_LIMIT);
-  const heroProducts = homeWinners.slice(0, 3);
+  const heroProducts = winners.slice(0, 3);
   const categories = getLaunchFamilyCards(launchProducts);
 
   return (
@@ -69,7 +75,7 @@ export default function Home() {
             personalizada para elegir mejor.
           </p>
           <div className="hero-actions">
-            <a href="#productos-ganadores" className="button primary large">Ver los más elegidos</a>
+            <a href="#categorias-mas-vendidas" className="button primary large">Ver categorías</a>
             <Link href="/productos" className="button ghost large">Explorar catálogo</Link>
           </div>
           <div className="commerce-metrics">
@@ -98,62 +104,18 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="trust-strip commerce-trust">
-        <div><span>🚚</span><strong>Envíos nacionales</strong><small>A todo el país</small></div>
-        <div><span>💳</span><strong>Mercado Pago</strong><small>Próximamente</small></div>
-        <div><span>✓</span><strong>Precios reales</strong><small>Actualizados desde el Sheet</small></div>
-        <div><span>☎</span><strong>Asesoramiento</strong><small>Compra con confianza</small></div>
-      </section>
-
-      <section className="winner-section" id="productos-ganadores">
+      <section className="winner-section" id="categorias-mas-vendidas">
         <div className="section-heading winner-heading">
           <div>
-            <span className="eyebrow orange">PRODUCTOS GANADORES</span>
+            <span className="eyebrow orange">CATEGORÍAS MÁS VENDIDAS</span>
             <h2>Los que más salen</h2>
-            <p>Taladros y herramientas elegidas por su movimiento comercial.</p>
+            <p>Entrá a una categoría y encontrá sus productos por marca y precio.</p>
           </div>
-          <Link href="/productos?categoria=Ofertas" className="text-link">Ver los 10 seleccionados →</Link>
+          <Link href="/productos" className="text-link">Ver todos los productos →</Link>
         </div>
         <div className="winner-grid">
-          {homeWinners.map((product, index) => (
-            <WinnerCard product={product} rank={index + 1} key={product.id} />
-          ))}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow orange">PRODUCTOS DESTACADOS</span>
-            <h2>Más opciones para equiparte</h2>
-          </div>
-          <Link href="/productos" className="text-link">Ver los 20 productos →</Link>
-        </div>
-        <div className="product-grid">
-          {featuredProducts.map((product) => (
-            <ProductCard product={product} badge="Destacado" key={product.id} />
-          ))}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow orange">ENCONTRÁ LO QUE NECESITÁS</span>
-            <h2>Comprá por categoría</h2>
-          </div>
-          <Link href="/productos" className="text-link">Ver catálogo completo →</Link>
-        </div>
-        <div className="category-grid">
-          {categories.map(({ slug, label, description, icon, priceFrom }) => (
-            <Link
-              href={`/productos?familia=${encodeURIComponent(slug)}`}
-              className="category-card"
-              key={slug}
-            >
-              <span>{icon}</span><strong>{label}</strong><small>{description}</small>
-              <b>{priceFrom === null ? "Explorar" : `Desde ${formatCurrency(priceFrom)}`} →</b>
-            </Link>
+          {categories.map((category, index) => (
+            <CategoryWinnerCard {...category} rank={index + 1} key={category.slug} />
           ))}
         </div>
       </section>

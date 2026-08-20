@@ -109,10 +109,16 @@ export function getLaunchFamilyCards(products: Product[]) {
     const prices = familyProducts
       .map((product) => product.price)
       .filter((price): price is number => price !== null);
+    const priceFrom = prices.length ? Math.min(...prices) : null;
     return {
       ...family,
       productCount: familyProducts.length,
-      priceFrom: prices.length ? Math.min(...prices) : null,
+      priceFrom,
+      representativeProduct:
+        familyProducts.find((product) => product.image && product.price === priceFrom) ??
+        familyProducts.find((product) => product.image) ??
+        familyProducts[0] ??
+        null,
     };
   });
 }

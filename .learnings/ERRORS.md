@@ -31,3 +31,19 @@ El build y TypeScript pasaron, pero `validate:catalog` detectó que la planilla 
 ## 2026-08-19 — No fijar el total del catálogo en una prueba
 
 Una prueba del adaptador local esperaba exactamente 495 productos y falló cuando el Sheet vigente pasó a 478. La prueba debe comparar lo cargado con `productsSeed.length`; el total comercial puede cambiar sin que falle el adaptador.
+
+## 2026-08-20 — El E2E integral quedó acoplado al catálogo anterior
+
+`npm run validate:e2e` todavía espera 460 productos y el flujo anterior de carrito. Con la selección pública intencional de 20 productos, falla antes de alcanzar los chequeos del administrador. Separar las pruebas de tienda y administración y derivar los conteos desde la configuración vigente.
+
+## 2026-08-20 — Vitest no acepta `--runInBand`
+
+Este proyecto usa Vitest, cuyo CLI rechazó la opción de Jest `--runInBand`. Ejecutar `npm test` directamente; los 128 tests pasan con el comando definido por el proyecto.
+
+## 2026-08-20 — El navegador aislado bloquea URLs locales
+
+`openclaw browser open http://127.0.0.1:<puerto>` fue rechazado por la política de navegación. Para validar visualmente un servidor local de este proyecto, usar Playwright mediante su configuración E2E y cerrar antes cualquier instancia de Next dev.
+
+## 2026-08-20 — Verificar el remoto inmediatamente antes de publicar
+
+El push fue rechazado porque `origin/main` recibió commits durante el trabajo local. Ejecutar `git fetch origin`, revisar los cambios entrantes y rebasar de forma no destructiva antes de reintentar; nunca forzar el push ni sobrescribir trabajo ajeno.
