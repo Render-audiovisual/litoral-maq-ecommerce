@@ -44,7 +44,6 @@ function CategoryWinnerCard({
         ) : (
           <div className="winner-placeholder">LM</div>
         )}
-        <span className="winner-rank">CATEGORÍA MÁS VENDIDA</span>
       </div>
       <div className="winner-card-copy">
         <span>{productCount} {productCount === 1 ? "producto" : "productos"}</span>
