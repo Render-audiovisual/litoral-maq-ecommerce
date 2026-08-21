@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { formatCurrency } from "@/lib/utils";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import {
@@ -11,6 +12,8 @@ import {
 } from "@/lib/launch-catalog";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
+
+const SHOWCASE_SLOTS = 3;
 
 function CategoryWinnerCard({
   slug,
@@ -60,8 +63,25 @@ export default function Home() {
   const { products } = useStore();
   const launchProducts = getLaunchProducts(products);
   const winners = getLaunchBestSellers(products);
-  const heroProducts = winners.slice(0, 3);
   const categories = getLaunchFamilyCards(launchProducts);
+
+  // Una foto por archivo: varios productos comparten imagen y rotarian repetido.
+  const showcase = Array.from(
+    new Map(winners.filter((product) => product.image).map((product) => [product.image, product])).values(),
+  );
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    if (showcase.length <= SHOWCASE_SLOTS) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = setInterval(() => setSlide((current) => current + 1), 3000);
+    return () => clearInterval(timer);
+  }, [showcase.length]);
+
+  const slots = showcase.length
+    ? Array.from({ length: SHOWCASE_SLOTS }, (_, i) => showcase[(slide + i) % showcase.length])
+    : [];
+  const lead = slots[0] ?? null;
 
   return (
     <main>
@@ -75,26 +95,30 @@ export default function Home() {
           </p>
           <div className="hero-actions">
             <a href="#categorias-mas-vendidas" className="button primary large">Ver categorías</a>
-            <Link href="/productos" className="button ghost large">Explorar catálogo</Link>
+            <Link href="/productos" className="button ghost large">Ver productos</Link>
           </div>
         </div>
         <div className="commerce-hero-showcase" aria-label="Productos destacados">
-          <div className="showcase-copy">
-            <span>PRODUCTO PRINCIPAL</span>
-            <strong>Taladro Energy</strong>
-            <small>El caballito de batalla</small>
-          </div>
-          {heroProducts.map((product, index) => (
+          {lead ? (
+            <div className="showcase-copy" key={lead.id}>
+              <span>PRODUCTO DESTACADO</span>
+              <strong>{lead.name}</strong>
+              <small>{lead.brand}</small>
+            </div>
+          ) : null}
+          {slots.map((product, index) => (
             <Link
               href={`/producto?slug=${encodeURIComponent(product.slug)}`}
               className={`showcase-product showcase-product-${index + 1}`}
-              key={product.id}
+              key={`${index}-${product.id}`}
               aria-label={`Ver ${product.name}`}
             >
-              {product.image ? <Image src={product.image} alt="" fill sizes="28vw" priority={index === 0} /> : null}
+              <Image src={product.image!} alt="" fill sizes="28vw" priority={index === 0} />
             </Link>
           ))}
-          <span className="showcase-price">Desde {formatCurrency(heroProducts[0]?.price ?? null)}</span>
+          {lead ? (
+            <span className="showcase-price" key={`price-${lead.id}`}>{formatCurrency(lead.price)}</span>
+          ) : null}
         </div>
       </section>
 
