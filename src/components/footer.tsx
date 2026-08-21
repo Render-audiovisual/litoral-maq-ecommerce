@@ -28,7 +28,7 @@ export function Footer() {
       <div>
         <strong>Ayuda</strong>
         <span>Envíos a todo el país</span>
-        <span>Retiro en sucursal</span>
+        <span>Retiro gratis en el local</span>
         <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
           WhatsApp comercial
         </a>
