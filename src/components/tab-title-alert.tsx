@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const MESSAGES = ["🚨 ¡No te vayas!", "💰 Precios que bajan"];
+const MESSAGES = ["🚨 ¡No te vayas!", "🛒 Finalizá tu compra"];
 
 export function TabTitleAlert() {
   const pathname = usePathname();
