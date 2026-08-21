@@ -18,13 +18,12 @@ export function Footer() {
         <p>Máquinas y herramientas para tu casa, obra o taller.</p>
       </div>
       <div>
-        <strong>Comprar</strong>
+        <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
+          <strong>Ubicación</strong>
+        </a>
         <Link href="/productos">Productos</Link>
         <Link href="/carrito">Carrito</Link>
         <Link href="/cuenta/pedidos">Seguimiento</Link>
-        <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
-          Ubicación
-        </a>
       </div>
       <div>
         <strong>Ayuda</strong>
