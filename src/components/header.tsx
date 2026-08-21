@@ -15,7 +15,8 @@ export function Header() {
   return (
     <>
       <div className="announcement">
-        {Array.from({ length: 4 }).map((_, i) => (
+        {/* ponytail: 8 copias cubren hasta ~2900px de ancho; si aparece un hueco en pantallas mas grandes, subir el numero */}
+        {Array.from({ length: 8 }).map((_, i) => (
           <span key={i} aria-hidden={i > 0}>
             Envíos a todo el país · Compra segura · Atención personalizada
           </span>
