@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const MESSAGES = ["👋 ¡Volvé!", "🔥 No te lo pierdas"];
+const MESSAGES = ["👀 ¡Eh! Volvé acá", "🔥 Mirá estas ofertas"];
 
 export function TabTitleAlert() {
   const pathname = usePathname();
@@ -24,7 +24,7 @@ export function TabTitleAlert() {
         timer = setInterval(() => {
           i = (i + 1) % MESSAGES.length;
           document.title = MESSAGES[i];
-        }, 1200);
+        }, 1500);
       } else {
         document.title = original;
       }
