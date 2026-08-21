@@ -5,6 +5,7 @@ import { StoreProvider } from "@/store/store";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FloatingWhatsApp } from "@/components/floating-whatsapp";
+import { TabTitleAlert } from "@/components/tab-title-alert";
 
 const montserrat = Montserrat({
   variable: "--font-main",
@@ -30,6 +31,7 @@ export default function RootLayout({
           <Header />
           {children}
           <FloatingWhatsApp />
+          <TabTitleAlert />
           <Footer />
         </StoreProvider>
       </body>
