@@ -14,12 +14,14 @@ export function Footer() {
   return (
     <footer className="footer">
       <div>
-        <Image src="/brand/GRIS.png" alt="Litoral Maq" width={170} height={62} />
+        <Image src="/brand/GRIS.png" alt="Litoral Maq" width={210} height={76} />
         <p>Máquinas y herramientas para tu casa, obra o taller.</p>
       </div>
       <div>
-        <strong>Comprar</strong>
-        <Link href="/productos">Catálogo</Link>
+        <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
+          <strong>Ubicación</strong>
+        </a>
+        <Link href="/productos">Productos</Link>
         <Link href="/carrito">Carrito</Link>
         <Link href="/cuenta/pedidos">Seguimiento</Link>
       </div>
