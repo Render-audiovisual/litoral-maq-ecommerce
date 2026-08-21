@@ -15,7 +15,11 @@ export function Header() {
   return (
     <>
       <div className="announcement">
-        Envíos a todo el país · Compra segura · Atención personalizada
+        {Array.from({ length: 4 }).map((_, i) => (
+          <span key={i} aria-hidden={i > 0}>
+            Envíos a todo el país · Compra segura · Atención personalizada
+          </span>
+        ))}
       </div>
       <header className="site-header">
         <Link href="/" className="brand" aria-label="Litoral Maq, inicio">
