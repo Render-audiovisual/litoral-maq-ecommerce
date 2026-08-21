@@ -14,14 +14,11 @@ export function Header() {
 
   return (
     <>
-      <div
-        className="announcement"
-        aria-label="Envíos a todo el país, compra segura y retiro gratis en el local"
-      >
-        {/* Ocho copias cubren pantallas ultrawide sin dejar huecos en el marquee. */}
-        {Array.from({ length: 8 }).map((_, index) => (
-          <span key={index} aria-hidden="true">
-            ENVÍOS A TODO EL PAÍS <b>•</b> COMPRA SEGURA <b>•</b> RETIRO GRATIS EN EL LOCAL <b>•</b>
+      <div className="announcement">
+        {/* ponytail: 8 copias cubren hasta ~2900px de ancho; si aparece un hueco en pantallas mas grandes, subir el numero */}
+        {Array.from({ length: 8 }).map((_, i) => (
+          <span key={i} aria-hidden={i > 0}>
+            Envíos a todo el país · Compra segura · Atención personalizada
           </span>
         ))}
       </div>

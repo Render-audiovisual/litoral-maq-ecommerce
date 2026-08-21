@@ -4,7 +4,7 @@ test("el inicio lleva de las categorías más vendidas al catálogo filtrado", a
   await page.goto("/");
 
   const categoriesSection = page.locator("#categorias-mas-vendidas");
-  await expect(categoriesSection.getByRole("heading", { name: "Novedades que más salen" })).toBeVisible();
+  await expect(categoriesSection.getByRole("heading", { name: "Los que más salen" })).toBeVisible();
   await expect(categoriesSection.locator(".winner-card")).toHaveCount(6);
   await expect(categoriesSection).toContainText("Taladros");
   await expect(categoriesSection).toContainText("Desde $ 35.000");

@@ -47,11 +47,3 @@ Este proyecto usa Vitest, cuyo CLI rechazó la opción de Jest `--runInBand`. Ej
 ## 2026-08-20 — Verificar el remoto inmediatamente antes de publicar
 
 El push fue rechazado porque `origin/main` recibió commits durante el trabajo local. Ejecutar `git fetch origin`, revisar los cambios entrantes y rebasar de forma no destructiva antes de reintentar; nunca forzar el push ni sobrescribir trabajo ajeno.
-
-## 2026-08-21 — `view_image` no acepta detalle `low`
-
-La inspección visual falló al enviar `detail: "low"`. Usar `high`, `original` u omitir el parámetro.
-
-## 2026-08-21 — Playwright CLI puede elegir WebKit al usar un dispositivo móvil
-
-`playwright screenshot --device='iPhone 13'` intentó abrir WebKit, que no está instalado en este entorno. Para QA móvil local usar Chromium con `--viewport-size` explícito.

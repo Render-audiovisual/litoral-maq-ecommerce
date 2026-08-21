@@ -6,7 +6,7 @@ import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 
-export function ProductCard({ product, badge, eager = false }: { product: Product; badge?: string; eager?: boolean }) {
+export function ProductCard({ product, badge }: { product: Product; badge?: string }) {
   const { addToCart } = useStore();
   const productHref = `/producto?slug=${encodeURIComponent(product.slug)}`;
   return (
@@ -18,7 +18,6 @@ export function ProductCard({ product, badge, eager = false }: { product: Produc
             alt={product.name}
             fill
             sizes="(max-width: 700px) 50vw, 25vw"
-            loading={eager ? "eager" : "lazy"}
           />
         ) : (
           <div className="product-placeholder">
