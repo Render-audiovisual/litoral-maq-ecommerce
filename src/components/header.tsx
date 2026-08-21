@@ -15,12 +15,7 @@ export function Header() {
   return (
     <>
       <div className="announcement">
-        {/* ponytail: 8 copias cubren hasta ~2900px de ancho; si aparece un hueco en pantallas mas grandes, subir el numero */}
-        {Array.from({ length: 8 }).map((_, i) => (
-          <span key={i} aria-hidden={i > 0}>
-            Envíos a todo el país · Compra segura · Atención personalizada
-          </span>
-        ))}
+        Envíos a todo el país · Compra segura · Atención personalizada
       </div>
       <header className="site-header">
         <Link href="/" className="brand" aria-label="Litoral Maq, inicio">

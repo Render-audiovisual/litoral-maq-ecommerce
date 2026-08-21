@@ -11,7 +11,6 @@
   --white: #fff;
   --success: #1d8a52;
   --danger: #c53c32;
-  --marquee-gap: 48px;
   --shadow: 0 18px 55px rgba(0, 42, 73, 0.09);
 }
 
@@ -33,10 +32,7 @@ h1, h2, h3, p { margin-top: 0; }
 h1, h2, h3 { color: var(--navy-dark); letter-spacing: -0.035em; }
 h1 { font-size: clamp(2.2rem, 4vw, 4.8rem); line-height: .98; }
 h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
-.announcement { background: var(--navy-dark); color: #fff; padding: 9px 0; font-size: 12px; display: flex; gap: var(--marquee-gap); overflow: hidden; }
-.announcement > span { flex-shrink: 0; white-space: nowrap; animation: marquee 8s linear infinite; }
-.announcement:hover > span { animation-play-state: paused; }
-@keyframes marquee { to { transform: translateX(calc(-100% - var(--marquee-gap))); } }
+.announcement { background: var(--navy-dark); color: #fff; text-align: center; padding: 9px 16px; font-size: 12px; }
 .site-header { height: 82px; padding: 0 5vw; display: flex; align-items: center; justify-content: space-between; gap: 28px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.96); position: sticky; top: 0; z-index: 50; }
 .brand img { display: block; width: 160px; height: auto; }
 .nav { display: flex; align-items: center; gap: 32px; font-weight: 650; }
