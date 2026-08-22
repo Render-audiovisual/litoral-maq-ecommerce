@@ -140,22 +140,22 @@ function CategoryWinnerCard({
 export default function Home() {
   const { products } = useStore();
   const [activePromo, setActivePromo] = useState(0);
-  const [promoPaused, setPromoPaused] = useState(false);
-  const promoPointerStart = useRef<number | null>(null);
   const categoryRailRef = useRef<HTMLDivElement>(null);
   const productRailRef = useRef<HTMLDivElement>(null);
   const launchProducts = getLaunchProducts(products);
   const categories = getLaunchFamilyCards(launchProducts);
   const carouselProducts = launchProducts.filter((product) => product.image).slice(0, 12);
   const promo = PROMO_SLIDES[activePromo];
+  const previousPromo = PROMO_SLIDES[(activePromo - 1 + PROMO_SLIDES.length) % PROMO_SLIDES.length];
+  const nextPromo = PROMO_SLIDES[(activePromo + 1) % PROMO_SLIDES.length];
 
   useEffect(() => {
-    if (promoPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => {
       setActivePromo((current) => (current + 1) % PROMO_SLIDES.length);
-    }, 4500);
+    }, 3500);
     return () => window.clearInterval(timer);
-  }, [promoPaused]);
+  }, []);
 
   useEffect(() => {
     if (carouselProducts.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -179,79 +179,58 @@ export default function Home() {
           className="hero-promo-slider"
           aria-label="Promociones destacadas"
           aria-roledescription="carrusel"
-          onMouseEnter={() => setPromoPaused(true)}
-          onMouseLeave={() => setPromoPaused(false)}
-          onFocusCapture={() => setPromoPaused(true)}
-          onBlurCapture={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget)) setPromoPaused(false);
-          }}
-          onPointerDown={(event) => {
-            promoPointerStart.current = event.clientX;
-          }}
-          onPointerUp={(event) => {
-            if (promoPointerStart.current === null) return;
-            const distance = event.clientX - promoPointerStart.current;
-            promoPointerStart.current = null;
-            if (Math.abs(distance) < 45) return;
-            setActivePromo((current) => (
-              distance < 0
-                ? (current + 1) % PROMO_SLIDES.length
-                : (current - 1 + PROMO_SLIDES.length) % PROMO_SLIDES.length
-            ));
-          }}
         >
-          <article
-            className="hero-promo-slide"
-            key={promo.id}
-            aria-label={`${activePromo + 1} de ${PROMO_SLIDES.length}: ${promo.label}`}
-          >
-            <Link href={promo.href} className="hero-promo-link" aria-label={`Ver ${promo.label}`}>
-              <div className="hero-promo-media">
-                <Image
-                  src={promo.image}
-                  alt={promo.label}
-                  fill
-                  sizes="(max-width: 560px) 92vw, (max-width: 820px) 360px, 340px"
-                  loading={activePromo === 0 ? "eager" : "lazy"}
-                  priority={activePromo === 0}
-                />
-              </div>
-            </Link>
-          </article>
-
-          <button
-            type="button"
-            className="carousel-arrow hero-arrow previous"
-            aria-label="Promoción anterior"
-            onClick={() => setActivePromo((activePromo - 1 + PROMO_SLIDES.length) % PROMO_SLIDES.length)}
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            className="carousel-arrow hero-arrow next"
-            aria-label="Promoción siguiente"
-            onClick={() => setActivePromo((activePromo + 1) % PROMO_SLIDES.length)}
-          >
-            ›
-          </button>
-          <div className="hero-promo-dots" aria-label="Elegir promoción">
-            {PROMO_SLIDES.map((slide, index) => (
-              <button
-                type="button"
-                className={index === activePromo ? "active" : ""}
-                aria-label={`Ver ${slide.label}`}
-                aria-current={index === activePromo ? "true" : undefined}
-                onClick={() => setActivePromo(index)}
-                key={slide.id}
+          <div className="hero-promo-stack" key={promo.id}>
+            <div className="hero-promo-preview previous" aria-hidden="true">
+              <Image
+                src={previousPromo.image}
+                alt=""
+                fill
+                sizes="(max-width: 560px) 68vw, 300px"
+                loading="lazy"
               />
-            ))}
+            </div>
+
+            <article
+              className="hero-promo-slide"
+              aria-label={`${activePromo + 1} de ${PROMO_SLIDES.length}: ${promo.label}`}
+            >
+              <Link href={promo.href} className="hero-promo-link" aria-label={`Ver ${promo.label}`}>
+                <div className="hero-promo-media">
+                  <Image
+                    src={promo.image}
+                    alt={promo.label}
+                    fill
+                    sizes="(max-width: 560px) 92vw, (max-width: 820px) 360px, 340px"
+                    loading={activePromo === 0 ? "eager" : "lazy"}
+                    priority={activePromo === 0}
+                  />
+                </div>
+              </Link>
+            </article>
+
+            <div className="hero-promo-preview next" aria-hidden="true">
+              <Image
+                src={nextPromo.image}
+                alt=""
+                fill
+                sizes="(max-width: 560px) 68vw, 300px"
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
 
         <div className="hero-actions commerce-hero-actions">
-          <Link href="/productos" className="button primary large">Explorar catálogo</Link>
-          <Link href="/productos?categoria=Ofertas" className="button ghost large">Ver ofertas</Link>
+          <div className="hero-buttons">
+            <Link href="/productos" className="button primary large">Explorar catálogo</Link>
+            <Link href="/productos?categoria=Ofertas" className="button ghost large">Ver ofertas</Link>
+          </div>
+          <div className="pickup-banner">
+            <span>RETIRO GRATIS</span>
+            <strong>Comprá y retirá gratis en Sáenz 1587</strong>
+            <b aria-hidden="true">→</b>
+          </div>
         </div>
       </section>
 
