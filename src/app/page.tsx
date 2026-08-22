@@ -2,17 +2,95 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ProductCard } from "@/components/product-card";
 import { formatCurrency } from "@/lib/utils";
-import { getWhatsAppUrl } from "@/lib/whatsapp";
-import { getLaunchFamilyCards, getLaunchProducts } from "@/lib/launch-catalog";
+import {
+  getLaunchFamilyCards,
+  getLaunchProducts,
+} from "@/lib/launch-catalog";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 
-const SHOWCASE_IMAGES = [
-  { src: "/showcase/taladro-energy-550w.png", alt: "Taladro Energy 550W 13mm, $35.000" },
-  { src: "/showcase/cortadora-cesped-bat-20v.png", alt: "Cortadora de cesped Forest y Garden a bateria 20V, $420.000" },
-];
+const PROMO_SLIDES = [
+  {
+    id: "taladro-energy-550w",
+    image: "/promos/taladro-energy-550w.jpg",
+    label: "Taladro Energy 550W 13 mm",
+    href: "/productos/taladro-550w-13mm-energy-id13-2-220-580",
+  },
+  {
+    id: "electrosierra-forest-20v",
+    image: "/promos/electrosierra-forest-20v.jpg",
+    label: "Electrosierra Forest & Garden 20V",
+    href: "/productos/electrosierra-20v-forest-12-espada-e912-20c1-3757",
+  },
+  {
+    id: "cortacesped-gladiator-1600w",
+    image: "/promos/cortacesped-gladiator-1600w.jpg",
+    label: "Cortacésped Gladiator 1600W",
+    href: "/productos?q=cortacesped%201600w",
+  },
+  {
+    id: "hormigonera-obra-140l",
+    image: "/promos/hormigonera-obra-140l.jpg",
+    label: "Hormigonera Obra 140 litros",
+    href: "/productos?q=hormigonera%20140",
+  },
+  {
+    id: "kit-taladro-amoladora-energy",
+    image: "/promos/kit-taladro-amoladora-energy.jpg",
+    label: "Kit taladro y amoladora Energy 20V",
+    href: "/productos/kit-taladro-y-amoladora-energy-20v-pa20c1-3378",
+  },
+  {
+    id: "escalera-obra-multifuncion",
+    image: "/promos/escalera-obra-multifuncion.jpg",
+    label: "Escalera Obra multifunción 4x4",
+    href: "/productos/escalera-multifuncion-4-x-4-obra-ema804-3687",
+  },
+  {
+    id: "maletin-tubos-criquet",
+    image: "/promos/maletin-tubos-criquet.jpg",
+    label: "Maletín de tubos y criquet",
+    href: "/productos?q=juego%20de%20tubos",
+  },
+  {
+    id: "llave-impacto-neo-next",
+    image: "/promos/llave-impacto-neo-next.jpg",
+    label: "Llave de impacto Neo Next 20V",
+    href: "/productos?q=llave%20de%20impacto%2020v",
+  },
+  {
+    id: "motosierra-knock-out",
+    image: "/promos/motosierra-knock-out.jpg",
+    label: "Motosierra Knock Out 460 mm",
+    href: "/productos/motosierra-460-mm-45-cc-knock-out-kom345-3506",
+  },
+  {
+    id: "minimotosierra-garden",
+    image: "/promos/minimotosierra-garden.jpg",
+    label: "Minimotosierra inalámbrica Garden",
+    href: "/productos/mini-motosierra-electrosierra-inalambrica-garden-3246",
+  },
+] as const;
+
+function scrollRail(element: HTMLDivElement | null, direction: -1 | 1, wrap = false) {
+  if (!element) return;
+  const atStart = element.scrollLeft <= 8;
+  const atEnd = element.scrollLeft + element.clientWidth >= element.scrollWidth - 8;
+
+  if (wrap && direction === 1 && atEnd) {
+    element.scrollTo({ left: 0, behavior: "smooth" });
+    return;
+  }
+  if (wrap && direction === -1 && atStart) {
+    element.scrollTo({ left: element.scrollWidth, behavior: "smooth" });
+    return;
+  }
+
+  element.scrollBy({ left: direction * element.clientWidth * 0.82, behavior: "smooth" });
+}
 
 function CategoryWinnerCard({
   slug,
@@ -40,7 +118,8 @@ function CategoryWinnerCard({
             src={representativeProduct.image}
             alt={`Ver productos de ${label}`}
             fill
-            sizes="(max-width: 560px) 50vw, (max-width: 900px) 33vw, 28vw"
+            sizes="(max-width: 560px) 78vw, (max-width: 900px) 46vw, 30vw"
+            loading={rank <= 2 ? "eager" : "lazy"}
             priority={rank <= 2}
           />
         ) : (
@@ -60,45 +139,119 @@ function CategoryWinnerCard({
 
 export default function Home() {
   const { products } = useStore();
+  const [activePromo, setActivePromo] = useState(0);
+  const [promoPaused, setPromoPaused] = useState(false);
+  const promoPointerStart = useRef<number | null>(null);
+  const categoryRailRef = useRef<HTMLDivElement>(null);
+  const productRailRef = useRef<HTMLDivElement>(null);
   const launchProducts = getLaunchProducts(products);
   const categories = getLaunchFamilyCards(launchProducts);
-
-  const [slide, setSlide] = useState(0);
+  const carouselProducts = launchProducts.filter((product) => product.image).slice(0, 12);
+  const promo = PROMO_SLIDES[activePromo];
 
   useEffect(() => {
-    if (SHOWCASE_IMAGES.length <= 1) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = setInterval(() => setSlide((current) => (current + 1) % SHOWCASE_IMAGES.length), 3000);
-    return () => clearInterval(timer);
-  }, []);
+    if (promoPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => {
+      setActivePromo((current) => (current + 1) % PROMO_SLIDES.length);
+    }, 4500);
+    return () => window.clearInterval(timer);
+  }, [promoPaused]);
 
-  const showcaseImage = SHOWCASE_IMAGES[slide];
+  useEffect(() => {
+    if (carouselProducts.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => scrollRail(productRailRef.current, 1, true), 4300);
+    return () => window.clearInterval(timer);
+  }, [carouselProducts.length]);
 
   return (
     <main>
       <section className="commerce-hero">
         <div className="commerce-hero-copy">
-          <span className="hero-pill">LOS MÁS ELEGIDOS DE LITORAL MAQ</span>
-          <h1>Precios para <em>equipar tu taller.</em></h1>
+          <span className="hero-pill">PRODUCTOS Y PRECIOS REALES</span>
+          <h1>Armá tu <em>taller.</em></h1>
           <p>
-            Productos seleccionados, precios reales del catálogo y atención
-            personalizada para elegir mejor.
+            Máquinas y herramientas con precios reales, envíos a todo el país
+            y retiro gratis en nuestro local.
           </p>
-          <div className="hero-actions">
-            <a href="#categorias-mas-vendidas" className="button primary large">Ver categorías</a>
-            <Link href="/productos" className="button ghost large">Ver productos</Link>
+        </div>
+
+        <div
+          className="hero-promo-slider"
+          aria-label="Promociones destacadas"
+          aria-roledescription="carrusel"
+          onMouseEnter={() => setPromoPaused(true)}
+          onMouseLeave={() => setPromoPaused(false)}
+          onFocusCapture={() => setPromoPaused(true)}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setPromoPaused(false);
+          }}
+          onPointerDown={(event) => {
+            promoPointerStart.current = event.clientX;
+          }}
+          onPointerUp={(event) => {
+            if (promoPointerStart.current === null) return;
+            const distance = event.clientX - promoPointerStart.current;
+            promoPointerStart.current = null;
+            if (Math.abs(distance) < 45) return;
+            setActivePromo((current) => (
+              distance < 0
+                ? (current + 1) % PROMO_SLIDES.length
+                : (current - 1 + PROMO_SLIDES.length) % PROMO_SLIDES.length
+            ));
+          }}
+        >
+          <article
+            className="hero-promo-slide"
+            key={promo.id}
+            aria-label={`${activePromo + 1} de ${PROMO_SLIDES.length}: ${promo.label}`}
+          >
+            <Link href={promo.href} className="hero-promo-link" aria-label={`Ver ${promo.label}`}>
+              <div className="hero-promo-media">
+                <Image
+                  src={promo.image}
+                  alt={promo.label}
+                  fill
+                  sizes="(max-width: 560px) 92vw, (max-width: 820px) 360px, 340px"
+                  loading={activePromo === 0 ? "eager" : "lazy"}
+                  priority={activePromo === 0}
+                />
+              </div>
+            </Link>
+          </article>
+
+          <button
+            type="button"
+            className="carousel-arrow hero-arrow previous"
+            aria-label="Promoción anterior"
+            onClick={() => setActivePromo((activePromo - 1 + PROMO_SLIDES.length) % PROMO_SLIDES.length)}
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className="carousel-arrow hero-arrow next"
+            aria-label="Promoción siguiente"
+            onClick={() => setActivePromo((activePromo + 1) % PROMO_SLIDES.length)}
+          >
+            ›
+          </button>
+          <div className="hero-promo-dots" aria-label="Elegir promoción">
+            {PROMO_SLIDES.map((slide, index) => (
+              <button
+                type="button"
+                className={index === activePromo ? "active" : ""}
+                aria-label={`Ver ${slide.label}`}
+                aria-current={index === activePromo ? "true" : undefined}
+                onClick={() => setActivePromo(index)}
+                key={slide.id}
+              />
+            ))}
           </div>
         </div>
-        <div className="commerce-hero-showcase" aria-label="Productos destacados">
-          <Image
-            key={showcaseImage.src}
-            src={showcaseImage.src}
-            alt={showcaseImage.alt}
-            fill
-            sizes="(max-width: 900px) 90vw, 42vw"
-            className="showcase-image"
-            priority
-          />
+
+        <div className="hero-actions commerce-hero-actions">
+          <Link href="/productos" className="button primary large">Explorar catálogo</Link>
+          <Link href="/productos?categoria=Ofertas" className="button ghost large">Ver ofertas</Link>
         </div>
       </section>
 
@@ -106,27 +259,73 @@ export default function Home() {
         <div className="section-heading winner-heading">
           <div>
             <span className="eyebrow orange">CATEGORÍAS MÁS VENDIDAS</span>
-            <h2>Los que más salen</h2>
-            <p>Entrá a una categoría y encontrá sus productos por marca y precio.</p>
+            <h2>Novedades que más salen</h2>
+            <p>Deslizá para recorrer las categorías y encontrá sus productos por marca y precio.</p>
           </div>
           <Link href="/productos" className="text-link">Ver todos los productos →</Link>
         </div>
-        <div className="winner-grid">
-          {categories.map((category, index) => (
-            <CategoryWinnerCard {...category} rank={index + 1} key={category.slug} />
-          ))}
+        <div className="carousel-shell category-carousel">
+          <button
+            type="button"
+            className="carousel-arrow rail-arrow previous"
+            aria-label="Categorías anteriores"
+            onClick={() => scrollRail(categoryRailRef.current, -1, true)}
+          >
+            ‹
+          </button>
+          <div className="winner-grid carousel-rail" ref={categoryRailRef}>
+            {categories.map((category, index) => (
+              <CategoryWinnerCard {...category} rank={index + 1} key={category.slug} />
+            ))}
+          </div>
+          <button
+            type="button"
+            className="carousel-arrow rail-arrow next"
+            aria-label="Más categorías"
+            onClick={() => scrollRail(categoryRailRef.current, 1, true)}
+          >
+            ›
+          </button>
         </div>
       </section>
 
-      <section className="cta-banner">
-        <div>
-          <span className="eyebrow">¿TENÉS DUDAS?</span>
-          <h2>Te ayudamos a elegir la herramienta correcta.</h2>
-          <p>Contanos qué trabajo necesitás hacer y te orientamos.</p>
+      <section className="section soft home-products-section">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow orange">PRODUCTOS DESTACADOS</span>
+            <h2>Herramientas listas para llevar</h2>
+            <p>Precios del catálogo y acceso directo a cada producto.</p>
+          </div>
+          <Link href="/productos" className="text-link">Ver catálogo completo →</Link>
         </div>
-        <a className="cta-whatsapp" href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
-          Consultar por WhatsApp →
-        </a>
+        <div className="carousel-shell product-carousel">
+          <button
+            type="button"
+            className="carousel-arrow rail-arrow previous"
+            aria-label="Productos anteriores"
+            onClick={() => scrollRail(productRailRef.current, -1, true)}
+          >
+            ‹
+          </button>
+          <div className="product-carousel-rail carousel-rail" ref={productRailRef}>
+            {carouselProducts.map((product, index) => (
+              <ProductCard
+                product={product}
+                badge={index < 3 ? "Más vendido" : undefined}
+                eager={index < 4}
+                key={product.id}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            className="carousel-arrow rail-arrow next"
+            aria-label="Más productos"
+            onClick={() => scrollRail(productRailRef.current, 1, true)}
+          >
+            ›
+          </button>
+        </div>
       </section>
     </main>
   );

@@ -2,15 +2,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
 import { useStore } from "@/store/store";
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const { cartCount, customerSession } = useStore();
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   if (pathname.startsWith("/admin")) return null;
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const normalized = query.trim();
+    router.push(normalized ? `/productos?q=${encodeURIComponent(normalized)}` : "/productos");
+    setOpen(false);
+  }
 
   return (
     <>
@@ -32,6 +41,23 @@ export function Header() {
             priority
           />
         </Link>
+        <form className="header-search" role="search" onSubmit={submitSearch}>
+          <label className="sr-only" htmlFor="site-search">Buscar en el catálogo</label>
+          <input
+            id="site-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Buscar productos, marcas o categorías"
+            autoComplete="off"
+          />
+          <button type="submit" aria-label="Buscar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="m16 16 4 4" />
+            </svg>
+          </button>
+        </form>
         <nav className={open ? "nav open" : "nav"} aria-label="Navegación principal">
           <Link href="/" onClick={() => setOpen(false)}>
             Inicio
