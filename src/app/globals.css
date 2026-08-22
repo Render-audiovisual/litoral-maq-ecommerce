@@ -92,12 +92,6 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 @keyframes showcase-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .showcase-image { animation: none; } }
 
-.pickup-banner { display: flex; align-items: center; justify-content: center; gap: 22px; flex-wrap: wrap; padding: 22px 6vw; background: var(--navy-dark); text-align: center; }
-.pickup-banner p { margin: 0; color: #fff; font-weight: 800; font-size: clamp(16px, 2.4vw, 26px); text-transform: uppercase; letter-spacing: .01em; }
-.pickup-banner span { color: var(--orange); }
-.pickup-banner-whatsapp { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; background: #25d366; color: #fff; transition: transform .2s ease; }
-.pickup-banner-whatsapp:hover { transform: scale(1.08); }
-.pickup-banner-whatsapp svg { width: 22px; height: 22px; }
 .winner-section { padding: 78px 6vw 88px; background: var(--navy-dark); }
 .winner-heading { align-items: flex-end; }
 .winner-heading h2 { color: #fff; font-size: clamp(2rem, 4vw, 3.5rem); }
