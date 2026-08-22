@@ -56,7 +56,6 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .hero h1 em { color: var(--orange); font-style: normal; }
 .hero-content > p { max-width: 620px; color: var(--muted); font-size: 17px; line-height: 1.7; }
 .hero-actions { display: flex; gap: 12px; margin: 30px 0 36px; flex-wrap: wrap; }
-.pickup-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: #fff4e9; border: 1px solid #ffdcb3; color: var(--navy-dark); font-weight: 700; font-size: 13px; }
 .button { min-height: 42px; padding: 0 18px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 5px; font-weight: 750; transition: .18s ease; }
 .button:hover { transform: translateY(-1px); }
 .button:disabled { opacity: .55; cursor: wait; transform: none; }
@@ -86,12 +85,19 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .commerce-metrics { display: flex; gap: 34px; color: var(--muted); font-size: 11px; }
 .commerce-metrics span { display: flex; flex-direction: column; }
 .commerce-metrics strong { color: var(--navy); font-size: 23px; }
-.commerce-hero-showcase { min-height: 500px; position: relative; isolation: isolate; }
+.commerce-hero-showcase { min-height: 500px; width: min(100%, 360px); aspect-ratio: 9 / 16; margin: 0 auto; position: relative; isolation: isolate; }
 .commerce-hero-showcase::before { content: ""; position: absolute; inset: 6% 4% 3% 10%; border-radius: 46% 54% 44% 56% / 54% 42% 58% 46%; background: var(--orange); transform: rotate(-4deg); z-index: -2; }
 .commerce-hero-showcase::after { content: "LM"; position: absolute; right: 1%; bottom: -8%; color: rgba(0,59,99,.07); font-size: 240px; font-weight: 900; letter-spacing: -.12em; z-index: -3; }
-.showcase-image { object-fit: contain; border-radius: 18px; box-shadow: 0 22px 60px rgba(0,42,73,.2); animation: showcase-in .5s ease both; }
+.showcase-image { object-fit: cover; border-radius: 18px; box-shadow: 0 22px 60px rgba(0,42,73,.2); animation: showcase-in .5s ease both; }
 @keyframes showcase-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .showcase-image { animation: none; } }
+
+.pickup-banner { display: flex; align-items: center; justify-content: center; gap: 22px; flex-wrap: wrap; padding: 22px 6vw; background: var(--navy-dark); text-align: center; }
+.pickup-banner p { margin: 0; color: #fff; font-weight: 800; font-size: clamp(16px, 2.4vw, 26px); text-transform: uppercase; letter-spacing: .01em; }
+.pickup-banner span { color: var(--orange); }
+.pickup-banner-whatsapp { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; background: #25d366; color: #fff; transition: transform .2s ease; }
+.pickup-banner-whatsapp:hover { transform: scale(1.08); }
+.pickup-banner-whatsapp svg { width: 22px; height: 22px; }
 .winner-section { padding: 78px 6vw 88px; background: var(--navy-dark); }
 .winner-heading { align-items: flex-end; }
 .winner-heading h2 { color: #fff; font-size: clamp(2rem, 4vw, 3.5rem); }
@@ -429,7 +435,6 @@ td > small { margin-top: 4px; color: var(--muted); }
   .commerce-hero-copy h1 { margin: 16px 0 13px; font-size: 2.3rem; line-height: .95; }
   .commerce-hero-copy > p { margin-bottom: 0; font-size: 13px; line-height: 1.55; }
   .commerce-hero .hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 20px 0 0; }
-.commerce-hero .pickup-badge { margin-top: 12px; font-size: 11px; padding: 7px 11px; }
   .commerce-hero .button.large { min-height: 46px; padding: 0 8px; font-size: 11px; text-align: center; }
   .commerce-metrics { display: none; }
   .commerce-hero-showcase { min-height: 380px; margin-top: 14px; }
