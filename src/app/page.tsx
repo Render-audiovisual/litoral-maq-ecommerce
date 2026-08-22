@@ -291,7 +291,6 @@ export default function Home() {
               <ProductCard
                 product={product}
                 badge={index < 3 ? "Más vendido" : undefined}
-                eager={index < 4}
                 key={product.id}
               />
             ))}
