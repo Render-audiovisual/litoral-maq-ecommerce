@@ -97,6 +97,7 @@ export default function Home() {
             <a href="#categorias-mas-vendidas" className="button primary large">Ver categorías</a>
             <Link href="/productos" className="button ghost large">Ver productos</Link>
           </div>
+          <span className="pickup-badge">📍 Compra y retirá gratis en Sáenz 1587</span>
         </div>
         <div className="commerce-hero-showcase" aria-label="Productos destacados">
           {lead ? (
