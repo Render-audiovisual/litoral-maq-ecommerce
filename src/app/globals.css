@@ -106,13 +106,17 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .commerce-metrics span { display: flex; flex-direction: column; }
 .commerce-metrics strong { color: var(--navy); font-size: 23px; }
 .hero-promo-slider { min-width: 0; min-height: 570px; grid-area: promo; position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; user-select: none; }
-.hero-promo-stack { position: absolute; inset: 0; display: grid; place-items: center; animation: promo-stack-enter .9s cubic-bezier(.22, 1, .36, 1) both; }
+.hero-promo-stack { position: absolute; inset: 0; display: grid; place-items: center; will-change: transform, opacity; animation: promo-stack-enter .92s cubic-bezier(.16, 1, .3, 1) both; }
 .hero-promo-preview { width: min(46%, 300px); aspect-ratio: 9 / 16; position: absolute; z-index: 1; overflow: hidden; border: 4px solid rgba(255,255,255,.92); border-radius: 20px; background: #fff; box-shadow: 0 22px 55px rgba(0,42,73,.2); opacity: .78; filter: brightness(.8) saturate(.86); }
 .hero-promo-preview.previous { transform: translateX(-48%) scale(.9) rotate(-2.2deg); }
 .hero-promo-preview.next { transform: translateX(48%) scale(.9) rotate(2.2deg); }
 .hero-promo-preview img { object-fit: cover; object-position: center; }
 .hero-promo-slide { width: min(50%, 330px); aspect-ratio: 9 / 16; position: relative; z-index: 3; overflow: hidden; border: 6px solid #fff; border-radius: 22px; background: #fff; box-shadow: 0 28px 70px rgba(0,42,73,.25); }
-@keyframes promo-stack-enter { from { opacity: .78; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes promo-stack-enter {
+  from { opacity: .38; transform: translate3d(5%, 0, 0) scale(.992); }
+  60% { opacity: .94; }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
 .hero-promo-link, .hero-promo-media { width: 100%; height: 100%; display: block; }
 .hero-promo-link:focus-visible { outline: 4px solid var(--cyan); outline-offset: -6px; }
 .hero-promo-media { position: relative; overflow: hidden; background: var(--navy-dark); }
