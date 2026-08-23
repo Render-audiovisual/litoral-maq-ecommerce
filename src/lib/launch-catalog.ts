@@ -21,6 +21,9 @@ export const LAUNCH_PRODUCT_MODELS = [
   "EVP818/43-1",
   "HL7000/220M",
   "LI1065/20C1",
+  "IMET140/2/220",
+  "BWIR150",
+  "JT1012 1/2",
 ] as const;
 
 export const LAUNCH_BEST_SELLER_MODELS = [
@@ -50,12 +53,62 @@ export const LAUNCH_FEATURED_MODELS = [
 ] as const;
 
 export const LAUNCH_FAMILIES = [
-  { slug: "taladros", label: "Taladros", description: "Perforación y atornillado", icon: "⌁", pattern: /TALADRO/ },
-  { slug: "aspiradoras", label: "Aspiradoras", description: "Limpieza para taller y obra", icon: "◉", pattern: /ASPIRADOR/ },
-  { slug: "amoladoras", label: "Amoladoras", description: "Corte y desbaste", icon: "⚙", pattern: /AMOLADOR/ },
-  { slug: "hidrolavadoras", label: "Hidrolavadoras", description: "Limpieza con agua a presión", icon: "≈", pattern: /HIDROLAV/ },
-  { slug: "escaleras", label: "Escaleras", description: "Para el hogar y la obra", icon: "↥", pattern: /ESCALERA/ },
-  { slug: "motosierras", label: "Motosierras", description: "Potencia para corte exterior", icon: "♧", pattern: /MOTOSIERRA/ },
+  {
+    slug: "taladros",
+    label: "Taladros",
+    description: "Perforación y atornillado",
+    image: "/promos/taladro-energy-550w.jpg",
+    pattern: /^(TALADRO|ATORNILLADOR)/,
+  },
+  {
+    slug: "amoladoras",
+    label: "Amoladoras",
+    description: "Corte y desbaste",
+    image: "/products/AMOLADORA ANGULAR.png",
+    pattern: /^AMOLADORA/,
+  },
+  {
+    slug: "escaleras",
+    label: "Escaleras",
+    description: "Para el hogar y la obra",
+    image: "/promos/escalera-obra-multifuncion.jpg",
+    pattern: /^ESCALERA/,
+  },
+  {
+    slug: "soldadoras",
+    label: "Soldadoras",
+    description: "Equipos para unir y reparar",
+    image: "/products/SOLDADORA 3 en 1.png",
+    pattern: /^SOLDADORA/,
+  },
+  {
+    slug: "compresores",
+    label: "Compresores",
+    description: "Aire para el taller y el trabajo",
+    image: "/categories/compresores-cliente.jpg",
+    pattern: /^COMPRESOR/,
+  },
+  {
+    slug: "aspiradoras",
+    label: "Aspiradoras",
+    description: "Limpieza para taller y obra",
+    image: "/testimonios/cliente-equipado.jpg",
+    pattern: /^(ASPIRADORA|SOPLOASPIRADOR)/,
+  },
+  {
+    slug: "motosierras",
+    label: "Motosierras",
+    description: "Potencia para corte exterior",
+    image: "/promos/motosierra-knock-out.jpg",
+    pattern: /^(MOTOSIERRA|ELECTROSIERRA|MINI MOTOSIERRA)/,
+  },
+  {
+    slug: "kits-herramientas",
+    label: "Kits de herramientas",
+    description: "Todo listo en un solo equipo",
+    image: "/promos/maletin-tubos-criquet.jpg",
+    pattern: /^(JUEGO DE TUBOS|MALET[IÍ]N|LLAVE DE IMPACTO)/,
+  },
 ] as const;
 
 export type LaunchFamilySlug = (typeof LAUNCH_FAMILIES)[number]["slug"];

@@ -126,8 +126,12 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .carousel-rail { overflow-x: auto; overscroll-behavior-inline: contain; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .carousel-rail::-webkit-scrollbar { display: none; }
 .winner-grid { display: flex; gap: 16px; }
+.category-marquee { width: 100%; max-width: 1590px; margin: 0 auto; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; cursor: grab; user-select: none; }
+.category-marquee::-webkit-scrollbar { display: none; }
+.category-marquee.is-dragging { cursor: grabbing; }
+.category-track { width: max-content; }
 .winner-card { min-width: 0; overflow: hidden; display: grid; grid-template-rows: 255px auto; border-radius: 7px; background: #fff; box-shadow: 0 20px 55px rgba(0,20,36,.28); transition: transform .22s ease, box-shadow .22s ease; }
-.winner-grid .winner-card { flex: 0 0 calc((100% - 32px) / 3); scroll-snap-align: start; }
+.category-track .winner-card { width: clamp(310px, 29vw, 410px); flex: 0 0 auto; }
 .winner-card:hover { transform: translateY(-5px); box-shadow: 0 28px 65px rgba(0,15,28,.42); }
 .winner-card-media { position: relative; overflow: hidden; background: #fff7f1; }
 .winner-card-media::after { content: ""; position: absolute; inset: auto 0 0; height: 38%; background: linear-gradient(transparent, rgba(0,42,73,.16)); }
@@ -463,6 +467,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .hero-promo-slider { width: 100%; min-height: 600px; margin-top: 18px; }
   .hero-promo-slide { width: min(50%, 330px); }
   .winner-grid .winner-card { flex-basis: 46%; }
+  .category-track .winner-card { width: 46vw; flex: 0 0 46vw; }
   .product-carousel-rail .product-card { flex-basis: 43%; }
   .hero-visual { min-height: 350px; overflow: hidden; }
   .trust-strip { margin: 0; grid-template-columns: repeat(2, 1fr); }
@@ -520,7 +525,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .winner-section { padding: 52px 4vw 58px; }
   .winner-heading { align-items: flex-start; }
   .winner-grid { gap: 8px; }
-  .winner-grid .winner-card { flex-basis: 82%; }
+  .category-track .winner-card { width: 82vw; flex: 0 0 82vw; }
   .winner-card { grid-template-rows: 155px auto; }
   .winner-rank { left: 7px; top: 7px; padding: 5px 6px; font-size: 7px; }
   .winner-card-copy { min-height: 186px; padding: 11px 10px 12px; }

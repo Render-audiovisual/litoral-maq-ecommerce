@@ -100,7 +100,9 @@ function CategoryWinnerCard({
   priceFrom,
   productCount,
   representativeProduct,
+  image,
   rank,
+  duplicate = false,
 }: {
   slug: string;
   label: string;
@@ -108,15 +110,22 @@ function CategoryWinnerCard({
   priceFrom: number | null;
   productCount: number;
   representativeProduct: Product | null;
+  image: string;
   rank: number;
+  duplicate?: boolean;
 }) {
   const href = `/productos?familia=${encodeURIComponent(slug)}`;
   return (
-    <Link href={href} className={`winner-card winner-card-${(rank - 1) % 3}`}>
+    <Link
+      href={href}
+      className={`winner-card winner-card-${(rank - 1) % 3}`}
+      aria-hidden={duplicate}
+      tabIndex={duplicate ? -1 : undefined}
+    >
       <div className="winner-card-media">
-        {representativeProduct?.image ? (
+        {image || representativeProduct?.image ? (
           <Image
-            src={representativeProduct.image}
+            src={image || representativeProduct?.image || ""}
             alt={`Ver productos de ${label}`}
             fill
             sizes="(max-width: 560px) 78vw, (max-width: 900px) 46vw, 30vw"
@@ -138,10 +147,107 @@ function CategoryWinnerCard({
   );
 }
 
+const CATEGORY_AUTO_SCROLL_SPEED = 38;
+const CATEGORY_TOUCH_RESUME_DELAY = 2200;
+
+type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
+
+function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
+  const railRef = useRef<HTMLDivElement>(null);
+  const pausedRef = useRef(false);
+  const draggingRef = useRef(false);
+  const [dragging, setDragging] = useState(false);
+  const dragStart = useRef({ x: 0, scrollLeft: 0 });
+  const resumeTimer = useRef<number | undefined>(undefined);
+  const trackItems = [...categories, ...categories];
+
+  useEffect(() => {
+    if (categories.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf: number;
+    let last = performance.now();
+
+    function step(now: number) {
+      const dt = (now - last) / 1000;
+      last = now;
+      const rail = railRef.current;
+      if (rail && !pausedRef.current && !draggingRef.current) {
+        rail.scrollLeft += CATEGORY_AUTO_SCROLL_SPEED * dt;
+        const half = rail.scrollWidth / 2;
+        if (rail.scrollLeft >= half) rail.scrollLeft -= half;
+      }
+      raf = requestAnimationFrame(step);
+    }
+
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [categories.length]);
+
+  function endDrag() {
+    draggingRef.current = false;
+    setDragging(false);
+  }
+
+  useEffect(() => {
+    window.addEventListener("mouseup", endDrag);
+    window.addEventListener("blur", endDrag);
+    return () => {
+      window.removeEventListener("mouseup", endDrag);
+      window.removeEventListener("blur", endDrag);
+      window.clearTimeout(resumeTimer.current);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={railRef}
+      className={`category-marquee${dragging ? " is-dragging" : ""}`}
+      aria-label="Categorías de productos, se puede deslizar"
+      onMouseEnter={() => { pausedRef.current = true; }}
+      onMouseLeave={() => {
+        if (!draggingRef.current) pausedRef.current = false;
+        endDrag();
+      }}
+      onMouseDown={(event) => {
+        const rail = railRef.current;
+        if (!rail || event.button !== 0) return;
+        event.preventDefault();
+        draggingRef.current = true;
+        setDragging(true);
+        dragStart.current = { x: event.clientX, scrollLeft: rail.scrollLeft };
+      }}
+      onMouseMove={(event) => {
+        const rail = railRef.current;
+        if (!rail || !draggingRef.current) return;
+        rail.scrollLeft = dragStart.current.scrollLeft - (event.clientX - dragStart.current.x);
+      }}
+      onMouseUp={endDrag}
+      onTouchStart={() => {
+        pausedRef.current = true;
+        window.clearTimeout(resumeTimer.current);
+      }}
+      onTouchEnd={() => {
+        resumeTimer.current = window.setTimeout(() => {
+          pausedRef.current = false;
+        }, CATEGORY_TOUCH_RESUME_DELAY);
+      }}
+    >
+      <div className="winner-grid category-track">
+        {trackItems.map((category, index) => (
+          <CategoryWinnerCard
+            {...category}
+            rank={(index % categories.length) + 1}
+            duplicate={index >= categories.length}
+            key={`${category.slug}-${index}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const { products } = useStore();
   const [activePromo, setActivePromo] = useState(0);
-  const categoryRailRef = useRef<HTMLDivElement>(null);
   const productRailRef = useRef<HTMLDivElement>(null);
   const launchProducts = getLaunchProducts(products);
   const categories = getLaunchFamilyCards(launchProducts);
@@ -237,35 +343,13 @@ export default function Home() {
       <section className="winner-section" id="categorias-mas-vendidas">
         <div className="section-heading winner-heading">
           <div>
-            <span className="eyebrow orange">CATEGORÍAS MÁS VENDIDAS</span>
-            <h2>Novedades que más salen</h2>
-            <p>Deslizá para recorrer las categorías y encontrá sus productos por marca y precio.</p>
+            <span className="eyebrow orange">COMPRÁ POR CATEGORÍA</span>
+            <h2>Encontrá la máquina que necesitás</h2>
+            <p>Ocho accesos directos con stock real y precios para comparar.</p>
           </div>
           <Link href="/productos" className="text-link">Ver todos los productos →</Link>
         </div>
-        <div className="carousel-shell category-carousel">
-          <button
-            type="button"
-            className="carousel-arrow rail-arrow previous"
-            aria-label="Categorías anteriores"
-            onClick={() => scrollRail(categoryRailRef.current, -1, true)}
-          >
-            ‹
-          </button>
-          <div className="winner-grid carousel-rail" ref={categoryRailRef}>
-            {categories.map((category, index) => (
-              <CategoryWinnerCard {...category} rank={index + 1} key={category.slug} />
-            ))}
-          </div>
-          <button
-            type="button"
-            className="carousel-arrow rail-arrow next"
-            aria-label="Más categorías"
-            onClick={() => scrollRail(categoryRailRef.current, 1, true)}
-          >
-            ›
-          </button>
-        </div>
+        <CategoryMarquee categories={categories} />
       </section>
 
       <section className="section soft home-products-section">

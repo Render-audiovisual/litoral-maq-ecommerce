@@ -36,9 +36,9 @@ function product(name: string, overrides: Partial<Product> = {}): Product {
 }
 
 describe("catálogo inicial", () => {
-  it("encuentra una única ficha para cada uno de los 20 modelos iniciales", () => {
+  it("encuentra una única ficha para cada uno de los 23 modelos iniciales", () => {
     const selected = getLaunchProducts(productsSeed as Product[]);
-    expect(selected).toHaveLength(20);
+    expect(selected).toHaveLength(23);
     expect(selected.some((item) => item.name.includes("ID13/2/220"))).toBe(true);
   });
 
@@ -72,7 +72,13 @@ describe("catálogo inicial", () => {
       product("TALADRO PERCUTOR 20V ENERGY P20C1", { price: 90_000 }),
     ];
     expect(matchesLaunchFamily(products[0], "taladros")).toBe(true);
-    expect(matchesLaunchFamily(products[0], "hidrolavadoras")).toBe(false);
+    expect(matchesLaunchFamily(products[0], "soldadoras")).toBe(false);
     expect(getLaunchFamilyCards(products).find((item) => item.slug === "taladros")?.priceFrom).toBe(75_000);
+  });
+
+  it("mantiene las ocho categorías de la home conectadas a productos publicados", () => {
+    const cards = getLaunchFamilyCards(getLaunchProducts(productsSeed as Product[]));
+    expect(cards).toHaveLength(8);
+    expect(cards.every((card) => card.productCount > 0 && card.priceFrom !== null)).toBe(true);
   });
 });
