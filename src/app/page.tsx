@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ProductCard } from "@/components/product-card";
+import { TestimonialsSection } from "@/components/testimonials";
 import { formatCurrency } from "@/lib/utils";
 import {
   getLaunchFamilyCards,
@@ -304,6 +305,8 @@ export default function Home() {
           </button>
         </div>
       </section>
+
+      <TestimonialsSection />
     </main>
   );
 }
