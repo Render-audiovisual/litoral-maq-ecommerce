@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Testimonial = {
   id: string;
@@ -10,16 +10,43 @@ type Testimonial = {
   name: string;
 };
 
-// ponytail: placeholders hasta que lleguen las fotos/videos reales de clientes (1080x1920).
-// Reemplazar src: null por la ruta del archivo en public/testimonios cuando esten disponibles.
-const TESTIMONIALS: Testimonial[] = Array.from({ length: 15 }, (_, i) => ({
-  id: `t${i + 1}`,
-  type: i % 2 === 0 ? "video" : "image" as const,
-  src: null,
-  name: "Cliente Litoral Maq",
-}));
+const TESTIMONIALS: Testimonial[] = [
+  { id: "clientes-confianza", type: "image", src: "/testimonios/clientes-confianza.jpg", name: "Clientes que confían en Litoral Maq" },
+  { id: "nestor", type: "image", src: "/testimonios/nestor-escalera.jpg", name: "Néstor eligió Litoral Maq" },
+  { id: "compras-energy", type: "image", src: "/testimonios/compras-energy.jpg", name: "Clientes Litoral Maq" },
+  { id: "ramon", type: "image", src: "/testimonios/ramon-escalera.jpg", name: "Ramón eligió Litoral Maq" },
+  { id: "clientes-energy", type: "image", src: "/testimonios/clientes-energy.jpg", name: "Clientes Litoral Maq" },
+  { id: "video-cliente", type: "video", src: "/testimonios/testimonio-cliente.mp4", name: "La experiencia de un cliente" },
+  { id: "trabajadores", type: "image", src: "/testimonios/clientes-trabajadores.jpg", name: "Clientes que equiparon su trabajo" },
+  { id: "itati", type: "image", src: "/testimonios/amigos-itati.jpg", name: "Clientes de Itatí" },
+  { id: "corrientes", type: "image", src: "/testimonios/entrega-corrientes.jpg", name: "Entrega en Corrientes" },
+  { id: "formosa", type: "image", src: "/testimonios/pedido-formosa.jpg", name: "Pedido enviado a Formosa" },
+  { id: "alejandro", type: "image", src: "/testimonios/alejandro-soldadora.jpg", name: "Alejandro eligió Litoral Maq" },
+  { id: "cliente-equipado", type: "image", src: "/testimonios/cliente-equipado.jpg", name: "Cliente equipado en Litoral Maq" },
+];
 
-function TestimonialMedia({ item, active }: { item: Testimonial; active?: boolean }) {
+function TestimonialMedia({
+  item,
+  active = false,
+  paused = false,
+  onEnded,
+}: {
+  item: Testimonial;
+  active?: boolean;
+  paused?: boolean;
+  onEnded?: () => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (item.type !== "video" || !videoRef.current) return;
+    if (!active || paused) {
+      videoRef.current.pause();
+      return;
+    }
+    void videoRef.current.play().catch(() => undefined);
+  }, [active, item.type, paused]);
+
   if (!item.src) {
     return (
       <div className="testimonial-placeholder">
@@ -31,12 +58,13 @@ function TestimonialMedia({ item, active }: { item: Testimonial; active?: boolea
   if (item.type === "video") {
     return (
       <video
+        ref={videoRef}
         src={item.src}
         className="testimonial-media"
         muted
-        loop
         playsInline
-        autoPlay={active}
+        preload={active ? "auto" : "metadata"}
+        onEnded={onEnded}
       />
     );
   }
@@ -99,7 +127,12 @@ export function TestimonialsSection() {
             className="testimonial-slide"
             aria-label={`${active + 1} de ${TESTIMONIALS.length}: ${current.name}`}
           >
-            <TestimonialMedia item={current} active />
+            <TestimonialMedia
+              item={current}
+              active
+              paused={paused}
+              onEnded={() => go(1)}
+            />
             <span className="testimonial-name">{current.name}</span>
           </article>
 
