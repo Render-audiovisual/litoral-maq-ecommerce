@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 type Testimonial = {
   id: string;
@@ -26,73 +26,46 @@ const TESTIMONIALS: Testimonial[] = [
   { id: "cliente-equipado", type: "image", src: "/testimonios/cliente-equipado.jpg", name: "Cliente equipado en Litoral Maq" },
 ];
 
-function TestimonialMedia({
+// Lista duplicada para el loop infinito: animamos -50% del ancho total del track.
+const TRACK_ITEMS = [...TESTIMONIALS, ...TESTIMONIALS];
+
+function TestimonialCard({
   item,
-  active = false,
-  paused = false,
-  onEnded,
+  copyIndex,
+  onVideoPlay,
+  onVideoStop,
 }: {
   item: Testimonial;
-  active?: boolean;
-  paused?: boolean;
-  onEnded?: () => void;
+  copyIndex: number;
+  onVideoPlay: () => void;
+  onVideoStop: () => void;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  if (!item.src) return null;
 
-  useEffect(() => {
-    if (item.type !== "video" || !videoRef.current) return;
-    if (!active || paused) {
-      videoRef.current.pause();
-      return;
-    }
-    void videoRef.current.play().catch(() => undefined);
-  }, [active, item.type, paused]);
-
-  if (!item.src) {
-    return (
-      <div className="testimonial-placeholder">
-        <span aria-hidden>{item.type === "video" ? "▶" : "🖼"}</span>
-        <small>{item.type === "video" ? "Video pendiente" : "Foto pendiente"}</small>
-      </div>
-    );
-  }
-  if (item.type === "video") {
-    return (
-      <video
-        ref={videoRef}
-        src={item.src}
-        className="testimonial-media"
-        controls
-        muted
-        playsInline
-        preload={active ? "auto" : "metadata"}
-        onEnded={onEnded}
-      />
-    );
-  }
-  return <Image src={item.src} alt={item.name} fill sizes="(max-width: 560px) 78vw, 320px" className="testimonial-media" />;
+  return (
+    <article className="testimonial-card" aria-hidden={copyIndex === 1}>
+      {item.type === "video" ? (
+        <video
+          src={item.src}
+          className="testimonial-media"
+          controls
+          muted
+          playsInline
+          preload="metadata"
+          onPlay={onVideoPlay}
+          onPause={onVideoStop}
+          onEnded={onVideoStop}
+        />
+      ) : (
+        <Image src={item.src} alt={item.name} fill sizes="220px" className="testimonial-media" />
+      )}
+      <span className="testimonial-name">{item.name}</span>
+    </article>
+  );
 }
 
 export function TestimonialsSection() {
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const current = TESTIMONIALS[active];
-  const previous = TESTIMONIALS[(active - 1 + TESTIMONIALS.length) % TESTIMONIALS.length];
-  const next = TESTIMONIALS[(active + 1) % TESTIMONIALS.length];
-
-  useEffect(() => {
-    if (paused) return;
-    if (current.type === "video" && current.src) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => {
-      setActive((i) => (i + 1) % TESTIMONIALS.length);
-    }, 4500);
-    return () => window.clearInterval(timer);
-  }, [active, paused, current.type, current.src]);
-
-  function go(direction: -1 | 1) {
-    setActive((i) => (i + direction + TESTIMONIALS.length) % TESTIMONIALS.length);
-  }
+  const [playingCount, setPlayingCount] = useState(0);
 
   return (
     <section className="section testimonials-section">
@@ -104,65 +77,18 @@ export function TestimonialsSection() {
         </div>
       </div>
 
-      <div
-        className="testimonial-slider"
-        aria-label="Testimonios de clientes"
-        aria-roledescription="carrusel"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
-        <button
-          type="button"
-          className="carousel-arrow testimonial-arrow previous"
-          aria-label="Testimonio anterior"
-          onClick={() => go(-1)}
-        >
-          ‹
-        </button>
-
-        <div className="testimonial-stack" key={current.id}>
-          <div className="testimonial-preview previous" aria-hidden="true">
-            <TestimonialMedia item={previous} />
-          </div>
-
-          <article
-            className="testimonial-slide"
-            aria-label={`${active + 1} de ${TESTIMONIALS.length}: ${current.name}`}
-          >
-            <TestimonialMedia
-              item={current}
-              active
-              paused={paused}
-              onEnded={() => go(1)}
+      <div className="testimonial-marquee" aria-label="Testimonios de clientes">
+        <div className={`testimonial-track${playingCount > 0 ? " is-paused" : ""}`}>
+          {TRACK_ITEMS.map((item, index) => (
+            <TestimonialCard
+              item={item}
+              copyIndex={Math.floor(index / TESTIMONIALS.length)}
+              key={`${item.id}-${index}`}
+              onVideoPlay={() => setPlayingCount((n) => n + 1)}
+              onVideoStop={() => setPlayingCount((n) => Math.max(0, n - 1))}
             />
-            <span className="testimonial-name">{current.name}</span>
-          </article>
-
-          <div className="testimonial-preview next" aria-hidden="true">
-            <TestimonialMedia item={next} />
-          </div>
+          ))}
         </div>
-
-        <button
-          type="button"
-          className="carousel-arrow testimonial-arrow next"
-          aria-label="Siguiente testimonio"
-          onClick={() => go(1)}
-        >
-          ›
-        </button>
-      </div>
-
-      <div className="testimonial-dots">
-        {TESTIMONIALS.map((item, index) => (
-          <button
-            key={item.id}
-            type="button"
-            className={index === active ? "active" : ""}
-            aria-label={`Ir al testimonio ${index + 1}`}
-            onClick={() => setActive(index)}
-          />
-        ))}
       </div>
     </section>
   );
