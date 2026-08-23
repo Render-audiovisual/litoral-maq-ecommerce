@@ -26,7 +26,7 @@ export function Footer() {
               : undefined
           }
         >
-          <Image src="/brand/GRIS.png" alt="Litoral Maq" width={200} height={73} />
+          <Image src="/brand/GRIS.png" alt="Litoral Maq" width={240} height={87} />
         </Link>
         <p>Máquinas y herramientas para tu casa, obra o taller.</p>
       </div>
