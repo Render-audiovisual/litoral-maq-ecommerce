@@ -12,13 +12,12 @@ type Testimonial = {
 
 // ponytail: placeholders hasta que lleguen las fotos/videos reales de clientes (1080x1920).
 // Reemplazar src: null por la ruta del archivo en public/testimonios cuando esten disponibles.
-const TESTIMONIALS: Testimonial[] = [
-  { id: "t1", type: "video", src: null, name: "Cliente Litoral Maq" },
-  { id: "t2", type: "image", src: null, name: "Cliente Litoral Maq" },
-  { id: "t3", type: "video", src: null, name: "Cliente Litoral Maq" },
-  { id: "t4", type: "image", src: null, name: "Cliente Litoral Maq" },
-  { id: "t5", type: "video", src: null, name: "Cliente Litoral Maq" },
-];
+const TESTIMONIALS: Testimonial[] = Array.from({ length: 15 }, (_, i) => ({
+  id: `t${i + 1}`,
+  type: i % 2 === 0 ? "video" : "image" as const,
+  src: null,
+  name: "Cliente Litoral Maq",
+}));
 
 function TestimonialMedia({ item, active }: { item: Testimonial; active?: boolean }) {
   if (!item.src) {
@@ -46,18 +45,20 @@ function TestimonialMedia({ item, active }: { item: Testimonial; active?: boolea
 
 export function TestimonialsSection() {
   const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
   const current = TESTIMONIALS[active];
   const previous = TESTIMONIALS[(active - 1 + TESTIMONIALS.length) % TESTIMONIALS.length];
   const next = TESTIMONIALS[(active + 1) % TESTIMONIALS.length];
 
   useEffect(() => {
+    if (paused) return;
     if (current.type === "video" && current.src) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => {
       setActive((i) => (i + 1) % TESTIMONIALS.length);
     }, 4500);
     return () => window.clearInterval(timer);
-  }, [active, current.type, current.src]);
+  }, [active, paused, current.type, current.src]);
 
   function go(direction: -1 | 1) {
     setActive((i) => (i + direction + TESTIMONIALS.length) % TESTIMONIALS.length);
@@ -73,7 +74,13 @@ export function TestimonialsSection() {
         </div>
       </div>
 
-      <div className="testimonial-slider" aria-label="Testimonios de clientes" aria-roledescription="carrusel">
+      <div
+        className="testimonial-slider"
+        aria-label="Testimonios de clientes"
+        aria-roledescription="carrusel"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
         <button
           type="button"
           className="carousel-arrow testimonial-arrow previous"
