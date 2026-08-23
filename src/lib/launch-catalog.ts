@@ -92,7 +92,7 @@ export const LAUNCH_FAMILIES = [
     slug: "aspiradoras",
     label: "Aspiradoras",
     description: "Limpieza para taller y obra",
-    image: "/testimonios/cliente-equipado.jpg",
+    image: "/categories/aspiradora-energy-vc35.webp",
     pattern: /^(ASPIRADORA|SOPLOASPIRADOR)/,
   },
   {

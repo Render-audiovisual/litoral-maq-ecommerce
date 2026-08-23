@@ -76,22 +76,12 @@ const PROMO_SLIDES = [
   },
 ] as const;
 
-function scrollRail(element: HTMLDivElement | null, direction: -1 | 1, wrap = false) {
-  if (!element) return;
-  const atStart = element.scrollLeft <= 8;
-  const atEnd = element.scrollLeft + element.clientWidth >= element.scrollWidth - 8;
-
-  if (wrap && direction === 1 && atEnd) {
-    element.scrollTo({ left: 0, behavior: "smooth" });
-    return;
-  }
-  if (wrap && direction === -1 && atStart) {
-    element.scrollTo({ left: element.scrollWidth, behavior: "smooth" });
-    return;
-  }
-
-  element.scrollBy({ left: direction * element.clientWidth * 0.82, behavior: "smooth" });
-}
+const STAR_PRODUCTS = [
+  { model: "ID13/2/220", image: "/promos/taladro-energy-550w.jpg" },
+  { model: "HL7000/220M", image: "/products/hidrolavadora-gladiator-hl7000.jpg" },
+  { model: "CS58", image: "/products/MOTOSIERRA_.png" },
+  { model: "IMET140/2/220", image: "/products/SOLDADORA 3 en 1.png" },
+] as const;
 
 function CategoryWinnerCard({
   slug,
@@ -162,7 +152,7 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
   const trackItems = [...categories, ...categories];
 
   useEffect(() => {
-    if (categories.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (categories.length < 2) return;
     let raf: number;
     let last = performance.now();
 
@@ -248,10 +238,12 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
 export default function Home() {
   const { products } = useStore();
   const [activePromo, setActivePromo] = useState(0);
-  const productRailRef = useRef<HTMLDivElement>(null);
   const launchProducts = getLaunchProducts(products);
   const categories = getLaunchFamilyCards(launchProducts);
-  const carouselProducts = launchProducts.filter((product) => product.image).slice(0, 12);
+  const starProducts = STAR_PRODUCTS.flatMap((item) => {
+    const product = launchProducts.find((candidate) => candidate.name.includes(item.model));
+    return product ? [{ product, image: item.image }] : [];
+  });
   const promo = PROMO_SLIDES[activePromo];
   const previousPromo = PROMO_SLIDES[(activePromo - 1 + PROMO_SLIDES.length) % PROMO_SLIDES.length];
   const nextPromo = PROMO_SLIDES[(activePromo + 1) % PROMO_SLIDES.length];
@@ -262,12 +254,6 @@ export default function Home() {
     }, 3500);
     return () => window.clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    if (carouselProducts.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => scrollRail(productRailRef.current, 1, true), 4300);
-    return () => window.clearInterval(timer);
-  }, [carouselProducts.length]);
 
   return (
     <main>
@@ -355,38 +341,21 @@ export default function Home() {
       <section className="section soft home-products-section">
         <div className="section-heading">
           <div>
-            <span className="eyebrow orange">PRODUCTOS DESTACADOS</span>
-            <h2>Herramientas listas para llevar</h2>
-            <p>Precios del catálogo y acceso directo a cada producto.</p>
+            <span className="eyebrow orange">PRODUCTOS ESTRELLA</span>
+            <h2>Los elegidos de Litoral Maq</h2>
+            <p>Cuatro productos con buen precio, stock y salida.</p>
           </div>
           <Link href="/productos" className="text-link">Ver catálogo completo →</Link>
         </div>
-        <div className="carousel-shell product-carousel">
-          <button
-            type="button"
-            className="carousel-arrow rail-arrow previous"
-            aria-label="Productos anteriores"
-            onClick={() => scrollRail(productRailRef.current, -1, true)}
-          >
-            ‹
-          </button>
-          <div className="product-carousel-rail carousel-rail" ref={productRailRef}>
-            {carouselProducts.map((product, index) => (
-              <ProductCard
-                product={product}
-                badge={index < 3 ? "Más vendido" : undefined}
-                key={product.id}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            className="carousel-arrow rail-arrow next"
-            aria-label="Más productos"
-            onClick={() => scrollRail(productRailRef.current, 1, true)}
-          >
-            ›
-          </button>
+        <div className="star-products-grid" aria-label="Cuatro productos estrella">
+          {starProducts.map(({ product, image }) => (
+            <ProductCard
+              product={product}
+              imageOverride={image}
+              badge="Producto estrella"
+              key={product.id}
+            />
+          ))}
         </div>
       </section>
 

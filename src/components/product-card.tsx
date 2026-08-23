@@ -6,15 +6,24 @@ import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 
-export function ProductCard({ product, badge }: { product: Product; badge?: string }) {
+export function ProductCard({
+  product,
+  badge,
+  imageOverride,
+}: {
+  product: Product;
+  badge?: string;
+  imageOverride?: string;
+}) {
   const { addToCart } = useStore();
   const productHref = `/producto?slug=${encodeURIComponent(product.slug)}`;
+  const productImage = imageOverride || product.image;
   return (
     <article className="product-card">
       <Link href={productHref} className="product-image">
-        {product.image ? (
+        {productImage ? (
           <Image
-            src={product.image}
+            src={productImage}
             alt={product.name}
             fill
             sizes="(max-width: 700px) 50vw, 25vw"
