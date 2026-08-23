@@ -14,7 +14,20 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="footer-brand">
-        <Image src="/brand/GRIS.png" alt="Litoral Maq" width={190} height={69} />
+        <Link
+          href="/"
+          aria-label="Ir al inicio"
+          onClick={
+            pathname === "/"
+              ? (event) => {
+                  event.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              : undefined
+          }
+        >
+          <Image src="/brand/GRIS.png" alt="Litoral Maq" width={200} height={73} />
+        </Link>
         <p>Máquinas y herramientas para tu casa, obra o taller.</p>
       </div>
 
