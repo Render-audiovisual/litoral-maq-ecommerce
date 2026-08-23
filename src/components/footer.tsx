@@ -22,7 +22,7 @@ export function Footer() {
         <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
           Ubicación
         </a>
-        <span>Horarios: a confirmar</span>
+        <span>Lun a Vie 8 a 17 hs · Sáb 8:30 a 12:30 hs</span>
         <Link href="/productos">Productos</Link>
         <Link href="/cuenta/pedidos">Seguimiento</Link>
         <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
@@ -44,13 +44,6 @@ export function Footer() {
             </svg>
           </a>
         </div>
-      </div>
-      <div>
-        <strong>Horarios</strong>
-        <span>Lunes a viernes</span>
-        <span>8:00 a 17:00 hs</span>
-        <span>Sábados</span>
-        <span>8:30 a 12:30 hs</span>
       </div>
     </footer>
   );
