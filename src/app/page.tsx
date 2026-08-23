@@ -316,11 +316,14 @@ export default function Home() {
         <div className="hero-actions commerce-hero-actions">
           <div className="hero-buttons">
             <Link href="/productos" className="button primary large">Explorar catálogo</Link>
-            <Link href="/productos?categoria=Ofertas" className="button ghost large">Ver ofertas</Link>
+            <Link href="/productos?categoria=Ofertas" className="button ghost large hero-offers-link">
+              <span className="hero-offers-desktop">Ver ofertas</span>
+              <span className="hero-offers-mobile">Ver ofertas destacadas →</span>
+            </Link>
           </div>
           <div className="pickup-banner">
             <span>RETIRO GRATIS</span>
-            <strong>Comprá y retirá gratis en Sáenz 1587</strong>
+            <strong><i aria-hidden="true">📍</i> Comprá y retirá gratis en Sáenz 1587</strong>
             <b aria-hidden="true">→</b>
           </div>
         </div>

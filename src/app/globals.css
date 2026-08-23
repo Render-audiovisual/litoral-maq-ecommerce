@@ -96,9 +96,11 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .commerce-hero-copy > p { max-width: 610px; color: var(--muted); font-size: 17px; line-height: 1.65; }
 .commerce-hero-actions { grid-area: actions; align-self: start; display: block; margin: 26px 0 0; padding-left: clamp(18px, 2vw, 32px); }
 .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-offers-mobile { display: none; }
 .pickup-banner { width: min(100%, 470px); min-height: 68px; margin-top: 18px; padding: 9px 18px 9px 9px; display: flex; align-items: center; gap: 14px; border: 1px solid rgba(89,202,211,.42); border-left: 6px solid var(--orange); border-radius: 5px; background: linear-gradient(105deg, var(--navy-dark), var(--navy)); color: #fff; box-shadow: 0 14px 32px rgba(0,42,73,.24); }
 .pickup-banner span { padding: 9px 10px; background: var(--orange); color: #fff; font-size: 9px; font-weight: 900; letter-spacing: .09em; line-height: 1.15; white-space: nowrap; }
 .pickup-banner strong { color: #fff; font-size: 14px; line-height: 1.25; text-transform: uppercase; }
+.pickup-banner strong i { display: none; font-style: normal; }
 .pickup-banner b { margin-left: auto; color: var(--cyan); font-size: 23px; }
 .commerce-metrics { display: flex; gap: 34px; color: var(--muted); font-size: 11px; }
 .commerce-metrics span { display: flex; flex-direction: column; }
@@ -504,17 +506,21 @@ td > small { margin-top: 4px; color: var(--muted); }
   .floating-whatsapp svg { width: 28px; height: 28px; }
   .brand img { width: 130px; }
   .hero h1 { font-size: 3rem; }
-  .commerce-hero { padding: 32px 4vw 30px; background: linear-gradient(#fff 0 31%, #edf7f8 31%); }
+  .commerce-hero { padding: 20px 4vw 30px; background: linear-gradient(#fff 0 29%, #edf7f8 29%); }
   .commerce-hero .hero-pill { padding: 7px 9px; font-size: 9px; letter-spacing: .11em; }
   .commerce-hero-copy h1 { margin: 16px 0 13px; font-size: 2.3rem; line-height: .95; }
   .commerce-hero-copy > p { margin-bottom: 0; font-size: 13px; line-height: 1.55; }
-  .commerce-hero .hero-actions { width: 100%; margin: 20px 0 0; }
-  .commerce-hero .hero-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .commerce-hero .button.large { min-height: 46px; padding: 0 8px; font-size: 11px; text-align: center; }
-  .pickup-banner { width: 100%; min-height: 60px; padding: 8px 10px 8px 8px; gap: 9px; border-left-width: 5px; }
-  .pickup-banner span { padding: 7px 7px; font-size: 7px; }
-  .pickup-banner strong { font-size: 10px; }
-  .pickup-banner b { font-size: 19px; }
+  .commerce-hero .hero-actions { width: 100%; margin: 16px 0 0; }
+  .commerce-hero .hero-buttons { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .commerce-hero .button.large { min-height: 46px; padding: 0 18px; font-size: 11px; text-align: center; }
+  .commerce-hero .hero-buttons .button.primary { width: 100%; }
+  .commerce-hero .hero-offers-link { min-height: 28px; padding: 0 8px; border: 0; color: var(--navy); font-size: 10px; text-decoration: underline; text-underline-offset: 3px; }
+  .hero-offers-desktop { display: none; }
+  .hero-offers-mobile { display: inline; }
+  .pickup-banner { width: auto; min-height: 24px; margin-top: 4px; padding: 0; justify-content: center; gap: 5px; border: 0; background: transparent; color: var(--navy); box-shadow: none; }
+  .pickup-banner > span, .pickup-banner > b { display: none; }
+  .pickup-banner strong { color: var(--navy); font-size: 9px; font-weight: 750; letter-spacing: .01em; text-transform: none; }
+  .pickup-banner strong i { display: inline; margin-right: 3px; color: var(--orange); }
   .commerce-metrics { display: none; }
   .hero-promo-slider { min-height: 520px; margin-top: 14px; }
   .hero-promo-preview { width: min(70%, 270px); border-width: 3px; border-radius: 16px; opacity: .72; }
