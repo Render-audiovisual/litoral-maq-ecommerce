@@ -150,7 +150,6 @@ export default function Home() {
   const nextPromo = PROMO_SLIDES[(activePromo + 1) % PROMO_SLIDES.length];
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => {
       setActivePromo((current) => (current + 1) % PROMO_SLIDES.length);
     }, 3500);
