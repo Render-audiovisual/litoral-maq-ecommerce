@@ -123,7 +123,10 @@ export function TestimonialsSection() {
 
   function onMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     const el = trackRef.current;
-    if (!el) return;
+    // Solo el clic izquierdo arrastra. Con el derecho se abre el menu
+    // contextual del navegador y nunca llega un mouseup a este elemento,
+    // asi que si lo tratabamos como arrastre quedaba trabado para siempre.
+    if (!el || event.button !== 0) return;
     // Sin esto, arrastrar sobre una imagen dispara el drag-and-drop nativo
     // del navegador, que se queda con mousemove/mouseup y el scroll queda pegado.
     event.preventDefault();
@@ -143,6 +146,18 @@ export function TestimonialsSection() {
     draggingRef.current = false;
     setDragging(false);
   }
+
+  // Red de seguridad: si el mouseup nunca llega al elemento (soltar afuera
+  // de la ventana, perder el foco, un popup que se roba el evento), esto
+  // igual libera el arrastre para que el carrusel no quede pegado.
+  useEffect(() => {
+    window.addEventListener("mouseup", endDrag);
+    window.addEventListener("blur", endDrag);
+    return () => {
+      window.removeEventListener("mouseup", endDrag);
+      window.removeEventListener("blur", endDrag);
+    };
+  }, []);
 
   return (
     <section className="section testimonials-section">
