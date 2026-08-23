@@ -152,11 +152,19 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .cta-banner { margin: 90px 6vw; padding: 55px 6vw; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
 .cta-banner h2 { color: #fff; margin: 8px 0; }
 .cta-banner p { margin: 0; color: #bcd1de; }
-.footer { padding: 55px 6vw; display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 45px; background: var(--navy-dark); color: #c5d4de; }
-.footer div { display: flex; flex-direction: column; gap: 12px; }
-.footer strong { color: #fff; }
+.footer { padding: 56px 6vw 30px; display: flex; flex-direction: column; align-items: center; gap: 26px; background: var(--navy-dark); color: #c5d4de; }
 .footer img { filter: brightness(0) invert(1); }
-.footer p { max-width: 320px; line-height: 1.6; }
+.footer-brand { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.footer-brand p { margin: 0; max-width: 320px; color: #93a9b8; font-size: 13px; }
+.footer-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 28px; font-size: 13px; }
+.footer-nav a { color: #c5d4de; transition: color .15s ease; }
+.footer-nav a:hover { color: #fff; }
+.footer-nav span { color: #7f96a6; }
+.footer-bottom { width: 100%; max-width: 980px; padding-top: 22px; border-top: 1px dashed rgba(255,255,255,.14); display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 12px; color: #7f96a6; }
+.footer-social { display: flex; gap: 14px; }
+.footer-social a { color: #93a9b8; transition: color .15s ease; }
+.footer-social a:hover { color: #fff; }
+.footer-social svg { width: 18px; height: 18px; display: block; }
 .page-hero { padding: 70px 6vw; background: var(--navy-dark); color: #fff; }
 .page-hero h1 { color: #fff; margin: 10px 0; }
 .page-hero p { color: #bfd0dc; margin-bottom: 0; }
@@ -415,7 +423,6 @@ td > small { margin-top: 4px; color: var(--muted); }
   .admin-logo { width: max-content; }
   .admin-grid, .settings-grid { grid-template-columns: 1fr; }
   .category-admin-grid { grid-template-columns: repeat(2, 1fr); }
-  .footer { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 560px) {
@@ -467,7 +474,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .product-price { font-size: 16px; }
   .product-card .button { min-height: 40px; padding: 0 6px; font-size: 10px; }
   .cta-banner { margin: 55px 4vw; padding: 35px 25px; flex-direction: column; align-items: flex-start; }
-  .footer { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
   .product-detail-page, .standard-page { padding: 30px 4vw 70px; }
   .detail-image { min-height: 450px; }
   .purchase-benefits { grid-template-columns: 1fr; }
