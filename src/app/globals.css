@@ -193,6 +193,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .testimonial-track { width: max-content; display: flex; gap: 18px; }
 .testimonial-card { width: 250px; aspect-ratio: 9 / 16; flex: 0 0 auto; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 18px; background: var(--soft); box-shadow: 0 16px 40px rgba(0,42,73,.16); }
 .testimonial-media { width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: auto; }
+video.testimonial-media { object-fit: contain; background: #000; }
 .testimonial-name { position: absolute; left: 10px; bottom: 10px; z-index: 2; padding: 6px 10px; border-radius: 999px; background: rgba(0,42,73,.72); color: #fff; font-size: 11px; font-weight: 700; max-width: calc(100% - 20px); pointer-events: none; }
 .cta-banner { margin: 90px 6vw; padding: 55px 6vw; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
 .cta-banner h2 { color: #fff; margin: 8px 0; }
