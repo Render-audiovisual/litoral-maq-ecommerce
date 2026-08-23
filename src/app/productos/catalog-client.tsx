@@ -17,9 +17,10 @@ export function CatalogClient() {
   const params = useSearchParams();
   const initialCategory = params.get("categoria") || "";
   const initialFamily = params.get("familia") || "";
+  const initialQuery = params.get("q") || "";
   const offersOnly = initialCategory === "Ofertas";
   const { products } = useStore();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState(
     initialCategory === "Ofertas" ? "" : initialCategory,
   );
