@@ -14,7 +14,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="footer-brand">
-        <Image src="/brand/GRIS.png" alt="Litoral Maq" width={170} height={62} />
+        <Image src="/brand/GRIS.png" alt="Litoral Maq" width={190} height={69} />
         <p>Máquinas y herramientas para tu casa, obra o taller.</p>
       </div>
 
