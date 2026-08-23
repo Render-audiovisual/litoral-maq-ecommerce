@@ -33,6 +33,13 @@ export function Footer() {
           WhatsApp comercial
         </a>
       </div>
+      <div>
+        <strong>Horarios</strong>
+        <span>Lunes a viernes</span>
+        <span>8:00 a 17:00 hs</span>
+        <span>Sábados</span>
+        <span>8:30 a 12:30 hs</span>
+      </div>
     </footer>
   );
 }
