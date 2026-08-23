@@ -47,3 +47,7 @@ Este proyecto usa Vitest, cuyo CLI rechazó la opción de Jest `--runInBand`. Ej
 ## 2026-08-20 — Verificar el remoto inmediatamente antes de publicar
 
 El push fue rechazado porque `origin/main` recibió commits durante el trabajo local. Ejecutar `git fetch origin`, revisar los cambios entrantes y rebasar de forma no destructiva antes de reintentar; nunca forzar el push ni sobrescribir trabajo ajeno.
+
+## 2026-08-23 — Los carruseles infinitos duplican selectores E2E
+
+La prueba de categorías encontró dos enlaces iguales porque el loop renderiza una copia normal y otra con `aria-hidden="true"`. En React, `aria-hidden={false}` omite el atributo; en Playwright, seleccionar la primera copia o excluir explícitamente `[aria-hidden="true"]`. Como el enlace se mueve con el auto-scroll, disparar `mouseover` sobre el carril para activar la pausa y recién entonces ejecutar el clic; `hover()` también espera estabilidad y no puede entrar sobre un elemento que sigue moviéndose.

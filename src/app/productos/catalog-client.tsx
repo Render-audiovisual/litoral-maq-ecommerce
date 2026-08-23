@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import {
   getLaunchBestSellerRankMap,
-  getLaunchProducts,
   LAUNCH_FAMILIES,
   matchesLaunchFamily,
 } from "@/lib/launch-catalog";
@@ -31,22 +30,25 @@ export function CatalogClient() {
   const [sort, setSort] = useState("featured");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const launchProducts = useMemo(() => getLaunchProducts(products), [products]);
-  const winnerRanks = useMemo(() => getLaunchBestSellerRankMap(launchProducts), [launchProducts]);
+  const catalogProducts = useMemo(
+    () => products.filter((product) => product.active),
+    [products],
+  );
+  const winnerRanks = useMemo(() => getLaunchBestSellerRankMap(catalogProducts), [catalogProducts]);
   const availableBrands = useMemo(
     () => Array.from(new Set(
-      launchProducts
+      catalogProducts
         .filter((product) => !family || matchesLaunchFamily(product, family))
         .map((product) => product.brand)
         .filter(Boolean),
     )).sort((a, b) => a.localeCompare(b)),
-    [launchProducts, family],
+    [catalogProducts, family],
   );
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     const minimum = minimumPrice === "" ? null : Number(minimumPrice);
     const maximum = maximumPrice === "" ? null : Number(maximumPrice);
-    return launchProducts
+    return catalogProducts
       .filter((product) => {
         const matches =
           !normalized ||
@@ -73,7 +75,7 @@ export function CatalogClient() {
         const rankB = winnerRanks.get(b.id) ?? Number.MAX_SAFE_INTEGER;
         return rankA - rankB || Number(b.featured) - Number(a.featured) || b.stock - a.stock;
       });
-  }, [launchProducts, query, family, brand, minimumPrice, maximumPrice, category, onlyAvailable, offersOnly, sort, winnerRanks]);
+  }, [catalogProducts, query, family, brand, minimumPrice, maximumPrice, category, onlyAvailable, offersOnly, sort, winnerRanks]);
 
   function resetVisibleCount() {
     setVisibleCount(PAGE_SIZE);

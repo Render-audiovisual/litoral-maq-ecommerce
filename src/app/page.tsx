@@ -8,7 +8,6 @@ import { TestimonialsSection } from "@/components/testimonials";
 import { formatCurrency } from "@/lib/utils";
 import {
   getLaunchFamilyCards,
-  getLaunchProducts,
 } from "@/lib/launch-catalog";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
@@ -30,13 +29,13 @@ const PROMO_SLIDES = [
     id: "cortacesped-gladiator-1600w",
     image: "/promos/cortacesped-gladiator-1600w.jpg",
     label: "Cortacésped Gladiator 1600W",
-    href: "/productos?q=cortacesped%201600w",
+    href: "/productos/cort-cesped-1600w-gladiator-cp536-220-3348",
   },
   {
     id: "hormigonera-obra-140l",
     image: "/promos/hormigonera-obra-140l.jpg",
     label: "Hormigonera Obra 140 litros",
-    href: "/productos?q=hormigonera%20140",
+    href: "/productos/hormigonera-140-lts-obra-mh8140-25-3353",
   },
   {
     id: "kit-taladro-amoladora-energy",
@@ -53,14 +52,14 @@ const PROMO_SLIDES = [
   {
     id: "maletin-tubos-criquet",
     image: "/promos/maletin-tubos-criquet.jpg",
-    label: "Maletín de tubos y criquet",
-    href: "/productos?q=juego%20de%20tubos",
+    label: "Maletín de tubos y criquet 32 piezas",
+    href: "/productos/juego-de-tubos-1-2-x-32-jt10321-2-3650",
   },
   {
     id: "llave-impacto-neo-next",
     image: "/promos/llave-impacto-neo-next.jpg",
     label: "Llave de impacto Neo Next 20V",
-    href: "/productos?q=llave%20de%20impacto%2020v",
+    href: "/productos/llave-de-impacto-20v-650-n-m-neo-li1065-20c1-3732",
   },
   {
     id: "motosierra-knock-out",
@@ -145,9 +144,6 @@ type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
 function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
   const railRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
-  const draggingRef = useRef(false);
-  const [dragging, setDragging] = useState(false);
-  const dragStart = useRef({ x: 0, scrollLeft: 0 });
   const resumeTimer = useRef<number | undefined>(undefined);
   const trackItems = [...categories, ...categories];
 
@@ -160,7 +156,7 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
       const dt = (now - last) / 1000;
       last = now;
       const rail = railRef.current;
-      if (rail && !pausedRef.current && !draggingRef.current) {
+      if (rail && !pausedRef.current) {
         rail.scrollLeft += CATEGORY_AUTO_SCROLL_SPEED * dt;
         const half = rail.scrollWidth / 2;
         if (rail.scrollLeft >= half) rail.scrollLeft -= half;
@@ -172,17 +168,8 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
     return () => cancelAnimationFrame(raf);
   }, [categories.length]);
 
-  function endDrag() {
-    draggingRef.current = false;
-    setDragging(false);
-  }
-
   useEffect(() => {
-    window.addEventListener("mouseup", endDrag);
-    window.addEventListener("blur", endDrag);
     return () => {
-      window.removeEventListener("mouseup", endDrag);
-      window.removeEventListener("blur", endDrag);
       window.clearTimeout(resumeTimer.current);
     };
   }, []);
@@ -190,27 +177,10 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
   return (
     <div
       ref={railRef}
-      className={`category-marquee${dragging ? " is-dragging" : ""}`}
+      className="category-marquee"
       aria-label="Categorías de productos, se puede deslizar"
       onMouseEnter={() => { pausedRef.current = true; }}
-      onMouseLeave={() => {
-        if (!draggingRef.current) pausedRef.current = false;
-        endDrag();
-      }}
-      onMouseDown={(event) => {
-        const rail = railRef.current;
-        if (!rail || event.button !== 0) return;
-        event.preventDefault();
-        draggingRef.current = true;
-        setDragging(true);
-        dragStart.current = { x: event.clientX, scrollLeft: rail.scrollLeft };
-      }}
-      onMouseMove={(event) => {
-        const rail = railRef.current;
-        if (!rail || !draggingRef.current) return;
-        rail.scrollLeft = dragStart.current.scrollLeft - (event.clientX - dragStart.current.x);
-      }}
-      onMouseUp={endDrag}
+      onMouseLeave={() => { pausedRef.current = false; }}
       onTouchStart={() => {
         pausedRef.current = true;
         window.clearTimeout(resumeTimer.current);
@@ -238,10 +208,10 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
 export default function Home() {
   const { products } = useStore();
   const [activePromo, setActivePromo] = useState(0);
-  const launchProducts = getLaunchProducts(products);
-  const categories = getLaunchFamilyCards(launchProducts);
+  const activeProducts = products.filter((product) => product.active);
+  const categories = getLaunchFamilyCards(activeProducts);
   const starProducts = STAR_PRODUCTS.flatMap((item) => {
-    const product = launchProducts.find((candidate) => candidate.name.includes(item.model));
+    const product = activeProducts.find((candidate) => candidate.name.includes(item.model));
     return product ? [{ product, image: item.image }] : [];
   });
   const promo = PROMO_SLIDES[activePromo];
@@ -273,15 +243,19 @@ export default function Home() {
           aria-roledescription="carrusel"
         >
           <div className="hero-promo-stack" key={promo.id}>
-            <div className="hero-promo-preview previous" aria-hidden="true">
+            <Link
+              href={previousPromo.href}
+              className="hero-promo-preview previous"
+              aria-label={`Ver ${previousPromo.label}`}
+            >
               <Image
                 src={previousPromo.image}
-                alt=""
+                alt={previousPromo.label}
                 fill
                 sizes="(max-width: 560px) 68vw, 300px"
                 loading="lazy"
               />
-            </div>
+            </Link>
 
             <article
               className="hero-promo-slide"
@@ -301,15 +275,19 @@ export default function Home() {
               </Link>
             </article>
 
-            <div className="hero-promo-preview next" aria-hidden="true">
+            <Link
+              href={nextPromo.href}
+              className="hero-promo-preview next"
+              aria-label={`Ver ${nextPromo.label}`}
+            >
               <Image
                 src={nextPromo.image}
-                alt=""
+                alt={nextPromo.label}
                 fill
                 sizes="(max-width: 560px) 68vw, 300px"
                 loading="lazy"
               />
-            </div>
+            </Link>
           </div>
         </div>
 
