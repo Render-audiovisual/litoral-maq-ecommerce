@@ -511,10 +511,11 @@ td > small { margin-top: 4px; color: var(--muted); }
   .commerce-hero .hero-offers-link { min-height: 28px; padding: 0 8px; border: 0; color: var(--navy); font-size: 10px; text-decoration: underline; text-underline-offset: 3px; }
   .hero-offers-desktop { display: none; }
   .hero-offers-mobile { display: inline; }
-  .pickup-banner { width: auto; min-height: 24px; margin-top: 4px; padding: 0; justify-content: center; gap: 5px; border: 0; background: transparent; color: var(--navy); box-shadow: none; }
-  .pickup-banner > span, .pickup-banner > b { display: none; }
-  .pickup-banner strong { color: var(--navy); font-size: 9px; font-weight: 750; letter-spacing: .01em; text-transform: none; }
-  .pickup-banner strong i { display: inline; margin-right: 3px; color: var(--orange); }
+  .pickup-banner { width: 100%; min-height: 56px; margin: 12px 0 0; padding: 8px 12px 8px 8px; gap: 10px; border-left-width: 5px; }
+  .pickup-banner span { padding: 6px 7px; font-size: 7px; }
+  .pickup-banner strong { font-size: 11px; }
+  .pickup-banner strong i { display: none; }
+  .pickup-banner b { font-size: 18px; }
   .commerce-metrics { display: none; }
   .hero-promo-slider { min-height: 520px; margin-top: 14px; }
   .hero-promo-preview { width: min(70%, 270px); border-width: 3px; border-radius: 16px; opacity: .72; }
