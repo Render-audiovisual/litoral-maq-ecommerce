@@ -187,11 +187,11 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .product-carousel-rail { display: flex; gap: 16px; }
 .product-carousel-rail .product-card { flex: 0 0 calc((100% - 48px) / 4); scroll-snap-align: start; }
 .testimonials-section { overflow: hidden; }
-.testimonial-marquee { width: 100%; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.testimonial-marquee { width: 100%; max-width: 1590px; margin: 0 auto; overflow: hidden; }
 .testimonial-track { width: max-content; display: flex; gap: 18px; animation: testimonial-scroll 46s linear infinite; }
 .testimonial-marquee:hover .testimonial-track, .testimonial-track.is-paused { animation-play-state: paused; }
 @keyframes testimonial-scroll { to { transform: translateX(-50%); } }
-.testimonial-card { width: 220px; aspect-ratio: 9 / 16; flex: 0 0 auto; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 18px; background: var(--soft); box-shadow: 0 16px 40px rgba(0,42,73,.16); }
+.testimonial-card { width: 250px; aspect-ratio: 9 / 16; flex: 0 0 auto; position: relative; overflow: hidden; border: 4px solid #fff; border-radius: 18px; background: var(--soft); box-shadow: 0 16px 40px rgba(0,42,73,.16); }
 .testimonial-media { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .testimonial-name { position: absolute; left: 10px; bottom: 10px; z-index: 2; padding: 6px 10px; border-radius: 999px; background: rgba(0,42,73,.72); color: #fff; font-size: 11px; font-weight: 700; max-width: calc(100% - 20px); }
 @media (prefers-reduced-motion: reduce) { .testimonial-track { animation: none; } }
