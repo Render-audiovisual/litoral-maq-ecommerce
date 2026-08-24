@@ -13,7 +13,7 @@ npm run dev
 
 Abrir `http://localhost:3000`.
 
-Acceso administrador de demostración:
+Acceso administrador de demostración (solo con el adaptador local; no corresponde a producción):
 
 - Email: `admin@litoralmaq.com`
 - Contraseña: `admin123`
@@ -57,6 +57,14 @@ npm run validate:e2e
 La validación E2E recorre catálogo, filtros, carrito persistente, checkout,
 registro, login, protección del panel, CRUD de productos, visibilidad pública,
 pedidos y vistas de escritorio/celular.
+
+La prueba integral de producción con dos clientes aislados y un administrador se ejecuta con:
+
+```bash
+PRIORITY6_ADMIN_EMAIL="..." PRIORITY6_ADMIN_PASSWORD="..." npm run validate:priority6
+```
+
+Las credenciales se pasan únicamente por entorno y no se guardan en el repositorio. Para comprobar primero el circuito real de los dos clientes sin operar el panel se puede usar `npm run validate:priority6 -- --customers-only`.
 
 ## Datos simulados
 

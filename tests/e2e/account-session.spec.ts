@@ -9,6 +9,7 @@ test('una cuenta puede registrarse, cerrar sesión realmente y volver a ingresar
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Contraseña').fill(password);
   await page.getByRole('button', { name: 'Crear cuenta' }).click();
+  await page.waitForURL(/\/cuenta\/pedidos$/);
   await expect(page.getByRole('heading', { name: /hola, cliente de prueba/i })).toBeVisible();
 
   await page.getByRole('button', { name: 'Cerrar sesión' }).click();
@@ -19,5 +20,6 @@ test('una cuenta puede registrarse, cerrar sesión realmente y volver a ingresar
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Contraseña').fill(password);
   await page.getByRole('button', { name: 'Ingresar', exact: true }).click();
+  await page.waitForURL(/\/cuenta\/pedidos$/);
   await expect(page.getByRole('heading', { name: /hola, cliente de prueba/i })).toBeVisible();
 });

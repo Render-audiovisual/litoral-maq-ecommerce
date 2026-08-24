@@ -15,6 +15,7 @@
     "import:sheet": "node scripts/import-google-sheet.mjs",
     "validate:catalog": "node scripts/validate-catalog.mjs",
     "validate:e2e": "node scripts/e2e-validation.mjs",
+    "validate:priority6": "node scripts/validate-priority6.mjs",
     "prepare:products-migration": "node scripts/prepare-products-migration.mjs",
     "test": "vitest run",
     "test:unit": "vitest run",
