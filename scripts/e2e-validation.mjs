@@ -54,8 +54,8 @@ try {
     await page.getByRole("radio").nth(1).check();
     await page.getByRole("button", { name: "Confirmar retiro" }).click();
     await page.getByText("Retiro sin costo").waitFor();
-    await page.getByRole("button", { name: "Pagar con Mercado Pago" }).click();
-    await page.getByText("¡Gracias por tu compra!").waitFor();
+    await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
+    await page.getByText("Recibimos tu pedido").waitFor();
     // El checkout invitado ya no crea sesión: la pantalla de éxito ofrece
     // ingresar o registrarse, no un acceso directo a /cuenta/pedidos.
     await page.getByRole("link", { name: "Ingresar" }).waitFor();
@@ -168,8 +168,8 @@ try {
     await page.getByRole("radio").nth(1).check();
     await page.getByRole("button", { name: "Confirmar retiro" }).click();
     await page.getByText("Retiro sin costo").waitFor();
-    await page.getByRole("button", { name: "Pagar con Mercado Pago" }).click();
-    await page.getByText("¡Gracias por tu compra!").waitFor();
+    await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
+    await page.getByText("Recibimos tu pedido").waitFor();
     await page.goto(`${baseURL}/admin/login`);
     await page.getByLabel("Email").fill("admin@litoralmaq.com");
     await page.getByLabel("Contraseña").fill("admin123");

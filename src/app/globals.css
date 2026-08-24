@@ -441,6 +441,9 @@ td > small { margin-top: 4px; color: var(--muted); }
 .category-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: var(--orange-soft); color: var(--orange); }
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
 .settings-grid h2 { margin-bottom: 25px; }
+.operational-mode > div { padding: 14px 0; display: flex; flex-direction: column; gap: 5px; border-bottom: 1px solid var(--line); }
+.operational-mode > div:last-child { border-bottom: 0; }
+.operational-mode span, .operational-mode small { color: var(--muted); font-size: 10px; }
 .integrations > div { padding: 14px 0; display: grid; grid-template-columns: 12px 1fr auto; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); }
 .integrations code { padding: 4px 7px; background: #f1f4f5; color: var(--navy); font-size: 10px; }
 .integrations small { grid-column: 2; color: var(--muted); }

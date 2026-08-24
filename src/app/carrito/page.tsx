@@ -39,11 +39,11 @@ export default function CartPage() {
           <aside className="order-summary">
             <h2>Resumen</h2>
             <div><span>Subtotal</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
-            <div><span>Envío</span><span>Se calcula en el checkout</span></div>
+            <div><span>Entrega</span><span>Retiro gratis o envío a cotizar</span></div>
             <hr />
             <div className="summary-total"><span>Total parcial</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
-            <Link href="/checkout" className="button primary large full">Continuar compra</Link>
-            <small>El pago es simulado en esta versión del MVP.</small>
+            <Link href="/checkout" className="button primary large full">Solicitar compra</Link>
+            <small>Confirmamos stock y entrega antes de cobrar.</small>
           </aside>
         </div>
       )}

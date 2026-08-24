@@ -8,6 +8,13 @@ import type { Order } from "@/lib/types";
 
 const statuses = Object.keys(ORDER_STATUS_LABELS) as Order["status"][];
 
+function deliveryAmountLabel(order: Order) {
+  if (order.paymentReference === "Pago a coordinar") {
+    return order.deliveryMethod === "envio" ? "A cotizar" : "Gratis";
+  }
+  return formatCurrency(order.shipping);
+}
+
 export default function AdminOrdersPage() {
   const { orders, products, customers, updateOrderStatus } = useStore();
   const [query, setQuery] = useState("");
@@ -74,7 +81,7 @@ export default function AdminOrdersPage() {
           <span>{filtered.length} de {orders.length} pedidos</span>
         </div>
         {!orders.length ? <div className="empty-state"><span>▤</span><h2>No hay pedidos todavía</h2><p>Los pedidos confirmados desde la tienda van a aparecer acá.</p></div> : !filtered.length ? <div className="empty-state"><span>⌕</span><h2>No hay coincidencias</h2><p>Probá otro término o limpiá el filtro de estado.</p></div> : (
-          <div className="table-wrap"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Productos</th><th>Entrega</th><th>Total</th><th>Fecha</th><th>Estado</th><th /></tr></thead><tbody>{filtered.map((order) => <tr key={order.id}><td><strong>{order.id}</strong><small>{order.paymentReference || "Sin referencia de pago"}</small></td><td>{order.customerName}<small>{order.email}</small></td><td>{order.lines.reduce((sum, line) => sum + line.quantity, 0)} unidades<small>{order.lines.length} renglones</small></td><td>{order.deliveryMethod === "envio" ? "Envío" : "Retiro"}<small>{order.address || "Sáenz 1587"}</small></td><td>{formatCurrency(order.total)}<small>Envío {formatCurrency(order.shipping)}</small></td><td>{formatDate(order.createdAt)}</td><td><select aria-label={`Estado de ${order.id}`} className={`status-select status-${order.status}`} value={order.status} disabled={updatingId === order.id} onChange={(event) => void changeStatus(order, event.target.value as Order["status"])}>{statuses.map((item) => <option value={item} key={item}>{ORDER_STATUS_LABELS[item]}</option>)}</select></td><td><button type="button" className="table-detail-button" onClick={() => setSelected(order)}>Ver detalle</button></td></tr>)}</tbody></table></div>
+          <div className="table-wrap"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Productos</th><th>Entrega</th><th>Total productos</th><th>Fecha</th><th>Estado</th><th /></tr></thead><tbody>{filtered.map((order) => <tr key={order.id}><td><strong>{order.id}</strong><small>{order.paymentReference || "Sin referencia de pago"}</small></td><td>{order.customerName}<small>{order.email}</small></td><td>{order.lines.reduce((sum, line) => sum + line.quantity, 0)} unidades<small>{order.lines.length} renglones</small></td><td>{order.deliveryMethod === "envio" ? "Envío" : "Retiro"}<small>{order.address || "Sáenz 1587"}</small></td><td>{formatCurrency(order.total)}<small>Entrega {deliveryAmountLabel(order)}</small></td><td>{formatDate(order.createdAt)}</td><td><select aria-label={`Estado de ${order.id}`} className={`status-select status-${order.status}`} value={order.status} disabled={updatingId === order.id} onChange={(event) => void changeStatus(order, event.target.value as Order["status"])}>{statuses.map((item) => <option value={item} key={item}>{ORDER_STATUS_LABELS[item]}</option>)}</select></td><td><button type="button" className="table-detail-button" onClick={() => setSelected(order)}>Ver detalle</button></td></tr>)}</tbody></table></div>
         )}
       </section>
 
@@ -86,7 +93,7 @@ export default function AdminOrdersPage() {
           <label>Estado<select aria-label={`Estado de ${selected.id} en detalle`} className={`status-select status-${selected.status}`} value={selected.status} disabled={updatingId === selected.id} onChange={(event) => void changeStatus(selected, event.target.value as Order["status"])}>{statuses.map((item) => <option value={item} key={item}>{ORDER_STATUS_LABELS[item]}</option>)}</select></label>
         </div>
         <div className="order-lines"><div className="order-lines-heading"><strong>Productos</strong><span>{selected.lines.reduce((sum, line) => sum + line.quantity, 0)} unidades</span></div>{selectedLines.map((line) => <div className="order-line-detail" key={`${line.productId}-${line.productCode}`}><div><strong>{line.productName}</strong><small>Cód. {line.productCode || line.productId}{!line.historicalSnapshot ? " · pedido anterior sin foto histórica" : ""}</small></div><span>{line.quantity} × {formatCurrency(line.unitPrice)}</span><strong>{formatCurrency(line.lineTotal)}</strong></div>)}</div>
-        <div className="order-totals"><div><span>Subtotal</span><strong>{formatCurrency(selected.total - selected.shipping)}</strong></div><div><span>Entrega</span><strong>{formatCurrency(selected.shipping)}</strong></div><div className="summary-total"><span>Total</span><strong>{formatCurrency(selected.total)}</strong></div></div>
+        <div className="order-totals"><div><span>Productos</span><strong>{formatCurrency(selected.paymentReference === "Pago a coordinar" ? selected.total : selected.total - selected.shipping)}</strong></div><div><span>Entrega</span><strong>{deliveryAmountLabel(selected)}</strong></div><div className="summary-total"><span>{selected.paymentReference === "Pago a coordinar" ? "Total de productos" : "Total"}</span><strong>{formatCurrency(selected.total)}</strong></div></div>
       </section></div>}
     </main>
   );

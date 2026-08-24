@@ -175,7 +175,7 @@ async function main() {
   }
   await collectAdminHtml(adminDir);
 
-  const COMMERCIAL_MARKERS = ["Agregar al carrito", "Finalizar compra", "Envíos a todo el país", "carrito.html"];
+  const COMMERCIAL_MARKERS = ["Agregar al carrito", "Confirmá tu pedido", "Envíos a todo el país", "carrito.html"];
   let commercialMarkerHits = 0;
   for (const htmlPath of adminHtmlFiles) {
     const html = await readIfExists(htmlPath);

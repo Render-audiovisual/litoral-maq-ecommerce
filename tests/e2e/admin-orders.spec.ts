@@ -12,9 +12,9 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await page.getByLabel("Teléfono").fill("3794000000");
   await page.getByText("Retiro en sucursal").click();
   await page.getByRole("button", { name: "Confirmar retiro" }).click();
-  await expect(page.getByText(/Retiro sin costo/)).toBeVisible();
-  await page.getByRole("button", { name: "Pagar con Mercado Pago" }).click();
-  await expect(page.getByText("¡Gracias por tu compra!")).toBeVisible();
+  await expect(page.getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
+  await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
+  await expect(page.getByText("Recibimos tu pedido")).toBeVisible();
 
   await page.goto("/admin/login");
   await page.getByLabel("Email").fill("admin@litoralmaq.com");
@@ -25,11 +25,14 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
 
   const row = page.locator("tbody tr").filter({ hasText: "Cliente Pedido E2E" });
   await expect(row).toContainText("1 unidades");
+  await expect(row.locator(".status-select")).toHaveValue("pendiente");
+  await expect(row).toContainText("Entrega Gratis");
   await row.getByRole("button", { name: "Ver detalle" }).click();
   const modal = page.locator(".order-detail-modal");
   await expect(modal).toContainText(productName);
   await expect(modal).toContainText("Cód. 3400");
   await expect(modal).toContainText("3794000000");
+  await expect(modal).toContainText("Pago a coordinar");
 
   await modal.getByLabel(/Estado de .* en detalle/).selectOption("preparando");
   await expect(page.getByText(/actualizado a Preparando/)).toBeVisible();

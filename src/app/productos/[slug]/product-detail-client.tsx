@@ -48,9 +48,9 @@ export function ProductDetailClient({ slug }: { slug: string }) {
           </div>
           {added && <Link href="/carrito" className="text-link">Ir al carrito →</Link>}
           <div className="purchase-benefits">
-            <div><span>🚚</span><strong>Envíos</strong><small>Cotización simulada por CP</small></div>
-            <div><span>💳</span><strong>Mercado Pago</strong><small>Flujo listo para conectar</small></div>
-            <div><span>↻</span><strong>Compra segura</strong><small>Seguimiento del pedido</small></div>
+            <div><span>🚚</span><strong>Envíos</strong><small>Cotización después de confirmar stock</small></div>
+            <div><span>📍</span><strong>Retiro gratis</strong><small>Sáenz 1587, Corrientes</small></div>
+            <div><span>✓</span><strong>Sin cobro previo</strong><small>Coordinamos el pago con vos</small></div>
           </div>
         </div>
       </section>

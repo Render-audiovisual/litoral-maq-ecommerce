@@ -6,7 +6,6 @@ import { FormEvent, useState } from "react";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { guestIdFromEmail, normalizeEmail } from "@/lib/auth";
-import { mockPaymentAdapter, mockShippingAdapter } from "@/services/mock";
 import { getAuthAdapter, supportsGuestSessions } from "@/services/auth";
 import type { Order, Session } from "@/lib/types";
 import { snapshotOrderLines } from "@/lib/order-details";
@@ -16,7 +15,6 @@ export default function CheckoutPage() {
   const { cart, products, cartSubtotal, customerSession, clearCart, createOrder, addCustomer, setCustomerSession } = useStore();
   const [method, setMethod] = useState<"envio" | "retiro">("envio");
   const [shipping, setShipping] = useState<number | null>(null);
-  const [eta, setEta] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
@@ -24,21 +22,17 @@ export default function CheckoutPage() {
     email: customerSession?.user.email || "",
     phone: "",
     postalCode: "",
+    locality: "",
     address: "",
   });
 
-  async function quote() {
+  function confirmDelivery() {
     setError("");
-    try {
-      const result = await mockShippingAdapter.quote({
-        postalCode: form.postalCode,
-        subtotal: cartSubtotal,
-        method,
-      });
-      setShipping(result.amount); setEta(result.eta);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "No se pudo cotizar.");
+    if (method === "envio" && (!/^\d{4}$/.test(form.postalCode) || !form.locality.trim() || !form.address.trim())) {
+      setError("Completá código postal, localidad y domicilio para solicitar la cotización.");
+      return;
     }
+    setShipping(0);
   }
 
   async function submit(event: FormEvent) {
@@ -48,12 +42,12 @@ export default function CheckoutPage() {
       setError("Completá nombre, email y teléfono.");
       return;
     }
-    if (method === "envio" && (!/^\d{4}$/.test(form.postalCode) || !form.address.trim())) {
-      setError("Completá código postal y domicilio de entrega.");
+    if (method === "envio" && (!/^\d{4}$/.test(form.postalCode) || !form.locality.trim() || !form.address.trim())) {
+      setError("Completá código postal, localidad y domicilio de entrega.");
       return;
     }
     if (shipping === null) {
-      setError("Calculá el envío o confirmá el retiro antes de pagar.");
+      setError("Confirmá la forma de entrega antes de enviar la solicitud.");
       return;
     }
     setLoading(true);
@@ -91,16 +85,15 @@ export default function CheckoutPage() {
       customerName: form.name.trim(),
       email: normalizedEmail,
       lines: snapshotOrderLines(cart, products),
-      total: cartSubtotal + shipping,
+      total: cartSubtotal,
       shipping,
       deliveryMethod: method,
-      address: method === "envio" ? form.address : undefined,
-      status: "pago_simulado",
+      address: method === "envio" ? `CP ${form.postalCode} · ${form.locality.trim()} · ${form.address.trim()}` : undefined,
+      status: "pendiente",
       createdAt: new Date().toISOString(),
-      paymentReference: `MP-DEMO-${id}`,
+      paymentReference: "Pago a coordinar",
     };
     try {
-      await mockPaymentAdapter.createPreference(order);
       await createOrder(order);
       addCustomer({
         id: customerId,
@@ -124,7 +117,7 @@ export default function CheckoutPage() {
 
   return (
     <main className="standard-page checkout-page">
-      <div className="page-heading"><span className="eyebrow orange">COMPRA SEGURA</span><h1>Finalizar compra</h1></div>
+      <div className="page-heading"><span className="eyebrow orange">SOLICITUD DE COMPRA</span><h1>Confirmá tu pedido</h1><p>Revisamos disponibilidad y coordinamos con vos antes de cobrar.</p></div>
       <form className="checkout-layout" onSubmit={submit}>
         <div className="checkout-steps">
           <section className="form-card">
@@ -138,28 +131,28 @@ export default function CheckoutPage() {
           <section className="form-card">
             <div className="step-number">2</div><h2>Entrega</h2>
             <div className="delivery-options">
-              <label className={method === "envio" ? "selected" : ""}><input type="radio" checked={method === "envio"} onChange={() => { setMethod("envio"); setShipping(null); }} />🚚 Envío a domicilio</label>
+              <label className={method === "envio" ? "selected" : ""}><input type="radio" checked={method === "envio"} onChange={() => { setMethod("envio"); setShipping(null); }} />🚚 Envío a cotizar</label>
               <label className={method === "retiro" ? "selected" : ""}><input type="radio" checked={method === "retiro"} onChange={() => { setMethod("retiro"); setShipping(null); }} />📍 Retiro en sucursal</label>
             </div>
-            {method === "envio" && <div className="form-grid"><label>Código postal<input value={form.postalCode} maxLength={4} onChange={(event) => setForm({ ...form, postalCode: event.target.value.replace(/\D/g, "") })} /></label><label className="wide">Domicilio<input value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} /></label></div>}
-            <button type="button" className="button secondary" onClick={quote}>{method === "envio" ? "Calcular envío" : "Confirmar retiro"}</button>
-            {shipping !== null && <div className="success-message">✓ {method === "retiro" ? "Retiro sin costo" : `Envío: ${formatCurrency(shipping)}`} · {eta}</div>}
+            {method === "envio" && <div className="form-grid"><label>Código postal<input value={form.postalCode} maxLength={4} onChange={(event) => { setForm({ ...form, postalCode: event.target.value.replace(/\D/g, "") }); setShipping(null); }} /></label><label>Localidad<input value={form.locality} onChange={(event) => { setForm({ ...form, locality: event.target.value }); setShipping(null); }} /></label><label className="wide">Domicilio<input value={form.address} onChange={(event) => { setForm({ ...form, address: event.target.value }); setShipping(null); }} /></label></div>}
+            <button type="button" className="button secondary" onClick={confirmDelivery}>{method === "envio" ? "Confirmar datos de envío" : "Confirmar retiro"}</button>
+            {shipping !== null && <div className="success-message">✓ {method === "retiro" ? "Retiro gratis en Sáenz 1587" : "Datos listos para cotizar el envío"}</div>}
           </section>
           <section className="form-card">
-            <div className="step-number">3</div><h2>Pago</h2>
-            <div className="payment-option selected"><span>💳</span><div><strong>Mercado Pago</strong><small>Tarjetas, dinero en cuenta y cuotas</small></div><b>DEMO</b></div>
-            <p className="helper">En el MVP el pago se aprueba de forma simulada. La preferencia real se conectará mediante el adaptador de Mercado Pago.</p>
+            <div className="step-number">3</div><h2>Revisión y contacto</h2>
+            <div className="payment-option selected"><span>✓</span><div><strong>Primero confirmamos todo</strong><small>Stock, entrega y total final</small></div><b>SIN COBRO</b></div>
+            <p className="helper">Enviar la solicitud no realiza ningún pago. Litoral Maq se contactará con vos para confirmar disponibilidad, cotizar el envío si corresponde y coordinar el medio de pago.</p>
           </section>
           {error && <div className="error-message">{error}</div>}
         </div>
         <aside className="order-summary sticky">
-          <h2>Tu pedido</h2>
+          <h2>Tu solicitud</h2>
           <div><span>Productos</span><strong>{cart.reduce((sum, line) => sum + line.quantity, 0)}</strong></div>
           <div><span>Subtotal</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
-          <div><span>Entrega</span><strong>{shipping === null ? "Pendiente" : formatCurrency(shipping)}</strong></div><hr />
-          <div className="summary-total"><span>Total</span><strong>{formatCurrency(cartSubtotal + (shipping || 0))}</strong></div>
-          <button className="button primary large full" disabled={loading || shipping === null}>{loading ? "Procesando…" : shipping === null ? "Confirmá la entrega para continuar" : "Pagar con Mercado Pago"}</button>
-          <small>Compra simulada para validación funcional.</small>
+          <div><span>Entrega</span><strong>{shipping === null ? "Sin confirmar" : method === "retiro" ? "Gratis" : "A cotizar"}</strong></div><hr />
+          <div className="summary-total"><span>Total de productos</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
+          <button className="button primary large full" disabled={loading || shipping === null}>{loading ? "Enviando…" : shipping === null ? "Confirmá la entrega para continuar" : "Enviar solicitud de compra"}</button>
+          <small>No se realizará ningún cobro en este paso.</small>
         </aside>
       </form>
     </main>

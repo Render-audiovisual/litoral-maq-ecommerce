@@ -15,9 +15,10 @@ function SuccessContent() {
   return (
     <main className="center-state success-page">
       <span className="success-check">✓</span>
-      <span className="eyebrow orange">PAGO SIMULADO APROBADO</span>
-      <h1>¡Gracias por tu compra!</h1>
-      <p>Tu pedido <strong>{params.get("pedido")}</strong> quedó registrado correctamente.</p>
+      <span className="eyebrow orange">SOLICITUD RECIBIDA</span>
+      <h1>Recibimos tu pedido</h1>
+      <p>La solicitud <strong>{params.get("pedido")}</strong> quedó registrada correctamente.</p>
+      <p>Todavía no se realizó ningún cobro. Vamos a confirmar disponibilidad, entrega y total final antes de coordinar el pago.</p>
       {authenticated ? (
         <div className="success-actions">
           <Link href="/cuenta/pedidos" className="button primary">Ver mis pedidos</Link>
@@ -25,7 +26,7 @@ function SuccessContent() {
         </div>
       ) : (
         <>
-          <p>Compraste como invitado. Ingresá o creá una cuenta para ver el historial completo de tus pedidos.</p>
+          <p>Enviaste la solicitud como invitado. Ingresá o creá una cuenta para consultar su estado.</p>
           <div className="success-actions">
             <Link
               href={`/login?next=%2Fcuenta%2Fpedidos${email ? `&email=${encodeURIComponent(email)}` : ""}`}
