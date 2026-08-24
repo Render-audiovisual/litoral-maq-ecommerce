@@ -17,6 +17,7 @@ test("el administrador confirma explícitamente el stock antes de publicarlo", a
   await page.getByLabel("Email").fill("admin@litoralmaq.com");
   await page.getByLabel("Contraseña").fill("admin123");
   await page.getByRole("button", { name: "Ingresar" }).click();
+  await expect(page).toHaveURL(/\/admin$/);
   await page.goto("/admin/productos");
 
   await expect(page.getByText(/Fuente de verdad:/)).toBeVisible();

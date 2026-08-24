@@ -49,8 +49,8 @@ type Store = {
   saveProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
   replaceProducts: (products: Product[]) => Promise<Product[]>;
-  createOrder: (order: Order) => void;
-  updateOrderStatus: (id: string, status: Order["status"]) => void;
+  createOrder: (order: Order) => Promise<Order>;
+  updateOrderStatus: (id: string, status: Order["status"]) => Promise<Order>;
   addCustomer: (customer: Customer) => void;
   convertGuestToAccount: (email: string, accountId: string) => void;
   auditLog: AuditEntry[];
@@ -400,24 +400,30 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   );
 
   const createOrder = useCallback(
-    (order: Order) => {
-      setOrders((current) => [order, ...current]);
-      void adapter.createOrder(order);
+    async (order: Order) => {
+      const persisted = await adapter.createOrder(order);
+      setOrders((current) => [persisted, ...current.filter((item) => item.id !== persisted.id)]);
+      return persisted;
     },
     [adapter],
   );
 
   const updateOrderStatus = useCallback(
-    (id: string, status: Order["status"]) => {
+    async (id: string, status: Order["status"]) => {
       const result = applyUpdateOrderStatus(orders, adminSession, id, status);
       if (!result.applied || !result.auditEntry) {
-        console.warn("Intento de cambiar el estado de un pedido sin sesión de administrador válida.");
-        return;
+        throw new Error("La sesión de administrador venció. Volvé a ingresar.");
       }
-      setOrders(result.next);
+      const persisted = await adapter.updateOrderStatus(id, status);
+      if (!persisted) throw new Error("Supabase no confirmó el cambio de estado.");
+      setOrders((current) => current.map((order) => order.id === id ? persisted : order));
       setAuditLog((current) => appendAuditEntry(current, result.auditEntry as AuditEntry));
-      void adapter.updateOrderStatus(id, status);
-      void adapter.appendAuditEntry(result.auditEntry);
+      try {
+        await adapter.appendAuditEntry(result.auditEntry);
+      } catch (error) {
+        console.warn("El estado cambió, pero no se pudo guardar la auditoría.", error);
+      }
+      return persisted;
     },
     [orders, adminSession, adapter],
   );

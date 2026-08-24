@@ -27,6 +27,14 @@ export type CartLine = {
   quantity: number;
 };
 
+/** Foto comercial del artículo al momento de confirmar el pedido. Los
+ * campos opcionales mantienen compatibilidad con pedidos anteriores. */
+export type OrderLine = CartLine & {
+  productName?: string;
+  productCode?: string | null;
+  unitPrice?: number | null;
+};
+
 export type Customer = {
   id: string;
   name: string;
@@ -51,7 +59,7 @@ export type Order = {
   customerId: string;
   customerName: string;
   email: string;
-  lines: CartLine[];
+  lines: OrderLine[];
   total: number;
   shipping: number;
   deliveryMethod: "envio" | "retiro";

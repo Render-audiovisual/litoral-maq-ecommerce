@@ -1,4 +1,4 @@
-import type { CartLine, Order, Product } from "@/lib/types";
+import type { CartLine, Order, OrderLine, Product } from "@/lib/types";
 import type { TypedSupabaseClient } from "./supabase/client";
 import type { Database } from "./supabase/database.types";
 import type { PersistenceAdapter } from "./types";
@@ -89,7 +89,7 @@ function rowToOrder(row: OrderRow): Order {
     customerId: row.customer_id,
     customerName: row.customer_name,
     email: row.email,
-    lines: row.lines as CartLine[],
+    lines: row.lines as OrderLine[],
     total: row.total,
     shipping: row.shipping,
     deliveryMethod: row.delivery_method,

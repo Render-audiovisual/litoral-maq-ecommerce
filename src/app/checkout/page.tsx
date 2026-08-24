@@ -9,10 +9,11 @@ import { guestIdFromEmail, normalizeEmail } from "@/lib/auth";
 import { mockPaymentAdapter, mockShippingAdapter } from "@/services/mock";
 import { getAuthAdapter, supportsGuestSessions } from "@/services/auth";
 import type { Order, Session } from "@/lib/types";
+import { snapshotOrderLines } from "@/lib/order-details";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, cartSubtotal, customerSession, clearCart, createOrder, addCustomer, setCustomerSession } = useStore();
+  const { cart, products, cartSubtotal, customerSession, clearCart, createOrder, addCustomer, setCustomerSession } = useStore();
   const [method, setMethod] = useState<"envio" | "retiro">("envio");
   const [shipping, setShipping] = useState<number | null>(null);
   const [eta, setEta] = useState("");
@@ -89,7 +90,7 @@ export default function CheckoutPage() {
       customerId,
       customerName: form.name.trim(),
       email: normalizedEmail,
-      lines: cart,
+      lines: snapshotOrderLines(cart, products),
       total: cartSubtotal + shipping,
       shipping,
       deliveryMethod: method,
@@ -98,18 +99,23 @@ export default function CheckoutPage() {
       createdAt: new Date().toISOString(),
       paymentReference: `MP-DEMO-${id}`,
     };
-    await mockPaymentAdapter.createPreference(order);
-    createOrder(order);
-    addCustomer({
-      id: customerId,
-      name: order.customerName,
-      email: normalizedEmail,
-      phone: form.phone,
-      role: "customer",
-    });
-    if (guestSession) await setCustomerSession(guestSession);
-    clearCart();
-    router.push(`/checkout/exito?pedido=${order.id}&email=${encodeURIComponent(normalizedEmail)}`);
+    try {
+      await mockPaymentAdapter.createPreference(order);
+      await createOrder(order);
+      addCustomer({
+        id: customerId,
+        name: order.customerName,
+        email: normalizedEmail,
+        phone: form.phone,
+        role: "customer",
+      });
+      if (guestSession) await setCustomerSession(guestSession);
+      clearCart();
+      router.push(`/checkout/exito?pedido=${order.id}&email=${encodeURIComponent(normalizedEmail)}`);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "No se pudo registrar el pedido. El carrito sigue intacto.");
+      setLoading(false);
+    }
   }
 
   if (!cart.length) {
@@ -152,7 +158,7 @@ export default function CheckoutPage() {
           <div><span>Subtotal</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
           <div><span>Entrega</span><strong>{shipping === null ? "Pendiente" : formatCurrency(shipping)}</strong></div><hr />
           <div className="summary-total"><span>Total</span><strong>{formatCurrency(cartSubtotal + (shipping || 0))}</strong></div>
-          <button className="button primary large full" disabled={loading}>{loading ? "Procesando…" : "Pagar con Mercado Pago"}</button>
+          <button className="button primary large full" disabled={loading || shipping === null}>{loading ? "Procesando…" : shipping === null ? "Confirmá la entrega para continuar" : "Pagar con Mercado Pago"}</button>
           <small>Compra simulada para validación funcional.</small>
         </aside>
       </form>

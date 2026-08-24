@@ -59,3 +59,11 @@ La suite visual falló porque todavía buscaba el CTA y la grilla de seis ganado
 ## 2026-08-24 — Hostinger puede no responder temporalmente a ssh-keyscan
 
 El primer deploy agotó cinco intentos de `ssh-keyscan` aunque compilación y separación habían aprobado. Reejecutar el job fallido antes de tocar código o credenciales: el segundo intento conectó y publicó correctamente sin cambios adicionales.
+
+## 2026-08-24 — Bloquear acciones que dependen de una confirmación asíncrona
+
+El E2E pudo enviar el checkout inmediatamente después de confirmar el retiro, antes de que React aplicara `shipping = 0`, y mostró un error aunque la confirmación visual apareció después. Si una acción depende de estado asíncrono previo, mantener el botón siguiente deshabilitado hasta que ese estado esté confirmado; en la prueba, esperar también la señal visible correspondiente.
+
+## 2026-08-24 — Esperar la navegación de login antes de abrir una ruta protegida
+
+Una prueba aislada aprobaba pero falló al correr en paralelo porque hacía `goto('/admin/productos')` inmediatamente después del clic de ingreso. Esperar explícitamente la URL `/admin` antes de navegar a otra ruta protegida, para no competir con la escritura asíncrona de la sesión.
