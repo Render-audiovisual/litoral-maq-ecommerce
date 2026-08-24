@@ -5,6 +5,11 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
+import {
+  availabilityLabel,
+  canAddProductToCart,
+  getProductAvailability,
+} from "@/lib/product-availability";
 
 export function ProductCard({
   product,
@@ -18,6 +23,7 @@ export function ProductCard({
   const { addToCart } = useStore();
   const productHref = `/producto?slug=${encodeURIComponent(product.slug)}`;
   const productImage = imageOverride || product.image;
+  const availability = getProductAvailability(product);
   return (
     <article className="product-card">
       <Link href={productHref} className="product-image">
@@ -43,13 +49,13 @@ export function ProductCard({
         </Link>
         <span className="product-code">Cód. {product.code}</span>
         <strong className="product-price">{formatCurrency(product.price)}</strong>
-        <span className={product.stock > 0 ? "stock in" : "stock out"}>
-          {product.stock > 0 ? "Disponible" : "Sin stock"}
+        <span className={`stock ${availability === "available" ? "in" : availability === "unknown" ? "pending" : "out"}`}>
+          {availabilityLabel(product)}
         </span>
         <button
           type="button"
           className="button primary full"
-          disabled={product.stock <= 0 || product.price === null}
+          disabled={!canAddProductToCart(product)}
           onClick={() => addToCart(product.id)}
         >
           Agregar al carrito

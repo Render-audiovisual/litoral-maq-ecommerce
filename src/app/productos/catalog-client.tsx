@@ -9,6 +9,7 @@ import {
   matchesLaunchFamily,
 } from "@/lib/launch-catalog";
 import { useStore } from "@/store/store";
+import { getProductAvailability } from "@/lib/product-availability";
 
 const PAGE_SIZE = 24;
 
@@ -64,7 +65,7 @@ export function CatalogClient() {
           (minimum === null || (product.price !== null && product.price >= minimum)) &&
           (maximum === null || (product.price !== null && product.price <= maximum)) &&
           (!category || product.category === category) &&
-          (!onlyAvailable || product.stock > 0)
+          (!onlyAvailable || getProductAvailability(product) === "available")
         );
       })
       .sort((a, b) => {
@@ -116,7 +117,7 @@ export function CatalogClient() {
           </div>
           <label className="check-row">
             <input type="checkbox" checked={onlyAvailable} onChange={(event) => { setOnlyAvailable(event.target.checked); resetVisibleCount(); }} />
-            Solo disponibles
+            Solo con stock confirmado
           </label>
           <button type="button" className="button secondary full" onClick={() => {
             setQuery(""); setFamily(""); setBrand(""); setMinimumPrice(""); setMaximumPrice(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
