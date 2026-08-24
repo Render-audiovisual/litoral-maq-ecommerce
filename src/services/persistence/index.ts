@@ -1,7 +1,7 @@
 import { ProviderConfigError, resolveRequestedProvider } from "@/services/provider";
 import { createLocalPersistenceAdapter } from "./local-adapter";
 import { createSupabasePersistenceAdapter } from "./supabase-adapter";
-import { createTypedSupabaseClient, readSupabaseConfig } from "./supabase/client";
+import { getTypedSupabaseClient, readSupabaseConfig } from "./supabase/client";
 import type { PersistenceAdapter } from "./types";
 
 let cached: PersistenceAdapter | null = null;
@@ -37,7 +37,7 @@ export function getPersistenceAdapter(): PersistenceAdapter {
     );
   }
 
-  const client = createTypedSupabaseClient(configResult.config);
+  const client = getTypedSupabaseClient(configResult.config);
   cached = createSupabasePersistenceAdapter(client);
   return cached;
 }

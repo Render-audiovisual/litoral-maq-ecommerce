@@ -23,7 +23,7 @@ const ADMIN_LOGIN_PATH = "/admin/login";
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { adminSession, customerSession, ready, setAdminSession } = useStore();
+  const { adminSession, customerSession, ready, setAdminSession, signOutAdmin } = useStore();
   const isLoginRoute = pathname === ADMIN_LOGIN_PATH;
   const loggingOutRef = useRef(false);
 
@@ -34,17 +34,21 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isLoginRoute || !ready || loggingOutRef.current) return;
     if (isValidAdminSession(adminSession)) return;
-    if (adminSession) setAdminSession(null);
+    if (adminSession) void setAdminSession(null);
     const insufficientPermission = isValidCustomerSession(customerSession);
     router.replace(
       `${ADMIN_LOGIN_PATH}?${insufficientPermission ? "denied=1&" : ""}next=${encodeURIComponent(pathname)}`,
     );
   }, [ready, adminSession, customerSession, pathname, router, isLoginRoute, setAdminSession]);
 
-  function logout() {
+  async function logout() {
     loggingOutRef.current = true;
-    setAdminSession(null);
-    router.replace(ADMIN_LOGIN_PATH);
+    try {
+      await signOutAdmin();
+      router.replace(ADMIN_LOGIN_PATH);
+    } catch {
+      loggingOutRef.current = false;
+    }
   }
 
   if (isLoginRoute) {

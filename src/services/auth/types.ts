@@ -3,6 +3,13 @@ import type { AuthAdapter } from "@/services/adapters";
 
 export type { AuthAdapter };
 
+export class EmailConfirmationRequiredError extends Error {
+  constructor(public readonly email: string) {
+    super("Cuenta creada. Revisá tu email para confirmarla antes de ingresar.");
+    this.name = "EmailConfirmationRequiredError";
+  }
+}
+
 /**
  * Capacidad extra que solo tiene sentido con una identidad real detrás
  * (Supabase Auth vía signInAnonymously): crear o reutilizar una sesión de

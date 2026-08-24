@@ -1,4 +1,4 @@
-import { createTypedSupabaseClient, readSupabaseConfig } from "@/services/persistence/supabase/client";
+import { getTypedSupabaseClient, readSupabaseConfig } from "@/services/persistence/supabase/client";
 import { ProviderConfigError, resolveRequestedProvider } from "@/services/provider";
 import { localAuthAdapter } from "./local-auth-adapter";
 import { createSupabaseAuthAdapter } from "./supabase-auth-adapter";
@@ -35,7 +35,7 @@ export function getAuthAdapter(): AuthAdapter {
     );
   }
 
-  const client = createTypedSupabaseClient(configResult.config);
+  const client = getTypedSupabaseClient(configResult.config);
   cached = createSupabaseAuthAdapter(client);
   return cached;
 }
@@ -46,4 +46,4 @@ export function resetAuthAdapterCache() {
 }
 
 export type { AuthAdapter, GuestCapableAuthAdapter, SessionRestorableAuthAdapter } from "./types";
-export { supportsGuestSessions, supportsSessionRestore } from "./types";
+export { EmailConfirmationRequiredError, supportsGuestSessions, supportsSessionRestore } from "./types";

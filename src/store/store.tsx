@@ -2,6 +2,7 @@
 
 import productsSeed from "@/data/products.json";
 import { guestIdFromEmail, isSessionExpired, normalizeEmail } from "@/lib/auth";
+import { mergeCartLines } from "@/lib/cart";
 import type {
   AuditEntry,
   CartLine,
@@ -41,8 +42,10 @@ type Store = {
   addToCart: (productId: string, quantity?: number) => void;
   setCartQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  setCustomerSession: (session: Session | null) => void;
-  setAdminSession: (session: Session | null) => void;
+  setCustomerSession: (session: Session | null) => Promise<void>;
+  setAdminSession: (session: Session | null) => Promise<void>;
+  signOutCustomer: () => Promise<void>;
+  signOutAdmin: () => Promise<void>;
   saveProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
   replaceProducts: (products: Product[]) => Promise<Product[]>;
@@ -63,6 +66,7 @@ const keys = {
   orders: "litoral-orders-v1",
   customerSession: "litoral-customer-session-v1",
   adminSession: "litoral-admin-session-v1",
+  guestCart: "litoral-guest-cart-v1",
   migrationLog: "litoral-migration-log-v1",
 };
 const STORAGE_VERSION_KEY = "litoral-storage-version";
@@ -192,18 +196,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (configError) return;
     const timer = window.setTimeout(async () => {
       migrateLegacyDataIfNeeded();
-      const [loadedProducts, loadedCart, loadedOrders, loadedCustomers, loadedAuditLog] = await Promise.all([
-        adapter.listProducts(),
-        adapter.loadCart(),
-        adapter.listOrders(),
-        adapter.listCustomers(),
-        adapter.listAuditLog(),
-      ]);
-      setProducts(loadedProducts);
-      setCart(loadedCart);
-      setOrders(loadedOrders);
-      setCustomers(loadedCustomers);
-      setAuditLog(loadedAuditLog);
       const loadedCustomerSession = read<Session | null>(keys.customerSession, null);
       const loadedAdminSession = read<Session | null>(keys.adminSession, null);
 
@@ -216,22 +208,55 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       // admin no pueden coexistir en el mismo navegador como sí ocurre con
       // el adaptador local; la que no coincide con la sesión viva se limpia.
       const authAdapter = getAuthAdapter();
+      let restoredCustomer: Session | null = null;
+      let restoredAdmin: Session | null = null;
       if (supportsSessionRestore(authAdapter)) {
         const restored = await authAdapter.restoreSession();
-        setCustomerSessionState(restored?.user.role === "customer" ? restored : null);
-        setAdminSessionState(restored?.user.role === "admin" ? restored : null);
+        restoredCustomer = restored?.user.role === "customer" ? restored : null;
+        restoredAdmin = restored?.user.role === "admin" ? restored : null;
       } else {
-        setCustomerSessionState(isSessionExpired(loadedCustomerSession) ? null : loadedCustomerSession);
-        setAdminSessionState(isSessionExpired(loadedAdminSession) ? null : loadedAdminSession);
+        restoredCustomer = isSessionExpired(loadedCustomerSession) ? null : loadedCustomerSession;
+        restoredAdmin = isSessionExpired(loadedAdminSession) ? null : loadedAdminSession;
       }
+
+      // Todas las consultas protegidas ocurren DESPUÉS de restaurar la
+      // sesión. Así Supabase aplica RLS con el usuario correcto desde la
+      // primera carga, sin necesitar F5 para ver pedidos o carrito.
+      const [loadedProducts, remoteCart, loadedOrders, loadedCustomers, loadedAuditLog] = await Promise.all([
+        adapter.listProducts(),
+        adapter.loadCart(restoredCustomer?.user.id),
+        adapter.listOrders(),
+        adapter.listCustomers(),
+        adapter.listAuditLog(),
+      ]);
+      const guestCart = read<CartLine[]>(keys.guestCart, []);
+      const loadedCart = mergeCartLines(guestCart, remoteCart);
+      if (restoredCustomer && guestCart.length) {
+        await adapter.saveCart(loadedCart, restoredCustomer.user.id);
+        localStorage.removeItem(keys.guestCart);
+      }
+      setProducts(loadedProducts);
+      setCart(loadedCart);
+      setOrders(loadedOrders);
+      setCustomers(loadedCustomers);
+      setAuditLog(loadedAuditLog);
+      setCustomerSessionState(restoredCustomer);
+      setAdminSessionState(restoredAdmin);
       setReady(true);
     }, 0);
     return () => window.clearTimeout(timer);
   }, [adapter, configError]);
 
   useEffect(() => {
-    if (ready) void adapter.saveCart(cart);
-  }, [cart, ready, adapter]);
+    if (!ready) return;
+    if (customerSession) {
+      void adapter.saveCart(cart, customerSession.user.id);
+      localStorage.removeItem(keys.guestCart);
+    } else {
+      localStorage.setItem(keys.guestCart, JSON.stringify(cart));
+      void adapter.saveCart(cart);
+    }
+  }, [cart, ready, adapter, customerSession]);
   useEffect(() => {
     if (!ready) return;
     if (customerSession) localStorage.setItem(keys.customerSession, JSON.stringify(customerSession));
@@ -267,12 +292,62 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
-  const setCustomerSession = useCallback((value: Session | null) => {
+  const setCustomerSession = useCallback(async (value: Session | null) => {
+    if (!value) {
+      setCustomerSessionState(null);
+      setOrders([]);
+      setCart(read<CartLine[]>(keys.guestCart, []));
+      return;
+    }
+    const [remoteCart, ownOrders] = await Promise.all([
+      adapter.loadCart(value.user.id),
+      adapter.listOrders(),
+    ]);
+    const mergedCart = mergeCartLines(cart, remoteCart);
+    await adapter.saveCart(mergedCart, value.user.id);
+    localStorage.removeItem(keys.guestCart);
+    setCart(mergedCart);
+    setOrders(ownOrders);
+    setAdminSessionState(null);
     setCustomerSessionState(value);
-  }, []);
+  }, [adapter, cart]);
 
-  const setAdminSession = useCallback((value: Session | null) => {
+  const setAdminSession = useCallback(async (value: Session | null) => {
+    if (!value) {
+      setAdminSessionState(null);
+      return;
+    }
+    const [loadedProducts, loadedOrders, loadedCustomers, loadedAuditLog] = await Promise.all([
+      adapter.listProducts(), adapter.listOrders(), adapter.listCustomers(), adapter.listAuditLog(),
+    ]);
+    setProducts(loadedProducts);
+    setOrders(loadedOrders);
+    setCustomers(loadedCustomers);
+    setAuditLog(loadedAuditLog);
+    setCustomerSessionState(null);
     setAdminSessionState(value);
+  }, [adapter]);
+
+  const signOutCustomer = useCallback(async () => {
+    if (customerSession) await adapter.saveCart(cart, customerSession.user.id);
+    await getAuthAdapter().signOut();
+    localStorage.removeItem(keys.customerSession);
+    setCustomerSessionState(null);
+    setAdminSessionState(null);
+    setOrders([]);
+    setCustomers([]);
+    setAuditLog([]);
+    setCart(read<CartLine[]>(keys.guestCart, []));
+  }, [adapter, cart, customerSession]);
+
+  const signOutAdmin = useCallback(async () => {
+    await getAuthAdapter().signOut();
+    localStorage.removeItem(keys.adminSession);
+    setAdminSessionState(null);
+    setCustomerSessionState(null);
+    setOrders([]);
+    setCustomers([]);
+    setAuditLog([]);
   }, []);
 
   const saveProduct = useCallback(
@@ -405,6 +480,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       clearCart: () => setCart([]),
       setCustomerSession,
       setAdminSession,
+      signOutCustomer,
+      signOutAdmin,
       saveProduct,
       deleteProduct,
       replaceProducts,
@@ -428,6 +505,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setCartQuantity,
       setCustomerSession,
       setAdminSession,
+      signOutCustomer,
+      signOutAdmin,
       saveProduct,
       deleteProduct,
       replaceProducts,

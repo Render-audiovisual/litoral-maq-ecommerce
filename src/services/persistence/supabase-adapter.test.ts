@@ -215,6 +215,18 @@ describe("supabase persistence adapter", () => {
     expect(builders).toHaveLength(0);
   });
 
+  it("loadCart y saveCart quedan estrictamente vinculados al ownerId de la sesión", async () => {
+    const lines = [{ productId: "p1", quantity: 2 }];
+    const { client, builders } = createFakeClient({ carts: { data: { lines }, error: null } });
+    const adapter = createSupabasePersistenceAdapter(client);
+    await expect(adapter.loadCart("usuario-a")).resolves.toEqual(lines);
+    await adapter.saveCart(lines, "usuario-a");
+    expect(builders[0].calls.find((c) => c.method === "eq")?.args).toEqual(["owner_id", "usuario-a"]);
+    expect(builders[1].calls.find((c) => c.method === "upsert")?.args).toEqual([
+      { owner_id: "usuario-a", lines }, { onConflict: "owner_id" },
+    ]);
+  });
+
   it("appendAuditEntry inserta en audit_log con las columnas esperadas", async () => {
     const { client, builders } = createFakeClient({ audit_log: { data: null, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);

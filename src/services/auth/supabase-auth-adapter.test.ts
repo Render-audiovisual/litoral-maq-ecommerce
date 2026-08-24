@@ -40,6 +40,8 @@ type FakeAuth = {
   signUp: ReturnType<typeof vi.fn>;
   signInAnonymously: ReturnType<typeof vi.fn>;
   updateUser: ReturnType<typeof vi.fn>;
+  resetPasswordForEmail: ReturnType<typeof vi.fn>;
+  resend: ReturnType<typeof vi.fn>;
   signOut: ReturnType<typeof vi.fn>;
 };
 
@@ -51,6 +53,8 @@ function createFakeClient(profiles: ProfileRow[] = []) {
     signUp: vi.fn(async () => ({ data: { user: null, session: null }, error: new Error("no mockeado") })),
     signInAnonymously: vi.fn(async () => ({ data: { session: null }, error: new Error("no mockeado") })),
     updateUser: vi.fn(async () => ({ data: { user: null }, error: new Error("no mockeado") })),
+    resetPasswordForEmail: vi.fn(async () => ({ data: {}, error: null })),
+    resend: vi.fn(async () => ({ data: {}, error: null })),
     signOut: vi.fn(async () => ({ error: null })),
   };
   const client = {
@@ -158,6 +162,19 @@ describe("supabaseAuthAdapter", () => {
     await expect(adapter.signUpCustomer("Ana", "ana@test.com", "clave123")).rejects.toThrow(/Ya existe una cuenta/);
   });
 
+  it("signUpCustomer informa explícitamente cuando falta confirmar el email", async () => {
+    const { client, auth } = createFakeClient();
+    auth.signUp.mockResolvedValue({
+      data: { user: { id: "new-user", identities: [{ id: "x" }] }, session: null }, error: null,
+    });
+    const adapter = createSupabaseAuthAdapter(client);
+    await expect(adapter.signUpCustomer("Ana", "ana@test.com", "clave123", "https://tienda.test/login"))
+      .rejects.toMatchObject({ name: "EmailConfirmationRequiredError", email: "ana@test.com" });
+    expect(auth.signUp).toHaveBeenCalledWith(expect.objectContaining({
+      options: expect.objectContaining({ emailRedirectTo: "https://tienda.test/login" }),
+    }));
+  });
+
   it("signUpCustomer con sesión anónima activa CONVIERTE la cuenta en el mismo uid (no crea una nueva)", async () => {
     const { client, auth, profileMap } = createFakeClient([
       { id: "anon-1", role: "customer", name: null, email: null, is_anonymous: true },
@@ -194,6 +211,29 @@ describe("supabaseAuthAdapter", () => {
     const adapter = createSupabaseAuthAdapter(client);
     await adapter.signOut();
     expect(auth.signOut).toHaveBeenCalledOnce();
+  });
+
+  it("envía recuperación de contraseña y reenvío de confirmación con redirects seguros", async () => {
+    const { client, auth } = createFakeClient();
+    const adapter = createSupabaseAuthAdapter(client);
+    await adapter.requestPasswordReset(" ANA@Test.com ", "https://tienda.test/restablecer-clave");
+    await adapter.resendCustomerConfirmation(" ANA@Test.com ", "https://tienda.test/login?confirmed=1");
+    expect(auth.resetPasswordForEmail).toHaveBeenCalledWith("ana@test.com", {
+      redirectTo: "https://tienda.test/restablecer-clave",
+    });
+    expect(auth.resend).toHaveBeenCalledWith({
+      type: "signup", email: "ana@test.com", options: { emailRedirectTo: "https://tienda.test/login?confirmed=1" },
+    });
+  });
+
+  it("actualiza la contraseña y el cierre de sesión limpia solo el cliente local", async () => {
+    const { client, auth } = createFakeClient();
+    auth.updateUser.mockResolvedValue({ data: { user: { id: "user-1" } }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+    await adapter.updateCustomerPassword("nueva-clave");
+    await adapter.signOut();
+    expect(auth.updateUser).toHaveBeenCalledWith({ password: "nueva-clave" });
+    expect(auth.signOut).toHaveBeenCalledWith({ scope: "local" });
   });
 
   it("restoreSession devuelve la sesión viva (con el token ya refrescado por el SDK) cuando existe", async () => {

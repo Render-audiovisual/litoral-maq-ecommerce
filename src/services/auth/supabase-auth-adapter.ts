@@ -1,7 +1,7 @@
 import { normalizeEmail } from "@/lib/auth";
 import type { Session } from "@/lib/types";
 import type { TypedSupabaseClient } from "@/services/persistence/supabase/client";
-import type { GuestCapableAuthAdapter, SessionRestorableAuthAdapter } from "./types";
+import { EmailConfirmationRequiredError, type GuestCapableAuthAdapter, type SessionRestorableAuthAdapter } from "./types";
 
 const GENERIC_LOGIN_ERROR = "Email o contraseña incorrectos.";
 const ADMIN_REJECTED_ERROR = "Ese email corresponde al acceso administrativo. Ingresá desde /admin/login.";
@@ -104,7 +104,7 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
       return sessionFromAuth(data.session, data.session.user.id, profile);
     },
 
-    async signUpCustomer(name, email, password) {
+    async signUpCustomer(name, email, password, emailRedirectTo) {
       const normalizedEmail = normalizeEmail(email);
       if (name.trim().length < 2 || !normalizedEmail.includes("@") || password.length < 6) {
         throw new Error("Completá nombre, email válido y una clave de 6 caracteres.");
@@ -149,7 +149,7 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
       const { data, error } = await client.auth.signUp({
         email: normalizedEmail,
         password,
-        options: { data: { name: name.trim() } },
+        options: { data: { name: name.trim() }, emailRedirectTo },
       });
       if (error) {
         if (isEmailAlreadyRegistered(error)) throw new Error(EMAIL_TAKEN_ERROR);
@@ -162,9 +162,7 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
         throw new Error(EMAIL_TAKEN_ERROR);
       }
       if (!data.session) {
-        throw new Error(
-          "Cuenta creada. Según la configuración del proyecto puede requerir confirmar el email antes de ingresar.",
-        );
+        throw new EmailConfirmationRequiredError(normalizedEmail);
       }
       const profile = await fetchProfile(client, data.user.id);
       return sessionFromAuth(data.session, data.user.id, profile);
@@ -199,6 +197,30 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
         throw new Error(ADMIN_GENERIC_ERROR);
       }
       return sessionFromAuth(data.session, data.session.user.id, profile);
+    },
+
+    async requestPasswordReset(email, redirectTo) {
+      const normalizedEmail = normalizeEmail(email);
+      if (!normalizedEmail.includes("@")) throw new Error("Ingresá un email válido.");
+      const { error } = await client.auth.resetPasswordForEmail(normalizedEmail, { redirectTo });
+      if (error) throw error;
+    },
+
+    async resendCustomerConfirmation(email, emailRedirectTo) {
+      const normalizedEmail = normalizeEmail(email);
+      if (!normalizedEmail.includes("@")) throw new Error("Ingresá un email válido.");
+      const { error } = await client.auth.resend({
+        type: "signup",
+        email: normalizedEmail,
+        options: { emailRedirectTo },
+      });
+      if (error) throw error;
+    },
+
+    async updateCustomerPassword(password) {
+      if (password.length < 6) throw new Error("La contraseña debe tener al menos 6 caracteres.");
+      const { error } = await client.auth.updateUser({ password });
+      if (error) throw error;
     },
 
     async signOut() {

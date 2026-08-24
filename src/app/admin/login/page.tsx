@@ -22,7 +22,7 @@ function AdminLoginForm() {
     setLoading(true);
     try {
       const session = await getAuthAdapter().signInAdmin(email, password);
-      setAdminSession(session);
+      await setAdminSession(session);
       router.push(params.get("next") || "/admin");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo ingresar.");

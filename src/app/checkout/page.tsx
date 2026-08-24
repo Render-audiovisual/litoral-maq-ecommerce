@@ -107,7 +107,7 @@ export default function CheckoutPage() {
       phone: form.phone,
       role: "customer",
     });
-    if (guestSession) setCustomerSession(guestSession);
+    if (guestSession) await setCustomerSession(guestSession);
     clearCart();
     router.push(`/checkout/exito?pedido=${order.id}&email=${encodeURIComponent(normalizedEmail)}`);
   }

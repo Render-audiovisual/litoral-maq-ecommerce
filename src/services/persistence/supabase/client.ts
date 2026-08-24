@@ -108,3 +108,22 @@ export function createTypedSupabaseClient(config: SupabaseConfig): TypedSupabase
     },
   });
 }
+
+let sharedClient: TypedSupabaseClient | null = null;
+let sharedConfigKey = "";
+
+/**
+ * Auth y persistencia deben usar exactamente la misma instancia. Dos
+ * clientes con la misma storage key pueden leer el mismo localStorage, pero
+ * no comparten de forma fiable el estado en memoria inmediatamente después
+ * de un signIn/signOut; eso hacía que pedidos y carrito aparecieran recién
+ * al recargar.
+ */
+export function getTypedSupabaseClient(config: SupabaseConfig): TypedSupabaseClient {
+  const configKey = `${config.url}::${config.publishableKey}`;
+  if (!sharedClient || sharedConfigKey !== configKey) {
+    sharedClient = createTypedSupabaseClient(config);
+    sharedConfigKey = configKey;
+  }
+  return sharedClient;
+}

@@ -51,3 +51,7 @@ El push fue rechazado porque `origin/main` recibió commits durante el trabajo l
 ## 2026-08-23 — Los carruseles infinitos duplican selectores E2E
 
 La prueba de categorías encontró dos enlaces iguales porque el loop renderiza una copia normal y otra con `aria-hidden="true"`. En React, `aria-hidden={false}` omite el atributo; en Playwright, seleccionar la primera copia o excluir explícitamente `[aria-hidden="true"]`. Como el enlace se mueve con el auto-scroll, disparar `mouseover` sobre el carril para activar la pausa y recién entonces ejecutar el clic; `hover()` también espera estabilidad y no puede entrar sobre un elemento que sigue moviéndose.
+
+## 2026-08-24 — Mantener los E2E alineados con la estructura comercial vigente
+
+La suite visual falló porque todavía buscaba el CTA y la grilla de seis ganadores del diseño anterior, y `getByLabel("Buscar")` se volvió ambiguo al incorporar el buscador global. Después de cambios comerciales, actualizar los E2E para usar roles/nombres exactos y selectores de la sección vigente; no fijar componentes retirados como contrato permanente.

@@ -10,7 +10,7 @@ import { selectOwnOrders } from "@/lib/orders";
 
 export default function CustomerOrdersPage() {
   const router = useRouter();
-  const { customerSession, orders, ready, setCustomerSession } = useStore();
+  const { customerSession, orders, ready, signOutCustomer } = useStore();
   const loggingOutRef = useRef(false);
 
   useEffect(() => {
@@ -19,16 +19,20 @@ export default function CustomerOrdersPage() {
 
   useEffect(() => {
     if (!ready || loggingOutRef.current) return;
-    if (customerSession && isSessionExpired(customerSession)) setCustomerSession(null);
+    if (customerSession && isSessionExpired(customerSession)) void signOutCustomer();
     if (!isValidCustomerSession(customerSession)) {
       router.replace("/login?next=/cuenta/pedidos");
     }
-  }, [ready, customerSession, router, setCustomerSession]);
+  }, [ready, customerSession, router, signOutCustomer]);
 
-  function logout() {
+  async function logout() {
     loggingOutRef.current = true;
-    setCustomerSession(null);
-    router.replace("/");
+    try {
+      await signOutCustomer();
+      router.replace("/");
+    } catch {
+      loggingOutRef.current = false;
+    }
   }
 
   if (!ready || !isValidCustomerSession(customerSession)) {

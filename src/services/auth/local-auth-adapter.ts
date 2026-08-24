@@ -121,6 +121,18 @@ export const localAuthAdapter: AuthAdapter = {
       expiresAt: createExpiry(),
     };
   },
+  async requestPasswordReset(email) {
+    await wait(150);
+    if (!normalizeEmail(email).includes("@")) throw new Error("Ingresá un email válido.");
+  },
+  async resendCustomerConfirmation(email) {
+    await wait(150);
+    if (!normalizeEmail(email).includes("@")) throw new Error("Ingresá un email válido.");
+  },
+  async updateCustomerPassword(password) {
+    await wait(150);
+    if (password.length < 6) throw new Error("La contraseña debe tener al menos 6 caracteres.");
+  },
   async signOut() {
     await wait(100);
   },

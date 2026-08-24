@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { readSupabaseConfig } from "./client";
+import { getTypedSupabaseClient, readSupabaseConfig } from "./client";
 
 describe("readSupabaseConfig", () => {
+  it("reutiliza una única instancia para auth y persistencia con la misma configuración", () => {
+    const config = { url: "https://shared-client-test.supabase.co", publishableKey: "a".repeat(40) };
+    expect(getTypedSupabaseClient(config)).toBe(getTypedSupabaseClient(config));
+  });
   it("sin ninguna variable → absent (modo local, sin error)", () => {
     expect(readSupabaseConfig({})).toEqual({ status: "absent" });
   });

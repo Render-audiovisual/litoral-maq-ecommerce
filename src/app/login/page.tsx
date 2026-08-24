@@ -15,13 +15,15 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const confirmed = params.get("confirmed") === "1";
+  const passwordChanged = params.get("password") === "changed";
 
   async function signIn(event: FormEvent) {
     event.preventDefault(); setError(""); setLoading(true);
     try {
       const session = await getAuthAdapter().signInCustomer(email, password);
       convertGuestToAccount(email, session.user.id);
-      setCustomerSession(session);
+      await setCustomerSession(session);
       router.push(params.get("next") || "/cuenta/pedidos");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo ingresar.");
@@ -34,7 +36,7 @@ function LoginForm() {
       const session = await getAuthAdapter().signInCustomerWithGoogle();
       convertGuestToAccount(session.user.email, session.user.id);
       addCustomer(session.user);
-      setCustomerSession(session);
+      await setCustomerSession(session);
       router.push(params.get("next") || "/cuenta/pedidos");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo ingresar con Google.");
@@ -51,15 +53,18 @@ function LoginForm() {
       <section className="auth-panel form">
         <div className="auth-card">
           <span className="eyebrow orange">BIENVENIDO</span><h2>Ingresá a tu cuenta</h2>
+          {confirmed && <div className="success-message">Email confirmado. Ya podés ingresar.</div>}
+          {passwordChanged && <div className="success-message">Contraseña actualizada. Ingresá con la nueva clave.</div>}
           <button type="button" className="button google full" onClick={google} disabled={loading}>G&nbsp; Continuar con Google <b>DEMO</b></button>
           <div className="divider"><span>o con email</span></div>
           <form onSubmit={signIn}>
             <label>Email<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@email.com" /></label>
             <label>Contraseña<input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Mínimo 4 caracteres" /></label>
+            <p className="form-helper"><Link href={`/recuperar-clave${email ? `?email=${encodeURIComponent(email)}` : ""}`}>¿Olvidaste tu contraseña?</Link></p>
             {error && <div className="error-message">{error}</div>}
             <button className="button primary large full" disabled={loading}>{loading ? "Ingresando…" : "Ingresar"}</button>
           </form>
-          <p>¿No tenés cuenta? <Link href="/registro">Creala gratis</Link></p>
+          <p>¿No tenés cuenta? <Link href="/registro">Creala gratis</Link><br /><Link href={`/confirmar-cuenta${email ? `?email=${encodeURIComponent(email)}` : ""}`}>Reenviar confirmación</Link></p>
         </div>
       </section>
     </main>
