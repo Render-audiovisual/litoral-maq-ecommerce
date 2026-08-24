@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useStore } from "@/store/store";
 import { isValidAdminSession, isValidCustomerSession } from "@/lib/auth";
 import { getStoreUrl } from "@/lib/domain-config";
@@ -23,9 +23,13 @@ const ADMIN_LOGIN_PATH = "/admin/login";
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { adminSession, customerSession, ready, setAdminSession, signOutAdmin } = useStore();
+  const { adminSession, customerSession, orders, ready, setAdminSession, signOutAdmin } = useStore();
   const isLoginRoute = pathname === ADMIN_LOGIN_PATH;
   const loggingOutRef = useRef(false);
+  const pendingOrderCount = useMemo(
+    () => orders.filter((order) => order.status === "pendiente").length,
+    [orders],
+  );
 
   useEffect(() => {
     if (isValidAdminSession(adminSession)) loggingOutRef.current = false;
@@ -103,6 +107,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             >
               <span>{icon}</span>
               {label}
+              {href === "/admin/pedidos" && pendingOrderCount > 0 && <b className="nav-notification-badge">{pendingOrderCount}</b>}
             </Link>
           ))}
         </nav>
@@ -124,15 +129,18 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 : "Datos demo persistidos en este navegador"}
             </span>
           </div>
-          {isExternalStoreLink ? (
-            <a href={storeUrl} className="button secondary" target="_blank" rel="noopener noreferrer">
-              Ver tienda
-            </a>
-          ) : (
-            <Link href={storeUrl} className="button secondary">
-              Ver tienda
-            </Link>
-          )}
+          <div className="admin-topbar-actions">
+            <Link href="/admin/pedidos" className={pendingOrderCount > 0 ? "admin-notification active" : "admin-notification"} aria-label={`${pendingOrderCount} pedidos pendientes`}><span aria-hidden>●</span><strong>{pendingOrderCount}</strong><small>por revisar</small></Link>
+            {isExternalStoreLink ? (
+              <a href={storeUrl} className="button secondary" target="_blank" rel="noopener noreferrer">
+                Ver tienda
+              </a>
+            ) : (
+              <Link href={storeUrl} className="button secondary">
+                Ver tienda
+              </Link>
+            )}
+          </div>
           {storeUrlError && (
             <span className="admin-domain-warning" title={storeUrlError} role="alert">
               ⚠ Dominio de tienda mal configurado

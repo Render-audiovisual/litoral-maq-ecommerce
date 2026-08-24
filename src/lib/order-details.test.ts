@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Order, Product } from "./types";
-import { resolveOrderLines, snapshotOrderLines } from "./order-details";
+import { isActiveOrder, ORDER_STATUS_MESSAGES, resolveOrderLines, snapshotOrderLines } from "./order-details";
 
 const product = { id: "p1", name: "Taladro", code: "T-1", price: 250 } as Product;
 
@@ -20,5 +20,11 @@ describe("detalle histórico de pedidos", () => {
   it("resuelve pedidos heredados con el catálogo actual", () => {
     const order = { lines: [{ productId: "p1", quantity: 1 }] } as Order;
     expect(resolveOrderLines(order, [product])[0]).toMatchObject({ productName: "Taladro", unitPrice: 250, historicalSnapshot: false });
+  });
+
+  it("expone mensajes de seguimiento y distingue pedidos activos", () => {
+    expect(ORDER_STATUS_MESSAGES.pendiente).toMatch(/verificando stock/i);
+    expect(isActiveOrder({ status: "preparando" } as Order)).toBe(true);
+    expect(isActiveOrder({ status: "entregado" } as Order)).toBe(false);
   });
 });

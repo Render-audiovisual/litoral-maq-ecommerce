@@ -21,7 +21,11 @@ test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ pa
   await expect(page.getByText("A cotizar", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
 
-  await expect(page.getByText("Recibimos tu pedido")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
   await expect(page.getByText(/Todavía no se realizó ningún cobro/)).toBeVisible();
   await expect(page.getByText(/pago.*aprobado/i)).toHaveCount(0);
+  const whatsapp = page.getByRole("link", { name: "Avisar por WhatsApp" });
+  await expect(whatsapp).toHaveAttribute("href", /wa\.me\/5493794215065/);
+  await expect(whatsapp).toHaveAttribute("href", /LM-/);
+  await expect(whatsapp).toHaveAttribute("href", /env%C3%ADo%20a%20cotizar/);
 });

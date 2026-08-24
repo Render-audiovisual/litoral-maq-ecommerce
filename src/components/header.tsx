@@ -5,13 +5,19 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useStore } from "@/store/store";
+import { isValidCustomerSession } from "@/lib/auth";
+import { selectOwnOrders } from "@/lib/orders";
+import { isActiveOrder } from "@/lib/order-details";
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const { cartCount, customerSession } = useStore();
+  const { cartCount, customerSession, orders } = useStore();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const activeOrderCount = isValidCustomerSession(customerSession)
+    ? selectOwnOrders(orders, customerSession).filter(isActiveOrder).length
+    : 0;
   if (pathname.startsWith("/admin")) return null;
 
   function submitSearch(event: FormEvent<HTMLFormElement>) {
@@ -68,8 +74,8 @@ export function Header() {
           <Link href="/productos?categoria=Ofertas" onClick={() => setOpen(false)}>
             Ofertas
           </Link>
-          <Link href="/cuenta/pedidos" onClick={() => setOpen(false)}>
-            Mis pedidos
+          <Link href="/cuenta/pedidos" className="nav-orders-link" onClick={() => setOpen(false)}>
+            Mis pedidos {activeOrderCount > 0 && <b>{activeOrderCount}</b>}
           </Link>
         </nav>
         <div className="header-actions">

@@ -24,6 +24,9 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await page.goto("/admin/pedidos");
 
   const row = page.locator("tbody tr").filter({ hasText: "Cliente Pedido E2E" });
+  await expect(page).toHaveTitle(/^\(1\) Pedidos pendientes/);
+  await expect(page.getByLabel("1 pedidos pendientes")).toBeVisible();
+  await expect(page.locator('.admin-sidebar a[href="/admin/pedidos"] .nav-notification-badge')).toHaveText("1");
   await expect(row).toContainText("1 unidades");
   await expect(row.locator(".status-select")).toHaveValue("pendiente");
   await expect(row).toContainText("Entrega Gratis");
@@ -36,6 +39,7 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
 
   await modal.getByLabel(/Estado de .* en detalle/).selectOption("preparando");
   await expect(page.getByText(/actualizado a Preparando/)).toBeVisible();
+  await expect(page.getByLabel("0 pedidos pendientes")).toBeVisible();
   await page.reload();
   await expect(page.locator("tbody tr").filter({ hasText: "Cliente Pedido E2E" }).locator(".status-select")).toHaveValue("preparando");
 });

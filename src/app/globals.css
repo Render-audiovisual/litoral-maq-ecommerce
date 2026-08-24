@@ -312,6 +312,11 @@ textarea { min-height: 100px; resize: vertical; }
 .success-page { min-height: 680px; }
 .success-check { width: 90px; height: 90px; margin-bottom: 25px; display: grid; place-items: center; border-radius: 50%; background: #e9f8f0; color: var(--success); font-size: 46px; }
 .success-actions { display: flex; gap: 12px; margin-top: 25px; }
+.whatsapp-confirmation { margin: 22px 0 2px; padding: 16px 18px; display: flex; flex-direction: column; align-items: center; gap: 9px; border: 1px solid #bfe2ce; background: #f1fbf5; }
+.whatsapp-confirmation p { margin: 0; color: var(--navy); font-weight: 750; }
+.whatsapp-confirmation small { color: var(--muted); }
+.whatsapp-button { background: #1fa855; color: #fff; }
+.whatsapp-button:hover { background: #188b46; }
 .auth-page { min-height: calc(100vh - 114px); display: grid; grid-template-columns: 1fr 1fr; }
 .auth-panel { padding: 7vw; display: flex; flex-direction: column; justify-content: center; }
 .auth-panel.visual { background: var(--soft); }
@@ -337,9 +342,12 @@ textarea { min-height: 100px; resize: vertical; }
 .account-nav > * { padding: 13px; }
 .account-nav .active { color: var(--orange); background: var(--orange-soft); font-weight: 750; }
 .order-list { display: flex; flex-direction: column; gap: 14px; }
+.account-order-notice { margin-bottom: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; border-left: 3px solid var(--orange); background: var(--orange-soft); }
+.account-order-notice span { color: var(--muted); font-size: 11px; }
 .order-card { padding: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr 1.2fr; gap: 20px; border: 1px solid var(--line); }
 .order-card > div { display: flex; flex-direction: column; gap: 6px; }
 .order-card span, .order-card small { color: var(--muted); font-size: 11px; }
+.order-status-message { grid-column: 1 / -1; margin: 0; padding: 11px 13px; background: #f5f8f9; color: var(--navy); font-size: 12px; line-height: 1.45; }
 .customer-order-lines { grid-column: 1 / -1; padding-top: 12px; border-top: 1px solid var(--line); }
 .customer-order-lines summary { width: max-content; color: var(--orange); font-size: 12px; font-weight: 750; cursor: pointer; }
 .customer-order-lines > div { padding: 10px 0 0; display: flex; justify-content: space-between; gap: 16px; }
@@ -354,12 +362,21 @@ textarea { min-height: 100px; resize: vertical; }
 .admin-kicker { margin: 20px 10px 15px; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
 .admin-sidebar nav { display: flex; flex-direction: column; gap: 4px; }
 .admin-sidebar nav a { padding: 13px 14px; display: flex; gap: 12px; align-items: center; border-radius: 4px; font-weight: 650; }
+.nav-notification-badge { min-width: 20px; height: 20px; margin-left: auto; display: grid; place-items: center; border-radius: 10px; background: var(--orange); color: #fff; font-size: 9px; }
 .admin-sidebar nav a.active, .admin-sidebar nav a:hover { background: rgba(255,255,255,.1); color: #fff; }
 .admin-sidebar nav a.active { border-left: 3px solid var(--orange); }
 .sidebar-logout { margin-top: auto; padding: 13px; border: 1px solid rgba(255,255,255,.17); background: transparent; color: #d7e2e9; border-radius: 4px; }
 .admin-main { min-width: 0; }
 .admin-topbar { height: 76px; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid var(--line); }
 .admin-topbar > div { display: flex; flex-direction: column; }
+.admin-topbar .admin-topbar-actions { display: flex; flex-direction: row; align-items: center; gap: 10px; }
+.admin-notification { min-height: 38px; padding: 5px 10px; display: grid; grid-template-columns: auto auto; align-items: center; gap: 0 6px; border: 1px solid var(--line); color: var(--muted); }
+.admin-notification > span { grid-row: 1 / 3; color: #b7c1c7; }
+.admin-notification strong { color: var(--navy); font-size: 12px; }
+.admin-notification small { font-size: 8px; }
+.admin-notification.active { border-color: #f1c79f; background: var(--orange-soft); }
+.admin-notification.active > span { color: var(--orange); }
+.nav-orders-link b { min-width: 18px; height: 18px; display: inline-grid; place-items: center; border-radius: 9px; background: var(--orange); color: #fff; font-size: 8px; }
 .admin-topbar span { color: var(--muted); font-size: 10px; }
 .admin-content { padding: 32px; }
 .admin-heading { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }

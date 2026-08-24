@@ -17,6 +17,19 @@ export const ORDER_STATUS_LABELS: Record<Order["status"], string> = {
   cancelado: "Cancelado",
 };
 
+export const ORDER_STATUS_MESSAGES: Record<Order["status"], string> = {
+  pendiente: "Recibimos tu solicitud. Estamos verificando stock, entrega y total final.",
+  pago_simulado: "Este es un pedido histórico del período de pruebas.",
+  preparando: "Tu pedido fue confirmado y el equipo lo está preparando.",
+  enviado: "Tu pedido ya salió. El negocio te compartirá el seguimiento disponible.",
+  entregado: "El pedido figura como entregado.",
+  cancelado: "La solicitud fue cancelada. Si necesitás ayuda, comunicate con Litoral Maq.",
+};
+
+export function isActiveOrder(order: Order) {
+  return !["entregado", "cancelado"].includes(order.status);
+}
+
 export function snapshotOrderLines(lines: OrderLine[], products: Product[]): OrderLine[] {
   return lines.map((line) => {
     const product = products.find((item) => item.id === line.productId);

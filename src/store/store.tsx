@@ -71,6 +71,7 @@ const keys = {
 };
 const STORAGE_VERSION_KEY = "litoral-storage-version";
 const STORAGE_VERSION = 2;
+const ORDER_REFRESH_INTERVAL_MS = 15_000;
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -267,6 +268,33 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (adminSession) localStorage.setItem(keys.adminSession, JSON.stringify(adminSession));
     else localStorage.removeItem(keys.adminSession);
   }, [adminSession, ready]);
+
+  // Notificaciones operativas sin proveedor externo: mientras hay una
+  // sesión activa, actualiza los pedidos cada 15 s y también al volver a la
+  // pestaña. Así los contadores del panel y los estados del cliente cambian
+  // sin exigir F5. Supabase sigue aplicando RLS en cada lectura.
+  useEffect(() => {
+    if (!ready || (!adminSession && !customerSession)) return;
+    let stopped = false;
+    const refreshOrders = async () => {
+      try {
+        const latest = await adapter.listOrders();
+        if (!stopped) setOrders(latest);
+      } catch (error) {
+        console.warn("No se pudieron actualizar las notificaciones de pedidos.", error);
+      }
+    };
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") void refreshOrders();
+    };
+    const timer = window.setInterval(() => void refreshOrders(), ORDER_REFRESH_INTERVAL_MS);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      stopped = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [ready, adapter, adminSession, customerSession]);
 
   const addToCart = useCallback((productId: string, quantity = 1) => {
     setCart((current) => {

@@ -5,13 +5,31 @@ import { useEffect } from "react";
 import { useStore } from "@/store/store";
 
 const LEAVING = "🚨 ¡No te vayas!";
-const CHECKOUT = "🛒 Finalizá tu compra";
+const CHECKOUT = "🛒 Enviá tu solicitud";
 
 export function TabTitleAlert() {
   const pathname = usePathname();
-  const { cartCount } = useStore();
+  const { cartCount, orders } = useStore();
   const enabled = !pathname.startsWith("/admin");
   const hasCart = cartCount > 0;
+  const pendingOrderCount = orders.filter((order) => order.status === "pendiente").length;
+
+  useEffect(() => {
+    if (!pathname.startsWith("/admin") || pathname === "/admin/login") return;
+
+    const title = pendingOrderCount > 0
+      ? `(${pendingOrderCount}) Pedidos pendientes · Litoral Maq`
+      : "Panel Litoral Maq";
+    const applyTitle = () => {
+      if (document.title !== title) document.title = title;
+    };
+
+    applyTitle();
+    const observer = new MutationObserver(applyTitle);
+    observer.observe(document.head, { childList: true, subtree: true, characterData: true });
+
+    return () => observer.disconnect();
+  }, [pathname, pendingOrderCount]);
 
   useEffect(() => {
     if (!enabled) return;
