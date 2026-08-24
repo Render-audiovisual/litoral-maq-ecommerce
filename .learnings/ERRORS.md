@@ -55,3 +55,7 @@ La prueba de categorías encontró dos enlaces iguales porque el loop renderiza 
 ## 2026-08-24 — Mantener los E2E alineados con la estructura comercial vigente
 
 La suite visual falló porque todavía buscaba el CTA y la grilla de seis ganadores del diseño anterior, y `getByLabel("Buscar")` se volvió ambiguo al incorporar el buscador global. Después de cambios comerciales, actualizar los E2E para usar roles/nombres exactos y selectores de la sección vigente; no fijar componentes retirados como contrato permanente.
+
+## 2026-08-24 — Hostinger puede no responder temporalmente a ssh-keyscan
+
+El primer deploy agotó cinco intentos de `ssh-keyscan` aunque compilación y separación habían aprobado. Reejecutar el job fallido antes de tocar código o credenciales: el segundo intento conectó y publicó correctamente sin cambios adicionales.
