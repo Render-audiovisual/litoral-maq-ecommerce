@@ -10,17 +10,6 @@ const EMAIL_TAKEN_ERROR =
   "Ya existe una cuenta con ese email. Iniciá sesión con ella — por seguridad, no unimos automáticamente " +
   "un carrito de invitado a una cuenta ajena solo porque coincide el email escrito en el checkout.";
 
-/**
- * DEMO: perfil fijo para simular "Google" reutilizando infraestructura real
- * de Supabase Auth (email+password contra una cuenta conocida), no un
- * redirect OAuth real — eso requiere configurar un proyecto de Google Cloud
- * y sigue fuera de alcance (ver Etapa 3). Reemplazar por
- * `client.auth.signInWithOAuth({ provider: "google" })` cuando corresponda.
- */
-const GOOGLE_DEMO_EMAIL = "cliente.demo@gmail.com";
-const GOOGLE_DEMO_PASSWORD = "google-demo-password-1234";
-const GOOGLE_DEMO_NAME = "Cliente Google Demo";
-
 type ProfileRole = "admin" | "customer";
 
 async function fetchProfile(client: TypedSupabaseClient, userId: string, retries = 3) {
@@ -166,25 +155,6 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
       }
       const profile = await fetchProfile(client, data.user.id);
       return sessionFromAuth(data.session, data.user.id, profile);
-    },
-
-    async signInCustomerWithGoogle() {
-      // Reutiliza el mismo flujo de conversión que signUpCustomer para que
-      // el carrito anónimo activo (si lo hay) no se pierda.
-      const { data: existingSession } = await client.auth.getSession();
-      if (existingSession.session?.user.is_anonymous) {
-        return this.signUpCustomer(GOOGLE_DEMO_NAME, GOOGLE_DEMO_EMAIL, GOOGLE_DEMO_PASSWORD).catch(async (err) => {
-          if (err instanceof Error && err.message === EMAIL_TAKEN_ERROR) {
-            return this.signInCustomer(GOOGLE_DEMO_EMAIL, GOOGLE_DEMO_PASSWORD);
-          }
-          throw err;
-        });
-      }
-      try {
-        return await this.signInCustomer(GOOGLE_DEMO_EMAIL, GOOGLE_DEMO_PASSWORD);
-      } catch {
-        return this.signUpCustomer(GOOGLE_DEMO_NAME, GOOGLE_DEMO_EMAIL, GOOGLE_DEMO_PASSWORD);
-      }
     },
 
     async signInAdmin(email, password) {

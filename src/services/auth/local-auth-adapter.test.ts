@@ -62,13 +62,6 @@ describe("localAuthAdapter", () => {
     );
   });
 
-  it("Google demo crea una sola cuenta reutilizable", async () => {
-    const first = await localAuthAdapter.signInCustomerWithGoogle();
-    const second = await localAuthAdapter.signInCustomerWithGoogle();
-    expect(first.user.id).toBe(second.user.id);
-    expect(first.user.role).toBe("customer");
-  });
-
   it("signInAdmin acepta la credencial correcta y rechaza cualquier otra", async () => {
     const session = await localAuthAdapter.signInAdmin("admin@litoralmaq.com", "admin123");
     expect(session.user.role).toBe("admin");

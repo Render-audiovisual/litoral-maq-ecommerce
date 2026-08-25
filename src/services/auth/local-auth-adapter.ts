@@ -16,13 +16,6 @@ const ADMIN_EMAIL = "admin@litoralmaq.com";
 const ADMIN_PASSWORD = "admin123";
 const GENERIC_LOGIN_ERROR = "Email o contraseña incorrectos.";
 
-const GOOGLE_DEMO_PROFILE = {
-  providerId: "google-oauth2|demo-cliente",
-  name: "Cliente Google Demo",
-  email: "cliente.demo@gmail.com",
-  emailVerified: true,
-};
-
 const accountsStore = createLocalAccountsStore();
 
 function findAccountByEmail(email: string): Account | undefined {
@@ -84,23 +77,6 @@ export const localAuthAdapter: AuthAdapter = {
       providers: { password: { value: password } },
       createdAt: new Date().toISOString(),
     };
-    upsertAccount(account);
-    return sessionFromAccount(account);
-  },
-  async signInCustomerWithGoogle() {
-    await wait(500);
-    const normalizedEmail = normalizeEmail(GOOGLE_DEMO_PROFILE.email);
-    const existing = findAccountByEmail(normalizedEmail);
-    const account: Account = existing
-      ? { ...existing, providers: { ...existing.providers, google: { providerId: GOOGLE_DEMO_PROFILE.providerId } } }
-      : {
-          id: customerIdFromEmail(normalizedEmail),
-          name: GOOGLE_DEMO_PROFILE.name,
-          email: normalizedEmail,
-          role: "customer",
-          providers: { google: { providerId: GOOGLE_DEMO_PROFILE.providerId } },
-          createdAt: new Date().toISOString(),
-        };
     upsertAccount(account);
     return sessionFromAccount(account);
   },

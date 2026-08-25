@@ -14,7 +14,10 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await page.getByRole("button", { name: "Confirmar retiro" }).click();
   await expect(page.getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
-  await expect(page.getByText("Recibimos tu pedido")).toBeVisible();
+  // getByText coincide también con el anunciador de rutas de Next
+  // (#__next-route-announcer__), que repite el título de la página. El rol
+  // explícito apunta solo al encabezado real.
+  await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
 
   await page.goto("/admin/login");
   await page.getByLabel("Email").fill("admin@litoralmaq.com");

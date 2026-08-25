@@ -10,7 +10,7 @@ import { useStore } from "@/store/store";
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const { setCustomerSession, addCustomer, convertGuestToAccount } = useStore();
+  const { setCustomerSession, convertGuestToAccount } = useStore();
   const [email, setEmail] = useState(params.get("email") || "");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -30,19 +30,6 @@ function LoginForm() {
     } finally { setLoading(false); }
   }
 
-  async function google() {
-    setError(""); setLoading(true);
-    try {
-      const session = await getAuthAdapter().signInCustomerWithGoogle();
-      convertGuestToAccount(session.user.email, session.user.id);
-      addCustomer(session.user);
-      await setCustomerSession(session);
-      router.push(params.get("next") || "/cuenta/pedidos");
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "No se pudo ingresar con Google.");
-    } finally { setLoading(false); }
-  }
-
   return (
     <main className="auth-page">
       <section className="auth-panel visual">
@@ -55,8 +42,6 @@ function LoginForm() {
           <span className="eyebrow orange">BIENVENIDO</span><h2>Ingresá a tu cuenta</h2>
           {confirmed && <div className="success-message">Email confirmado. Ya podés ingresar.</div>}
           {passwordChanged && <div className="success-message">Contraseña actualizada. Ingresá con la nueva clave.</div>}
-          <button type="button" className="button google full" onClick={google} disabled={loading}>G&nbsp; Continuar con Google <b>DEMO</b></button>
-          <div className="divider"><span>o con email</span></div>
           <form onSubmit={signIn}>
             <label>Email<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@email.com" /></label>
             <label>Contraseña<input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Mínimo 4 caracteres" /></label>

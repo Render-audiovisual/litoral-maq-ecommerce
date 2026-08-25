@@ -329,10 +329,6 @@ textarea { min-height: 100px; resize: vertical; }
 .auth-card form, .settings-grid form { display: flex; flex-direction: column; gap: 16px; }
 .auth-card form + p, .auth-card > p:last-child { margin: 20px 0 0; text-align: center; }
 .auth-card a { color: var(--orange); font-weight: 700; }
-.button.google { margin-top: 20px; border-color: var(--line); background: #fff; color: var(--ink); }
-.button.google b { margin-left: auto; color: var(--orange); font-size: 9px; }
-.divider { margin: 22px 0; display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 11px; }
-.divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
 .demo-credentials { margin-top: 22px; padding: 13px; display: flex; flex-direction: column; background: #eef5f8; color: var(--navy); font-size: 11px; }
 .simple-auth-page { min-height: 760px; padding: 70px 20px; display: grid; place-items: center; background: var(--soft); }
 .account-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 35px; }

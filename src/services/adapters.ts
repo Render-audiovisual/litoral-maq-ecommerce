@@ -3,7 +3,6 @@ import type { Customer, Order, Product, Session } from "@/lib/types";
 export interface AuthAdapter {
   signInCustomer(email: string, password: string): Promise<Session>;
   signUpCustomer(name: string, email: string, password: string, emailRedirectTo?: string): Promise<Session>;
-  signInCustomerWithGoogle(): Promise<Session>;
   signInAdmin(email: string, password: string): Promise<Session>;
   requestPasswordReset(email: string, redirectTo: string): Promise<void>;
   resendCustomerConfirmation(email: string, emailRedirectTo: string): Promise<void>;
