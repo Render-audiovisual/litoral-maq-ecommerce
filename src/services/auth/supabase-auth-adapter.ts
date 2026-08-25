@@ -1,14 +1,20 @@
 import { normalizeEmail } from "@/lib/auth";
 import type { Session } from "@/lib/types";
 import type { TypedSupabaseClient } from "@/services/persistence/supabase/client";
+import { markPasswordRecovery } from "@/lib/password-recovery";
 import { EmailConfirmationRequiredError, type GuestCapableAuthAdapter, type SessionRestorableAuthAdapter } from "./types";
 
 const GENERIC_LOGIN_ERROR = "Email o contraseña incorrectos.";
 const ADMIN_REJECTED_ERROR = "Ese email corresponde al acceso administrativo. Ingresá desde /admin/login.";
 const ADMIN_GENERIC_ERROR = "Credenciales de administrador incorrectas.";
-const EMAIL_TAKEN_ERROR =
-  "Ya existe una cuenta con ese email. Iniciá sesión con ella — por seguridad, no unimos automáticamente " +
-  "un carrito de invitado a una cuenta ajena solo porque coincide el email escrito en el checkout.";
+/**
+ * Antes acá había un EMAIL_TAKEN_ERROR ("Ya existe una cuenta con ese
+ * email"). Supabase evita a propósito confirmar si un email está
+ * registrado — devuelve un alta "exitosa" con `identities` vacío — y ese
+ * mensaje deshacía la protección: bastaba probar emails en el formulario
+ * de registro para saber cuáles son clientes. Ahora todas las salidas del
+ * alta son indistinguibles entre sí (ver `auth-enumeration.test.ts`).
+ */
 
 type ProfileRole = "admin" | "customer";
 
@@ -55,6 +61,13 @@ function isEmailAlreadyRegistered(error: unknown): boolean {
 }
 
 export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCapableAuthAdapter & SessionRestorableAuthAdapter {
+  // Señal oficial de que esta navegación viene de un enlace de
+  // recuperación. Complementa la lectura del fragmento de URL, que puede
+  // haber sido consumido por el SDK antes de que la pantalla monte.
+  client.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") markPasswordRecovery();
+  });
+
   return {
     async restoreSession() {
       // client.auth.getSession() ya refresca el access_token internamente
@@ -112,7 +125,11 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
           data: { name: name.trim() },
         });
         if (error) {
-          if (isEmailAlreadyRegistered(error)) throw new Error(EMAIL_TAKEN_ERROR);
+          // El email ya pertenece a otra cuenta: la sesión anónima no se
+          // convierte (el carrito de invitado no se une a una cuenta ajena
+          // solo porque coincide el email), pero la respuesta es la misma
+          // que la de un alta normal para no revelar que existe.
+          if (isEmailAlreadyRegistered(error)) throw new EmailConfirmationRequiredError(normalizedEmail);
           throw error;
         }
         const userId = data.user.id;
@@ -141,14 +158,15 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
         options: { data: { name: name.trim() }, emailRedirectTo },
       });
       if (error) {
-        if (isEmailAlreadyRegistered(error)) throw new Error(EMAIL_TAKEN_ERROR);
+        if (isEmailAlreadyRegistered(error)) throw new EmailConfirmationRequiredError(normalizedEmail);
         throw error;
       }
       if (!data.user) throw new Error("No se pudo crear la cuenta.");
-      // Supabase evita filtrar si un email ya existe devolviendo un "éxito"
-      // con identities vacío cuando ya estaba registrado.
+      // `identities` vacío = el email ya estaba registrado. Supabase lo
+      // devuelve como éxito justamente para no filtrarlo; se respeta esa
+      // señal y se responde igual que en un alta pendiente de confirmar.
       if (data.user.identities && data.user.identities.length === 0) {
-        throw new Error(EMAIL_TAKEN_ERROR);
+        throw new EmailConfirmationRequiredError(normalizedEmail);
       }
       if (!data.session) {
         throw new EmailConfirmationRequiredError(normalizedEmail);

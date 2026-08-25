@@ -402,6 +402,153 @@ P1#6 desbloquea #5 y #7: sin staging, probar el camino real significa escribir e
 
 ---
 
+## 12 bis. Cambio de contraseña: los dos flujos
+
+Hay que distinguir dos operaciones que hoy comparten el mismo `updateUser`.
+
+### (a) Recuperación por enlace — CORREGIDO en la UI
+
+El usuario olvidó la contraseña, pide un enlace y llega a `/restablecer-clave`
+con `#type=recovery`. La pantalla ahora exige esa señal: una sesión común
+abierta ya no habilita el formulario, y el guard está en el submit, no solo
+en el render.
+
+**Lo que esto NO resuelve.** Es un control de interfaz. Cualquiera con una
+sesión válida puede abrir la consola del navegador y llamar
+`supabase.auth.updateUser({ password })` sin pasar por la pantalla. La
+frontera real es de Supabase.
+
+### (b) Cambio voluntario desde una sesión autenticada — NO EXISTE HOY
+
+No hay ninguna pantalla de "cambiar mi contraseña": el único llamador de
+`updateCustomerPassword` es `/restablecer-clave`. Si alguna vez se agrega,
+tiene que usar reautenticación real.
+
+### El control que falta, del lado de Supabase
+
+El SDK instalado lo documenta en `GoTrueClient.updateUser`:
+
+> *"If you require your user to reauthenticate before updating their password,
+> you need to enable the **Secure password change** option in your project's
+> email provider settings. A user is only required to reauthenticate before
+> updating their password if Secure password change is enabled and the user
+> **hasn't recently signed in**. A user is deemed recently signed in if the
+> session was created in the last 24 hours."*
+
+De ahí se desprende, sin haberlo ejecutado todavía:
+
+1. Con la opción **desactivada** (default), cualquier sesión válida cambia la
+   contraseña vía API. **Es el estado que hay que asumir hoy.**
+2. Con la opción **activada**, GoTrue exige un `nonce` — que se pide con
+   `supabase.auth.reauthenticate()` y llega por email — **pero solo si la
+   sesión tiene más de 24 h**. Una sesión recién creada sigue pudiendo
+   cambiarla sin reautenticar.
+
+O sea: activar la opción reduce el riesgo pero no lo elimina. Para el caso
+"dispositivo compartido con sesión abierta hace un rato", la única defensa
+completa es pedir la contraseña actual en la propia pantalla (b) y validarla
+con un `signInWithPassword` previo al cambio.
+
+### Qué activar en el dashboard (todavía NO aplicado)
+
+`Authentication → Providers → Email → Secure password change: ON`
+
+### Estado de verificación
+
+**NO VERIFICADO.** La comprobación empírica requiere llamar a la API con una
+sesión real, y eso significa crear un usuario. No hay Docker en esta máquina
+para levantar Supabase local, y escribir en producción está excluido. Queda
+pendiente del ensayo con la cuenta de prueba única, o de un staging.
+
+**Hasta entonces, el riesgo de (b) sigue abierto.**
+
+---
+
+## 12 ter. Propuesta SMTP — opción A, lista para aplicar a mano
+
+**Estado: NO APLICADA.** Ningún DNS tocado, Custom SMTP sin activar, ninguna
+credencial cargada ni guardada en el repositorio.
+
+### Subdominio dedicado
+
+`mail.rendercorrientes.com` — dedicado a propósito: aísla la reputación de
+envío del dominio raíz. Si algo sale mal con la entregabilidad, no arrastra
+al correo principal de Render.
+
+### Remitente
+
+| Campo | Valor |
+|---|---|
+| Sender name | `Litoral Maq` |
+| Sender email | `no-responder@mail.rendercorrientes.com` |
+| Reply-To | la casilla real de ventas de Litoral Maq (a definir) |
+
+### Registros DNS a crear en `rendercorrientes.com`
+
+Los valores exactos de DKIM los genera el proveedor al dar de alta el
+dominio; los otros dos son fijos.
+
+| Tipo | Nombre | Valor | Nota |
+|---|---|---|---|
+| TXT | `mail` | `v=spf1 include:amazonses.com ~all` | El `include:` depende del proveedor — confirmar el que indique su panel |
+| TXT/CNAME | `resend._domainkey.mail` | *(lo entrega el proveedor)* | No inventarlo: copiarlo del panel |
+| TXT | `_dmarc.mail` | `v=DMARC1; p=none; rua=mailto:<casilla-de-reportes>` | Arrancar en `p=none` |
+| MX | `mail` | *(solo si el proveedor lo pide para bounces)* | Opcional según proveedor |
+
+**Sobre DMARC:** empezar en `p=none` (solo observa, no rechaza). Recién
+después de 2 semanas con reportes limpios subir a `p=quarantine`. Poner
+`p=reject` de entrada puede tirar abajo todos los emails si SPF o DKIM
+quedaron mal.
+
+### Campos a cargar en Supabase
+
+`Authentication → Emails → Enable Custom SMTP`
+
+| Campo | Valor |
+|---|---|
+| Sender email | `no-responder@mail.rendercorrientes.com` |
+| Sender name | `Litoral Maq` |
+| Host | *(el del proveedor)* |
+| Port | `465` (SSL) o `587` (STARTTLS) |
+| Username | *(el del proveedor)* |
+| Password | **la carga el dueño; no se comparte ni se versiona** |
+
+Y en `Authentication → Rate Limits`: subir el envío de emails a ≥30/hora.
+
+### Proveedor y cuotas — A CONFIRMAR
+
+Resend es la recomendación por simplicidad de alta y por soportar dominio
+propio. **Los límites y el precio del plan gratuito cambian: verificarlos en
+la página de planes del proveedor al momento de contratar.** No tomar de acá
+ninguna cifra como vigente. Alternativas equivalentes: Brevo, Mailgun,
+Amazon SES (más barato a volumen, alta más engorrosa).
+
+### Rollback real
+
+Desactivar Custom SMTP **no es un rollback**: devuelve el proyecto al mailer
+por defecto de Supabase, que está limitado y no está pensado para clientes
+finales. Eso deja el registro peor que antes, no restaurado.
+
+El rollback operativo es uno de estos dos, en orden de preferencia:
+
+1. **Restaurar la configuración SMTP anterior.** Requiere haberla registrado
+   antes de cambiarla: host, puerto, usuario y remitente en el gestor de
+   contraseñas del dueño (nunca en el repo). Sin ese registro previo no hay
+   a qué volver — anotarlo es parte del procedimiento, no un extra.
+2. **Conmutar a un proveedor de respaldo ya dado de alta.** Tener un segundo
+   proveedor con el dominio verificado y las credenciales guardadas convierte
+   el rollback en cambiar 4 campos. Es lo que hace que la vuelta atrás sea
+   cuestión de minutos.
+
+En ambos casos, los registros DNS pueden quedar puestos: SPF, DKIM y DMARC no
+rompen nada si el proveedor deja de usarse, y sacarlos solo alarga la vuelta.
+
+**Criterio de corte:** si tras el cambio los emails no llegan en 15 minutos a
+Gmail y Outlook, volver atrás y diagnosticar con calma, no encadenar arreglos
+sobre producción.
+
+---
+
 ## 13. Decisiones o accesos necesarios
 
 **Decisiones del dueño:**

@@ -3,9 +3,18 @@ import type { AuthAdapter } from "@/services/adapters";
 
 export type { AuthAdapter };
 
+/**
+ * Salida neutra del alta de cuenta. El mensaje NO afirma que la cuenta se
+ * haya creado: se usa igual cuando el email es nuevo y cuando ya estaba
+ * registrado, para que el formulario de registro no sirva como oráculo de
+ * qué emails son clientes.
+ */
 export class EmailConfirmationRequiredError extends Error {
   constructor(public readonly email: string) {
-    super("Cuenta creada. Revisá tu email para confirmarla antes de ingresar.");
+    super(
+      "Si el email está disponible, te enviamos un enlace para confirmarlo. " +
+        "Si ya tenés una cuenta, ingresá con tu contraseña.",
+    );
     this.name = "EmailConfirmationRequiredError";
   }
 }

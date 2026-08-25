@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createSupabaseAuthAdapter } from "./supabase-auth-adapter";
 import type { TypedSupabaseClient } from "@/services/persistence/supabase/client";
+import { EmailConfirmationRequiredError } from "./types";
 
 type ProfileRow = {
   id: string;
@@ -43,6 +44,7 @@ type FakeAuth = {
   resetPasswordForEmail: ReturnType<typeof vi.fn>;
   resend: ReturnType<typeof vi.fn>;
   signOut: ReturnType<typeof vi.fn>;
+  onAuthStateChange: ReturnType<typeof vi.fn>;
 };
 
 function createFakeClient(profiles: ProfileRow[] = []) {
@@ -56,6 +58,8 @@ function createFakeClient(profiles: ProfileRow[] = []) {
     resetPasswordForEmail: vi.fn(async () => ({ data: {}, error: null })),
     resend: vi.fn(async () => ({ data: {}, error: null })),
     signOut: vi.fn(async () => ({ error: null })),
+    // El adaptador se suscribe al crearse para detectar PASSWORD_RECOVERY.
+    onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe() {} } } })),
   };
   const client = {
     auth,
@@ -155,11 +159,13 @@ describe("supabaseAuthAdapter", () => {
     expect(session.user.role).toBe("customer");
   });
 
-  it("signUpCustomer detecta un email ya registrado (identities vacío) sin filtrar de otra forma", async () => {
+  it("signUpCustomer responde igual ante un email ya registrado (identities vacío), sin revelarlo", async () => {
     const { client, auth } = createFakeClient();
     auth.signUp.mockResolvedValue({ data: { user: { id: "x", identities: [] }, session: null }, error: null });
     const adapter = createSupabaseAuthAdapter(client);
-    await expect(adapter.signUpCustomer("Ana", "ana@test.com", "clave123")).rejects.toThrow(/Ya existe una cuenta/);
+    await expect(adapter.signUpCustomer("Ana", "ana@test.com", "clave123")).rejects.toThrow(
+      EmailConfirmationRequiredError,
+    );
   });
 
   it("signUpCustomer informa explícitamente cuando falta confirmar el email", async () => {
@@ -202,7 +208,7 @@ describe("supabaseAuthAdapter", () => {
     });
     const adapter = createSupabaseAuthAdapter(client);
     await expect(adapter.signUpCustomer("Ana", "ana-existente@test.com", "clave123")).rejects.toThrow(
-      /Ya existe una cuenta/,
+      EmailConfirmationRequiredError,
     );
   });
 

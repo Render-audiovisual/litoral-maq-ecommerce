@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { localAuthAdapter } from "./local-auth-adapter";
+import { EmailConfirmationRequiredError } from "./types";
 
 function installLocalStorageShim() {
   const store = new Map<string, string>();
@@ -30,11 +31,14 @@ describe("localAuthAdapter", () => {
     expect(signInSession.user.id).toBe(signUpSession.user.id);
   });
 
-  it("rechaza registro repetido con el mismo email normalizado", async () => {
+  it("un registro repetido no crea cuenta pero tampoco revela que el email existe", async () => {
     await localAuthAdapter.signUpCustomer("Juan", "juan@test.com", "clave123");
     await expect(localAuthAdapter.signUpCustomer("Otro", " Juan@Test.com ", "otraclave")).rejects.toThrow(
-      /Ya existe una cuenta/,
+      EmailConfirmationRequiredError,
     );
+    // La clave original sigue siendo la válida: el segundo alta no pisó nada.
+    const session = await localAuthAdapter.signInCustomer("juan@test.com", "clave123");
+    expect(session.user.name).toBe("Juan");
   });
 
   it("rechaza el registro con el email reservado del admin", async () => {

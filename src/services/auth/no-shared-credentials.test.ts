@@ -99,6 +99,7 @@ describe("los dos proveedores exponen exactamente la misma superficie", () => {
     auth: {
       getSession: async () => ({ data: { session: null }, error: null }),
       signInWithPassword: async () => ({ data: { session: null }, error: new Error("stub") }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
     },
     from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: null, error: null }) }) }) }),
   } as unknown as TypedSupabaseClient;

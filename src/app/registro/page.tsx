@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
+import { authCallbackUrl } from "@/lib/auth-callbacks";
 import { EmailConfirmationRequiredError, getAuthAdapter } from "@/services/auth";
 import { useStore } from "@/store/store";
 
@@ -21,7 +22,7 @@ function RegisterForm() {
         form.name,
         form.email,
         form.password,
-        `${window.location.origin}/login?confirmed=1`,
+        authCallbackUrl("emailConfirmed", window.location.origin),
       );
       convertGuestToAccount(form.email, session.user.id);
       await setCustomerSession(session);
@@ -40,7 +41,7 @@ function RegisterForm() {
       <span className="eyebrow orange">NUEVA CUENTA</span><h1>Registrate en Litoral Maq</h1><p>Accedé al historial y seguimiento de tus pedidos.</p>
       {confirmationEmail ? (
         <div>
-          <div className="success-message">Cuenta creada. Te enviamos un enlace a <strong>{confirmationEmail}</strong>. Abrilo para confirmar tu email.</div>
+          <div className="success-message">Si el email <strong>{confirmationEmail}</strong> está disponible, te enviamos un enlace para confirmarlo. Si ya tenías cuenta, ingresá con tu contraseña.</div>
           <Link className="button primary large full" href={`/confirmar-cuenta?email=${encodeURIComponent(confirmationEmail)}`}>Reenviar email</Link>
         </div>
       ) : <form onSubmit={submit}>

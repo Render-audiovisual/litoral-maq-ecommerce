@@ -1,7 +1,7 @@
 import { createExpiry, customerIdFromEmail, normalizeEmail } from "@/lib/auth";
 import type { Account, Session } from "@/lib/types";
 import { createLocalAccountsStore } from "@/services/persistence/local-accounts-store";
-import type { AuthAdapter } from "./types";
+import { EmailConfirmationRequiredError, type AuthAdapter } from "./types";
 
 const wait = (duration = 350) => new Promise((resolve) => setTimeout(resolve, duration));
 
@@ -67,7 +67,10 @@ export const localAuthAdapter: AuthAdapter = {
     }
     const existing = findAccountByEmail(normalizedEmail);
     if (existing) {
-      throw new Error("Ya existe una cuenta con ese email. Iniciá sesión.");
+      // Misma salida que un alta nueva: si acá se dijera "ya existe", el
+      // formulario de registro revelaría qué emails son clientes. El
+      // adaptador Supabase se comporta igual (ver auth-enumeration.test.ts).
+      throw new EmailConfirmationRequiredError(normalizedEmail);
     }
     const account: Account = {
       id: customerIdFromEmail(normalizedEmail),
