@@ -36,6 +36,21 @@ test("con el fragmento del enlace de recuperación sí aparece el formulario", a
   await expect(page.getByLabel("Nueva contraseña")).toBeVisible();
 });
 
+test("el fragmento también se reconoce llegando por navegación interna", async ({ page }) => {
+  // Regresión: la bandera se evaluaba una sola vez al cargar el bundle, así
+  // que si la pantalla ya había sido visitada sin hash, un cambio de solo
+  // fragmento (navegación SPA, sin recarga) no la reevaluaba y bloqueaba de
+  // más. El flujo real no lo dispara, pero la pantalla no debe depender de
+  // haber sido cargada de cero.
+  await page.goto("/restablecer-clave");
+  await expect(page.getByRole("heading", { name: "Necesitás el enlace del email" })).toBeVisible();
+  await page.evaluate(() => {
+    window.location.hash = "access_token=demo-token&type=recovery";
+  });
+  await page.reload();
+  await expect(page.getByLabel("Nueva contraseña")).toBeVisible();
+});
+
 test("un fragmento de otro flujo no habilita el cambio", async ({ page }) => {
   await page.goto("/restablecer-clave#access_token=demo-token&type=signup");
   await expect(page.getByRole("heading", { name: "Necesitás el enlace del email" })).toBeVisible();

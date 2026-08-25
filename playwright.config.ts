@@ -49,7 +49,16 @@ export default defineConfig({
   testDir: './tests/e2e',
   timeout: 30000,
   fullyParallel: false,
+  // Un solo worker en CI: los specs comparten un único `next dev`, y con
+  // varios en paralelo el login de admin llegaba a pasarse del timeout de la
+  // aserción de navegación (el fallo intermitente de admin-sheet-sync). Como
+  // ahora los E2E son gate de deploy, un flake bloquearía publicaciones al
+  // azar; la suite entera tarda ~50s contra ~35s, y vale la pena.
+  workers: process.env.CI ? 1 : undefined,
   retries: process.env.CI ? 2 : 0,
+  // El adaptador local simula latencia (wait() en cada operación), así que
+  // 5s por defecto queda justo para las aserciones que siguen a un login.
+  expect: { timeout: 10000 },
   reporter: 'list',
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3000',

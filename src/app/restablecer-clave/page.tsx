@@ -8,6 +8,7 @@ import {
   getServerRecoverySnapshot,
   hasPasswordRecoveryIntent,
   RECOVERY_REQUIRED_ERROR,
+  refreshPasswordRecoveryIntent,
   subscribePasswordRecovery,
 } from "@/lib/password-recovery";
 import { getAuthAdapter } from "@/services/auth";
@@ -31,6 +32,8 @@ export default function ResetPasswordPage() {
   );
 
   useEffect(() => {
+    // Reevaluar el fragmento por si se llegó acá sin recargar el bundle.
+    refreshPasswordRecoveryIntent();
     // Crear el cliente deja al adaptador suscripto al evento de Supabase.
     getAuthAdapter();
   }, []);

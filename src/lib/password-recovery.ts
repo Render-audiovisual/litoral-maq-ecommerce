@@ -79,6 +79,18 @@ export function getServerRecoverySnapshot() {
   return false;
 }
 
+/**
+ * Reevalúa el fragmento actual. El valor de arriba se calcula una sola vez,
+ * al cargar el bundle: si se llega a la pantalla por una navegación interna
+ * (el módulo ya evaluado con el hash vacío), esa bandera quedaría en false
+ * para siempre. En el flujo real el enlace del email es una carga completa,
+ * así que no se nota — pero la pantalla no tiene por qué depender de eso.
+ */
+export function refreshPasswordRecoveryIntent() {
+  if (typeof window === "undefined") return;
+  if (isRecoveryHash(window.location.hash)) markPasswordRecovery();
+}
+
 /** Solo para tests: vuelve el módulo a su estado inicial. */
 export function resetPasswordRecoveryIntent(value = false) {
   recoveryIntent = value;
