@@ -29,7 +29,7 @@ type OrderRow = Database["public"]["Tables"]["orders"]["Row"];
  * omitirla. La lista de acá y el revoke de la migración van juntos.
  */
 const ORDER_COLUMNS =
-  "id, customer_id, customer_name, email, lines, total, shipping, delivery_method, address, status, created_at, payment_reference, andreani_shipment_number, andreani_status, andreani_tracking_url, andreani_label_url";
+  "id, customer_id, customer_name, email, lines, total, shipping, delivery_method, address, status, created_at, payment_reference, andreani_shipment_number, andreani_status, andreani_tracking_url";
 
 /**
  * La forma que efectivamente vuelve del select de arriba: OrderRow menos las
@@ -38,7 +38,10 @@ const ORDER_COLUMNS =
  * ORDER_COLUMNS, o intenta leer `andreani_contract` desde el navegador,
  * TypeScript lo corta en compilación en vez de filtrarlo en runtime.
  */
-type ClientOrderRow = Omit<OrderRow, "andreani_contract" | "andreani_claim_state" | "andreani_claimed_at">;
+type ClientOrderRow = Omit<
+  OrderRow,
+  "andreani_contract" | "andreani_claim_state" | "andreani_claimed_at" | "andreani_label_url"
+>;
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 type AuditRow = Database["public"]["Tables"]["audit_log"]["Row"];
 
@@ -124,7 +127,6 @@ function rowToOrder(row: ClientOrderRow): Order {
     andreaniShipmentNumber: row.andreani_shipment_number ?? undefined,
     andreaniStatus: row.andreani_status ?? undefined,
     andreaniTrackingUrl: row.andreani_tracking_url ?? undefined,
-    andreaniLabelUrl: row.andreani_label_url ?? undefined,
   };
 }
 

@@ -32,14 +32,18 @@ function sleep(ms: number) {
 
 // deno-lint-ignore no-explicit-any
 function shipmentFields(row: any) {
-  // Nunca se devuelve andreani_contract en la respuesta (ver auditoría de
-  // seguridad: usuario/contraseña/token/contrato no van en ninguna respuesta).
+  // No se devuelve andreani_contract (dato interno de la cuenta comercial).
+  //
+  // Tampoco andreani_label_url: la URL guardada es una referencia TEMPORAL
+  // cuyo vencimiento no está confirmado con Andreani, y la etiqueta contiene
+  // datos personales del destinatario. Devolver una URL potencialmente
+  // vencida invita a guardarla y compartirla. El panel la pide cuando la
+  // necesita con GET ?type=label, que la resuelve en el momento.
   return {
     orderId: row.id,
     shipmentNumber: row.andreani_shipment_number,
     status: row.andreani_status,
     trackingUrl: row.andreani_tracking_url,
-    labelUrl: row.andreani_label_url,
   };
 }
 
@@ -270,7 +274,16 @@ async function handleRead(req: Request, admin: MinimalSupabaseClient, orderId: s
   const { data: order, error } = await admin.from("orders").select("andreani_shipment_number").eq("id", orderId).maybeSingle();
   if (error) throw new HttpError(500, error.message);
   if (!order?.andreani_shipment_number) throw new HttpError(409, "El pedido todavía no tiene envío de Andreani.");
-  if (type === "label") return Response.json(await getLabel(order.andreani_shipment_number));
+  if (type === "label") {
+    // Resuelta contra Andreani en el momento, no leída de la fila: la URL
+    // guardada puede haber vencido (vencimiento PENDIENTE de confirmar).
+    // Cache-Control: no-store para que la URL, que apunta a un documento con
+    // datos personales, no quede en cachés intermedias ni en el disco del
+    // navegador más de lo necesario.
+    return Response.json(await getLabel(order.andreani_shipment_number), {
+      headers: { "Cache-Control": "no-store" },
+    });
+  }
   if (type === "tracking") return Response.json(await getTracking(order.andreani_shipment_number));
   throw new HttpError(400, 'type debe ser "label" o "tracking".');
 }

@@ -422,3 +422,30 @@ Deno.test("flag apagado - sin JWT sigue devolviendo 401, no revela el estado de 
     assertEquals(response.status, 401);
   });
 });
+
+// ---- Etiqueta: referencia temporal, nunca servida desde la fila ---------
+
+Deno.test("etiqueta - la respuesta de creación NO incluye labelUrl (referencia temporal, datos personales)", async () => {
+  const { client, req } = setupStaffClient();
+  const orderId = "o-etiqueta-no-en-create";
+  client.tables.orders.set(orderId, baseOrderRow(orderId));
+
+  const response = await handler(req(orderId, "POST", {}), { adminClient: client });
+  const body = await response.json();
+  assert(!("labelUrl" in body), "la creación no debe devolver una URL de etiqueta potencialmente vencida");
+  assert(!("contract" in body), "tampoco el contrato");
+});
+
+Deno.test("etiqueta - se obtiene on-demand y la respuesta no se cachea", async () => {
+  const { client, req, getReq } = setupStaffClient();
+  const orderId = "o-etiqueta-on-demand";
+  client.tables.orders.set(orderId, baseOrderRow(orderId));
+  await handler(req(orderId, "POST", {}), { adminClient: client });
+
+  const response = await handler(getReq(orderId, "label"), { adminClient: client });
+  assertEquals(response.status, 200);
+  // La etiqueta lleva datos personales: no debe quedar en cachés intermedias.
+  assertEquals(response.headers.get("Cache-Control"), "no-store");
+  const body = await response.json();
+  assert(typeof body.url === "string" && body.url.length > 0);
+});

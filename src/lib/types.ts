@@ -78,7 +78,11 @@ export type Order = {
   andreaniShipmentNumber?: string | null;
   andreaniStatus?: string | null;
   andreaniTrackingUrl?: string | null;
-  andreaniLabelUrl?: string | null;
+  /** `andreani_label_url` tampoco está acá: la etiqueta contiene datos
+   * personales del destinatario y su URL es una referencia TEMPORAL (ver
+   * supabase/functions/README.md). Se guarda en la fila para trazabilidad,
+   * pero no viaja al navegador con el pedido — el panel la pide on-demand
+   * a la Function, que la resuelve contra Andreani en ese momento. */
 };
 
 export type Session = {

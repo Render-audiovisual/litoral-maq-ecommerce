@@ -15,6 +15,8 @@ import {
   mockQuote,
   RateLimitError,
   readAndreaniEnv,
+  readJwtExpirySeconds,
+  resolveTokenLifetime,
   validateGeoQuery,
   validateQuoteInput,
   ValidationError,
@@ -153,6 +155,78 @@ Deno.test("validateGeoQuery - rechaza resource inválido o CP inválido", () => 
   assertThrows(() => validateGeoQuery("depositos", "3400"), ValidationError);
   assertThrows(() => validateGeoQuery("localidades", "abc"), ValidationError);
   assertThrows(() => validateGeoQuery("localidades", null), ValidationError);
+});
+
+// ---- Vencimiento del token: nunca asumido -------------------------------
+
+/** Arma un JWT de mentira (firma irrelevante) con el `exp` pedido. */
+function fakeJwt(expSeconds: number | null): string {
+  const b64 = (obj: unknown) => btoa(JSON.stringify(obj)).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
+  return `${b64({ alg: "HS256" })}.${b64(expSeconds === null ? { sub: "x" } : { sub: "x", exp: expSeconds })}.firma`;
+}
+
+Deno.test("resolveTokenLifetime - usa expires_in de la respuesta con margen de seguridad", () => {
+  const now = 1_000_000_000_000;
+  const result = resolveTokenLifetime({ expires_in: 3600 }, "token-opaco", now);
+  assertEquals(result.source, "expires_in");
+  // 3600s menos el margen de 60s.
+  assertEquals(result.expiresAt, now + 3600 * 1000 - 60_000);
+});
+
+Deno.test("resolveTokenLifetime - acepta expiresIn en camelCase", () => {
+  const now = 1_000_000_000_000;
+  assertEquals(resolveTokenLifetime({ expiresIn: 600 }, "token", now).source, "expires_in");
+});
+
+Deno.test("resolveTokenLifetime - si no hay expires_in, usa el exp del JWT", () => {
+  const now = 1_000_000_000_000;
+  const expSeconds = Math.floor(now / 1000) + 1800;
+  const result = resolveTokenLifetime({}, fakeJwt(expSeconds), now);
+  assertEquals(result.source, "jwt_exp");
+  assertEquals(result.expiresAt, expSeconds * 1000 - 60_000);
+});
+
+Deno.test("resolveTokenLifetime - SIN dato real no inventa duración: no cachea", () => {
+  const now = 1_000_000_000_000;
+  const result = resolveTokenLifetime({}, "token-opaco-sin-exp", now);
+  assertEquals(result.source, "none");
+  assertEquals(result.expiresAt, null); // null => se pide token nuevo cada vez.
+});
+
+Deno.test("resolveTokenLifetime - un JWT sin claim exp tampoco alcanza", () => {
+  const now = 1_000_000_000_000;
+  assertEquals(resolveTokenLifetime({}, fakeJwt(null), now).expiresAt, null);
+});
+
+Deno.test("resolveTokenLifetime - token ya vencido no se cachea", () => {
+  const now = 1_000_000_000_000;
+  const expired = Math.floor(now / 1000) - 10;
+  assertEquals(resolveTokenLifetime({}, fakeJwt(expired), now).expiresAt, null);
+  // expires_in tan corto que el margen se lo come entero.
+  assertEquals(resolveTokenLifetime({ expires_in: 30 }, "token", now).expiresAt, null);
+});
+
+Deno.test("resolveTokenLifetime - TTL configurado se usa solo si no hay dato real, como último recurso", () => {
+  const now = 1_000_000_000_000;
+  const result = resolveTokenLifetime({}, "token-opaco", now, 900);
+  assertEquals(result.source, "configured");
+  assertEquals(result.expiresAt, now + 900 * 1000 - 60_000);
+
+  // Pero un dato real siempre le gana al configurado.
+  assertEquals(resolveTokenLifetime({ expires_in: 120 }, "token", now, 900).source, "expires_in");
+});
+
+Deno.test("resolveTokenLifetime - valores basura se ignoran (no rompen ni cachean)", () => {
+  const now = 1_000_000_000_000;
+  for (const body of [{ expires_in: "no-numero" }, { expires_in: -1 }, { expires_in: 0 }, {}, null, undefined]) {
+    assertEquals(resolveTokenLifetime(body, "token-opaco", now).expiresAt, null);
+  }
+});
+
+Deno.test("readJwtExpirySeconds - defensiva ante tokens que no son JWT", () => {
+  for (const token of ["", "a.b", "a.b.c.d", "no-es-jwt", "a.@@@invalido@@@.c"]) {
+    assertEquals(readJwtExpirySeconds(token), null);
+  }
 });
 
 // ---- Clasificación de rechazos de Andreani (punto 1) ---------------------

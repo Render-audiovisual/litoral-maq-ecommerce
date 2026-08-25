@@ -117,14 +117,103 @@ export function readAndreaniEnv(): AndreaniEnv {
 
 type RealEnv = Extract<AndreaniEnv, { mode: "qa" | "production" }>;
 
+/**
+ * Margen de seguridad: un token se considera vencido este tiempo ANTES de su
+ * vencimiento real, para no usar uno que expire en pleno vuelo de la request.
+ */
+const TOKEN_SAFETY_MARGIN_MS = 60_000;
+
+export type TokenLifetime = {
+  /** Timestamp de vencimiento efectivo (ya con el margen restado), o null si
+   * no se pudo determinar con un dato real -> no se cachea. */
+  expiresAt: number | null;
+  /** De dónde salió el dato. "none" = la respuesta no informó vencimiento. */
+  source: "expires_in" | "jwt_exp" | "configured" | "none";
+};
+
+/** Decodifica el claim `exp` de un JWT sin validar la firma (solo para saber
+ * cuándo vence un token que YA nos dieron). Defensiva: cualquier token que no
+ * sea un JWT bien formado devuelve null en vez de tirar. */
+export function readJwtExpirySeconds(token: string): number | null {
+  const parts = token.split(".");
+  if (parts.length !== 3) return null;
+  try {
+    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = payload.padEnd(payload.length + ((4 - (payload.length % 4)) % 4), "=");
+    const claims = JSON.parse(atob(padded));
+    const exp = claims?.exp;
+    return typeof exp === "number" && Number.isFinite(exp) ? exp : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Determina cuándo vence el token a partir de DATOS REALES, nunca de un
+ * supuesto. Orden de preferencia:
+ *   1. `expires_in` de la respuesta (segundos), si viene.
+ *   2. El claim `exp` del propio JWT, si es decodificable.
+ *   3. `ANDREANI_TOKEN_TTL_SECONDS` configurado a mano (escotilla para el día
+ *      que Andreani confirme la duración pero no la informe en la respuesta).
+ *   4. Nada -> `expiresAt: null` -> NO se cachea: se pide un token nuevo en
+ *      cada request. Es más lento, pero es lo único correcto sin el dato.
+ *
+ * Pura y exportada para testearse sin red.
+ */
+export function resolveTokenLifetime(
+  // deno-lint-ignore no-explicit-any
+  body: any,
+  token: string,
+  now: number,
+  configuredTtlSeconds?: number,
+): TokenLifetime {
+  const expiresIn = Number(body?.expires_in ?? body?.expiresIn);
+  if (Number.isFinite(expiresIn) && expiresIn > 0) {
+    const expiresAt = now + expiresIn * 1000 - TOKEN_SAFETY_MARGIN_MS;
+    return expiresAt > now ? { expiresAt, source: "expires_in" } : { expiresAt: null, source: "expires_in" };
+  }
+
+  const expSeconds = readJwtExpirySeconds(token);
+  if (expSeconds !== null) {
+    const expiresAt = expSeconds * 1000 - TOKEN_SAFETY_MARGIN_MS;
+    return expiresAt > now ? { expiresAt, source: "jwt_exp" } : { expiresAt: null, source: "jwt_exp" };
+  }
+
+  if (configuredTtlSeconds !== undefined && Number.isFinite(configuredTtlSeconds) && configuredTtlSeconds > 0) {
+    const expiresAt = now + configuredTtlSeconds * 1000 - TOKEN_SAFETY_MARGIN_MS;
+    return expiresAt > now ? { expiresAt, source: "configured" } : { expiresAt: null, source: "configured" };
+  }
+
+  // Sin dato real: no se inventa una duración. Se pide token nuevo cada vez.
+  return { expiresAt: null, source: "none" };
+}
+
+/**
+ * TTL configurado a mano vía ANDREANI_TOKEN_TTL_SECONDS. Solo se acepta una
+ * vez que la spec esté verificada: mientras siga TO VERIFY, configurar un TTL
+ * sería volver a inventar el número que este cambio justamente elimina.
+ */
+function readConfiguredTokenTtl(): number | undefined {
+  if (!SPEC_VERIFIED_AGAINST_OFFICIAL_DOCS) return undefined;
+  const raw = Deno.env.get("ANDREANI_TOKEN_TTL_SECONDS")?.trim();
+  if (!raw) return undefined;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+}
+
 // ponytail: token cacheado en memoria del proceso (se pierde en cada cold
 // start de la función); suficiente para el volumen esperado. Upgrade path si
 // hiciera falta: guardarlo en una tabla/KV compartida entre invocaciones.
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
+/** Solo para tests: limpia el cache entre casos. */
+export function resetTokenCacheForTests() {
+  cachedToken = null;
+}
+
 async function getToken(env: RealEnv): Promise<string> {
   const now = Date.now();
-  if (cachedToken && cachedToken.expiresAt - 30_000 > now) return cachedToken.value;
+  if (cachedToken && cachedToken.expiresAt > now) return cachedToken.value;
 
   // TO VERIFY: endpoint/payload de autenticación real. user/password van
   // SOLO en el header Authorization de este fetch — nunca interpolados en
@@ -144,8 +233,13 @@ async function getToken(env: RealEnv): Promise<string> {
   const body = await response.json();
   const token = body.token as string | undefined;
   if (!token) throw new AndreaniApiError(502, classifyAndreaniError(502).message);
-  // TO VERIFY: vencimiento real del token (55min es un valor conservador de ejemplo).
-  cachedToken = { value: token, expiresAt: now + 55 * 60 * 1000 };
+
+  // PENDIENTE DE CONFIRMACIÓN CON ANDREANI: duración exacta del token,
+  // mecanismo de renovación, y si la respuesta informa expires_in (ver
+  // supabase/functions/README.md). Hasta tenerlo, no se asume ninguna
+  // duración: si la respuesta no trae un dato real, no se cachea.
+  const lifetime = resolveTokenLifetime(body, token, now, readConfiguredTokenTtl());
+  cachedToken = lifetime.expiresAt === null ? null : { value: token, expiresAt: lifetime.expiresAt };
   return token;
 }
 
@@ -451,6 +545,13 @@ export type ShipmentResult = {
   shipmentNumber: string;
   status: string;
   trackingUrl: string;
+  /**
+   * Referencia TEMPORAL a la etiqueta. NO se asume permanente: no está
+   * confirmado con Andreani si estas URLs vencen ni en cuánto tiempo (ver
+   * README). Se persiste para trazabilidad, pero nunca se sirve al navegador
+   * desde la fila del pedido — se resuelve on-demand con GET ?type=label.
+   * La etiqueta contiene datos personales del destinatario.
+   */
   labelUrl: string | null;
   /** Contrato con el que se creó el envío, tomado SIEMPRE del entorno de la
    * Function — nunca de la request. Se persiste para trazabilidad histórica

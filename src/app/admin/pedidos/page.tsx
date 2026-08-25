@@ -22,13 +22,14 @@ function deliveryAmountLabel(order: Order) {
 }
 
 export default function AdminOrdersPage() {
-  const { orders, products, customers, updateOrderStatus, createAndreaniShipment } = useStore();
+  const { orders, products, customers, updateOrderStatus, createAndreaniShipment, fetchAndreaniLabelUrl } = useStore();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<Order["status"] | "">("");
   const [selected, setSelected] = useState<Order | null>(null);
   const [updatingId, setUpdatingId] = useState("");
   const [shippingId, setShippingId] = useState("");
   const [confirmingShipmentId, setConfirmingShipmentId] = useState("");
+  const [labelId, setLabelId] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -82,6 +83,26 @@ export default function AdminOrdersPage() {
     }
   }
 
+  /**
+   * Resuelve la etiqueta contra Andreani en el momento y la abre. La URL no
+   * se guarda en el estado ni se persiste del lado cliente: no está
+   * confirmado que estas URLs sean permanentes, y el documento contiene
+   * datos personales del destinatario.
+   */
+  async function openLabel(order: Order) {
+    setLabelId(order.id);
+    setError("");
+    setMessage("");
+    try {
+      const url = await fetchAndreaniLabelUrl(order.id);
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "No se pudo obtener la etiqueta.");
+    } finally {
+      setLabelId("");
+    }
+  }
+
   // Mismo bulto por defecto que supabase/functions/_shared/andreani.ts
   // (DEFAULT_PARCEL) — duplicado acá a propósito: son runtimes distintos
   // (Deno vs. Next.js) sin un paquete compartido, y es un solo valor.
@@ -130,7 +151,11 @@ export default function AdminOrdersPage() {
                   <strong>{selected.andreaniShipmentNumber}</strong>
                   <small>{selected.andreaniStatus || "Sin estado informado"}</small>
                   {selected.andreaniTrackingUrl && <small><a href={selected.andreaniTrackingUrl} target="_blank" rel="noreferrer">Ver tracking</a></small>}
-                  {selected.andreaniLabelUrl && <small><a href={selected.andreaniLabelUrl} target="_blank" rel="noreferrer">Ver etiqueta</a></small>}
+                  {/* La etiqueta se pide en el momento, no se guarda una URL:
+                      es una referencia temporal y contiene datos personales. */}
+                  <button type="button" className="table-detail-button" disabled={labelId === selected.id} onClick={() => void openLabel(selected)}>
+                    {labelId === selected.id ? "Obteniendo etiqueta…" : "Obtener etiqueta"}
+                  </button>
                 </>
               : <strong>Sin generar</strong>}
 

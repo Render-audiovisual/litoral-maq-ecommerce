@@ -33,28 +33,53 @@ export type AndreaniShipmentFields = {
   andreaniShipmentNumber: string | null;
   andreaniStatus: string | null;
   andreaniTrackingUrl: string | null;
-  andreaniLabelUrl: string | null;
 };
 
-export async function createAndreaniShipment(orderId: string, session: Session): Promise<AndreaniShipmentFields> {
+function shipmentEndpoint(orderId: string, extraQuery = "") {
   const configResult = readSupabaseConfig();
   if (configResult.status !== "ok") {
-    throw new Error("Supabase no está configurado: no se puede generar el envío de Andreani.");
+    throw new Error("Supabase no está configurado: no se puede operar con Andreani.");
   }
-  const endpoint = `${configResult.config.url.replace(/\/$/, "")}/functions/v1/andreani-shipment?orderId=${encodeURIComponent(orderId)}`;
-  const response = await fetch(endpoint, {
+  const base = configResult.config.url.replace(/\/$/, "");
+  return `${base}/functions/v1/andreani-shipment?orderId=${encodeURIComponent(orderId)}${extraQuery}`;
+}
+
+async function readJsonOrThrow(response: Response) {
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(body?.error || `Andreani respondió ${response.status}.`);
+  return body;
+}
+
+export async function createAndreaniShipment(orderId: string, session: Session): Promise<AndreaniShipmentFields> {
+  const response = await fetch(shipmentEndpoint(orderId), {
     method: "POST",
     headers: { Authorization: `Bearer ${session.token}`, "Content-Type": "application/json" },
     body: JSON.stringify({}),
   });
-  const body = await response.json().catch(() => null);
-  if (!response.ok) {
-    throw new Error(body?.error || `Andreani respondió ${response.status}.`);
-  }
+  const body = await readJsonOrThrow(response);
   return {
     andreaniShipmentNumber: body.shipmentNumber ?? null,
     andreaniStatus: body.status ?? null,
     andreaniTrackingUrl: body.trackingUrl ?? null,
-    andreaniLabelUrl: body.labelUrl ?? null,
   };
+}
+
+/**
+ * Pide la etiqueta en el momento en que se la va a usar, en vez de leer una
+ * URL guardada: no está confirmado que las URLs de Andreani sean permanentes
+ * (ver supabase/functions/README.md), así que una guardada puede estar
+ * vencida. La URL que devuelve se abre y se descarta — no se persiste en el
+ * estado del panel ni se guarda en el pedido del lado cliente, porque el
+ * documento contiene datos personales del destinatario.
+ */
+export async function fetchAndreaniLabelUrl(orderId: string, session: Session): Promise<string> {
+  const response = await fetch(shipmentEndpoint(orderId, "&type=label"), {
+    method: "GET",
+    headers: { Authorization: `Bearer ${session.token}` },
+    cache: "no-store",
+  });
+  const body = await readJsonOrThrow(response);
+  const url = body?.url;
+  if (!url) throw new Error("Andreani no devolvió una etiqueta para este envío.");
+  return url;
 }

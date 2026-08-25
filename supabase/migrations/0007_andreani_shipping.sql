@@ -27,6 +27,11 @@ alter table public.orders
   -- valores real, por eso sin check constraint acá).
   add column if not exists andreani_status text,
   add column if not exists andreani_tracking_url text,
+  -- Referencia TEMPORAL a la etiqueta, no una URL permanente: no está
+  -- confirmado con Andreani si vencen ni en cuánto (ver README). Se guarda
+  -- para trazabilidad; el panel resuelve la etiqueta on-demand contra la API
+  -- en vez de servir esta columna. Contiene datos personales -> revocada
+  -- para anon/authenticated más abajo, igual que el contrato.
   add column if not exists andreani_label_url text,
   -- Estado interno del claim de creación (nuestro, no de Andreani) — este sí
   -- tiene un set de valores cerrado y conocido, de ahí el check constraint:
@@ -70,6 +75,17 @@ revoke select (andreani_contract) on public.orders from anon;
 revoke select (andreani_contract) on public.orders from authenticated;
 revoke update (andreani_contract) on public.orders from authenticated;
 
+-- La etiqueta se revoca por un motivo distinto pero igual de concreto:
+-- contiene DATOS PERSONALES del destinatario (nombre, domicilio), y su URL
+-- es una referencia temporal de vencimiento no confirmado. Sin este revoke,
+-- un customer leyendo su propio pedido se llevaría la URL de su etiqueta y
+-- podría quedar guardada o compartida indefinidamente. El panel admin la
+-- obtiene on-demand vía la Edge Function (GET ?type=label), que la resuelve
+-- contra Andreani en el momento.
+revoke select (andreani_label_url) on public.orders from anon;
+revoke select (andreani_label_url) on public.orders from authenticated;
+revoke update (andreani_label_url) on public.orders from authenticated;
+
 -- Resguardo a nivel DB: dos números de envío guardados no pueden repetirse.
 -- La idempotencia real (no llamar dos veces a la API de Andreani) la hace el
 -- claim atómico + máquina de estados en andreani-shipment/index.ts; esto es
@@ -90,6 +106,9 @@ create unique index if not exists orders_andreani_shipment_number_key
 -- grant select (andreani_contract) on public.orders to anon;
 -- grant select (andreani_contract) on public.orders to authenticated;
 -- grant update (andreani_contract) on public.orders to authenticated;
+-- grant select (andreani_label_url) on public.orders to anon;
+-- grant select (andreani_label_url) on public.orders to authenticated;
+-- grant update (andreani_label_url) on public.orders to authenticated;
 --
 -- drop index if exists public.orders_andreani_shipment_number_key;
 -- alter table public.orders

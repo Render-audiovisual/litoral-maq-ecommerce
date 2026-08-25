@@ -14,7 +14,10 @@ import type {
 import { getPersistenceAdapter, type PersistenceAdapter } from "@/services/persistence";
 import { getAuthAdapter, supportsGuestSessions, supportsSessionRestore } from "@/services/auth";
 import { resolveRequestedProvider } from "@/services/provider";
-import { createAndreaniShipment as requestAndreaniShipment } from "@/services/shipping/andreani-admin-client";
+import {
+  createAndreaniShipment as requestAndreaniShipment,
+  fetchAndreaniLabelUrl as requestAndreaniLabelUrl,
+} from "@/services/shipping/andreani-admin-client";
 import {
   appendAuditEntry,
   applyDeleteProduct,
@@ -54,6 +57,9 @@ type Store = {
   createOrder: (order: Order) => Promise<Order>;
   updateOrderStatus: (id: string, status: Order["status"]) => Promise<Order>;
   createAndreaniShipment: (id: string) => Promise<Order>;
+  /** Devuelve una URL de etiqueta recién resuelta contra Andreani. No se
+   * guarda en el estado: es una referencia temporal con datos personales. */
+  fetchAndreaniLabelUrl: (id: string) => Promise<string>;
   addCustomer: (customer: Customer) => void;
   convertGuestToAccount: (email: string, accountId: string) => void;
   auditLog: AuditEntry[];
@@ -467,6 +473,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [adminSession],
   );
 
+  const fetchAndreaniLabelUrl = useCallback(
+    async (id: string) => {
+      if (!isValidAdminSession(adminSession)) {
+        throw new Error("La sesión de administrador venció. Volvé a ingresar.");
+      }
+      return await requestAndreaniLabelUrl(id, adminSession);
+    },
+    [adminSession],
+  );
+
   const updateOrderStatus = useCallback(
     async (id: string, status: Order["status"]) => {
       const result = applyUpdateOrderStatus(orders, adminSession, id, status);
@@ -559,6 +575,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       createOrder,
       updateOrderStatus,
       createAndreaniShipment,
+      fetchAndreaniLabelUrl,
       addCustomer,
       convertGuestToAccount,
       auditLog,
@@ -585,6 +602,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       createOrder,
       updateOrderStatus,
       createAndreaniShipment,
+      fetchAndreaniLabelUrl,
       addCustomer,
       convertGuestToAccount,
       auditLog,
