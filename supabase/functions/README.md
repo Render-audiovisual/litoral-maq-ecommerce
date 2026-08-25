@@ -108,6 +108,13 @@ Según lo que responda Andreani, una de estas dos:
 
 En ningún caso la etiqueta se sirve directamente a un cliente final.
 
+## Homologación
+
+`HOMOLOGACION.md` tiene la planilla para completar cuando llegue el paquete
+técnico: por operación, el endpoint/request/response que **asumimos hoy** al
+lado de la columna vacía para el dato **oficial**, más qué archivo tocar
+cuando difieran y el gate de salida para abrir los candados.
+
 ## Preguntas abiertas al contacto comercial de Andreani
 
 Bloquean la verificación de la spec y la automatización del fallo residual:
@@ -118,8 +125,17 @@ Bloquean la verificación de la spec y la automatización del fallo residual:
    ¿Se puede volver a solicitar la etiqueta de un envío ya creado?
 3. **Formato y contenido** de la etiqueta (PDF / ZPL) y restricciones de
    almacenamiento de ese documento.
-4. **Idempotencia**: ¿existe consulta por referencia externa / `idOrdenOrigen`
-   o una clave oficial de idempotencia, para reconciliar timeouts?
+4. **Idempotencia**: ¿existe consulta por referencia externa / `idPedido` o una
+   clave oficial de idempotencia, para reconciliar timeouts? La FAQ pública
+   menciona un **"GET estado de orden de envío"** para validar que el preenvío
+   se creó en el TMS — confirmar si sirve para esto y si acepta buscar por
+   nuestra referencia.
+5. **¿La creación es asíncrona?** El schema de sandbox/beta responde
+   **202 Accepted**: confirmar si eso ya garantiza el alta del envío o si hay
+   que consultar después (ver `HOMOLOGACION.md` §5).
+6. **Dirección estructurada**: confirmar si `destino` exige calle/número/piso
+   separados. Hoy el checkout guarda un string libre; si es obligatorio,
+   cambia el formulario de checkout, no solo esta capa.
 
 ## Correr los tests
 
