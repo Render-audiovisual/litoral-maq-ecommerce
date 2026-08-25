@@ -187,6 +187,24 @@ describe("supabase persistence adapter", () => {
     expect(created).toEqual(order);
   });
 
+  it("ninguna query de orders usa select(*) — el contrato de Andreani es interno y no debe viajar al navegador", async () => {
+    // Regresión: con select("*"), RLS (que filtra FILAS, no columnas) le
+    // entregaría andreani_contract a cualquier customer leyendo su propio
+    // pedido. Además 0007 revoca la columna, así que un select("*") pasaría
+    // a fallar con "permission denied". Ver ORDER_COLUMNS en el adapter.
+    const { client, builders } = createFakeClient({ orders: { data: [], error: null } });
+    const adapter = createSupabasePersistenceAdapter(client);
+    await adapter.listOrders();
+    const selectArgs = builders[0].calls.filter((c) => c.method === "select").map((c) => c.args[0]);
+    expect(selectArgs.length).toBeGreaterThan(0);
+    for (const columns of selectArgs) {
+      expect(columns).toBeTypeOf("string");
+      expect(columns).not.toBe("*");
+      expect(columns).not.toContain("andreani_contract");
+      expect(columns).not.toContain("andreani_claim_state");
+    }
+  });
+
   it("updateOrderStatus devuelve null cuando no hay fila (maybeSingle sin match)", async () => {
     const { client } = createFakeClient({ orders: { data: null, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);

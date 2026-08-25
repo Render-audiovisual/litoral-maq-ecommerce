@@ -1,7 +1,7 @@
 "use client";
 
 import productsSeed from "@/data/products.json";
-import { guestIdFromEmail, isSessionExpired, normalizeEmail } from "@/lib/auth";
+import { guestIdFromEmail, isSessionExpired, isValidAdminSession, normalizeEmail } from "@/lib/auth";
 import { mergeCartLines } from "@/lib/cart";
 import type {
   AuditEntry,
@@ -13,6 +13,8 @@ import type {
 } from "@/lib/types";
 import { getPersistenceAdapter, type PersistenceAdapter } from "@/services/persistence";
 import { getAuthAdapter, supportsGuestSessions, supportsSessionRestore } from "@/services/auth";
+import { resolveRequestedProvider } from "@/services/provider";
+import { createAndreaniShipment as requestAndreaniShipment } from "@/services/shipping/andreani-admin-client";
 import {
   appendAuditEntry,
   applyDeleteProduct,
@@ -51,6 +53,7 @@ type Store = {
   replaceProducts: (products: Product[]) => Promise<Product[]>;
   createOrder: (order: Order) => Promise<Order>;
   updateOrderStatus: (id: string, status: Order["status"]) => Promise<Order>;
+  createAndreaniShipment: (id: string) => Promise<Order>;
   addCustomer: (customer: Customer) => void;
   convertGuestToAccount: (email: string, accountId: string) => void;
   auditLog: AuditEntry[];
@@ -436,6 +439,34 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [adapter],
   );
 
+  // Server-side real: llama a supabase/functions/andreani-shipment, que
+  // valida el rol y hace todo el trabajo (incluida la escritura en orders
+  // con SUPABASE_SERVICE_ROLE_KEY) — acá solo se refleja el resultado en el
+  // estado local. Idempotente: si el pedido ya tiene envío, la función
+  // devuelve el existente en vez de crear uno nuevo (ver punto 7 del pedido).
+  const createAndreaniShipment = useCallback(
+    async (id: string) => {
+      if (!isValidAdminSession(adminSession)) {
+        throw new Error("La sesión de administrador venció. Volvé a ingresar.");
+      }
+      if (resolveRequestedProvider() !== "supabase") {
+        throw new Error("El envío por Andreani solo está disponible con el proveedor Supabase activo.");
+      }
+      const fields = await requestAndreaniShipment(id, adminSession);
+      let next: Order | undefined;
+      setOrders((current) =>
+        current.map((order) => {
+          if (order.id !== id) return order;
+          next = { ...order, ...fields };
+          return next;
+        }),
+      );
+      if (!next) throw new Error("El pedido no está cargado en el panel.");
+      return next;
+    },
+    [adminSession],
+  );
+
   const updateOrderStatus = useCallback(
     async (id: string, status: Order["status"]) => {
       const result = applyUpdateOrderStatus(orders, adminSession, id, status);
@@ -451,6 +482,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.warn("El estado cambió, pero no se pudo guardar la auditoría.", error);
       }
+      // A propósito NO se dispara acá la creación del envío Andreani. El
+      // pedido en "preparando" solo HABILITA la acción — el envío real se
+      // genera únicamente cuando el admin confirma explícitamente "Crear
+      // envío Andreani" en el panel, con resumen previo de destinatario,
+      // destino, bultos y costo (ver admin/pedidos/page.tsx). Un cambio de
+      // estado nunca debe disparar un envío real en silencio.
       return persisted;
     },
     [orders, adminSession, adapter],
@@ -521,6 +558,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       replaceProducts,
       createOrder,
       updateOrderStatus,
+      createAndreaniShipment,
       addCustomer,
       convertGuestToAccount,
       auditLog,
@@ -546,6 +584,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       replaceProducts,
       createOrder,
       updateOrderStatus,
+      createAndreaniShipment,
       addCustomer,
       convertGuestToAccount,
       auditLog,

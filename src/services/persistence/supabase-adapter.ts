@@ -15,6 +15,30 @@ import type { PersistenceAdapter } from "./types";
 
 type ProductRow = Database["public"]["Tables"]["products"]["Row"];
 type OrderRow = Database["public"]["Tables"]["orders"]["Row"];
+
+/**
+ * Columnas de `orders` que el navegador puede leer. Se listan explícitamente
+ * en vez de usar `select("*")` porque `andreani_contract` (contrato y código
+ * de cliente de la cuenta comercial de Andreani) es un dato INTERNO: no es
+ * una contraseña, pero tampoco algo que deba viajar al browser de un cliente
+ * que consulta su propio pedido — y RLS en Postgres filtra filas, no
+ * columnas, así que `select("*")` se lo llevaría.
+ *
+ * Con `select("*")` esto además rompería: 0007 revoca la columna para
+ * anon/authenticated, y PostgREST devolvería "permission denied" en vez de
+ * omitirla. La lista de acá y el revoke de la migración van juntos.
+ */
+const ORDER_COLUMNS =
+  "id, customer_id, customer_name, email, lines, total, shipping, delivery_method, address, status, created_at, payment_reference, andreani_shipment_number, andreani_status, andreani_tracking_url, andreani_label_url";
+
+/**
+ * La forma que efectivamente vuelve del select de arriba: OrderRow menos las
+ * columnas internas (contrato + estado del claim de la Function). Que el
+ * tipo lo refleje no es cosmético: si alguien agrega una columna interna a
+ * ORDER_COLUMNS, o intenta leer `andreani_contract` desde el navegador,
+ * TypeScript lo corta en compilación en vez de filtrarlo en runtime.
+ */
+type ClientOrderRow = Omit<OrderRow, "andreani_contract" | "andreani_claim_state" | "andreani_claimed_at">;
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 type AuditRow = Database["public"]["Tables"]["audit_log"]["Row"];
 
@@ -83,7 +107,7 @@ function orderToInsert(order: Order): Database["public"]["Tables"]["orders"]["In
   };
 }
 
-function rowToOrder(row: OrderRow): Order {
+function rowToOrder(row: ClientOrderRow): Order {
   return {
     id: row.id,
     customerId: row.customer_id,
@@ -97,6 +121,10 @@ function rowToOrder(row: OrderRow): Order {
     status: row.status,
     createdAt: row.created_at,
     paymentReference: row.payment_reference ?? "",
+    andreaniShipmentNumber: row.andreani_shipment_number ?? undefined,
+    andreaniStatus: row.andreani_status ?? undefined,
+    andreaniTrackingUrl: row.andreani_tracking_url ?? undefined,
+    andreaniLabelUrl: row.andreani_label_url ?? undefined,
   };
 }
 
@@ -173,17 +201,17 @@ export function createSupabasePersistenceAdapter(client: TypedSupabaseClient): P
     },
 
     async listOrders() {
-      const { data, error } = await client.from("orders").select("*").order("created_at", { ascending: false });
+      const { data, error } = await client.from("orders").select(ORDER_COLUMNS).order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []).map(rowToOrder);
     },
     async createOrder(order) {
-      const { data, error } = await client.from("orders").insert(orderToInsert(order)).select().single();
+      const { data, error } = await client.from("orders").insert(orderToInsert(order)).select(ORDER_COLUMNS).single();
       if (error) throw error;
       return rowToOrder(data);
     },
     async updateOrderStatus(id, status) {
-      const { data, error } = await client.from("orders").update({ status }).eq("id", id).select().maybeSingle();
+      const { data, error } = await client.from("orders").update({ status }).eq("id", id).select(ORDER_COLUMNS).maybeSingle();
       if (error) throw error;
       return data ? rowToOrder(data) : null;
     },

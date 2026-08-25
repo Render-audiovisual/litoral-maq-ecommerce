@@ -67,6 +67,18 @@ export type Order = {
   status: OrderStatus;
   createdAt: string;
   paymentReference: string;
+  /** Datos de envío Andreani (ver supabase/functions/andreani-shipment).
+   * Ausentes hasta que se genera el preenvío; `andreaniStatus` refleja el
+   * último estado que Andreani devolvió, no un estado propio de la tienda.
+   *
+   * `andreani_contract` NO está acá a propósito: el contrato y el código de
+   * cliente son datos internos de la cuenta comercial, no del pedido. Se
+   * guardan en la fila (para trazabilidad histórica) pero ningún cliente los
+   * lee: revocados por columna en 0007 y excluidos del select del adapter. */
+  andreaniShipmentNumber?: string | null;
+  andreaniStatus?: string | null;
+  andreaniTrackingUrl?: string | null;
+  andreaniLabelUrl?: string | null;
 };
 
 export type Session = {

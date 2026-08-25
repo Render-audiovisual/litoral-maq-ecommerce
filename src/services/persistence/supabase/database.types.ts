@@ -104,6 +104,13 @@ export type Database = {
           status: "pendiente" | "pago_simulado" | "preparando" | "enviado" | "entregado" | "cancelado";
           created_at: string;
           payment_reference: string | null;
+          andreani_contract: string | null;
+          andreani_shipment_number: string | null;
+          andreani_status: string | null;
+          andreani_tracking_url: string | null;
+          andreani_label_url: string | null;
+          andreani_claim_state: "claimed" | "created_unsaved" | null;
+          andreani_claimed_at: string | null;
         };
         Insert: {
           id: string;
@@ -118,6 +125,13 @@ export type Database = {
           status?: "pendiente" | "pago_simulado" | "preparando" | "enviado" | "entregado" | "cancelado";
           created_at?: string;
           payment_reference?: string | null;
+          andreani_contract?: string | null;
+          andreani_shipment_number?: string | null;
+          andreani_status?: string | null;
+          andreani_tracking_url?: string | null;
+          andreani_label_url?: string | null;
+          andreani_claim_state?: "claimed" | "created_unsaved" | null;
+          andreani_claimed_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["orders"]["Insert"]>;
         Relationships: [];
