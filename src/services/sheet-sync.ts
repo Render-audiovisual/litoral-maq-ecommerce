@@ -75,6 +75,16 @@ function inferCategory(name: string) {
 }
 
 function inferBrand(name: string) {
+  const specificBrands: Array<[string, RegExp]> = [
+    ["FOREST & GARDEN", /\bFOREST(?:\s*&\s*GARDEN)?\b/],
+    ["KNOCK OUT", /\bKNO(?:CK|CT)\s+OUT\b/],
+    ["ENERGY NEXT", /\b(?:E|N)NERGY\s+NEXT\b/],
+    ["NEO NEXT", /\bNEO\s+NEXT\b/],
+    ["OBRA", /\bOBRA\b/],
+  ];
+  const specificBrand = specificBrands.find(([, rule]) => rule.test(name));
+  if (specificBrand) return specificBrand[0];
+
   const brands = ["ENERGY", "NEO", "GLADIATOR", "LUSQTOFF", "STANLEY", "BOSCH", "DEWALT", "MAKITA", "DOWEN PAGIO", "TOTAL"];
   return brands.find((brand) => name.includes(brand)) || "Sin marca informada";
 }

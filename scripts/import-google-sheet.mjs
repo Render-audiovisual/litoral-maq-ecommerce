@@ -68,6 +68,16 @@ function inferCategory(name) {
 }
 
 function inferBrand(name) {
+  const specificBrands = [
+    ["FOREST & GARDEN", /\bFOREST(?:\s*&\s*GARDEN)?\b/],
+    ["KNOCK OUT", /\bKNO(?:CK|CT)\s+OUT\b/],
+    ["ENERGY NEXT", /\b(?:E|N)NERGY\s+NEXT\b/],
+    ["NEO NEXT", /\bNEO\s+NEXT\b/],
+    ["OBRA", /\bOBRA\b/],
+  ];
+  const specificBrand = specificBrands.find(([, rule]) => rule.test(name));
+  if (specificBrand) return specificBrand[0];
+
   const brands = [
     "ENERGY",
     "NEO",
