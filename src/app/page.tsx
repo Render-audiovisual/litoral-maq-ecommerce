@@ -15,60 +15,70 @@ import { useStore } from "@/store/store";
 const PROMO_SLIDES = [
   {
     id: "taladro-energy-550w",
+    productId: "580",
     image: "/promos/taladro-energy-550w.jpg",
     label: "Taladro Energy 550W 13 mm",
     href: "/productos/taladro-550w-13mm-energy-id13-2-220-580",
   },
   {
     id: "electrosierra-forest-20v",
+    productId: "3757",
     image: "/promos/electrosierra-forest-20v.jpg",
     label: "Electrosierra Forest & Garden 20V",
     href: "/productos/electrosierra-20v-forest-12-espada-e912-20c1-3757",
   },
   {
     id: "cortacesped-gladiator-1600w",
+    productId: "3348",
     image: "/promos/cortacesped-gladiator-1600w.jpg",
     label: "Cortacésped Gladiator 1600W",
     href: "/productos/cort-cesped-1600w-gladiator-cp536-220-3348",
   },
   {
     id: "hormigonera-obra-140l",
+    productId: "3353",
     image: "/promos/hormigonera-obra-140l.jpg",
     label: "Hormigonera Obra 140 litros",
     href: "/productos/hormigonera-140-lts-obra-mh8140-25-3353",
   },
   {
     id: "kit-taladro-amoladora-energy",
+    productId: "3378",
     image: "/promos/kit-taladro-amoladora-energy.jpg",
     label: "Kit taladro y amoladora Energy 20V",
     href: "/productos/kit-taladro-y-amoladora-energy-20v-pa20c1-3378",
   },
   {
     id: "escalera-obra-multifuncion",
+    productId: "3687",
     image: "/promos/escalera-obra-multifuncion.jpg",
     label: "Escalera Obra multifunción 4x4",
     href: "/productos/escalera-multifuncion-4-x-4-obra-ema804-3687",
   },
   {
     id: "maletin-tubos-criquet",
+    productId: "3650",
     image: "/promos/maletin-tubos-criquet.jpg",
     label: "Maletín de tubos y criquet 32 piezas",
     href: "/productos/juego-de-tubos-1-2-x-32-jt10321-2-3650",
   },
   {
     id: "llave-impacto-neo-next",
+    productId: "3732",
     image: "/promos/llave-impacto-neo-next.jpg",
     label: "Llave de impacto Neo Next 20V",
     href: "/productos/llave-de-impacto-20v-650-n-m-neo-li1065-20c1-3732",
   },
   {
     id: "motosierra-knock-out",
+    productId: "3506",
     image: "/promos/motosierra-knock-out.jpg",
     label: "Motosierra Knock Out 460 mm",
     href: "/productos/motosierra-460-mm-45-cc-knock-out-kom345-3506",
   },
   {
     id: "minimotosierra-garden",
+    productId: "3246",
     image: "/promos/minimotosierra-garden.jpg",
     label: "Minimotosierra inalámbrica Garden",
     href: "/productos/mini-motosierra-electrosierra-inalambrica-garden-3246",
@@ -76,10 +86,10 @@ const PROMO_SLIDES = [
 ] as const;
 
 const STAR_PRODUCTS = [
-  { model: "ID13/2/220", image: "/promos/taladro-energy-550w.jpg" },
-  { model: "HL7000/220M", image: "/products/hidrolavadora-gladiator-hl7000.jpg" },
-  { model: "CS58", image: "/products/MOTOSIERRA_.png" },
-  { model: "IMET140/2/220", image: "/products/SOLDADORA 3 en 1.png" },
+  { productId: "3604", image: "/products/catalog/3604-aa10115-220p.webp" },
+  { productId: "3381", image: "/products/catalog/3381-aa518-220plus.webp" },
+  { productId: "3881", image: "/products/catalog/3881-aa11115-20c1.webp" },
+  { productId: "3658", image: "/products/catalog/3658-aa623-220.webp" },
 ] as const;
 
 function CategoryWinnerCard({
@@ -210,20 +220,24 @@ export default function Home() {
   const [activePromo, setActivePromo] = useState(0);
   const activeProducts = products.filter((product) => product.active);
   const categories = getLaunchFamilyCards(activeProducts);
+  const promoSlides = PROMO_SLIDES.filter((slide) =>
+    activeProducts.some((product) => product.id === slide.productId),
+  );
   const starProducts = STAR_PRODUCTS.flatMap((item) => {
-    const product = activeProducts.find((candidate) => candidate.name.includes(item.model));
+    const product = activeProducts.find((candidate) => candidate.id === item.productId);
     return product ? [{ product, image: item.image }] : [];
   });
-  const promo = PROMO_SLIDES[activePromo];
-  const previousPromo = PROMO_SLIDES[(activePromo - 1 + PROMO_SLIDES.length) % PROMO_SLIDES.length];
-  const nextPromo = PROMO_SLIDES[(activePromo + 1) % PROMO_SLIDES.length];
+  const promo = promoSlides[activePromo % promoSlides.length];
+  const previousPromo = promoSlides[(activePromo - 1 + promoSlides.length) % promoSlides.length];
+  const nextPromo = promoSlides[(activePromo + 1) % promoSlides.length];
 
   useEffect(() => {
+    if (promoSlides.length < 2) return;
     const timer = window.setInterval(() => {
-      setActivePromo((current) => (current + 1) % PROMO_SLIDES.length);
+      setActivePromo((current) => (current + 1) % promoSlides.length);
     }, 3500);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [promoSlides.length]);
 
   return (
     <main>
@@ -237,7 +251,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div
+        {promo && previousPromo && nextPromo && <div
           className="hero-promo-slider"
           aria-label="Promociones destacadas"
           aria-roledescription="carrusel"
@@ -259,7 +273,7 @@ export default function Home() {
 
             <article
               className="hero-promo-slide"
-              aria-label={`${activePromo + 1} de ${PROMO_SLIDES.length}: ${promo.label}`}
+              aria-label={`${(activePromo % promoSlides.length) + 1} de ${promoSlides.length}: ${promo.label}`}
             >
               <Link href={promo.href} className="hero-promo-link" aria-label={`Ver ${promo.label}`}>
                 <div className="hero-promo-media">
@@ -289,7 +303,7 @@ export default function Home() {
               />
             </Link>
           </div>
-        </div>
+        </div>}
 
         <div className="hero-actions commerce-hero-actions">
           <div className="hero-buttons">

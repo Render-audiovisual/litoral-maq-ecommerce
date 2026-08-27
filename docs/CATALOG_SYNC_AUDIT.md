@@ -39,6 +39,7 @@ Fecha: 2026-08-27
 
 ## Antes de publicar pagos
 
-- Sincronizar los 495 registros contra Supabase y verificar 54 activos / 441 inactivos.
+- Sincronizar los 495 registros contra Supabase y verificar 60 activos / 435 inactivos.
+- Los 10 productos elegidos manualmente para el carrusel de inicio pueden estar activos aunque su descripción todavía esté pendiente; todos deben seguir presentes en el Sheet.
 - Definir con Litoral si habrá un límite por pedido mientras el Sheet no informe cantidades.
 - Hacer una preview del frontend y revisar portada, búsqueda, categorías, ficha, carrito y checkout.

@@ -36,6 +36,30 @@ function product(name: string, overrides: Partial<Product> = {}): Product {
 }
 
 describe("catálogo inicial", () => {
+  it("mantiene activos y presentes en Sheet todos los productos elegidos para el carrusel de inicio", () => {
+    const seed = productsSeed as Product[];
+    const promoIds = ["580", "3757", "3348", "3353", "3378", "3687", "3650", "3732", "3506", "3246"];
+    const promos = promoIds.map((id) => seed.find((item) => item.id === id));
+    expect(promos.every(Boolean)).toBe(true);
+    expect(promos.every((item) => item?.active && !item.incomplete.includes("sheet-absent"))).toBe(true);
+  });
+
+  it("mantiene cuatro productos estrella activos con imagen y ficha verificadas", () => {
+    const seed = productsSeed as Product[];
+    const starIds = ["3604", "3381", "3881", "3658"];
+    const stars = starIds.map((id) => seed.find((item) => item.id === id));
+    expect(stars.every(Boolean)).toBe(true);
+    expect(stars.every((item) => item?.active && item.image && item.description)).toBe(true);
+  });
+
+  it("oculta los dos rotomartillos que tenían fichas cruzadas de amoladoras", () => {
+    const seed = productsSeed as Product[];
+    for (const id of ["3657", "3379"]) {
+      const item = seed.find((product) => product.id === id);
+      expect(item).toMatchObject({ active: false, image: null, description: null });
+    }
+  });
+
   it("publica únicamente fichas activas con imagen y descripción verificadas", () => {
     const seed = productsSeed as Product[];
     const selected = getLaunchProducts(seed);

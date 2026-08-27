@@ -11,17 +11,6 @@
     "verifiedAt": "2026-08-27"
   },
   {
-    "productId": "3657",
-    "model": "AG115/1/220",
-    "match": "exact_model",
-    "productSourceUrl": "https://www.kitmaq.com/productos/amoladora-angular-115mm-720w-11000-rpm-ag115-1-220-energy/",
-    "imageSourceUrl": "https://dcdn-us.mitiendanube.com/stores/007/734/059/products/copia-de-fondo-de-producto-tiendanube-6da2335673d28347a817844143298430-1024-1024.webp",
-    "localImage": "/products/catalog/3657-ag115-1-220.webp",
-    "descriptionImported": true,
-    "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
-  },
-  {
     "productId": "3604",
     "model": "AA10115/220P",
     "match": "exact_model",
@@ -61,17 +50,6 @@
     "productSourceUrl": "https://www.loyevo.com.ar/productos/amoladora-neo-next-a-bateria-20v-brushless-a1215-20c1-4-a0qxp/",
     "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-92-a48a7d17398e408ca817722972692777-1024-1024.webp",
     "localImage": "/products/catalog/3594-a1215-20c1-4.webp",
-    "descriptionImported": true,
-    "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
-  },
-  {
-    "productId": "3379",
-    "model": "A20C1",
-    "match": "exact_model",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/amoladora-angular-energy-a-bateria-20v-115mm-a20c1-m031b/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-100-bbc274faa8a6407b9e17724554553243-1024-1024.webp",
-    "localImage": "/products/catalog/3379-a20c1.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
     "verifiedAt": "2026-08-27"
