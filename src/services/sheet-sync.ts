@@ -172,7 +172,7 @@ export function parseSheetProducts(csv: string, currentProducts: Product[]) {
       images: image ? [image] : [],
       stock: 0,
       lowStockThreshold: 5,
-      active: true,
+      active: false,
       featured: false,
       description: null,
       variants: [],
@@ -190,17 +190,20 @@ export function parseSheetProducts(csv: string, currentProducts: Product[]) {
     throw new Error(`El Sheet devolvió solo ${sheetProducts.length} productos. Se canceló la sincronización por seguridad.`);
   }
 
-  const manualProducts = currentProducts.filter((product) => product.source === "admin" && !seenCodes.has(product.code || product.id));
-  const removed = currentProducts.filter((product) => product.source !== "admin" && product.code && !seenCodes.has(product.code)).length;
+  const retiredProducts = currentProducts
+    .filter((product) => !seenCodes.has(product.code || product.id))
+    .map((product) => ({ ...product, active: false, featured: false }));
+  const removed = retiredProducts.length;
 
   return {
-    products: [...sheetProducts, ...manualProducts],
+    products: [...sheetProducts, ...retiredProducts],
     created,
     updated,
     removed,
     warnings: [
       "El Sheet no informa stock, imágenes ni descripciones: se conservaron los datos existentes del panel.",
-      ...(created ? [`${created} productos nuevos quedaron con stock 0 hasta completarlos en el panel.`] : []),
+      ...(created ? [`${created} productos nuevos quedaron ocultos y con stock pendiente hasta completarlos en el panel.`] : []),
+      ...(removed ? [`${removed} productos ausentes del Sheet se conservaron ocultos; no se borraron.`] : []),
     ],
   };
 }

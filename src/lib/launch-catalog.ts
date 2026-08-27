@@ -136,15 +136,29 @@ export function isLaunchProduct(product: Product) {
 }
 
 export function getLaunchProducts(products: Product[]) {
-  return products.filter((product) => product.active && isLaunchProduct(product));
+  return products.filter(
+    (product) => product.active && Boolean(product.image) && Boolean(product.description),
+  );
 }
 
 export function getLaunchBestSellers(products: Product[]) {
-  return productsInModelOrder(products, LAUNCH_BEST_SELLER_MODELS);
+  const published = getLaunchProducts(products);
+  const preferred = productsInModelOrder(published, LAUNCH_BEST_SELLER_MODELS);
+  return [...preferred, ...published.filter((product) => !preferred.some((item) => item.id === product.id))].slice(0, 10);
 }
 
 export function getLaunchFeaturedProducts(products: Product[]) {
-  return productsInModelOrder(products, LAUNCH_FEATURED_MODELS);
+  const published = getLaunchProducts(products);
+  const excluded = new Set(getLaunchBestSellers(published).map((product) => product.id));
+  const preferred = productsInModelOrder(published, LAUNCH_FEATURED_MODELS).filter(
+    (product) => !excluded.has(product.id),
+  );
+  return [
+    ...preferred,
+    ...published.filter(
+      (product) => !excluded.has(product.id) && !preferred.some((item) => item.id === product.id),
+    ),
+  ].slice(0, 10);
 }
 
 export function getLaunchBestSellerRankMap(products: Product[]) {
@@ -173,5 +187,5 @@ export function getLaunchFamilyCards(products: Product[]) {
         familyProducts[0] ??
         null,
     };
-  });
+  }).filter((family) => family.productCount > 0 && family.priceFrom !== null);
 }

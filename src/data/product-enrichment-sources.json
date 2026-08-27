@@ -477,12 +477,14 @@
   {
     "productId": "3336",
     "model": "JT1012",
-    "match": "exact_model",
+    "match": "conflict",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-gladiator-jt1012-1eb6t/",
     "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-25-761447b78d1554e28b17788634660303-1024-1024.webp",
-    "localImage": "/products/catalog/3336-jt1012.webp",
-    "descriptionImported": true,
-    "conflictsSkipped": [],
+    "localImage": null,
+    "descriptionImported": false,
+    "conflictsSkipped": [
+      "La foto fuente corresponde al juego JT1012 de 1/2 pulgada; la ficha local es JT1012 3/8. Se ocultó hasta confirmar el modelo exacto y conseguir su imagen correcta."
+    ],
     "verifiedAt": "2026-08-27"
   },
   {

@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const SHEET_ID =
@@ -93,18 +93,6 @@ function inferBrand(name) {
   return brands.find((brand) => name.includes(brand)) || "Sin marca informada";
 }
 
-function imageFor(name) {
-  if (name.includes("AMOLADOR")) return "/products/AMOLADORA ANGULAR.png";
-  if (name.includes("DESMALEZ")) return "/products/DESMALEZADORA.png";
-  if (name.includes("MOTOSIERRA")) return "/products/MOTOSIERRA_.png";
-  if (name.includes("SOLDADORA") && /MIG|MAG|3 EN 1/.test(name))
-    return "/products/SOLDADORA 3 en 1.png";
-  if (name.includes("SOLDADORA")) return "/products/SOLDADORA.png";
-  if (name.includes("TALADRO") || name.includes("ATORNILLADOR"))
-    return "/products/TALADRO ATORNILLADOR.png";
-  return null;
-}
-
 function slugify(value) {
   return value
     .normalize("NFD")
@@ -129,12 +117,48 @@ if (!validHeaders) {
   throw new Error(`Encabezados inesperados: ${headers.join(", ")}`);
 }
 
-const products = body
+const outputDirectory = path.join(process.cwd(), "src", "data");
+let currentProducts = [];
+try {
+  currentProducts = JSON.parse(
+    await readFile(path.join(outputDirectory, "products.json"), "utf8"),
+  );
+} catch (error) {
+  if (error?.code !== "ENOENT") throw error;
+}
+const currentByCode = new Map(
+  currentProducts.filter((product) => product.code).map((product) => [product.code, product]),
+);
+const seenCodes = new Set();
+let created = 0;
+let updated = 0;
+
+const sheetProducts = body
   .map(([code = "", article = "", rawPrice = ""], index) => {
     const name = article.trim();
     const price = parsePrice(rawPrice);
     const cleanCode = code.trim();
     if (!name && !cleanCode && price === null) return null;
+    if (cleanCode && seenCodes.has(cleanCode)) {
+      throw new Error(`El código ${cleanCode} está duplicado en el Sheet.`);
+    }
+    if (cleanCode) seenCodes.add(cleanCode);
+
+    const existing = cleanCode ? currentByCode.get(cleanCode) : null;
+    if (existing) {
+      updated += 1;
+      return {
+        ...existing,
+        name: name || existing.name,
+        price,
+        rawPrice: rawPrice.trim() || null,
+        source: "google-sheet",
+        sourceRow: index + 2,
+        incomplete: existing.incomplete.filter((item) => !["code", "price"].includes(item)),
+      };
+    }
+
+    created += 1;
     return {
       id: cleanCode || `fila-${index + 2}`,
       slug: `${slugify(name || `producto-${index + 2}`)}-${cleanCode || index + 2}`,
@@ -144,12 +168,12 @@ const products = body
       rawPrice: rawPrice.trim() || null,
       category: inferCategory(name.toUpperCase()),
       brand: inferBrand(name.toUpperCase()),
-      image: imageFor(name.toUpperCase()),
-      images: imageFor(name.toUpperCase()) ? [imageFor(name.toUpperCase())] : [],
-      stock: 8 + ((index * 17) % 46),
+      image: null,
+      images: [],
+      stock: 0,
       lowStockThreshold: 5,
-      active: true,
-      featured: Boolean(imageFor(name.toUpperCase())) && index < 220,
+      active: false,
+      featured: false,
       description: null,
       variants: [],
       source: "google-sheet",
@@ -157,7 +181,7 @@ const products = body
       incomplete: [
         !cleanCode && "code",
         price === null && "price",
-        !imageFor(name.toUpperCase()) && "image",
+        "image",
         "stock",
         "description",
       ].filter(Boolean),
@@ -165,18 +189,29 @@ const products = body
   })
   .filter(Boolean);
 
+// La planilla puede perder filas por un error humano o por una exportación
+// parcial. Conservamos esos productos como borradores inactivos para no
+// perder imágenes, fichas técnicas, URLs ni referencias históricas.
+const retiredProducts = currentProducts
+  .filter((product) => product.code && !seenCodes.has(product.code))
+  .map((product) => ({ ...product, active: false, featured: false }));
+const products = [...sheetProducts, ...retiredProducts];
+
 const report = {
   source: url,
   importedAt: new Date().toISOString(),
+  sheetRows: sheetProducts.length,
   rows: products.length,
+  created,
+  updated,
+  retired: retiredProducts.length,
   missingCode: products.filter((product) => !product.code).length,
   missingPrice: products.filter((product) => product.price === null).length,
   missingImage: products.filter((product) => !product.image).length,
-  simulatedStock: products.length,
+  simulatedStock: 0,
   categories: [...new Set(products.map((product) => product.category))].sort(),
 };
 
-const outputDirectory = path.join(process.cwd(), "src", "data");
 await mkdir(outputDirectory, { recursive: true });
 await writeFile(
   path.join(outputDirectory, "products.json"),

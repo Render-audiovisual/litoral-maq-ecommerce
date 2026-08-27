@@ -1,11 +1,15 @@
 {
   "source": "https://docs.google.com/spreadsheets/d/17Y7jES70K_Gr-nQO6Om5PtRFu7nnNObDlbsRsXLdIrA/export?format=csv&gid=0",
-  "importedAt": "2026-08-11T20:17:04.775Z",
+  "importedAt": "2026-08-27T16:59:30.358Z",
+  "sheetRows": 473,
   "rows": 495,
+  "created": 0,
+  "updated": 473,
+  "retired": 22,
   "missingCode": 0,
   "missingPrice": 0,
-  "missingImage": 416,
-  "simulatedStock": 495,
+  "missingImage": 357,
+  "simulatedStock": 0,
   "categories": [
     "Accesorios y consumibles",
     "Amoladoras",

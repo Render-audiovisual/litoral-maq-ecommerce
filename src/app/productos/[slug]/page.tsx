@@ -3,7 +3,7 @@ import productsSeed from "@/data/products.json";
 import type { Product } from "@/lib/types";
 
 export function generateStaticParams() {
-  return (productsSeed as Product[]).map((product) => ({
+  return (productsSeed as Product[]).filter((product) => product.active).map((product) => ({
     slug: product.slug,
   }));
 }

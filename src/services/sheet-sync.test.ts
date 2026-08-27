@@ -48,6 +48,23 @@ describe("sincronización real de Google Sheets", () => {
       description: "Descripción cargada en el panel",
       category: "Categoría manual",
     });
+    expect(result.products.find((product) => product.code === "2")).toMatchObject({
+      active: false,
+      stock: 0,
+      description: null,
+    });
+  });
+
+  it("conserva ocultos los productos ausentes del Sheet en vez de borrarlos", () => {
+    const absent = { ...existing, id: "999", code: "999", active: true, featured: true };
+    const result = parseSheetProducts(validCsv(), [existing, absent]);
+    expect(result.removed).toBe(1);
+    expect(result.products.find((product) => product.code === "999")).toMatchObject({
+      active: false,
+      featured: false,
+      image: "/products/original.png",
+      description: "Descripción cargada en el panel",
+    });
   });
 
   it("acepta variantes de encabezados con mayúsculas y espacios", () => {
