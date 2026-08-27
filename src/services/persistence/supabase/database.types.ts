@@ -114,7 +114,7 @@ export type Database = {
           status: "pendiente" | "pago_simulado" | "preparando" | "enviado" | "entregado" | "cancelado";
           created_at: string;
           payment_reference: string | null;
-          payment_status: "pending" | "approved" | "rejected" | "refunded";
+          payment_status: "pending" | "approved" | "rejected" | "cancelled" | "refunded" | "charged_back";
           phone: string | null;
           postal_code: string | null;
           province: string | null;
@@ -149,7 +149,7 @@ export type Database = {
           status?: "pendiente" | "pago_simulado" | "preparando" | "enviado" | "entregado" | "cancelado";
           created_at?: string;
           payment_reference?: string | null;
-          payment_status?: "pending" | "approved" | "rejected" | "refunded";
+          payment_status?: "pending" | "approved" | "rejected" | "cancelled" | "refunded" | "charged_back";
           phone?: string | null;
           postal_code?: string | null;
           province?: string | null;

@@ -453,7 +453,7 @@ td > small { margin-top: 4px; color: var(--muted); }
 .order-detail-grid strong { overflow-wrap: anywhere; }
 .payment-status { width: max-content; padding: 5px 8px; border-radius: 12px; background: #fff3df; color: #8a5415; font-size: 10px; font-weight: 800; }
 .payment-approved { background: #e8f7ef; color: var(--success); }
-.payment-rejected, .payment-refunded { background: #fff0ef; color: #a12b23; }
+.payment-rejected, .payment-cancelled, .payment-refunded, .payment-charged_back { background: #fff0ef; color: #a12b23; }
 .shipping-operation { margin-top: 20px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border: 1px solid #bedee3; background: #f2fbfc; }
 .shipping-operation > div:first-child { display: flex; flex-direction: column; gap: 4px; }
 .shipping-operation span, .shipping-operation small { color: var(--muted); font-size: 10px; }

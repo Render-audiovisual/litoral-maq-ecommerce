@@ -55,7 +55,7 @@ export function serviceClient(): SupabaseClient {
   const url = Deno.env.get("SUPABASE_URL") || "";
   const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
   if (!url || !serviceRole) {
-    throw new HttpError(503, "El backend de logística no está configurado.");
+    throw new HttpError(503, "El backend todavía no está configurado.");
   }
   return createClient(url, serviceRole, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -69,7 +69,7 @@ export async function requireUser(
   const authorization = request.headers.get("authorization") || "";
   const token = authorization.replace(/^Bearer\s+/i, "").trim();
   if (!token) {
-    throw new HttpError(401, "Necesitás una sesión válida para cotizar.");
+    throw new HttpError(401, "Necesitás una sesión válida para continuar.");
   }
   const { data, error } = await client.auth.getUser(token);
   if (error || !data.user) {
@@ -114,8 +114,8 @@ export function errorResponse(request: Request, error: unknown) {
   const message = typeof candidate?.message === "string" && status < 500
     ? candidate.message
     : status === 503
-    ? String(candidate?.message || "La logística no está disponible.")
-    : "No se pudo completar la operación logística. Probá nuevamente.";
+    ? String(candidate?.message || "El servicio no está disponible.")
+    : "No se pudo completar la operación. Probá nuevamente.";
   return json(request, {
     error: message,
     retryable: Boolean(candidate?.retryable),

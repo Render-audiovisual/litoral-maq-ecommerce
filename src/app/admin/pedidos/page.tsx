@@ -19,7 +19,9 @@ const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   pending: "Pendiente",
   approved: "Confirmado",
   rejected: "Rechazado",
+  cancelled: "Cancelado",
   refunded: "Reintegrado",
+  charged_back: "Contracargo",
 };
 
 export default function AdminOrdersPage() {
@@ -31,6 +33,7 @@ export default function AdminOrdersPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [shippingAction, setShippingAction] = useState("");
+  const paymentAutomatic = process.env.NEXT_PUBLIC_MERCADO_PAGO_ENABLED === "true";
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -141,7 +144,7 @@ export default function AdminOrdersPage() {
         <div className="order-detail-grid">
           <div><span>Cliente</span><strong>{selected.customerName}</strong><small>{selected.email}</small><small>{selectedCustomer?.phone || "Teléfono no disponible"}</small></div>
           <div><span>Entrega</span><strong>{selected.deliveryMethod === "envio" ? "Envío a domicilio" : "Retiro en sucursal"}</strong><small>{selected.address || "Sáenz 1587"}</small></div>
-          <label>Pago<select aria-label={`Pago de ${selected.id}`} className={`status-select payment-${selected.paymentStatus || "pending"}`} value={selected.paymentStatus || "pending"} disabled={updatingId === selected.id} onChange={(event) => void changePaymentStatus(selected, event.target.value as PaymentStatus)}>{(Object.keys(PAYMENT_LABELS) as PaymentStatus[]).map((item) => <option value={item} key={item}>{PAYMENT_LABELS[item]}</option>)}</select><small>{selected.paymentReference || "Sin referencia"}</small></label>
+          <label>Pago<select aria-label={`Pago de ${selected.id}`} className={`status-select payment-${selected.paymentStatus || "pending"}`} value={selected.paymentStatus || "pending"} disabled={updatingId === selected.id || paymentAutomatic} onChange={(event) => void changePaymentStatus(selected, event.target.value as PaymentStatus)}>{(Object.keys(PAYMENT_LABELS) as PaymentStatus[]).map((item) => <option value={item} key={item}>{PAYMENT_LABELS[item]}</option>)}</select><small>{paymentAutomatic ? "Estado confirmado automáticamente por Mercado Pago" : selected.paymentReference || "Sin referencia"}</small></label>
           <label>Estado<select aria-label={`Estado de ${selected.id} en detalle`} className={`status-select status-${selected.status}`} value={selected.status} disabled={updatingId === selected.id} onChange={(event) => void changeStatus(selected, event.target.value as Order["status"])}>{statuses.map((item) => <option value={item} key={item}>{ORDER_STATUS_LABELS[item]}</option>)}</select></label>
         </div>
         {selected.deliveryMethod === "envio" && <div className="shipping-operation"><div><span>Logística</span><strong>{selected.shippingCarrier || "Cotización manual"}</strong><small>{selected.shippingDeliveryType === "sucursal" ? `${selected.shippingBranchName || "Sucursal"} · ${selected.shippingBranchAddress || ""}` : selected.address}</small><small>Estado: {selected.shippingStatus || "pendiente"}{selected.shippingTrackingNumber ? ` · Tracking ${selected.shippingTrackingNumber}` : ""}</small></div><div className="shipping-actions">{selected.shippingQuoteId && !selected.shippingLabelReady && <button type="button" className="button primary" disabled={shippingAction === selected.id || selected.paymentStatus !== "approved"} onClick={() => void generateShipment(selected)}>{shippingAction === selected.id ? "Procesando…" : selected.paymentStatus !== "approved" ? "Confirmá el pago primero" : selected.shippingStatus === "error" ? "Reconciliar guía" : "Crear guía"}</button>}{selected.shippingLabelReady && <button type="button" className="button secondary" disabled={shippingAction === selected.id} onClick={() => void downloadLabel(selected)}>{shippingAction === selected.id ? "Descargando…" : "Descargar etiqueta PDF"}</button>}{!selected.shippingQuoteId && <small>Este pedido requiere cotización manual; no se crea una guía automática.</small>}</div></div>}

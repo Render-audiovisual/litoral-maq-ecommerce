@@ -8,6 +8,7 @@ import { formatCurrency } from "@/lib/utils";
 import { guestIdFromEmail, normalizeEmail } from "@/lib/auth";
 import { getAuthAdapter, supportsGuestSessions } from "@/services/auth";
 import { quoteShipping, ShippingIntegrationError, type ShippingQuoteOption } from "@/services/shipping";
+import { createPaymentPreference, isMercadoPagoEnabled } from "@/services/payments";
 import type { Order, Session, ShippingDeliveryType } from "@/lib/types";
 import { snapshotOrderLines } from "@/lib/order-details";
 
@@ -46,6 +47,7 @@ export default function CheckoutPage() {
     apartment: "",
     reference: "",
   });
+  const paymentEnabled = isMercadoPagoEnabled();
 
   function resetQuote() {
     setShipping(null);
@@ -217,6 +219,18 @@ export default function CheckoutPage() {
         phone: form.phone.trim(),
         role: "customer",
       });
+      const automaticPayment = paymentEnabled &&
+        (method === "retiro" || Boolean(selectedQuote));
+      if (automaticPayment) {
+        try {
+          const preference = await createPaymentPreference(order.id);
+          window.location.assign(preference.checkoutUrl);
+          return;
+        } catch {
+          router.push(`/checkout/error?pedido=${encodeURIComponent(order.id)}`);
+          return;
+        }
+      }
       clearCart();
       router.push(`/checkout/exito?pedido=${order.id}&email=${encodeURIComponent(normalizedEmail)}`);
     } catch (caught) {
@@ -267,9 +281,9 @@ export default function CheckoutPage() {
             {shipping !== null && !manualReason && <div className="success-message">✓ {method === "retiro" ? "Retiro gratis en Sáenz 1587" : "Opción de envío seleccionada"}</div>}
           </section>
           <section className="form-card">
-            <div className="step-number">3</div><h2>Revisión y contacto</h2>
-            <div className="payment-option selected"><span>✓</span><div><strong>Primero confirmamos todo</strong><small>Stock, entrega y total final</small></div><b>SIN COBRO</b></div>
-            <p className="helper">La guía logística se crea únicamente cuando Litoral Maq confirma el pago. Enviar esta solicitud no genera cargos ni despachos.</p>
+            <div className="step-number">3</div><h2>{paymentEnabled ? "Pago seguro" : "Revisión y contacto"}</h2>
+            <div className="payment-option selected"><span>✓</span><div><strong>{paymentEnabled ? "Mercado Pago" : "Primero confirmamos todo"}</strong><small>{paymentEnabled ? "Vas a pagar en el entorno seguro de Mercado Pago" : "Stock, entrega y total final"}</small></div><b>{paymentEnabled ? "CHECKOUT PRO" : "SIN COBRO"}</b></div>
+            <p className="helper">{paymentEnabled ? "El pago solo se confirma mediante la notificación firmada de Mercado Pago. Si el envío requiere cotización manual, Litoral Maq te contactará antes de cobrar." : "La guía logística se crea únicamente cuando Litoral Maq confirma el pago. Enviar esta solicitud no genera cargos ni despachos."}</p>
           </section>
           {error && <div className="error-message">{error}</div>}
         </div>
@@ -279,8 +293,8 @@ export default function CheckoutPage() {
           <div><span>Subtotal</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
           <div><span>Entrega</span><strong>{shipping === null ? "Sin confirmar" : method === "retiro" ? "Gratis" : manualReason ? "A confirmar" : formatCurrency(shipping)}</strong></div><hr />
           <div className="summary-total"><span>{manualReason ? "Total parcial" : "Total"}</span><strong>{formatCurrency(cartSubtotal + (shipping || 0))}</strong></div>
-          <button className="button primary large full" disabled={loading || quoting || shipping === null}>{loading ? "Enviando…" : shipping === null ? "Confirmá la entrega para continuar" : "Enviar solicitud de compra"}</button>
-          <small>No se realizará ningún cobro en este paso.</small>
+          <button className="button primary large full" disabled={loading || quoting || shipping === null}>{loading ? "Procesando…" : shipping === null ? "Confirmá la entrega para continuar" : paymentEnabled && !manualReason ? "Continuar a Mercado Pago" : "Enviar solicitud de compra"}</button>
+          <small>{paymentEnabled && !manualReason ? "El cobro se completa fuera de la tienda, en Mercado Pago." : "No se realizará ningún cobro en este paso."}</small>
         </aside>
       </form>
     </main>

@@ -61,7 +61,13 @@ export type OrderStatus =
   | "entregado"
   | "cancelado";
 
-export type PaymentStatus = "pending" | "approved" | "rejected" | "refunded";
+export type PaymentStatus =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "cancelled"
+  | "refunded"
+  | "charged_back";
 export type ShippingDeliveryType = "domicilio" | "sucursal";
 export type ShippingStatus =
   | "manual_quote"
