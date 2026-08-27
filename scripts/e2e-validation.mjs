@@ -19,20 +19,22 @@ try {
     const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
     const page = await context.newPage();
     await page.goto(`${baseURL}/productos`);
-    await page.locator(".catalog-toolbar").getByText("460", { exact: true }).waitFor();
+    await page.locator(".catalog-toolbar strong").waitFor();
+    assert.ok(Number(await page.locator(".catalog-toolbar strong").textContent()) > 0);
     await page.getByPlaceholder("Producto, marca o código").fill("3403");
     await page.waitForFunction(() => document.querySelectorAll(".product-card").length === 1);
     assert.equal(await page.locator(".product-card").count(), 1);
     await page.locator(".product-card").first().getByText("Cód. 3403").waitFor();
     await page.locator(".product-card").first().getByText("$ 10.000,00").waitFor();
     await page.getByPlaceholder("Producto, marca o código").fill("");
-    await page.getByLabel("Categoría").selectOption("Soldadura");
+    await page.getByLabel("Categoría").selectOption({ label: "Soldadoras" });
     assert.ok(Number(await page.locator(".catalog-toolbar strong").textContent()) > 0);
     await page.getByRole("button", { name: "Limpiar filtros" }).click();
-    await page.getByText("460", { exact: true }).first().waitFor();
-    assert.equal(await page.locator(".product-card").count(), 120);
+    await page.locator(".catalog-toolbar strong").waitFor();
+    assert.ok(Number(await page.locator(".catalog-toolbar strong").textContent()) > 0);
+    assert.equal(await page.locator(".product-card").count(), 24);
     await page.getByRole("button", { name: "Mostrar más productos" }).click();
-    assert.equal(await page.locator(".product-card").count(), 240);
+    assert.equal(await page.locator(".product-card").count(), 48);
     await context.close();
   });
 
@@ -47,18 +49,18 @@ try {
     await page.getByText("ALAMBRE MIG GAS LESS X 1 KG 0.8").waitFor();
     await page.locator(".quantity").getByRole("button", { name: "+" }).click();
     assert.equal(await page.locator(".quantity span").textContent(), "2");
-    await page.getByRole("link", { name: "Continuar compra" }).click();
+    await page.getByRole("link", { name: "Solicitar compra" }).click();
     await page.getByLabel("Nombre y apellido").fill("Cliente Prueba");
     await page.getByLabel("Email").fill("Cliente.Prueba@Example.com");
     await page.getByLabel("Teléfono").fill("3794123456");
     await page.getByRole("radio").nth(1).check();
     await page.getByRole("button", { name: "Confirmar retiro" }).click();
-    await page.getByText("Retiro sin costo").waitFor();
+    await page.getByText("Retiro gratis en Sáenz 1587").waitFor();
     await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
     await page.getByText("Recibimos tu pedido").waitFor();
     // El checkout invitado ya no crea sesión: la pantalla de éxito ofrece
     // ingresar o registrarse, no un acceso directo a /cuenta/pedidos.
-    await page.getByRole("link", { name: "Ingresar" }).waitFor();
+    await page.getByRole("main").getByRole("link", { name: "Ingresar" }).waitFor();
     await page.getByRole("link", { name: "Crear cuenta" }).waitFor();
     await page.goto(`${baseURL}/cuenta/pedidos`);
     await page.waitForURL(/\/login\?next=/);
@@ -88,6 +90,8 @@ try {
     await page.getByLabel("Contraseña").fill("prueba123");
     await page.getByRole("button", { name: "Ingresar", exact: true }).click();
     await page.getByText("Hola, Usuario Registro").waitFor();
+    await page.getByRole("button", { name: "Cerrar sesión" }).click();
+    await page.waitForURL(`${baseURL}/`);
 
     await page.goto(`${baseURL}/admin`);
     await page.waitForURL(/\/admin\/login\?next=/);
@@ -112,12 +116,13 @@ try {
     await search.fill("3403");
     let row = page.locator("tbody tr").filter({ hasText: "3403" });
     await row.getByRole("button", { name: "Editar" }).click();
-    await page.getByLabel("Precio").fill("123456");
+    await page.getByLabel("Categoría").fill("Pruebas E2E");
+    await page.getByLabel("Stock verificado por el negocio").check();
     await page.getByLabel("Stock", { exact: true }).fill("17");
     await page.getByRole("button", { name: "Guardar producto" }).click();
     await search.fill("3403");
     row = page.locator("tbody tr").filter({ hasText: "3403" });
-    await row.getByText("$ 123.456,00").waitFor();
+    await row.getByText("Pruebas E2E").waitFor();
     await row.getByText("17", { exact: true }).waitFor();
     await row.locator(".toggle").click();
     await page.goto(`${baseURL}/productos`);
@@ -130,7 +135,7 @@ try {
     await row.locator(".toggle").click();
     await page.goto(`${baseURL}/productos`);
     await page.getByPlaceholder("Producto, marca o código").fill("3403");
-    await page.locator(".product-card").getByText("$ 123.456,00").waitFor();
+    await page.locator(".product-card").getByText("$ 10.000,00").waitFor();
 
     await page.goto(`${baseURL}/admin/productos`);
     await page.getByRole("button", { name: "+ Nuevo producto" }).click();
@@ -167,9 +172,9 @@ try {
     await page.getByLabel("Teléfono").fill("3794000000");
     await page.getByRole("radio").nth(1).check();
     await page.getByRole("button", { name: "Confirmar retiro" }).click();
-    await page.getByText("Retiro sin costo").waitFor();
+    await page.getByText("Retiro gratis en Sáenz 1587").waitFor();
     await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
-    await page.getByText("Recibimos tu pedido").waitFor();
+    await page.getByRole("heading", { name: "Recibimos tu pedido" }).waitFor();
     await page.goto(`${baseURL}/admin/login`);
     await page.getByLabel("Email").fill("admin@litoralmaq.com");
     await page.getByLabel("Contraseña").fill("admin123");

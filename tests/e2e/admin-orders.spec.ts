@@ -10,7 +10,7 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await page.getByLabel("Nombre y apellido").fill("Cliente Pedido E2E");
   await page.getByLabel("Email").fill("pedido.e2e@example.com");
   await page.getByLabel("Teléfono").fill("3794000000");
-  await page.getByText("Retiro en sucursal").click();
+  await page.getByText("Retiro en Sáenz 1587").click();
   await page.getByRole("button", { name: "Confirmar retiro" }).click();
   await expect(page.getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();

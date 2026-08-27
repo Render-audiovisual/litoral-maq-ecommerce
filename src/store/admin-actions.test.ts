@@ -7,6 +7,7 @@ import {
   applyReplaceProducts,
   applySaveProduct,
   applyUpdateOrderStatus,
+  applyUpdateOrderPaymentStatus,
 } from "./admin-actions";
 
 const now = Date.now();
@@ -106,6 +107,13 @@ describe("admin-actions: mutaciones bloqueadas sin sesión admin válida", () =>
       expect(result.next).toBe(orders);
       expect(result.auditEntry).toBeNull();
     });
+
+    it(`updateOrderPaymentStatus — ${label}`, () => {
+      const result = applyUpdateOrderPaymentStatus(orders, session, "o1", "approved");
+      expect(result.applied).toBe(false);
+      expect(result.next).toBe(orders);
+      expect(result.auditEntry).toBeNull();
+    });
   }
 });
 
@@ -144,6 +152,14 @@ describe("admin-actions: sesión admin válida aplica una sola vez y audita", ()
     expect(result.next[0].status).toBe("enviado");
     expect(result.auditEntry?.action).toBe("pedido.estado");
     expect(result.auditEntry?.detail).toBe("o1 → enviado");
+  });
+
+  it("updateOrderPaymentStatus", () => {
+    const result = applyUpdateOrderPaymentStatus(orders, adminSession, "o1", "approved");
+    expect(result.applied).toBe(true);
+    expect(result.next[0].paymentStatus).toBe("approved");
+    expect(result.auditEntry?.action).toBe("pedido.pago");
+    expect(result.auditEntry?.detail).toBe("o1 → approved");
   });
 });
 

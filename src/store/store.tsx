@@ -19,6 +19,7 @@ import {
   applyReplaceProducts,
   applySaveProduct,
   applyUpdateOrderStatus,
+  applyUpdateOrderPaymentStatus,
 } from "./admin-actions";
 import {
   createContext,
@@ -51,6 +52,8 @@ type Store = {
   replaceProducts: (products: Product[]) => Promise<Product[]>;
   createOrder: (order: Order) => Promise<Order>;
   updateOrderStatus: (id: string, status: Order["status"]) => Promise<Order>;
+  updateOrderPaymentStatus: (id: string, status: NonNullable<Order["paymentStatus"]>) => Promise<Order>;
+  refreshOrders: () => Promise<Order[]>;
   addCustomer: (customer: Customer) => void;
   convertGuestToAccount: (email: string, accountId: string) => void;
   auditLog: AuditEntry[];
@@ -104,6 +107,7 @@ function createFailingAdapter(message: string): PersistenceAdapter {
     listOrders: fail,
     createOrder: fail,
     updateOrderStatus: fail,
+    updateOrderPaymentStatus: fail,
     reassignOrdersCustomer: fail,
     loadCart: fail,
     saveCart: fail,
@@ -456,6 +460,32 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [orders, adminSession, adapter],
   );
 
+  const updateOrderPaymentStatus = useCallback(
+    async (id: string, paymentStatus: NonNullable<Order["paymentStatus"]>) => {
+      const result = applyUpdateOrderPaymentStatus(orders, adminSession, id, paymentStatus);
+      if (!result.applied || !result.auditEntry) {
+        throw new Error("La sesión de administrador venció. Volvé a ingresar.");
+      }
+      const persisted = await adapter.updateOrderPaymentStatus(id, paymentStatus);
+      if (!persisted) throw new Error("Supabase no confirmó el estado del pago.");
+      setOrders((current) => current.map((order) => order.id === id ? persisted : order));
+      setAuditLog((current) => appendAuditEntry(current, result.auditEntry as AuditEntry));
+      try {
+        await adapter.appendAuditEntry(result.auditEntry);
+      } catch (error) {
+        console.warn("El pago cambió, pero no se pudo guardar la auditoría.", error);
+      }
+      return persisted;
+    },
+    [orders, adminSession, adapter],
+  );
+
+  const refreshOrders = useCallback(async () => {
+    const latest = await adapter.listOrders();
+    setOrders(latest);
+    return latest;
+  }, [adapter]);
+
   const addCustomer = useCallback(
     (customer: Customer) => {
       if (customer.role !== "customer") return;
@@ -521,6 +551,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       replaceProducts,
       createOrder,
       updateOrderStatus,
+      updateOrderPaymentStatus,
+      refreshOrders,
       addCustomer,
       convertGuestToAccount,
       auditLog,
@@ -546,6 +578,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       replaceProducts,
       createOrder,
       updateOrderStatus,
+      updateOrderPaymentStatus,
+      refreshOrders,
       addCustomer,
       convertGuestToAccount,
       auditLog,

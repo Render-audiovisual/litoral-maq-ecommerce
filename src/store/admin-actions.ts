@@ -88,3 +88,19 @@ export function applyUpdateOrderStatus(
     auditEntry: createAuditEntry(adminSession, "pedido.estado", `${id} → ${status}`),
   };
 }
+
+export function applyUpdateOrderPaymentStatus(
+  orders: Order[],
+  adminSession: Session | null,
+  id: string,
+  paymentStatus: NonNullable<Order["paymentStatus"]>,
+): AdminMutationResult<Order[]> {
+  if (!isValidAdminSession(adminSession)) {
+    return { applied: false, next: orders, auditEntry: null };
+  }
+  return {
+    applied: true,
+    next: orders.map((order) => (order.id === id ? { ...order, paymentStatus } : order)),
+    auditEntry: createAuditEntry(adminSession, "pedido.pago", `${id} → ${paymentStatus}`),
+  };
+}

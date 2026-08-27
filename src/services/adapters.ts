@@ -27,14 +27,6 @@ export interface PaymentAdapter {
   }>;
 }
 
-export interface ShippingAdapter {
-  quote(input: {
-    postalCode: string;
-    subtotal: number;
-    method: "envio" | "retiro";
-  }): Promise<{ amount: number; eta: string; simulated: boolean }>;
-}
-
 export interface ImageStorageAdapter {
   upload(file: File): Promise<{ url: string; simulated: boolean }>;
 }

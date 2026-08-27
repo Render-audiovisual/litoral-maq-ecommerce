@@ -103,6 +103,17 @@ export function createLocalPersistenceAdapter(): PersistenceAdapter {
       write(KEYS.orders, next);
       return updated;
     },
+    async updateOrderPaymentStatus(id, paymentStatus) {
+      const orders = read<Order[]>(KEYS.orders, []);
+      let updated: Order | null = null;
+      const next = orders.map((order) => {
+        if (order.id !== id) return order;
+        updated = { ...order, paymentStatus };
+        return updated;
+      });
+      write(KEYS.orders, next);
+      return updated;
+    },
     async reassignOrdersCustomer(fromCustomerId, toCustomerId) {
       const orders = read<Order[]>(KEYS.orders, []);
       let count = 0;

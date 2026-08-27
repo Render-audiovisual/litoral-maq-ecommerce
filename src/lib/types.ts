@@ -20,6 +20,13 @@ export type Product = {
   source: string;
   sourceRow: number;
   incomplete: string[];
+  /** Datos del bulto embalado. Son opcionales para conservar el catálogo
+   * histórico; sin los cuatro valores el checkout deriva a cotización manual. */
+  shippingWeightKg?: number | null;
+  shippingHeightCm?: number | null;
+  shippingWidthCm?: number | null;
+  shippingLengthCm?: number | null;
+  shippingEnabled?: boolean;
 };
 
 export type CartLine = {
@@ -54,6 +61,19 @@ export type OrderStatus =
   | "entregado"
   | "cancelado";
 
+export type PaymentStatus = "pending" | "approved" | "rejected" | "refunded";
+export type ShippingDeliveryType = "domicilio" | "sucursal";
+export type ShippingStatus =
+  | "manual_quote"
+  | "quoted"
+  | "creating"
+  | "processing"
+  | "ready"
+  | "in_transit"
+  | "delivered"
+  | "cancelled"
+  | "error";
+
 export type Order = {
   id: string;
   customerId: string;
@@ -67,6 +87,27 @@ export type Order = {
   status: OrderStatus;
   createdAt: string;
   paymentReference: string;
+  paymentStatus?: PaymentStatus;
+  phone?: string;
+  postalCode?: string;
+  province?: string;
+  locality?: string;
+  street?: string;
+  streetNumber?: string;
+  floor?: string;
+  apartment?: string;
+  addressReference?: string;
+  shippingQuoteId?: string;
+  shippingProvider?: string;
+  shippingCarrier?: string;
+  shippingService?: string;
+  shippingDeliveryType?: ShippingDeliveryType;
+  shippingBranchId?: string;
+  shippingBranchName?: string;
+  shippingBranchAddress?: string;
+  shippingStatus?: ShippingStatus;
+  shippingTrackingNumber?: string;
+  shippingLabelReady?: boolean;
 };
 
 export type Session = {

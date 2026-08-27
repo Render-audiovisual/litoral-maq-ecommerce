@@ -94,6 +94,11 @@ const product: Product = {
   source: "seed",
   sourceRow: 0,
   incomplete: [],
+  shippingWeightKg: null,
+  shippingHeightCm: null,
+  shippingWidthCm: null,
+  shippingLengthCm: null,
+  shippingEnabled: false,
 };
 
 const productRow = {
@@ -116,6 +121,11 @@ const productRow = {
   source: "seed",
   source_row: 0,
   incomplete: [],
+  shipping_weight_kg: null,
+  shipping_height_cm: null,
+  shipping_width_cm: null,
+  shipping_length_cm: null,
+  shipping_enabled: false,
 };
 
 describe("supabase persistence adapter", () => {
@@ -163,6 +173,8 @@ describe("supabase persistence adapter", () => {
       status: "pendiente",
       createdAt: new Date().toISOString(),
       paymentReference: "MP-1",
+      paymentStatus: "pending",
+      shippingLabelReady: false,
     };
     const orderRow = {
       id: "o1",
@@ -177,6 +189,27 @@ describe("supabase persistence adapter", () => {
       status: "pendiente",
       created_at: order.createdAt,
       payment_reference: "MP-1",
+      payment_status: "pending",
+      phone: null,
+      postal_code: null,
+      province: null,
+      locality: null,
+      street: null,
+      street_number: null,
+      floor: null,
+      apartment: null,
+      address_reference: null,
+      shipping_quote_id: null,
+      shipping_provider: null,
+      shipping_carrier: null,
+      shipping_service: null,
+      shipping_delivery_type: null,
+      shipping_branch_id: null,
+      shipping_branch_name: null,
+      shipping_branch_address: null,
+      shipping_status: null,
+      shipping_tracking_number: null,
+      shipping_label_ready: false,
     };
     const { client, builders } = createFakeClient({ orders: { data: orderRow, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);

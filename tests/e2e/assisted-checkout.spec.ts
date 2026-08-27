@@ -14,11 +14,12 @@ test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ pa
   await page.getByLabel("Teléfono").fill("3794111111");
   await page.getByLabel("Código postal").fill("3400");
   await page.getByLabel("Localidad").fill("Corrientes");
-  await page.getByLabel("Domicilio").fill("San Juan 1234");
-  await page.getByRole("button", { name: "Confirmar datos de envío" }).click();
+  await page.getByLabel("Calle").fill("San Juan");
+  await page.getByLabel("Número").fill("1234");
+  await page.getByRole("button", { name: "Calcular opciones de envío" }).click();
 
-  await expect(page.getByText("Datos listos para cotizar el envío")).toBeVisible();
-  await expect(page.getByText("A cotizar", { exact: true })).toBeVisible();
+  await expect(page.getByText("Cotización manual", { exact: true })).toBeVisible();
+  await expect(page.getByText("A confirmar", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
 
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();

@@ -39,6 +39,11 @@ function productToInsert(product: Product): Database["public"]["Tables"]["produc
     source: product.source,
     source_row: product.sourceRow,
     incomplete: product.incomplete,
+    shipping_weight_kg: product.shippingWeightKg ?? null,
+    shipping_height_cm: product.shippingHeightCm ?? null,
+    shipping_width_cm: product.shippingWidthCm ?? null,
+    shipping_length_cm: product.shippingLengthCm ?? null,
+    shipping_enabled: product.shippingEnabled ?? false,
   };
 }
 
@@ -63,6 +68,11 @@ function rowToProduct(row: ProductRow): Product {
     source: row.source,
     sourceRow: row.source_row ?? 0,
     incomplete: row.incomplete ?? [],
+    shippingWeightKg: row.shipping_weight_kg,
+    shippingHeightCm: row.shipping_height_cm,
+    shippingWidthCm: row.shipping_width_cm,
+    shippingLengthCm: row.shipping_length_cm,
+    shippingEnabled: row.shipping_enabled,
   };
 }
 
@@ -80,6 +90,27 @@ function orderToInsert(order: Order): Database["public"]["Tables"]["orders"]["In
     status: order.status,
     created_at: order.createdAt,
     payment_reference: order.paymentReference,
+    payment_status: order.paymentStatus ?? "pending",
+    phone: order.phone ?? null,
+    postal_code: order.postalCode ?? null,
+    province: order.province ?? null,
+    locality: order.locality ?? null,
+    street: order.street ?? null,
+    street_number: order.streetNumber ?? null,
+    floor: order.floor ?? null,
+    apartment: order.apartment ?? null,
+    address_reference: order.addressReference ?? null,
+    shipping_quote_id: order.shippingQuoteId ?? null,
+    shipping_provider: order.shippingProvider ?? null,
+    shipping_carrier: order.shippingCarrier ?? null,
+    shipping_service: order.shippingService ?? null,
+    shipping_delivery_type: order.shippingDeliveryType ?? null,
+    shipping_branch_id: order.shippingBranchId ?? null,
+    shipping_branch_name: order.shippingBranchName ?? null,
+    shipping_branch_address: order.shippingBranchAddress ?? null,
+    shipping_status: order.shippingStatus ?? null,
+    shipping_tracking_number: order.shippingTrackingNumber ?? null,
+    shipping_label_ready: order.shippingLabelReady ?? false,
   };
 }
 
@@ -97,6 +128,27 @@ function rowToOrder(row: OrderRow): Order {
     status: row.status,
     createdAt: row.created_at,
     paymentReference: row.payment_reference ?? "",
+    paymentStatus: row.payment_status ?? "pending",
+    phone: row.phone ?? undefined,
+    postalCode: row.postal_code ?? undefined,
+    province: row.province ?? undefined,
+    locality: row.locality ?? undefined,
+    street: row.street ?? undefined,
+    streetNumber: row.street_number ?? undefined,
+    floor: row.floor ?? undefined,
+    apartment: row.apartment ?? undefined,
+    addressReference: row.address_reference ?? undefined,
+    shippingQuoteId: row.shipping_quote_id ?? undefined,
+    shippingProvider: row.shipping_provider ?? undefined,
+    shippingCarrier: row.shipping_carrier ?? undefined,
+    shippingService: row.shipping_service ?? undefined,
+    shippingDeliveryType: row.shipping_delivery_type ?? undefined,
+    shippingBranchId: row.shipping_branch_id ?? undefined,
+    shippingBranchName: row.shipping_branch_name ?? undefined,
+    shippingBranchAddress: row.shipping_branch_address ?? undefined,
+    shippingStatus: row.shipping_status ?? undefined,
+    shippingTrackingNumber: row.shipping_tracking_number ?? undefined,
+    shippingLabelReady: row.shipping_label_ready ?? false,
   };
 }
 
@@ -184,6 +236,16 @@ export function createSupabasePersistenceAdapter(client: TypedSupabaseClient): P
     },
     async updateOrderStatus(id, status) {
       const { data, error } = await client.from("orders").update({ status }).eq("id", id).select().maybeSingle();
+      if (error) throw error;
+      return data ? rowToOrder(data) : null;
+    },
+    async updateOrderPaymentStatus(id, paymentStatus) {
+      const { data, error } = await client
+        .from("orders")
+        .update({ payment_status: paymentStatus })
+        .eq("id", id)
+        .select()
+        .maybeSingle();
       if (error) throw error;
       return data ? rowToOrder(data) : null;
     },

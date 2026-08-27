@@ -1,0 +1,13 @@
+project_id = "litoral-maq-ecommerce"
+
+[functions.shipping-quote]
+verify_jwt = true
+
+[functions.shipping-create]
+verify_jwt = true
+
+[functions.shipping-label]
+verify_jwt = true
+
+[functions.enviopack-webhook]
+verify_jwt = false

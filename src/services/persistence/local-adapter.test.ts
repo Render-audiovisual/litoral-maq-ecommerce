@@ -108,6 +108,14 @@ describe("local persistence adapter", () => {
     expect(updated).toBeNull();
   });
 
+  it("updateOrderPaymentStatus persiste la confirmación administrativa", async () => {
+    const adapter = createLocalPersistenceAdapter();
+    await adapter.createOrder(order);
+    const updated = await adapter.updateOrderPaymentStatus("o1", "approved");
+    expect(updated?.paymentStatus).toBe("approved");
+    expect((await adapter.listOrders())[0].paymentStatus).toBe("approved");
+  });
+
   it("reassignOrdersCustomer reasigna solo los pedidos del id de origen", async () => {
     const adapter = createLocalPersistenceAdapter();
     await adapter.createOrder(order);

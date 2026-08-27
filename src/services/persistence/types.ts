@@ -1,4 +1,4 @@
-import type { AuditEntry, CartLine, Customer, Order, OrderStatus, Product } from "@/lib/types";
+import type { AuditEntry, CartLine, Customer, Order, OrderStatus, PaymentStatus, Product } from "@/lib/types";
 
 /**
  * Contrato único de persistencia de datos de catálogo/clientes/pedidos (no
@@ -24,6 +24,7 @@ export interface PersistenceAdapter {
   listOrders(): Promise<Order[]>;
   createOrder(order: Order): Promise<Order>;
   updateOrderStatus(id: string, status: OrderStatus): Promise<Order | null>;
+  updateOrderPaymentStatus(id: string, status: PaymentStatus): Promise<Order | null>;
   reassignOrdersCustomer(fromCustomerId: string, toCustomerId: string): Promise<number>;
 
   // Carrito — un único blob por dueño (hoy sin dueño real: un carrito global por navegador)

@@ -235,13 +235,14 @@ el backend confirma el pago o cuando la pantalla consulta un pedido aprobado.
 
 ### 7.1 Recomendación
 
-Para la primera versión se recomienda **Zipnova** como agregador multilogística,
-en lugar de desarrollar y mantener OCA, Correo Argentino y Andreani por separado.
-Una integración permite cotizar opciones disponibles, crear el envío, descargar
-documentación y consultar estados:
+La decisión vigente es **Envíopack como primer agregador multilogística**. La
+integración implementada cotiza operadores habilitados desde Corrientes, crea el
+pedido y el envío, descarga etiquetas y recibe tracking por webhook:
 
-- https://docs.zipnova.com/envios
-- https://docs.zipnova.com/envios/recursos-api/envios
+- https://developers.enviopack.com.ar/
+- https://developers.enviopack.com.ar/cotiza-un-envio
+- https://developers.enviopack.com.ar/realiza-un-envio
+- https://developers.enviopack.com.ar/notificaciones
 
 Si Litoral consigue tarifas directas mejores, el contrato interno
 `ShippingAdapter` permitirá reemplazar o sumar un operador sin rehacer el
@@ -285,10 +286,10 @@ También hace falta confirmar:
 1. Recibe código postal y líneas del carrito.
 2. Relee peso, medidas y precio desde la base.
 3. Calcula bultos y valor declarado del pedido.
-4. Consulta Zipnova con credenciales guardadas como secretos.
+4. Consulta Envíopack con credenciales guardadas como secretos.
 5. Normaliza cada opción: operador, domicilio/sucursal, precio y plazo.
 6. Guarda una cotización con vencimiento y devuelve su ID al frontend.
-7. Si el cliente elige sucursal, guarda el `point_id` exacto.
+7. Si el cliente elige sucursal, guarda el ID exacto devuelto por Envíopack.
 
 No se debe aceptar un precio de envío enviado directamente por el navegador.
 
@@ -515,4 +516,3 @@ productos, clientes y pedidos entre dispositivos**. En paralelo, Litoral puede
 abrir la aplicación de Mercado Pago y la cuenta logística, y completar en el
 Sheet peso, medidas y stock. Recién con esa base validada conviene activar cobros
 productivos.
-
