@@ -49,7 +49,7 @@ export function ProductCard({
         </Link>
         <span className="product-code">Cód. {product.code}</span>
         <strong className="product-price">{formatCurrency(product.price)}</strong>
-        <span className={`stock ${availability === "available" ? "in" : availability === "unknown" ? "pending" : "out"}`}>
+        <span className={`stock ${availability === "available" || availability === "sheet-managed" ? "in" : availability === "unknown" ? "pending" : "out"}`}>
           {availabilityLabel(product)}
         </span>
         <button

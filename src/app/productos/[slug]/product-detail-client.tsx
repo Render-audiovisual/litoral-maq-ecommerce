@@ -19,7 +19,12 @@ export function ProductDetailClient({ slug }: { slug: string }) {
     return <main className="center-state"><span className="state-icon">?</span><h1>Producto no encontrado</h1><Link href="/productos" className="button primary">Volver al catálogo</Link></main>;
   }
   const availability = getProductAvailability(product);
-  const availabilityText = availability === "unknown" ? "Consultar disponibilidad" : availability === "available" ? "Disponible" : "Agotado";
+  const availabilityText =
+    availability === "unknown"
+      ? "Consultar disponibilidad"
+      : availability === "available" || availability === "sheet-managed"
+        ? "Disponible"
+        : "Agotado";
   return (
     <main className="product-detail-page">
       <div className="breadcrumbs"><Link href="/">Inicio</Link> / <Link href="/productos">Productos</Link> / <span>{product.name}</span></div>
@@ -34,13 +39,13 @@ export function ProductDetailClient({ slug }: { slug: string }) {
           <h1>{product.name}</h1>
           <span className="detail-code">Código de producto: <strong>{product.code}</strong></span>
           <strong className="detail-price">{formatCurrency(product.price)}</strong>
-          <div className="availability"><span className={`dot ${availability === "available" ? "green" : availability === "unknown" ? "orange" : "red"}`} />{availabilityText}<small>{availability === "unknown" ? "Confirmamos las unidades antes de cerrar la compra" : `${product.stock} unidades confirmadas`}</small></div>
+          <div className="availability"><span className={`dot ${availability === "available" || availability === "sheet-managed" ? "green" : availability === "unknown" ? "orange" : "red"}`} />{availabilityText}<small>{availability === "unknown" ? "Confirmamos las unidades antes de cerrar la compra" : availability === "sheet-managed" ? "Stock gestionado por Litoral" : `${product.stock} unidades confirmadas`}</small></div>
           <p className="detail-description">{product.description || "Información técnica y descripción comercial pendientes de completar desde el panel."}</p>
           <div className="buy-row">
             <div className="quantity">
               <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))}>−</button>
               <span>{quantity}</span>
-              <button type="button" onClick={() => setQuantity((value) => availability === "available" ? Math.min(product.stock, value + 1) : value + 1)}>+</button>
+              <button type="button" onClick={() => setQuantity((value) => (availability === "available" ? Math.min(product.stock, value + 1) : value + 1))}>+</button>
             </div>
             <button type="button" className="button primary large" disabled={!canAddProductToCart(product)} onClick={() => { addToCart(product.id, quantity); setAdded(true); }}>
               {added ? "Agregado ✓" : "Agregar al carrito"}
