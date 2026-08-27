@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("un pedido conserva sus productos y se gestiona desde el panel", async ({ page }) => {
-  await page.goto("/productos?q=3400");
+  await page.goto("/productos?q=3403");
   const card = page.locator(".product-card").first();
   const productName = (await card.locator(".product-name").innerText()).trim();
   await card.getByRole("button", { name: "Agregar al carrito" }).click();
@@ -36,7 +36,7 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await row.getByRole("button", { name: "Ver detalle" }).click();
   const modal = page.locator(".order-detail-modal");
   await expect(modal).toContainText(productName);
-  await expect(modal).toContainText("Cód. 3400");
+  await expect(modal).toContainText("Cód. 3403");
   await expect(modal).toContainText("3794000000");
   await expect(modal).toContainText("Pago a coordinar");
 

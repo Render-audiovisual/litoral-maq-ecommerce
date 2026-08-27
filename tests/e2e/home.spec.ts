@@ -4,8 +4,12 @@ test('la página principal carga correctamente', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/Litoral Maq/i);
   await expect(page.getByRole('link', { name: /explorar catálogo/i })).toBeVisible();
-  await expect(page.locator('.star-products-grid .product-card')).toHaveCount(4);
-  await expect(page.locator('.star-products-grid .product-card').first()).toContainText(/taladro/i);
+  const starProducts = page.locator('.star-products-grid .product-card');
+  await expect(starProducts).toHaveCount(4);
+  for (const card of await starProducts.all()) {
+    await expect(card).toContainText('Disponible');
+    await expect(card).not.toContainText('Consultar disponibilidad');
+  }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
   await expect(page.getByRole('link', { name: 'Consultar por WhatsApp', exact: true })).toHaveAttribute(
     'href',

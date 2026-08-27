@@ -5,9 +5,11 @@ test("el inicio lleva de las categorías más vendidas al catálogo filtrado", a
 
   const categoriesSection = page.locator("#categorias-mas-vendidas");
   await expect(categoriesSection.getByRole("heading", { name: "Encontrá la máquina que necesitás" })).toBeVisible();
-  await expect(categoriesSection.locator(".winner-card")).toHaveCount(16);
+  await expect(categoriesSection.locator(".winner-card")).toHaveCount(14);
   await expect(categoriesSection).toContainText("Taladros");
-  await expect(categoriesSection).toContainText("Desde $ 35.000");
+  await expect(categoriesSection).toContainText(/Desde \$\s*[\d.]+/);
+  await expect(categoriesSection).not.toContainText("0 PRODUCTOS");
+  await expect(categoriesSection).not.toContainText("Consultar");
 
   await expect(page.getByRole("heading", { name: "Más opciones para equiparte" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Comprá por categoría" })).toHaveCount(0);

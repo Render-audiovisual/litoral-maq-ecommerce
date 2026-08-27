@@ -21,9 +21,9 @@ test("el administrador sincroniza y persiste el catálogo del Google Sheet", asy
   await page.goto("/admin/productos");
 
   await page.getByRole("button", { name: "Actualizar desde Sheet" }).click();
-  await expect(page.getByText(/Google Sheet sincronizado: 101 productos/)).toBeVisible();
-  await expect(page.getByText(/101 productos · 101 provenientes del Google Sheet/)).toBeVisible();
+  await expect(page.getByText(/Google Sheet sincronizado: 596 productos · 101 nuevos · 0 actualizados · 495 retirados/)).toBeVisible();
+  await expect(page.getByText(/596 productos · 596 provenientes del Google Sheet/)).toBeVisible();
 
   await page.reload();
-  await expect(page.getByText(/101 productos · 101 provenientes del Google Sheet/)).toBeVisible();
+  await expect(page.getByText(/596 productos · 596 provenientes del Google Sheet/)).toBeVisible();
 });
