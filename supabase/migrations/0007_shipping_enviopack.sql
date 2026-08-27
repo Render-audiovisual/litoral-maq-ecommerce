@@ -176,3 +176,52 @@ create policy shipping_events_select_admin on public.shipping_events
 grant select on public.shipping_quotes to authenticated;
 grant select on public.shipping_shipments to authenticated;
 grant select on public.shipping_events to authenticated;
+
+-- Corrección aditiva: el trigger de 0005 (restrict_employee_order_update)
+-- solo protegía las columnas que existían antes de esta migración. Sin este
+-- agregado, un empleado (no admin) podía, vía UPDATE permitido por
+-- orders_update_employee, aprobar el pago, inventar un tracking o marcar una
+-- etiqueta lista. CREATE OR REPLACE: no toca 0005, solo extiende la función.
+create or replace function public.restrict_employee_order_update()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if public.is_employee() and not public.is_admin() then
+    new.customer_id := old.customer_id;
+    new.customer_name := old.customer_name;
+    new.email := old.email;
+    new.lines := old.lines;
+    new.total := old.total;
+    new.shipping := old.shipping;
+    new.delivery_method := old.delivery_method;
+    new.address := old.address;
+    new.created_at := old.created_at;
+    new.payment_reference := old.payment_reference;
+    new.payment_status := old.payment_status;
+    new.phone := old.phone;
+    new.postal_code := old.postal_code;
+    new.province := old.province;
+    new.locality := old.locality;
+    new.street := old.street;
+    new.street_number := old.street_number;
+    new.floor := old.floor;
+    new.apartment := old.apartment;
+    new.address_reference := old.address_reference;
+    new.shipping_quote_id := old.shipping_quote_id;
+    new.shipping_provider := old.shipping_provider;
+    new.shipping_carrier := old.shipping_carrier;
+    new.shipping_service := old.shipping_service;
+    new.shipping_delivery_type := old.shipping_delivery_type;
+    new.shipping_branch_id := old.shipping_branch_id;
+    new.shipping_branch_name := old.shipping_branch_name;
+    new.shipping_branch_address := old.shipping_branch_address;
+    new.shipping_status := old.shipping_status;
+    new.shipping_tracking_number := old.shipping_tracking_number;
+    new.shipping_label_ready := old.shipping_label_ready;
+  end if;
+  return new;
+end;
+$$;
