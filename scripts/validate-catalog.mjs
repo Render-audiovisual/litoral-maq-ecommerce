@@ -74,10 +74,17 @@ const invalidRows = nonEmptyRows.filter(([code, article, price]) => {
   return !code?.trim() || !article?.trim() || parsePrice(price || "") === null;
 });
 
+const productsByCode = new Map(products.map((product) => [normalize(product.code), product]));
+const currentProducts = products.filter(
+  (product) => !(product.incomplete || []).includes("sheet-absent"),
+);
+const retiredProducts = products.filter(
+  (product) => (product.incomplete || []).includes("sheet-absent"),
+);
 const mismatches = [];
 for (let index = 0; index < nonEmptyRows.length; index += 1) {
   const [code, article, rawPrice] = nonEmptyRows[index];
-  const product = products[index];
+  const product = productsByCode.get(normalize(code));
   if (
     !product ||
     normalize(product.code) !== normalize(code) ||
@@ -93,6 +100,9 @@ const result = {
   csvRecordsIncludingHeader: rows.length,
   sourceProductRows: nonEmptyRows.length,
   importedProducts: products.length,
+  currentProducts: currentProducts.length,
+  retiredProducts: retiredProducts.length,
+  activeRetiredProducts: retiredProducts.filter((product) => product.active).length,
   emptyRowsInsideExportedRange: emptyRows.length,
   repeatedHeaders: repeatedHeaders.length,
   invalidRows: invalidRows.length,
@@ -109,8 +119,12 @@ const result = {
   ).length,
   sourceToImportMismatches: mismatches,
   verdict:
-    nonEmptyRows.length === products.length &&
+    nonEmptyRows.length === currentProducts.length &&
     invalidRows.length === 0 &&
+    repeatedHeaders.length === 0 &&
+    duplicates(nonEmptyRows.map(([code]) => code)).length === 0 &&
+    duplicates(products.map((product) => product.code)).length === 0 &&
+    retiredProducts.every((product) => !product.active) &&
     mismatches.length === 0
       ? "PASS"
       : "FAIL",
