@@ -2423,20 +2423,20 @@
     "rawPrice": "$ 138.000,00",
     "category": "Compresores y neumática",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3505-c24-25.webp",
+    "images": [
+      "/products/catalog/3505-c24-25.webp"
+    ],
     "stock": 30,
     "lowStockThreshold": 5,
     "active": true,
     "featured": false,
-    "description": null,
+    "description": "Compresor de aire Energy C24/25. Potencia: 1100W (1,5 HP). Capacidad del tanque: 24 L. Presión máxima: 8 bar (115 PSI). Caudal: 169 L/min. Velocidad: 2850 rpm (50Hz) / 3400 rpm (60Hz). Peso: 19,5 kg.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 98,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ]
   },
   {
@@ -4726,20 +4726,20 @@
     "rawPrice": "$ 65.000,00",
     "category": "Otros",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3370-ep10.webp",
+    "images": [
+      "/products/catalog/3370-ep10.webp"
+    ],
     "stock": 30,
     "lowStockThreshold": 5,
     "active": true,
     "featured": false,
-    "description": null,
+    "description": "Cepillo eléctrico (garlopa) Energy EP10. Potencia: 650W. Ancho de cepillado: 82mm. Profundidad de cepillado: 2mm. Velocidad: 16800 rpm.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 190,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ]
   },
   {

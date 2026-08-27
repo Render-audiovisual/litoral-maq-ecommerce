@@ -1056,5 +1056,31 @@
     "descriptionImported": false,
     "conflictsSkipped": [],
     "verifiedAt": "2026-08-27"
+  },
+  {
+    "productId": "3370",
+    "model": "EP10",
+    "match": "exact_model",
+    "productSourceUrl": "https://energyherramientas.com/catalogo (CATALOGO - ENERGY_b.pdf, pag. 15) + https://rspshopmaquinas.com.ar/productos/cepillo-electrico-energy-ep10-650w-82mm-garlopa-manual-hbzv3/",
+    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/002/110/845/products/d_nq_np_636132-mla74651984884_022024-f-49ee9199a58dd7534217786921473100-480-0.webp",
+    "localImage": "/products/catalog/3370-ep10.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [
+      "Peso: catálogo oficial indica 2,42kg, el distribuidor RSP indica 2,87kg - no se cargó peso en la descripción por esta discrepancia; se usaron solo los campos donde ambas fuentes coinciden (potencia, ancho y profundidad de cepillado) mas velocidad (solo confirmada por catálogo oficial)."
+    ],
+    "verifiedAt": "2026-08-27"
+  },
+  {
+    "productId": "3505",
+    "model": "C24/25",
+    "match": "exact_model",
+    "productSourceUrl": "https://energyherramientas.com/catalogo (CATALOGO - ENERGY_b.pdf, pag. 25) + https://rspshopmaquinas.com.ar/productos/compresor-de-aire-24-litros-15-hp-1100-watts-c24-25-energy-gb0pi/",
+    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/002/110/845/products/d_nq_np_819091-mlu72573229736_112023-f-e1166f94c96121bde517766970336359-480-0.webp",
+    "localImage": "/products/catalog/3505-c24-25.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [
+      "Peso: catálogo oficial indica 19,5kg, el distribuidor RSP indica 18kg - se usó el valor del catálogo oficial (fuente de mayor jerarquía) en la descripción."
+    ],
+    "verifiedAt": "2026-08-27"
   }
 ]
