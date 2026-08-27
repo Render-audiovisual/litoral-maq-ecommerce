@@ -151,7 +151,9 @@ export function parseSheetProducts(csv: string, currentProducts: Product[]) {
         rawPrice,
         source: "google-sheet",
         sourceRow,
-        incomplete: existing.incomplete.filter((item) => !["code", "price"].includes(item)),
+        incomplete: existing.incomplete.filter(
+          (item) => !["code", "price", "sheet-absent"].includes(item),
+        ),
       } satisfies Product);
       return products;
     }
@@ -192,7 +194,12 @@ export function parseSheetProducts(csv: string, currentProducts: Product[]) {
 
   const retiredProducts = currentProducts
     .filter((product) => !seenCodes.has(product.code || product.id))
-    .map((product) => ({ ...product, active: false, featured: false }));
+    .map((product) => ({
+      ...product,
+      active: false,
+      featured: false,
+      incomplete: [...new Set([...product.incomplete, "sheet-absent"])],
+    }));
   const removed = retiredProducts.length;
 
   return {
@@ -201,8 +208,8 @@ export function parseSheetProducts(csv: string, currentProducts: Product[]) {
     updated,
     removed,
     warnings: [
-      "El Sheet no informa stock, imágenes ni descripciones: se conservaron los datos existentes del panel.",
-      ...(created ? [`${created} productos nuevos quedaron ocultos y con stock pendiente hasta completarlos en el panel.`] : []),
+      "El Sheet confirma disponibilidad comercial, pero no cantidades: se conservaron imágenes, descripciones y demás datos existentes del panel.",
+      ...(created ? [`${created} productos nuevos quedaron disponibles en Sheet pero ocultos hasta completar su ficha.`] : []),
       ...(removed ? [`${removed} productos ausentes del Sheet se conservaron ocultos; no se borraron.`] : []),
     ],
   };

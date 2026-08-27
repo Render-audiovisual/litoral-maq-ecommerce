@@ -22,10 +22,23 @@ describe("disponibilidad comercial", () => {
     expect(canAddProductToCart(item)).toBe(true);
   });
 
-  it("un producto NO publicado (ausente del Sheet o incompleto) con stock sin verificar sigue siendo 'unknown', no se declara disponible", () => {
+  it("un producto oculto pero presente en el Sheet conserva disponibilidad gestionada", () => {
     const item = product(0, ["stock"], false);
+    expect(getProductAvailability(item)).toBe("sheet-managed");
+    expect(availabilityLabel(item)).toBe("Disponible");
+    expect(canAddProductToCart(item)).toBe(false);
+  });
+
+  it("un producto ausente del Sheet sigue siendo desconocido y no puede agregarse", () => {
+    const item = product(0, ["stock", "sheet-absent"], false);
     expect(getProductAvailability(item)).toBe("unknown");
     expect(availabilityLabel(item)).toBe("Consultar disponibilidad");
+    expect(canAddProductToCart(item)).toBe(false);
+  });
+
+  it("un producto manual activo sin stock confirmado no se confunde con disponibilidad del Sheet", () => {
+    const item = { ...product(0, ["stock"], true), source: "admin" };
+    expect(getProductAvailability(item)).toBe("unknown");
     expect(canAddProductToCart(item)).toBe(true);
   });
 

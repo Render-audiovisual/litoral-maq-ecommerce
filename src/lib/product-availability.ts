@@ -15,13 +15,15 @@ export type ProductAvailability = "unknown" | "sheet-managed" | "available" | "o
  */
 export function getProductAvailability(product: Product): ProductAvailability {
   if (product.incomplete.includes("stock")) {
-    return product.active ? "sheet-managed" : "unknown";
+    const isPresentInSheet =
+      product.source === "google-sheet" && !product.incomplete.includes("sheet-absent");
+    return isPresentInSheet ? "sheet-managed" : "unknown";
   }
   return product.stock > 0 ? "available" : "out-of-stock";
 }
 
 export function canAddProductToCart(product: Product) {
-  return product.price !== null && getProductAvailability(product) !== "out-of-stock";
+  return product.active && product.price !== null && getProductAvailability(product) !== "out-of-stock";
 }
 
 export function availabilityLabel(product: Product) {

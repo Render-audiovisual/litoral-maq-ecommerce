@@ -154,7 +154,9 @@ const sheetProducts = body
         rawPrice: rawPrice.trim() || null,
         source: "google-sheet",
         sourceRow: index + 2,
-        incomplete: existing.incomplete.filter((item) => !["code", "price"].includes(item)),
+        incomplete: existing.incomplete.filter(
+          (item) => !["code", "price", "sheet-absent"].includes(item),
+        ),
       };
     }
 
@@ -194,7 +196,12 @@ const sheetProducts = body
 // perder imágenes, fichas técnicas, URLs ni referencias históricas.
 const retiredProducts = currentProducts
   .filter((product) => product.code && !seenCodes.has(product.code))
-  .map((product) => ({ ...product, active: false, featured: false }));
+  .map((product) => ({
+    ...product,
+    active: false,
+    featured: false,
+    incomplete: [...new Set([...(product.incomplete || []), "sheet-absent"])],
+  }));
 const products = [...sheetProducts, ...retiredProducts];
 
 const report = {

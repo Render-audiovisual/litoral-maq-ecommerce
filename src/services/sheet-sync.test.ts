@@ -65,6 +65,8 @@ describe("sincronización real de Google Sheets", () => {
       image: "/products/original.png",
       description: "Descripción cargada en el panel",
     });
+    expect(result.products.find((product) => product.code === "999")?.incomplete).toContain("sheet-absent");
+    expect(result.products.find((product) => product.code === "1")?.incomplete).not.toContain("sheet-absent");
   });
 
   it("acepta variantes de encabezados con mayúsculas y espacios", () => {
