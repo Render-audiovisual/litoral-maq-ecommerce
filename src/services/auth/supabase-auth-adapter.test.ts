@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createSupabaseAuthAdapter } from "./supabase-auth-adapter";
 import type { TypedSupabaseClient } from "@/services/persistence/supabase/client";
-import { EmailConfirmationRequiredError } from "./types";
+import { EmailConfirmationRequiredError, IdentityAlreadyLinkedError } from "./types";
 
 type ProfileRow = {
   id: string;
@@ -40,6 +40,8 @@ type FakeAuth = {
   signInWithPassword: ReturnType<typeof vi.fn>;
   signUp: ReturnType<typeof vi.fn>;
   signInAnonymously: ReturnType<typeof vi.fn>;
+  signInWithOAuth: ReturnType<typeof vi.fn>;
+  linkIdentity: ReturnType<typeof vi.fn>;
   updateUser: ReturnType<typeof vi.fn>;
   resetPasswordForEmail: ReturnType<typeof vi.fn>;
   resend: ReturnType<typeof vi.fn>;
@@ -54,6 +56,17 @@ function createFakeClient(profiles: ProfileRow[] = []) {
     signInWithPassword: vi.fn(async () => ({ data: { session: null }, error: new Error("no mockeado") })),
     signUp: vi.fn(async () => ({ data: { user: null, session: null }, error: new Error("no mockeado") })),
     signInAnonymously: vi.fn(async () => ({ data: { session: null }, error: new Error("no mockeado") })),
+    // Las dos formas de Google: sin sesión (o con cuenta permanente) y
+    // desde una sesión de invitado. Devuelven la URL a la que el navegador
+    // sería redirigido — en el test nadie navega.
+    signInWithOAuth: vi.fn(async () => ({
+      data: { provider: "google", url: "https://accounts.google.test" },
+      error: null,
+    })),
+    linkIdentity: vi.fn(async () => ({
+      data: { provider: "google", url: "https://accounts.google.test" },
+      error: null,
+    })),
     updateUser: vi.fn(async () => ({ data: { user: null }, error: new Error("no mockeado") })),
     resetPasswordForEmail: vi.fn(async () => ({ data: {}, error: null })),
     resend: vi.fn(async () => ({ data: {}, error: null })),
@@ -181,20 +194,54 @@ describe("supabaseAuthAdapter", () => {
     }));
   });
 
-  it("signUpCustomer con sesión anónima activa CONVIERTE la cuenta en el mismo uid (no crea una nueva)", async () => {
-    const { client, auth, profileMap } = createFakeClient([
-      { id: "anon-1", role: "customer", name: null, email: null, is_anonymous: true },
-    ]);
-    auth.getSession
-      .mockResolvedValueOnce({ data: { session: fakeAuthSession("anon-1", true) }, error: null })
-      .mockResolvedValueOnce({ data: { session: fakeAuthSession("anon-1", false) }, error: null });
-    auth.updateUser.mockResolvedValue({ data: { user: { id: "anon-1" } }, error: null });
+  it("el registro público nunca pide el rol: lo fija el trigger de la base", async () => {
+    const { client, auth, profileMap } = createFakeClient();
+    profileMap.set("new-user", { id: "new-user", role: "customer", name: "Ana", email: "ana@test.com", is_anonymous: false });
+    auth.signUp.mockResolvedValue({
+      data: { user: { id: "new-user", identities: [{ id: "x" }] }, session: fakeAuthSession("new-user") },
+      error: null,
+    });
     const adapter = createSupabaseAuthAdapter(client);
     const session = await adapter.signUpCustomer("Ana", "ana@test.com", "clave123");
-    expect(session.user.id).toBe("anon-1");
+    const [payload] = auth.signUp.mock.calls[0] as [Record<string, unknown>];
+    expect(JSON.stringify(payload)).not.toMatch(/role/i);
+    expect(session.user.role).toBe("customer");
+  });
+
+  it("signUpCustomer con sesión anónima activa NO da de alta un uid nuevo", async () => {
+    // Un signUp con la sesión de invitado viva crearía otro usuario y
+    // reemplazaría la sesión: los pedidos del invitado quedarían bajo un
+    // uid inalcanzable. La conversión va por linkEmailToGuestAccount.
+    const { client, auth } = createFakeClient([
+      { id: "anon-1", role: "customer", name: null, email: null, is_anonymous: true },
+    ]);
+    auth.getSession.mockResolvedValue({ data: { session: fakeAuthSession("anon-1", true) }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+    await expect(adapter.signUpCustomer("Ana", "ana@test.com", "clave123")).rejects.toThrow(/invitado/i);
     expect(auth.signUp).not.toHaveBeenCalled();
-    expect(profileMap.get("anon-1")?.is_anonymous).toBe(false);
-    expect(profileMap.get("anon-1")?.email).toBe("ana@test.com");
+  });
+
+  it("conversión de invitado: vincula el email al MISMO uid y todavía no fija contraseña", async () => {
+    // Secuencia documentada por Supabase: primero updateUser({ email }) y
+    // verificación por correo; la contraseña recién después. Mandarla acá
+    // la fijaría sobre un email que nadie confirmó.
+    const { client, auth } = createFakeClient([
+      { id: "anon-1", role: "customer", name: null, email: null, is_anonymous: true },
+    ]);
+    auth.getSession.mockResolvedValue({ data: { session: fakeAuthSession("anon-1", true) }, error: null });
+    auth.updateUser.mockResolvedValue({ data: { user: { id: "anon-1" } }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+
+    await adapter.linkEmailToGuestAccount("Ana", " ANA@Test.com ", "https://tienda.test/crear-clave");
+
+    expect(auth.signUp).not.toHaveBeenCalled();
+    expect(auth.signInAnonymously).not.toHaveBeenCalled();
+    expect(auth.updateUser).toHaveBeenCalledWith(
+      { email: "ana@test.com", data: { name: "Ana" } },
+      { emailRedirectTo: "https://tienda.test/crear-clave" },
+    );
+    const [attributes] = auth.updateUser.mock.calls[0] as [Record<string, unknown>];
+    expect(attributes).not.toHaveProperty("password");
   });
 
   it("conversión de invitado: email ya tomado por otra cuenta se rechaza, sin fusionar por email", async () => {
@@ -207,9 +254,78 @@ describe("supabaseAuthAdapter", () => {
       error: Object.assign(new Error("User already registered"), { code: "email_exists" }),
     });
     const adapter = createSupabaseAuthAdapter(client);
-    await expect(adapter.signUpCustomer("Ana", "ana-existente@test.com", "clave123")).rejects.toThrow(
-      EmailConfirmationRequiredError,
+    await expect(
+      adapter.linkEmailToGuestAccount("Ana", "ana-existente@test.com", "https://tienda.test/crear-clave"),
+    ).rejects.toThrow(EmailConfirmationRequiredError);
+    // Ni se cierra la sesión de invitado ni se toca ningún pedido.
+    expect(auth.signOut).not.toHaveBeenCalled();
+  });
+
+  it("conversión de invitado: no corre sobre una cuenta que ya es permanente", async () => {
+    const { client, auth } = createFakeClient([
+      { id: "user-1", role: "customer", name: "Juan", email: "juan@test.com", is_anonymous: false },
+    ]);
+    auth.getSession.mockResolvedValue({ data: { session: fakeAuthSession("user-1", false) }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+    await expect(
+      adapter.linkEmailToGuestAccount("Juan", "otro@test.com", "https://tienda.test/crear-clave"),
+    ).rejects.toThrow(/sesión de invitado/i);
+    expect(auth.updateUser).not.toHaveBeenCalled();
+  });
+
+  it("Google sin sesión usa signInWithOAuth con el callback recibido", async () => {
+    const { client, auth } = createFakeClient();
+    auth.getSession.mockResolvedValue({ data: { session: null }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+    await adapter.startGoogleSignIn("https://tienda.test/auth/callback");
+    expect(auth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: "google",
+      options: { redirectTo: "https://tienda.test/auth/callback" },
+    });
+    expect(auth.linkIdentity).not.toHaveBeenCalled();
+  });
+
+  it("Google con sesión de invitado usa linkIdentity: conserva el uid y sus pedidos", async () => {
+    const { client, auth } = createFakeClient([
+      { id: "anon-1", role: "customer", name: null, email: null, is_anonymous: true },
+    ]);
+    auth.getSession.mockResolvedValue({ data: { session: fakeAuthSession("anon-1", true) }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+    await adapter.startGoogleSignIn("https://tienda.test/auth/callback");
+    expect(auth.linkIdentity).toHaveBeenCalledWith({
+      provider: "google",
+      options: { redirectTo: "https://tienda.test/auth/callback" },
+    });
+    expect(auth.signInWithOAuth).not.toHaveBeenCalled();
+  });
+
+  it("Google con cuenta permanente vuelve a signInWithOAuth", async () => {
+    const { client, auth } = createFakeClient([
+      { id: "user-1", role: "customer", name: "Juan", email: "juan@test.com", is_anonymous: false },
+    ]);
+    auth.getSession.mockResolvedValue({ data: { session: fakeAuthSession("user-1", false) }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+    await adapter.startGoogleSignIn("https://tienda.test/auth/callback");
+    expect(auth.signInWithOAuth).toHaveBeenCalledOnce();
+    expect(auth.linkIdentity).not.toHaveBeenCalled();
+  });
+
+  it("una identidad de Google que ya es de otra cuenta no transfiere nada ni cierra la sesión", async () => {
+    const { client, auth } = createFakeClient([
+      { id: "anon-1", role: "customer", name: null, email: null, is_anonymous: true },
+    ]);
+    auth.getSession.mockResolvedValue({ data: { session: fakeAuthSession("anon-1", true) }, error: null });
+    auth.linkIdentity.mockResolvedValue({
+      data: null,
+      error: Object.assign(new Error("Identity is already linked to another user"), {
+        code: "identity_already_exists",
+      }),
+    });
+    const adapter = createSupabaseAuthAdapter(client);
+    await expect(adapter.startGoogleSignIn("https://tienda.test/auth/callback")).rejects.toThrow(
+      IdentityAlreadyLinkedError,
     );
+    expect(auth.signOut).not.toHaveBeenCalled();
   });
 
   it("signOut delega en el cliente", async () => {
@@ -224,12 +340,17 @@ describe("supabaseAuthAdapter", () => {
     const adapter = createSupabaseAuthAdapter(client);
     await adapter.requestPasswordReset(" ANA@Test.com ", "https://tienda.test/restablecer-clave");
     await adapter.resendCustomerConfirmation(" ANA@Test.com ", "https://tienda.test/login?confirmed=1");
-    expect(auth.resetPasswordForEmail).toHaveBeenCalledWith("ana@test.com", {
-      redirectTo: "https://tienda.test/restablecer-clave",
-    });
-    expect(auth.resend).toHaveBeenCalledWith({
-      type: "signup", email: "ana@test.com", options: { emailRedirectTo: "https://tienda.test/login?confirmed=1" },
-    });
+    expect(auth.resetPasswordForEmail).toHaveBeenCalledWith(
+      "ana@test.com",
+      expect.objectContaining({ redirectTo: "https://tienda.test/restablecer-clave" }),
+    );
+    expect(auth.resend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "signup",
+        email: "ana@test.com",
+        options: expect.objectContaining({ emailRedirectTo: "https://tienda.test/login?confirmed=1" }),
+      }),
+    );
   });
 
   it("actualiza la contraseña y el cierre de sesión limpia solo el cliente local", async () => {
@@ -263,6 +384,20 @@ describe("supabaseAuthAdapter", () => {
     expect(session?.user.role).toBe("admin");
   });
 
+  it("isAnonymous sale del usuario de Auth, no de un perfil todavía sin sincronizar", async () => {
+    // Justo después de confirmar el email, auth.users ya dice permanente y
+    // la fila de profiles puede ir un tick atrás (la sincroniza el trigger
+    // de la migración 0009). Si mandara el perfil, el header seguiría
+    // diciendo "Ingresar" con la cuenta ya creada.
+    const { client, auth } = createFakeClient([
+      { id: "user-1", role: "customer", name: "Ana", email: "ana@test.com", is_anonymous: true },
+    ]);
+    auth.getSession.mockResolvedValue({ data: { session: fakeAuthSession("user-1", false) }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+    const session = await adapter.restoreSession();
+    expect(session?.user.isAnonymous).toBe(false);
+  });
+
   it("restoreSession devuelve null sin sesión activa", async () => {
     const { client, auth } = createFakeClient();
     auth.getSession.mockResolvedValue({ data: { session: null }, error: null });
@@ -275,5 +410,74 @@ describe("supabaseAuthAdapter", () => {
     auth.getSession.mockResolvedValue({ data: { session: null }, error: new Error("network") });
     const adapter = createSupabaseAuthAdapter(client);
     await expect(adapter.restoreSession()).resolves.toBeNull();
+  });
+
+  describe("captcha (Cloudflare Turnstile)", () => {
+    it("el token viaja a todos los endpoints protegidos de GoTrue", async () => {
+      const { client, auth, profileMap } = createFakeClient([
+        { id: "anon-1", role: "customer", name: null, email: null, is_anonymous: true },
+      ]);
+      profileMap.set("user-1", {
+        id: "user-1", role: "customer", name: "Juan", email: "juan@test.com", is_anonymous: false,
+      });
+      auth.signInAnonymously.mockResolvedValue({ data: { session: fakeAuthSession("anon-1", true) }, error: null });
+      auth.signInWithPassword.mockResolvedValue({ data: { session: fakeAuthSession("user-1") }, error: null });
+      const adapter = createSupabaseAuthAdapter(client);
+
+      await adapter.ensureGuestSession("tok-anon");
+      await adapter.signInCustomer("juan@test.com", "clave123", "tok-login");
+      await adapter.requestPasswordReset("juan@test.com", "https://tienda.test/restablecer-clave", "tok-reset");
+      await adapter.resendCustomerConfirmation("juan@test.com", "https://tienda.test/login?confirmed=1", "tok-resend");
+
+      expect(auth.signInAnonymously).toHaveBeenCalledWith({ options: { captchaToken: "tok-anon" } });
+      expect(auth.signInWithPassword).toHaveBeenCalledWith(
+        expect.objectContaining({ options: { captchaToken: "tok-login" } }),
+      );
+      expect(auth.resetPasswordForEmail).toHaveBeenCalledWith(
+        "juan@test.com",
+        expect.objectContaining({ captchaToken: "tok-reset" }),
+      );
+      expect(auth.resend).toHaveBeenCalledWith(
+        expect.objectContaining({ options: expect.objectContaining({ captchaToken: "tok-resend" }) }),
+      );
+    });
+
+    it("el registro manda el token junto con el redirect de confirmación", async () => {
+      const { client, auth } = createFakeClient();
+      auth.getSession.mockResolvedValue({ data: { session: null }, error: null });
+      auth.signUp.mockResolvedValue({
+        data: { user: { id: "u", identities: [{ id: "x" }] }, session: null }, error: null,
+      });
+      const adapter = createSupabaseAuthAdapter(client);
+      await expect(
+        adapter.signUpCustomer("Ana", "ana@test.com", "clave123", "https://tienda.test/login?confirmed=1", "tok-signup"),
+      ).rejects.toThrow(EmailConfirmationRequiredError);
+      expect(auth.signUp).toHaveBeenCalledWith(
+        expect.objectContaining({ options: expect.objectContaining({ captchaToken: "tok-signup" }) }),
+      );
+    });
+
+    it("un captcha ausente o vencido explica qué hacer, sin el texto crudo de GoTrue", async () => {
+      const { client, auth } = createFakeClient();
+      const captchaFailure = Object.assign(
+        new Error("captcha protection: request disallowed (invalid-input-response)"),
+        { code: "captcha_failed" },
+      );
+      auth.getSession.mockResolvedValue({ data: { session: null }, error: null });
+      auth.signInWithPassword.mockResolvedValue({ data: { session: null }, error: captchaFailure });
+      auth.signInAnonymously.mockResolvedValue({ data: { session: null }, error: captchaFailure });
+      auth.signUp.mockResolvedValue({ data: { user: null, session: null }, error: captchaFailure });
+      const adapter = createSupabaseAuthAdapter(client);
+
+      await expect(adapter.signInCustomer("juan@test.com", "clave123")).rejects.toThrow(/verificación de seguridad/i);
+      await expect(adapter.ensureGuestSession()).rejects.toThrow(/verificación de seguridad/i);
+      await expect(adapter.signUpCustomer("Ana", "ana@test.com", "clave123")).rejects.toThrow(
+        /verificación de seguridad/i,
+      );
+      // El detalle interno de Cloudflare/GoTrue no llega a la pantalla.
+      await expect(adapter.signInCustomer("juan@test.com", "clave123")).rejects.not.toThrow(
+        /invalid-input-response/,
+      );
+    });
   });
 });

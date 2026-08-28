@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { useCaptcha } from "@/components/use-captcha";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { guestIdFromEmail, normalizeEmail } from "@/lib/auth";
@@ -34,6 +35,12 @@ export default function CheckoutPage() {
   const [quoting, setQuoting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // La compra como invitado crea un usuario REAL en Supabase Auth
+  // (signInAnonymously), así que ese endpoint necesita la misma protección
+  // antiabuso que un registro. Con sesión ya iniciada no hace falta: no se
+  // crea ninguna identidad nueva.
+  const captcha = useCaptcha();
+  const needsGuestSession = !customerSession;
   const [form, setForm] = useState({
     name: customerSession?.user.name || "",
     email: customerSession?.user.email || "",
@@ -75,9 +82,14 @@ export default function CheckoutPage() {
     if (customerSession) return { customerId: customerSession.user.id, session: null };
     const authAdapter = getAuthAdapter();
     if (supportsGuestSessions(authAdapter)) {
-      const session = await authAdapter.ensureGuestSession();
-      await setCustomerSession(session);
-      return { customerId: session.user.id, session };
+      try {
+        const session = await authAdapter.ensureGuestSession(captcha.token);
+        await setCustomerSession(session);
+        return { customerId: session.user.id, session };
+      } catch (error) {
+        captcha.reset();
+        throw error;
+      }
     }
     return { customerId: guestIdFromEmail(normalizeEmail(form.email)), session: null };
   }
@@ -255,6 +267,12 @@ export default function CheckoutPage() {
               <label>Email<input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} /></label>
               <label>Teléfono<input required value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} /></label>
             </div>
+            {needsGuestSession && (
+              <>
+                <p className="helper">No hace falta crear una cuenta para comprar. Después de enviar la solicitud vas a poder crearla si querés guardar el historial.</p>
+                {captcha.field}
+              </>
+            )}
           </section>
           <section className="form-card">
             <div className="step-number">2</div><h2>Entrega</h2>
@@ -275,7 +293,7 @@ export default function CheckoutPage() {
                 <label className="wide">Referencia (opcional)<input value={form.reference} onChange={(event) => updateForm({ reference: event.target.value })} /></label>
               </div>
             </>}
-            <button type="button" className="button secondary" onClick={confirmDelivery} disabled={quoting}>{quoting ? "Cotizando…" : method === "envio" ? "Calcular opciones de envío" : "Confirmar retiro"}</button>
+            <button type="button" className="button secondary" onClick={confirmDelivery} disabled={quoting || (method === "envio" && needsGuestSession && !captcha.solved)}>{quoting ? "Cotizando…" : method === "envio" ? "Calcular opciones de envío" : "Confirmar retiro"}</button>
             {quoteOptions.length > 0 && <div className="shipping-quotes" role="radiogroup" aria-label="Opciones de envío">{quoteOptions.map((option) => <button type="button" role="radio" aria-checked={selectedQuoteId === option.id} className={selectedQuoteId === option.id ? "shipping-quote selected" : "shipping-quote"} key={option.id} onClick={() => chooseQuote(option)}><span><strong>{option.carrierName}</strong><small>{option.deliveryType === "sucursal" ? `${option.branchName} · ${option.branchAddress}` : "Entrega a domicilio"}</small><small>{option.etaHours ? `Plazo estimado: ${Math.ceil(option.etaHours / 24)} días` : "Plazo a confirmar"}</small></span><b>{formatCurrency(option.amount)}</b></button>)}</div>}
             {manualReason && <div className="manual-shipping-message"><strong>Cotización manual</strong><span>{manualReason} El equipo te confirmará costo y plazo antes del pago.</span></div>}
             {shipping !== null && !manualReason && <div className="success-message">✓ {method === "retiro" ? "Retiro gratis en Sáenz 1587" : "Opción de envío seleccionada"}</div>}
@@ -293,7 +311,7 @@ export default function CheckoutPage() {
           <div><span>Subtotal</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
           <div><span>Entrega</span><strong>{shipping === null ? "Sin confirmar" : method === "retiro" ? "Gratis" : manualReason ? "A confirmar" : formatCurrency(shipping)}</strong></div><hr />
           <div className="summary-total"><span>{manualReason ? "Total parcial" : "Total"}</span><strong>{formatCurrency(cartSubtotal + (shipping || 0))}</strong></div>
-          <button className="button primary large full" disabled={loading || quoting || shipping === null}>{loading ? "Procesando…" : shipping === null ? "Confirmá la entrega para continuar" : paymentEnabled && !manualReason ? "Continuar a Mercado Pago" : "Enviar solicitud de compra"}</button>
+          <button className="button primary large full" disabled={loading || quoting || shipping === null || (needsGuestSession && !captcha.solved)}>{loading ? "Procesando…" : shipping === null ? "Confirmá la entrega para continuar" : paymentEnabled && !manualReason ? "Continuar a Mercado Pago" : "Enviar solicitud de compra"}</button>
           <small>{paymentEnabled && !manualReason ? "El cobro se completa fuera de la tienda, en Mercado Pago." : "No se realizará ningún cobro en este paso."}</small>
         </aside>
       </form>

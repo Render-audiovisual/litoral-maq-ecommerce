@@ -2,11 +2,21 @@ import { normalizeEmail } from "@/lib/auth";
 import type { Session } from "@/lib/types";
 import type { TypedSupabaseClient } from "@/services/persistence/supabase/client";
 import { markPasswordRecovery } from "@/lib/password-recovery";
-import { EmailConfirmationRequiredError, type GuestCapableAuthAdapter, type SessionRestorableAuthAdapter } from "./types";
+import {
+  EmailConfirmationRequiredError,
+  IdentityAlreadyLinkedError,
+  type GuestCapableAuthAdapter,
+  type OAuthCapableAuthAdapter,
+  type SessionRestorableAuthAdapter,
+} from "./types";
 
 const GENERIC_LOGIN_ERROR = "Email o contraseña incorrectos.";
 const ADMIN_REJECTED_ERROR = "Ese email corresponde al acceso administrativo. Ingresá desde /admin/login.";
 const ADMIN_GENERIC_ERROR = "Credenciales de administrador incorrectas.";
+const CAPTCHA_REJECTED_ERROR =
+  "La verificación de seguridad venció o no se completó. Marcá la casilla de nuevo y reintentá.";
+const GUEST_CONVERSION_ERROR =
+  "Estás comprando como invitado: para crear tu cuenta primero vinculamos y confirmamos tu email.";
 /**
  * Antes acá había un EMAIL_TAKEN_ERROR ("Ya existe una cuenta con ese
  * email"). Supabase evita a propósito confirmar si un email está
@@ -30,8 +40,15 @@ async function fetchProfile(client: TypedSupabaseClient, userId: string, retries
   throw new Error("No se pudo leer el perfil recién creado. Reintentá en unos segundos.");
 }
 
+/**
+ * `is_anonymous` sale del usuario de Auth, no del perfil. Son la misma
+ * verdad, pero `auth.users` la tiene primero: la fila de `profiles` la
+ * recibe por trigger (migración 0009) y, en el instante justo después de
+ * confirmar un email, todavía puede estar un tick atrás. Para decidir "esto
+ * es una cuenta permanente" manda Auth.
+ */
 function sessionFromAuth(
-  authSession: { access_token: string; expires_at?: number },
+  authSession: { access_token: string; expires_at?: number; user?: { is_anonymous?: boolean } },
   userId: string,
   profile: { name: string | null; email: string | null; role: ProfileRole; is_anonymous?: boolean },
 ): Session {
@@ -41,16 +58,24 @@ function sessionFromAuth(
       name: profile.name ?? "",
       email: profile.email ?? "",
       role: profile.role,
-      isAnonymous: profile.is_anonymous ?? false,
+      isAnonymous: authSession.user?.is_anonymous ?? profile.is_anonymous ?? false,
     },
     token: authSession.access_token,
     expiresAt: authSession.expires_at ? authSession.expires_at * 1000 : Date.now() + 60 * 60 * 1000,
   };
 }
 
+function errorCode(error: unknown): string {
+  return String((error as { code?: string } | undefined)?.code ?? "");
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message.toLowerCase() : "";
+}
+
 function isEmailAlreadyRegistered(error: unknown): boolean {
-  const message = error instanceof Error ? error.message.toLowerCase() : "";
-  const code = (error as { code?: string } | undefined)?.code;
+  const message = errorMessage(error);
+  const code = errorCode(error);
   return (
     code === "email_exists" ||
     code === "user_already_exists" ||
@@ -60,7 +85,30 @@ function isEmailAlreadyRegistered(error: unknown): boolean {
   );
 }
 
-export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCapableAuthAdapter & SessionRestorableAuthAdapter {
+/** Captcha ausente, vencido o ya usado. GoTrue lo devuelve como 400. */
+export function isCaptchaError(error: unknown): boolean {
+  const message = errorMessage(error);
+  return (
+    errorCode(error) === "captcha_failed" ||
+    message.includes("captcha") ||
+    message.includes("verification process failed")
+  );
+}
+
+/** La identidad social ya pertenece a otro usuario de Supabase. */
+export function isIdentityAlreadyLinked(error: unknown): boolean {
+  const message = errorMessage(error);
+  return errorCode(error) === "identity_already_exists" || message.includes("identity is already linked");
+}
+
+function rethrowAuthFailure(error: unknown, fallback: string): never {
+  if (isCaptchaError(error)) throw new Error(CAPTCHA_REJECTED_ERROR);
+  throw new Error(fallback);
+}
+
+export function createSupabaseAuthAdapter(
+  client: TypedSupabaseClient,
+): GuestCapableAuthAdapter & OAuthCapableAuthAdapter & SessionRestorableAuthAdapter {
   // Señal oficial de que esta navegación viene de un enlace de
   // recuperación. Complementa la lectura del fragmento de URL, que puede
   // haber sido consumido por el SDK antes de que la pantalla monte.
@@ -81,23 +129,33 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
       return sessionFromAuth(data.session, data.session.user.id, profile);
     },
 
-    async ensureGuestSession() {
+    async ensureGuestSession(captchaToken) {
       const { data: existing } = await client.auth.getSession();
       if (existing.session) {
         const profile = await fetchProfile(client, existing.session.user.id);
         return sessionFromAuth(existing.session, existing.session.user.id, profile);
       }
-      const { data, error } = await client.auth.signInAnonymously();
-      if (error) throw error;
+      // El invitado crea un usuario REAL en auth.users, así que este
+      // endpoint es abusable igual que un registro: va con captcha.
+      const { data, error } = await client.auth.signInAnonymously({ options: { captchaToken } });
+      if (error) {
+        if (isCaptchaError(error)) throw new Error(CAPTCHA_REJECTED_ERROR);
+        throw error;
+      }
       if (!data.session) throw new Error("No se pudo crear una sesión de invitado.");
       const profile = await fetchProfile(client, data.session.user.id);
       return sessionFromAuth(data.session, data.session.user.id, profile);
     },
 
-    async signInCustomer(email, password) {
+    async signInCustomer(email, password, captchaToken) {
       const normalizedEmail = normalizeEmail(email);
-      const { data, error } = await client.auth.signInWithPassword({ email: normalizedEmail, password });
-      if (error || !data.session) throw new Error(GENERIC_LOGIN_ERROR);
+      const { data, error } = await client.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+        options: { captchaToken },
+      });
+      if (error) rethrowAuthFailure(error, GENERIC_LOGIN_ERROR);
+      if (!data.session) throw new Error(GENERIC_LOGIN_ERROR);
       const profile = await fetchProfile(client, data.session.user.id);
       if (profile.role === "admin") {
         await client.auth.signOut();
@@ -106,59 +164,59 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
       return sessionFromAuth(data.session, data.session.user.id, profile);
     },
 
-    async signUpCustomer(name, email, password, emailRedirectTo) {
+    async linkEmailToGuestAccount(name, email, emailRedirectTo) {
+      const normalizedEmail = normalizeEmail(email);
+      if (name.trim().length < 2 || !normalizedEmail.includes("@")) {
+        throw new Error("Completá nombre y un email válido.");
+      }
+      const { data: existing } = await client.auth.getSession();
+      if (!existing.session?.user.is_anonymous) {
+        throw new Error("Esta pantalla solo convierte una sesión de invitado activa.");
+      }
+
+      // Vincula el email al MISMO uid anónimo (Supabase: "Convert an
+      // anonymous user to a permanent user" → "Link an email identity").
+      // La contraseña NO va acá: para poder fijarla, el email tiene que
+      // estar verificado antes. Ese es el paso 2, en /crear-clave.
+      const { error } = await client.auth.updateUser(
+        { email: normalizedEmail, data: { name: name.trim() } },
+        { emailRedirectTo },
+      );
+      if (!error) return;
+
+      // El email ya pertenece a otra cuenta: la sesión anónima NO se
+      // convierte y no se fusiona nada — el historial de invitado no se
+      // regala a una cuenta ajena solo porque alguien tipeó su email. La
+      // respuesta es igual a la de un alta normal para no revelar que
+      // existe.
+      if (isEmailAlreadyRegistered(error)) throw new EmailConfirmationRequiredError(normalizedEmail);
+      if (isCaptchaError(error)) throw new Error(CAPTCHA_REJECTED_ERROR);
+      throw error;
+    },
+
+    async signUpCustomer(name, email, password, emailRedirectTo, captchaToken) {
       const normalizedEmail = normalizeEmail(email);
       if (name.trim().length < 2 || !normalizedEmail.includes("@") || password.length < 6) {
         throw new Error("Completá nombre, email válido y una clave de 6 caracteres.");
       }
 
-      // Si ya hay una sesión anónima activa (vino de un carrito de
-      // invitado), la convertimos en cuenta permanente EN EL MISMO uid en
-      // vez de crear un usuario nuevo — así el historial de pedidos, ya
-      // vinculado a ese uid, queda automáticamente asociado sin reasignar
-      // nada. Ver supabase/README.md §12 para el detalle del mecanismo.
-      const { data: existingSession } = await client.auth.getSession();
-      if (existingSession.session?.user.is_anonymous) {
-        const { data, error } = await client.auth.updateUser({
-          email: normalizedEmail,
-          password,
-          data: { name: name.trim() },
-        });
-        if (error) {
-          // El email ya pertenece a otra cuenta: la sesión anónima no se
-          // convierte (el carrito de invitado no se une a una cuenta ajena
-          // solo porque coincide el email), pero la respuesta es la misma
-          // que la de un alta normal para no revelar que existe.
-          if (isEmailAlreadyRegistered(error)) throw new EmailConfirmationRequiredError(normalizedEmail);
-          throw error;
-        }
-        const userId = data.user.id;
-        // Actualizar name/email en profiles explícitamente: el trigger de
-        // creación no corre de nuevo en un update de auth.users.
-        const { error: profileError } = await client
-          .from("profiles")
-          .update({ name: name.trim(), email: normalizedEmail, is_anonymous: false })
-          .eq("id", userId);
-        if (profileError) throw profileError;
-        const { data: refreshed, error: refreshError } = await client.auth.getSession();
-        if (refreshError || !refreshed.session) {
-          throw refreshError ?? new Error("No se pudo obtener la sesión luego de convertir la cuenta.");
-        }
-        const profile = await fetchProfile(client, userId);
-        return sessionFromAuth(refreshed.session, userId, {
-          ...profile,
-          name: name.trim(),
-          email: normalizedEmail,
-        });
-      }
+      // Defensa en profundidad: con una sesión anónima viva, un signUp
+      // crearía un uid NUEVO y reemplazaría la sesión — los pedidos del
+      // invitado quedarían huérfanos bajo el uid viejo, sin forma de
+      // llegar a ellos. La pantalla de registro ya deriva a la conversión
+      // (`linkEmailToGuestAccount`); esto corta el caso igual si alguien
+      // llega por otro camino.
+      const { data: existing } = await client.auth.getSession();
+      if (existing.session?.user.is_anonymous) throw new Error(GUEST_CONVERSION_ERROR);
 
       const { data, error } = await client.auth.signUp({
         email: normalizedEmail,
         password,
-        options: { data: { name: name.trim() }, emailRedirectTo },
+        options: { data: { name: name.trim() }, emailRedirectTo, captchaToken },
       });
       if (error) {
         if (isEmailAlreadyRegistered(error)) throw new EmailConfirmationRequiredError(normalizedEmail);
+        if (isCaptchaError(error)) throw new Error(CAPTCHA_REJECTED_ERROR);
         throw error;
       }
       if (!data.user) throw new Error("No se pudo crear la cuenta.");
@@ -175,10 +233,37 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
       return sessionFromAuth(data.session, data.user.id, profile);
     },
 
-    async signInAdmin(email, password) {
+    async startGoogleSignIn(redirectTo) {
+      const { data: existing } = await client.auth.getSession();
+      const options = { redirectTo };
+
+      // Invitado anónimo → linkIdentity: la identidad de Google se agrega
+      // al MISMO uid, así que sus pedidos siguen siendo suyos. Un
+      // signInWithOAuth acá crearía otro usuario y el invitado perdería el
+      // pedido que acaba de hacer.
+      const { error } = existing.session?.user.is_anonymous
+        ? await client.auth.linkIdentity({ provider: "google", options })
+        : await client.auth.signInWithOAuth({ provider: "google", options });
+
+      // El caso "esa identidad ya es de otra cuenta" normalmente vuelve por
+      // el redirect (lo resuelve /auth/callback), pero linkIdentity también
+      // puede rechazarlo acá mismo. En ningún caso se cierra la sesión de
+      // invitado ni se mueve un pedido.
+      if (error) {
+        if (isIdentityAlreadyLinked(error)) throw new IdentityAlreadyLinkedError();
+        throw error;
+      }
+    },
+
+    async signInAdmin(email, password, captchaToken) {
       const normalizedEmail = normalizeEmail(email);
-      const { data, error } = await client.auth.signInWithPassword({ email: normalizedEmail, password });
-      if (error || !data.session) throw new Error(ADMIN_GENERIC_ERROR);
+      const { data, error } = await client.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+        options: { captchaToken },
+      });
+      if (error) rethrowAuthFailure(error, ADMIN_GENERIC_ERROR);
+      if (!data.session) throw new Error(ADMIN_GENERIC_ERROR);
       const profile = await fetchProfile(client, data.session.user.id);
       if (profile.role !== "admin") {
         await client.auth.signOut();
@@ -187,22 +272,28 @@ export function createSupabaseAuthAdapter(client: TypedSupabaseClient): GuestCap
       return sessionFromAuth(data.session, data.session.user.id, profile);
     },
 
-    async requestPasswordReset(email, redirectTo) {
+    async requestPasswordReset(email, redirectTo, captchaToken) {
       const normalizedEmail = normalizeEmail(email);
       if (!normalizedEmail.includes("@")) throw new Error("Ingresá un email válido.");
-      const { error } = await client.auth.resetPasswordForEmail(normalizedEmail, { redirectTo });
-      if (error) throw error;
+      const { error } = await client.auth.resetPasswordForEmail(normalizedEmail, { redirectTo, captchaToken });
+      if (error) {
+        if (isCaptchaError(error)) throw new Error(CAPTCHA_REJECTED_ERROR);
+        throw error;
+      }
     },
 
-    async resendCustomerConfirmation(email, emailRedirectTo) {
+    async resendCustomerConfirmation(email, emailRedirectTo, captchaToken) {
       const normalizedEmail = normalizeEmail(email);
       if (!normalizedEmail.includes("@")) throw new Error("Ingresá un email válido.");
       const { error } = await client.auth.resend({
         type: "signup",
         email: normalizedEmail,
-        options: { emailRedirectTo },
+        options: { emailRedirectTo, captchaToken },
       });
-      if (error) throw error;
+      if (error) {
+        if (isCaptchaError(error)) throw new Error(CAPTCHA_REJECTED_ERROR);
+        throw error;
+      }
     },
 
     async updateCustomerPassword(password) {

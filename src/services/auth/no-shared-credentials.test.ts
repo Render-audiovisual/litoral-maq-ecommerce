@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { AuthAdapter } from "@/services/adapters";
 import { localAuthAdapter } from "./local-auth-adapter";
+import { supportsOAuth } from "./types";
 import { createSupabaseAuthAdapter } from "./supabase-auth-adapter";
 import type { TypedSupabaseClient } from "@/services/persistence/supabase/client";
 
@@ -58,25 +59,32 @@ describe("ningún adaptador trae credenciales de cuenta fijas", () => {
   });
 });
 
-describe("no se ofrece OAuth sin OAuth real", () => {
-  it("el contrato AuthAdapter no expone un login social", () => {
-    const contract = readFileSync(join(process.cwd(), "src/services/adapters.ts"), "utf8");
-    const authBlock = contract.slice(contract.indexOf("interface AuthAdapter"));
-    expect(authBlock).not.toMatch(/signInCustomerWith(Google|Facebook|Apple|Github)/);
+describe("el login social es OAuth real, nunca una cuenta compartida", () => {
+  /**
+   * El botón volvió, pero ahora sí hay OAuth detrás. Lo que estos tests
+   * fijan es la diferencia entre las dos cosas: que el ingreso con Google
+   * pase por Supabase (`signInWithOAuth` / `linkIdentity`) y que el botón
+   * no exista cuando el proveedor activo no tiene OAuth.
+   */
+  it("el adaptador Supabase usa OAuth de Supabase, no un login inventado", () => {
+    const source = sourceOf("supabase-auth-adapter.ts");
+    expect(source).toMatch(/client\.auth\.signInWithOAuth\(\{ provider: "google"/);
+    expect(source).toMatch(/client\.auth\.linkIdentity\(\{ provider: "google"/);
   });
 
-  it("ningún adaptador implementa un login social", () => {
+  it("ningún adaptador implementa un login social a mano", () => {
     for (const file of ADAPTER_SOURCES) {
       expect(sourceOf(file)).not.toMatch(/signInCustomerWith(Google|Facebook|Apple|Github)/);
     }
   });
 
-  it("la pantalla de login no ofrece un botón de proveedor social", () => {
-    const login = readFileSync(join(process.cwd(), "src/app/login/page.tsx"), "utf8");
-    // Si algún día hay OAuth real, este test debe actualizarse junto con la
-    // configuración del proveedor en Supabase — nunca antes.
-    expect(login).not.toMatch(/Continuar con (Google|Facebook|Apple)/i);
-    expect(login).not.toMatch(/button google/);
+  it("el adaptador local NO ofrece Google: sin OAuth real no hay botón", () => {
+    expect(supportsOAuth(localAuthAdapter)).toBe(false);
+  });
+
+  it("el botón de Google se esconde solo cuando el proveedor no soporta OAuth", () => {
+    const button = readFileSync(join(process.cwd(), "src/components/google-button.tsx"), "utf8");
+    expect(button).toMatch(/if \(!supportsOAuth\(adapter\)\) return null;/);
   });
 
   it("ninguna pantalla pública ofrece un acceso etiquetado DEMO", () => {
@@ -130,7 +138,14 @@ describe("los dos proveedores exponen exactamente la misma superficie", () => {
     // Las únicas diferencias aceptadas son capacidades declaradas por
     // interfaz y detectadas con un type guard (ver types.ts), nunca un
     // método de login que exista en un proveedor y en el otro no.
-    expect(extra).toEqual(["ensureGuestSession", "restoreSession"]);
+    // Las cuatro dependen de una identidad real de Supabase Auth: sesión
+    // anónima, su conversión, OAuth y la sesión persistida por el SDK.
+    expect(extra).toEqual([
+      "ensureGuestSession",
+      "linkEmailToGuestAccount",
+      "restoreSession",
+      "startGoogleSignIn",
+    ]);
   });
 
   it("local no agrega métodos que supabase no tenga", () => {

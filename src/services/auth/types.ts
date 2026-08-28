@@ -27,11 +27,62 @@ export class EmailConfirmationRequiredError extends Error {
  * NO la implementa — el modelo de invitado local no necesita sesión.
  */
 export interface GuestCapableAuthAdapter extends AuthAdapter {
-  ensureGuestSession(): Promise<Session>;
+  ensureGuestSession(captchaToken?: string): Promise<Session>;
+  /**
+   * Paso 1 de 2 de la conversión de invitado a cuenta permanente, en el
+   * orden que Supabase documenta hoy: primero se VINCULA el email al mismo
+   * `auth.uid()` anónimo y la persona lo confirma desde su correo; recién
+   * después se puede establecer la contraseña (`updateCustomerPassword`,
+   * paso 2, en `/crear-clave`).
+   *
+   * El flujo anterior — `updateUser({ email, password })` en una sola
+   * llamada — no es el documentado: fijaba una contraseña sobre un email
+   * todavía no verificado.
+   *
+   * No devuelve sesión a propósito: al terminar este paso el usuario SIGUE
+   * siendo anónimo hasta que confirme. Sus pedidos ya están bajo ese uid y
+   * no se toca ninguno.
+   */
+  linkEmailToGuestAccount(name: string, email: string, emailRedirectTo: string): Promise<void>;
 }
 
 export function supportsGuestSessions(adapter: AuthAdapter): adapter is GuestCapableAuthAdapter {
   return typeof (adapter as Partial<GuestCapableAuthAdapter>).ensureGuestSession === "function";
+}
+
+/**
+ * Login social REAL (Supabase OAuth), no simulado. Una sola operación a
+ * propósito: quien llama no tiene que saber si hay una sesión anónima
+ * detrás — el adaptador elige `linkIdentity` (conserva el uid del invitado
+ * y con él sus pedidos) o `signInWithOAuth` (sin sesión, o con una cuenta
+ * permanente). Decidirlo en la pantalla sería repetir esa lógica en cada
+ * botón, y equivocarse una sola vez significa perder el historial de un
+ * invitado.
+ *
+ * Devuelve `void` porque redirige el navegador a Google: no hay sesión que
+ * retornar acá, llega en `/auth/callback`.
+ */
+export interface OAuthCapableAuthAdapter extends AuthAdapter {
+  startGoogleSignIn(redirectTo: string): Promise<void>;
+}
+
+export function supportsOAuth(adapter: AuthAdapter): adapter is OAuthCapableAuthAdapter {
+  return typeof (adapter as Partial<OAuthCapableAuthAdapter>).startGoogleSignIn === "function";
+}
+
+/**
+ * La identidad de Google que se intentó vincular ya pertenece a otra
+ * cuenta. No se fusiona nada ni se destruye la sesión de invitado: la
+ * persona tiene que ingresar con esa cuenta.
+ */
+export class IdentityAlreadyLinkedError extends Error {
+  constructor() {
+    super(
+      "Esa cuenta de Google ya está asociada a otro usuario de Litoral Maq. " +
+        "Ingresá con ella para ver sus pedidos.",
+    );
+    this.name = "IdentityAlreadyLinkedError";
+  }
 }
 
 /**

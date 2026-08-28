@@ -5,6 +5,7 @@ import {
   AUTH_ORIGINS,
   developmentRedirectUrls,
   productionRedirectUrls,
+  readAuthErrorFromUrl,
   SITE_URL,
 } from "./auth-callbacks";
 import { friendlyAuthError, isRateLimitError } from "./auth-errors";
@@ -31,6 +32,8 @@ describe("URLs de callback de Supabase Auth", () => {
     expect(urls).toEqual([
       "https://litoralmaqrender.rendercorrientes.com/login?confirmed=1",
       "https://litoralmaqrender.rendercorrientes.com/restablecer-clave",
+      "https://litoralmaqrender.rendercorrientes.com/crear-clave",
+      "https://litoralmaqrender.rendercorrientes.com/auth/callback",
     ]);
   });
 
@@ -52,6 +55,8 @@ describe("URLs de callback de Supabase Auth", () => {
     expect(urls).toEqual([
       "http://localhost:3000/login?confirmed=1",
       "http://localhost:3000/restablecer-clave",
+      "http://localhost:3000/crear-clave",
+      "http://localhost:3000/auth/callback",
     ]);
   });
 
@@ -63,8 +68,16 @@ describe("URLs de callback de Supabase Auth", () => {
   it("staging se suma a la lista de desarrollo, nunca a la de producción", () => {
     const dev = developmentRedirectUrls(["https://staging.example.com"]);
     expect(dev).toContain("https://staging.example.com/restablecer-clave");
-    expect(dev).toHaveLength(4);
-    expect(productionRedirectUrls()).toHaveLength(2);
+    expect(dev).toHaveLength(8);
+    expect(productionRedirectUrls()).toHaveLength(4);
+  });
+
+  it("el retorno de la conversión de invitado y el de Google están en la allow-list", () => {
+    // Si estas dos rutas no están cargadas en Supabase, el enlace cae al
+    // Site URL y la conversión del invitado se pierde en silencio.
+    const urls = productionRedirectUrls();
+    expect(urls).toContain("https://litoralmaqrender.rendercorrientes.com/crear-clave");
+    expect(urls).toContain("https://litoralmaqrender.rendercorrientes.com/auth/callback");
   });
 
   it("el Site URL es el de producción vigente", () => {
@@ -91,6 +104,25 @@ describe("URLs de callback de Supabase Auth", () => {
       const route = path.split("?")[0];
       expect(existsSync(join(process.cwd(), `src/app${route}/page.tsx`)), `falta ${route}`).toBe(true);
     }
+  });
+});
+
+describe("errores devueltos por Supabase en la URL de retorno", () => {
+  it("lee el error del fragmento, que es como llega en el flujo implícito", () => {
+    const error = readAuthErrorFromUrl(
+      "https://tienda.test/auth/callback#error=server_error&error_code=identity_already_exists&error_description=Identity%20is%20already%20linked",
+    );
+    expect(error).toEqual({ code: "identity_already_exists", description: "Identity is already linked" });
+  });
+
+  it("lee el error de la query cuando el proveedor falla antes de emitir tokens", () => {
+    const error = readAuthErrorFromUrl("https://tienda.test/auth/callback?error=access_denied&error_code=otp_expired");
+    expect(error?.code).toBe("otp_expired");
+  });
+
+  it("un retorno exitoso no reporta error", () => {
+    expect(readAuthErrorFromUrl("https://tienda.test/auth/callback#access_token=abc&type=signup")).toBeNull();
+    expect(readAuthErrorFromUrl("https://tienda.test/crear-clave")).toBeNull();
   });
 });
 

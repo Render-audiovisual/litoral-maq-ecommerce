@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { GoogleSignInButton } from "@/components/google-button";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { isSessionExpired, isValidCustomerSession } from "@/lib/auth";
+import { isAnonymousSession, isSessionExpired, isValidCustomerSession } from "@/lib/auth";
 import { selectOwnOrders } from "@/lib/orders";
 import { isActiveOrder, ORDER_STATUS_LABELS, ORDER_STATUS_MESSAGES, resolveOrderLines } from "@/lib/order-details";
 
@@ -41,9 +42,23 @@ export default function CustomerOrdersPage() {
   }
   const ownOrders = selectOwnOrders(orders, customerSession);
   const activeOrders = ownOrders.filter(isActiveOrder);
+  // Invitado: ve sus pedidos en ESTE navegador, pero no tiene cuenta. El
+  // encabezado y el aviso lo dicen en vez de saludar a un nombre vacío.
+  const guest = isAnonymousSession(customerSession);
   return (
     <main className="standard-page account-page">
-      <div className="account-header"><div><span className="eyebrow orange">MI CUENTA</span><h1>Hola, {customerSession.user.name}</h1><p>Consultá tus compras y su estado.</p></div><button type="button" className="button secondary" onClick={logout}>Cerrar sesión</button></div>
+      <div className="account-header"><div><span className="eyebrow orange">{guest ? "COMPRA COMO INVITADO" : "MI CUENTA"}</span><h1>{guest ? "Tus pedidos" : `Hola, ${customerSession.user.name || "cliente"}`}</h1><p>Consultá tus compras y su estado.</p></div><button type="button" className="button secondary" onClick={logout}>{guest ? "Salir" : "Cerrar sesión"}</button></div>
+      {guest && (
+        <section className="account-upsell">
+          <h2>Creá tu cuenta para no perder este historial</h2>
+          <p>
+            Estos pedidos están guardados en este navegador. Con una cuenta los vas a ver desde cualquier
+            dispositivo, con el seguimiento de cada envío. Se conservan los pedidos que ya hiciste.
+          </p>
+          <GoogleSignInButton />
+          <Link href="/registro" className="button primary large full">Crear cuenta con email</Link>
+        </section>
+      )}
       <div className="account-layout">
         <aside className="account-nav"><strong>Mi cuenta</strong><span className="active">Mis pedidos</span></aside>
         <section>
