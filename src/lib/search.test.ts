@@ -60,6 +60,24 @@ describe("buscador del catálogo", () => {
     expect(searchProducts(catalog, "amolda")).toHaveLength(1);   // dos letras invertidas
   });
 
+  it("también perdona un error en la primera letra", () => {
+    const names = searchProducts(catalog, "raladro").map((item) => item.name);
+    expect(names.slice(0, 2).every((name) => name.startsWith("TALADRO"))).toBe(true);
+  });
+
+  it("entiende formas habituales de pedir la misma herramienta", () => {
+    const products = [
+      product("AMOLADORA ANGULAR 115MM"),
+      product("TALADRO PERCUTOR 13MM"),
+      product("GENERADOR 3500W"),
+      product("DESMALEZADORA 52CC"),
+    ];
+    expect(searchProducts(products, "moladora")[0].name).toContain("AMOLADORA");
+    expect(searchProducts(products, "agujereadora")[0].name).toContain("TALADRO");
+    expect(searchProducts(products, "grupo electrogeno")[0].name).toContain("GENERADOR");
+    expect(searchProducts(products, "bordeadora")[0].name).toContain("DESMALEZADORA");
+  });
+
   it("con typo, el nombre pesa más que la categoría", () => {
     // "taldro" alcanza al destornillador por su categoría, pero los taladros
     // de verdad tienen que ir primero.
@@ -78,6 +96,14 @@ describe("buscador del catálogo", () => {
     // no aparecen taladros parecidos.
     const names = searchProducts(catalog, "amola").map((item) => item.name);
     expect(names).toEqual(["AMOLADORA ANGULAR 4.5 PULGADAS"]);
+  });
+
+  it("a igual relevancia prioriza lo disponible", () => {
+    const products = [
+      product("AMOLADORA 800W SIN STOCK", { stock: 0 }),
+      product("AMOLADORA 800W DISPONIBLE", { stock: 3 }),
+    ];
+    expect(searchProducts(products, "amoladora")[0].name).toContain("DISPONIBLE");
   });
 
   it("respeta el límite y devuelve todo con consulta vacía", () => {

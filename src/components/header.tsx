@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FocusEvent, FormEvent, KeyboardEvent, useMemo, useState } from "react";
+import { FocusEvent, FormEvent, KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { useStore } from "@/store/store";
 import { isPermanentCustomerSession, isValidCustomerSession } from "@/lib/auth";
 import { selectOwnOrders } from "@/lib/orders";
@@ -15,7 +15,8 @@ import { availabilityLabel, getProductAvailability } from "@/lib/product-availab
 /** Desde cuántas letras vale la pena sugerir: con una sola, medio catálogo
  * coincide y el cartel no ayuda. */
 const MINIMUM_QUERY = 2;
-const MAXIMUM_SUGGESTIONS = 6;
+const DESKTOP_SUGGESTIONS = 5;
+const MOBILE_SUGGESTIONS = 4;
 
 export function Header() {
   const pathname = usePathname();
@@ -25,6 +26,7 @@ export function Header() {
   const [query, setQuery] = useState("");
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(-1);
+  const [mobileSearch, setMobileSearch] = useState(false);
   // Una sesión de invitado (anónima) NO es una cuenta: mostrar su nombre
   // significaba mostrar una cadena vacía al lado del ícono de usuario.
   const account = isPermanentCustomerSession(customerSession) ? customerSession : null;
@@ -39,8 +41,16 @@ export function Header() {
     () => (query.trim().length >= MINIMUM_QUERY ? searchProducts(catalog, query) : []),
     [catalog, query],
   );
-  const suggestions = results.slice(0, MAXIMUM_SUGGESTIONS);
+  const suggestions = results.slice(0, mobileSearch ? MOBILE_SUGGESTIONS : DESKTOP_SUGGESTIONS);
   const showSuggestions = suggestionsOpen && query.trim().length >= MINIMUM_QUERY;
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 560px)");
+    const update = () => setMobileSearch(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   if (pathname.startsWith("/admin")) return null;
 
@@ -149,7 +159,7 @@ export function Header() {
             <div className="search-suggestions">
               {suggestions.length === 0 ? (
                 <p className="search-suggestions-empty">
-                  Sin resultados para «{query.trim()}». Probá con otra palabra o mirá el{" "}
+                  No encontramos «{query.trim()}». Probá con menos palabras o mirá el{" "}
                   <Link href="/productos" onClick={closeSuggestions}>catálogo completo</Link>.
                 </p>
               ) : (
@@ -184,14 +194,16 @@ export function Header() {
                               <span className="suggestion-name">{product.name}</span>
                               <span className="suggestion-meta">
                                 {product.brand}
-                                {product.code ? ` · Cód. ${product.code}` : ""}
+                                {product.code && (
+                                  <span className="suggestion-code"> · Cód. {product.code}</span>
+                                )}
                               </span>
                             </span>
                             <span className="suggestion-side">
                               <span className="suggestion-price">{formatCurrency(product.price)}</span>
                               <span
                                 className={`suggestion-stock ${
-                                  availability === "available"
+                                  availability === "available" || availability === "sheet-managed"
                                     ? "in"
                                     : availability === "unknown"
                                       ? "pending"

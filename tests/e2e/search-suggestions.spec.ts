@@ -45,6 +45,18 @@ test('sin coincidencias el cartel lo dice en vez de quedar vacío', async ({ pag
 
   await page.getByRole('combobox', { name: 'Buscar en el catálogo' }).fill('zzzqqq');
 
-  await expect(page.getByText(/sin resultados para/i)).toBeVisible();
+  await expect(page.getByText(/no encontramos/i)).toBeVisible();
   await expect(page.getByRole('listbox', { name: 'Sugerencias' })).toHaveCount(0);
+});
+
+test('en móvil muestra cuatro opciones compactas y tolera un error de tipeo', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  await page.getByRole('combobox', { name: 'Buscar en el catálogo' }).fill('raladro');
+
+  const options = page.getByRole('listbox', { name: 'Sugerencias' }).getByRole('option');
+  await expect(options).toHaveCount(4);
+  await expect(options.first()).toContainText(/taladro/i);
+  await expect(page.locator('.suggestion-code').first()).toBeHidden();
 });
