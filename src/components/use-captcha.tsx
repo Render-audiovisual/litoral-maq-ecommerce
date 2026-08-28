@@ -20,7 +20,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * cualquier entorno donde todavía no se creó el widget.
  */
 
-const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? "";
+const PRODUCTION_STORE_DOMAIN = "litoralmaqrender.rendercorrientes.com";
+// La clave del widget es pública. El fallback queda limitado al dominio real
+// para que desarrollo y E2E sigan sin CAPTCHA salvo que definan su propia key.
+const PRODUCTION_SITE_KEY = "0x4AAAAAAEfSCNhlTi3BDkDF";
+const SITE_KEY =
+  process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ||
+  (process.env.NEXT_PUBLIC_STORE_DOMAIN === PRODUCTION_STORE_DOMAIN ? PRODUCTION_SITE_KEY : "");
 const SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
 type TurnstileApi = {
