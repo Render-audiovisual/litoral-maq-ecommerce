@@ -68,6 +68,7 @@ function toInsertRow(product) {
     sqlArray(product.images),
     sqlNumber(product.stock),
     sqlNumber(product.lowStockThreshold),
+    sqlNumber(product.purchaseLimit ?? 3),
     sqlBool(product.active),
     sqlBool(product.featured),
     sqlString(product.description),
@@ -92,6 +93,7 @@ function toSupabaseRow(product) {
     images: product.images ?? [],
     stock: product.stock,
     low_stock_threshold: product.lowStockThreshold,
+    purchase_limit: product.purchaseLimit ?? 3,
     active: product.active,
     featured: product.featured,
     description: product.description,
@@ -182,7 +184,7 @@ async function main() {
 -- Idempotente: puede correrse más de una vez sin duplicar ni perder datos.
 insert into public.products
   (id, slug, code, name, price, raw_price, category, brand, image, images,
-   stock, low_stock_threshold, active, featured, description, variants,
+   stock, low_stock_threshold, purchase_limit, active, featured, description, variants,
    source, source_row, incomplete)
 values
 ${usable.map(toInsertRow).join(",\n")}
@@ -198,6 +200,7 @@ on conflict (id) do update set
   images = excluded.images,
   stock = excluded.stock,
   low_stock_threshold = excluded.low_stock_threshold,
+  purchase_limit = excluded.purchase_limit,
   active = excluded.active,
   featured = excluded.featured,
   description = excluded.description,

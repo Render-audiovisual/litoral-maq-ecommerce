@@ -1,6 +1,7 @@
 import { normalizeProviderStatus } from "../_shared/shipping/domain.ts";
 import { getShippingProvider } from "../_shared/shipping/factory.ts";
 import { serviceClient } from "../_shared/http.ts";
+import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
 
 declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
 
@@ -67,6 +68,9 @@ async function processNotification(type: string, shipmentId: string) {
     shipping_label_ready: labelReady,
     ...(status === "delivered" ? { status: "entregado" } : {}),
   }).eq("id", stored.order_id);
+  await processPendingOrderNotifications(db, stored.order_id, 10).catch(() =>
+    undefined
+  );
 }
 
 Deno.serve((request) => {

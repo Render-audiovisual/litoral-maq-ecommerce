@@ -17,3 +17,7 @@ verify_jwt = true
 
 [functions.mercado-pago-webhook]
 verify_jwt = false
+
+[functions.order-notifications]
+# La función valida sesiones de usuario o el secreto exclusivo del cron.
+verify_jwt = false

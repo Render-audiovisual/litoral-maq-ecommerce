@@ -20,10 +20,26 @@ test("el administrador sincroniza y persiste el catálogo del Google Sheet", asy
   await expect(page).toHaveURL(/\/admin$/);
   await page.goto("/admin/productos");
 
+  const initialSummary = await page
+    .getByRole("main")
+    .getByText(/\d+ productos · \d+ provenientes del Google Sheet/)
+    .textContent();
+  const initialCount = Number(initialSummary?.match(/^(\d+) productos/)?.[1]);
+  expect(initialCount).toBeGreaterThan(100);
+  const synchronizedCount = initialCount + 101;
+
   await page.getByRole("button", { name: "Actualizar desde Sheet" }).click();
-  await expect(page.getByText(/Google Sheet sincronizado: 596 productos · 101 nuevos · 0 actualizados · 495 retirados/)).toBeVisible();
-  await expect(page.getByText(/596 productos · 596 provenientes del Google Sheet/)).toBeVisible();
+  await expect(
+    page.getByText(
+      `Google Sheet sincronizado: ${synchronizedCount} productos · 101 nuevos · 0 actualizados · ${initialCount} retirados.`,
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByText(`${synchronizedCount} productos · ${synchronizedCount} provenientes del Google Sheet`),
+  ).toBeVisible();
 
   await page.reload();
-  await expect(page.getByText(/596 productos · 596 provenientes del Google Sheet/)).toBeVisible();
+  await expect(
+    page.getByText(`${synchronizedCount} productos · ${synchronizedCount} provenientes del Google Sheet`),
+  ).toBeVisible();
 });

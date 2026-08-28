@@ -18,7 +18,9 @@ type OrderRow = Database["public"]["Tables"]["orders"]["Row"];
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 type AuditRow = Database["public"]["Tables"]["audit_log"]["Row"];
 
-function productToInsert(product: Product): Database["public"]["Tables"]["products"]["Insert"] {
+function productToInsert(
+  product: Product,
+): Database["public"]["Tables"]["products"]["Insert"] {
   return {
     id: product.id,
     slug: product.slug,
@@ -32,6 +34,7 @@ function productToInsert(product: Product): Database["public"]["Tables"]["produc
     images: product.images,
     stock: product.stock,
     low_stock_threshold: product.lowStockThreshold,
+    purchase_limit: product.purchaseLimit ?? 3,
     active: product.active,
     featured: product.featured,
     description: product.description,
@@ -61,6 +64,7 @@ function rowToProduct(row: ProductRow): Product {
     images: row.images ?? [],
     stock: row.stock,
     lowStockThreshold: row.low_stock_threshold,
+    purchaseLimit: row.purchase_limit,
     active: row.active,
     featured: row.featured,
     description: row.description,
@@ -76,7 +80,9 @@ function rowToProduct(row: ProductRow): Product {
   };
 }
 
-function orderToInsert(order: Order): Database["public"]["Tables"]["orders"]["Insert"] {
+function orderToInsert(
+  order: Order,
+): Database["public"]["Tables"]["orders"]["Insert"] {
   return {
     id: order.id,
     customer_id: order.customerId,
@@ -173,10 +179,15 @@ function rowToAudit(row: AuditRow) {
   };
 }
 
-export function createSupabasePersistenceAdapter(client: TypedSupabaseClient): PersistenceAdapter {
+export function createSupabasePersistenceAdapter(
+  client: TypedSupabaseClient,
+): PersistenceAdapter {
   return {
     async listProducts() {
-      const { data, error } = await client.from("products").select("*").order("name");
+      const { data, error } = await client
+        .from("products")
+        .select("*")
+        .order("name");
       if (error) throw error;
       return (data ?? []).map(rowToProduct);
     },
@@ -195,21 +206,34 @@ export function createSupabasePersistenceAdapter(client: TypedSupabaseClient): P
     },
     async replaceCatalog(products) {
       const rows = products.map(productToInsert);
-      const { data, error } = await client.from("products").upsert(rows, { onConflict: "id" }).select();
+      const { data, error } = await client
+        .from("products")
+        .upsert(rows, { onConflict: "id" })
+        .select();
       if (error) throw error;
       const desiredIds = new Set(products.map((product) => product.id));
-      const { data: existing, error: listError } = await client.from("products").select("id");
+      const { data: existing, error: listError } = await client
+        .from("products")
+        .select("id");
       if (listError) throw listError;
-      const staleIds = (existing ?? []).map((row) => row.id).filter((id) => !desiredIds.has(id));
+      const staleIds = (existing ?? [])
+        .map((row) => row.id)
+        .filter((id) => !desiredIds.has(id));
       if (staleIds.length) {
-        const { error: deleteError } = await client.from("products").delete().in("id", staleIds);
+        const { error: deleteError } = await client
+          .from("products")
+          .delete()
+          .in("id", staleIds);
         if (deleteError) throw deleteError;
       }
       return (data ?? []).map(rowToProduct);
     },
 
     async listCustomers() {
-      const { data, error } = await client.from("profiles").select("*").eq("role", "customer");
+      const { data, error } = await client
+        .from("profiles")
+        .select("*")
+        .eq("role", "customer");
       if (error) throw error;
       return (data ?? []).map(rowToCustomer);
     },
@@ -225,17 +249,29 @@ export function createSupabasePersistenceAdapter(client: TypedSupabaseClient): P
     },
 
     async listOrders() {
-      const { data, error } = await client.from("orders").select("*").order("created_at", { ascending: false });
+      const { data, error } = await client
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []).map(rowToOrder);
     },
     async createOrder(order) {
-      const { data, error } = await client.from("orders").insert(orderToInsert(order)).select().single();
+      const { data, error } = await client
+        .from("orders")
+        .insert(orderToInsert(order))
+        .select()
+        .single();
       if (error) throw error;
       return rowToOrder(data);
     },
     async updateOrderStatus(id, status) {
-      const { data, error } = await client.from("orders").update({ status }).eq("id", id).select().maybeSingle();
+      const { data, error } = await client
+        .from("orders")
+        .update({ status })
+        .eq("id", id)
+        .select()
+        .maybeSingle();
       if (error) throw error;
       return data ? rowToOrder(data) : null;
     },
@@ -264,7 +300,11 @@ export function createSupabasePersistenceAdapter(client: TypedSupabaseClient): P
       // conectado todavía, el store nunca pasa ownerId — queda listo para
       // cuando exista sesión Supabase (real o anónima).
       if (!ownerId) return [];
-      const { data, error } = await client.from("carts").select("lines").eq("owner_id", ownerId).maybeSingle();
+      const { data, error } = await client
+        .from("carts")
+        .select("lines")
+        .eq("owner_id", ownerId)
+        .maybeSingle();
       if (error) throw error;
       return (data?.lines as CartLine[] | undefined) ?? [];
     },

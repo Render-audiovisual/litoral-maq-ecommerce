@@ -13,6 +13,8 @@ export type Product = {
   images: string[];
   stock: number;
   lowStockThreshold: number;
+  /** Tope comercial por pedido. No representa stock físico. */
+  purchaseLimit?: number;
   active: boolean;
   featured: boolean;
   description: string | null;
@@ -57,6 +59,7 @@ export type OrderStatus =
   | "pendiente"
   | "pago_simulado"
   | "preparando"
+  | "listo"
   | "enviado"
   | "entregado"
   | "cancelado";

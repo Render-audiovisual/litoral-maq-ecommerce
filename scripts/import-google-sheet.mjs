@@ -5,6 +5,64 @@ const SHEET_ID =
   process.env.LITORAL_SHEET_ID ||
   "17Y7jES70K_Gr-nQO6Om5PtRFu7nnNObDlbsRsXLdIrA";
 const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+const DEFAULT_PURCHASE_LIMIT = 3;
+
+const CURATED_ACTIVE_COMPLETIONS = {
+  3348: {
+    image: "/promos/cortacesped-gladiator-1600w.jpg",
+    description:
+      "Cortacésped eléctrico Gladiator CP536/220 de 1600 W para mantenimiento de jardines.",
+  },
+  3757: {
+    image: "/promos/electrosierra-forest-20v.jpg",
+    description:
+      "Electrosierra Forest & Garden E912/20C1 de 20 V con espada de 12 pulgadas.",
+  },
+  3687: {
+    image: "/promos/escalera-obra-multifuncion.jpg",
+    description: "Escalera multifunción Obra EMA804 con configuración 4 x 4.",
+  },
+  3353: {
+    image: "/promos/hormigonera-obra-140l.jpg",
+    description: "Hormigonera Obra MH8140/25 de 140 litros.",
+  },
+  3732: {
+    description: "Llave de impacto Neo LI1065/20C1 de 20 V y 650 N·m.",
+  },
+  3246: {
+    description:
+      "Mini motosierra inalámbrica Garden para tareas de corte y mantenimiento exterior.",
+  },
+  3506: {
+    description: "Motosierra Knock Out KOM345 de 45 cc y corte de 460 mm.",
+  },
+  580: {
+    description: "Taladro Energy ID13/2/220 de 550 W con mandril de 13 mm.",
+  },
+};
+
+function applyCuratedCompletion(product) {
+  const completion = product.code
+    ? CURATED_ACTIVE_COMPLETIONS[product.code]
+    : null;
+  if (!completion) return product;
+  const image = completion.image || product.image;
+  const description = completion.description || product.description;
+  return {
+    ...product,
+    image,
+    images:
+      image && !(product.images || []).includes(image)
+        ? [image, ...(product.images || [])]
+        : product.images || [],
+    description,
+    incomplete: (product.incomplete || []).filter(
+      (item) =>
+        !(item === "image" && image) &&
+        !(item === "description" && description),
+    ),
+  };
+}
 
 function parseCsv(input) {
   const rows = [];
@@ -57,9 +115,15 @@ const categoryRules = [
   ["Jardín", /DESMALEZ|MOTOSIERRA|CORTACESP|PODAD|BORDEAD|SOPLADOR|ASPERSOR/],
   ["Compresores y neumática", /COMPRESOR|NEUMATIC|INFLADOR|PISTOLA DE AIRE/],
   ["Hidrolavado y bombas", /HIDROLAV|BOMBA|MOTOBOMBA/],
-  ["Herramientas manuales", /ALICATE|PINZA|LLAVE|DESTORNILL|MARTILLO|SERRUCHO|TENAZA|CUTTER/],
+  [
+    "Herramientas manuales",
+    /ALICATE|PINZA|LLAVE|DESTORNILL|MARTILLO|SERRUCHO|TENAZA|CUTTER/,
+  ],
   ["Seguridad", /ANTEOJO|GUANTE|CASCO|PROTECTOR|MASCARA|CHALECO/],
-  ["Accesorios y consumibles", /DISCO|LIJA|CEPILLO|PUNTA|HOJA|ADAPTADOR|ALARGADOR/],
+  [
+    "Accesorios y consumibles",
+    /DISCO|LIJA|CEPILLO|PUNTA|HOJA|ADAPTADOR|ALARGADOR/,
+  ],
   ["Construcción", /HORMIGON|MEZCLADOR|FRATACHO|LLANA|NIVEL|CORTADORA/],
 ];
 
@@ -108,7 +172,12 @@ if (!response.ok) {
 }
 const rows = parseCsv(await response.text());
 const [headers, ...body] = rows;
-const normalizedHeaders = headers.map((header) => header.trim().toLowerCase().replace(/[^a-z0-9]/g, ""));
+const normalizedHeaders = headers.map((header) =>
+  header
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, ""),
+);
 const validHeaders =
   ["codigo", "cod", "sku"].includes(normalizedHeaders[0]) &&
   ["articulo", "producto", "nombre"].includes(normalizedHeaders[1]) &&
@@ -127,7 +196,9 @@ try {
   if (error?.code !== "ENOENT") throw error;
 }
 const currentByCode = new Map(
-  currentProducts.filter((product) => product.code).map((product) => [product.code, product]),
+  currentProducts
+    .filter((product) => product.code)
+    .map((product) => [product.code, product]),
 );
 const seenCodes = new Set();
 let created = 0;
@@ -154,6 +225,7 @@ const sheetProducts = body
         rawPrice: rawPrice.trim() || null,
         source: "google-sheet",
         sourceRow: index + 2,
+        purchaseLimit: existing.purchaseLimit ?? DEFAULT_PURCHASE_LIMIT,
         incomplete: existing.incomplete.filter(
           (item) => !["code", "price", "sheet-absent"].includes(item),
         ),
@@ -174,6 +246,7 @@ const sheetProducts = body
       images: [],
       stock: 0,
       lowStockThreshold: 5,
+      purchaseLimit: DEFAULT_PURCHASE_LIMIT,
       active: false,
       featured: false,
       description: null,
@@ -198,11 +271,14 @@ const retiredProducts = currentProducts
   .filter((product) => product.code && !seenCodes.has(product.code))
   .map((product) => ({
     ...product,
+    purchaseLimit: product.purchaseLimit ?? DEFAULT_PURCHASE_LIMIT,
     active: false,
     featured: false,
     incomplete: [...new Set([...(product.incomplete || []), "sheet-absent"])],
   }));
-const products = [...sheetProducts, ...retiredProducts];
+const products = [...sheetProducts, ...retiredProducts].map(
+  applyCuratedCompletion,
+);
 
 const report = {
   source: url,

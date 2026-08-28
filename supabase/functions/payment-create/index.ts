@@ -80,7 +80,9 @@ Deno.serve(async (request) => {
       ...new Set(requestedLines.map((line) => line.productId)),
     ];
     const { data: products, error: productError } = await db.from("products")
-      .select("id,code,name,price,stock,active,incomplete").in(
+      .select(
+        "id,code,name,price,stock,active,incomplete,source,purchase_limit",
+      ).in(
         "id",
         productIds,
       );
@@ -98,16 +100,27 @@ Deno.serve(async (request) => {
           "Uno o más productos no tienen un precio vigente.",
         );
       }
+      const purchaseLimit = Number(product.purchase_limit) || 3;
+      if (line.quantity > purchaseLimit) {
+        throw new HttpError(
+          409,
+          `Podés comprar hasta ${purchaseLimit} unidades de ${product.name} por pedido.`,
+        );
+      }
+      const sheetManaged = product.source === "google-sheet" &&
+        Array.isArray(product.incomplete) &&
+        !product.incomplete.includes("sheet-absent");
       if (
         Array.isArray(product.incomplete) &&
-        product.incomplete.includes("stock")
+        product.incomplete.includes("stock") &&
+        !sheetManaged
       ) {
         throw new HttpError(
           409,
           `El stock de ${product.name} todavía no fue verificado por Litoral. Confirmalo antes de cobrar.`,
         );
       }
-      if (Number(product.stock) < line.quantity) {
+      if (!sheetManaged && Number(product.stock) < line.quantity) {
         throw new HttpError(409, `No hay stock suficiente de ${product.name}.`);
       }
       return {

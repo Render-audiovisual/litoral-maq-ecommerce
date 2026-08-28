@@ -3,6 +3,7 @@
 import productsSeed from "@/data/products.json";
 import { guestIdFromEmail, isSessionExpired, normalizeEmail } from "@/lib/auth";
 import { mergeCartLines } from "@/lib/cart";
+import { clampPurchaseQuantity } from "@/lib/purchase-limits";
 import type {
   AuditEntry,
   CartLine,
@@ -11,8 +12,16 @@ import type {
   Product,
   Session,
 } from "@/lib/types";
-import { getPersistenceAdapter, type PersistenceAdapter } from "@/services/persistence";
-import { getAuthAdapter, supportsGuestSessions, supportsSessionRestore } from "@/services/auth";
+import {
+  getPersistenceAdapter,
+  type PersistenceAdapter,
+} from "@/services/persistence";
+import {
+  getAuthAdapter,
+  supportsGuestSessions,
+  supportsSessionRestore,
+} from "@/services/auth";
+import { flushOrderNotifications } from "@/services/order-notifications";
 import {
   appendAuditEntry,
   applyDeleteProduct,
@@ -52,7 +61,10 @@ type Store = {
   replaceProducts: (products: Product[]) => Promise<Product[]>;
   createOrder: (order: Order) => Promise<Order>;
   updateOrderStatus: (id: string, status: Order["status"]) => Promise<Order>;
-  updateOrderPaymentStatus: (id: string, status: NonNullable<Order["paymentStatus"]>) => Promise<Order>;
+  updateOrderPaymentStatus: (
+    id: string,
+    status: NonNullable<Order["paymentStatus"]>,
+  ) => Promise<Order>;
   refreshOrders: () => Promise<Order[]>;
   addCustomer: (customer: Customer) => void;
   convertGuestToAccount: (email: string, accountId: string) => void;
@@ -125,7 +137,9 @@ function createFailingAdapter(message: string): PersistenceAdapter {
  * específica del adaptador local, no del modelo compartido con Supabase.
  */
 function migrateLegacyDataIfNeeded() {
-  const currentVersion = Number(localStorage.getItem(STORAGE_VERSION_KEY) || "1");
+  const currentVersion = Number(
+    localStorage.getItem(STORAGE_VERSION_KEY) || "1",
+  );
   if (currentVersion >= STORAGE_VERSION) return;
 
   const report: string[] = [];
@@ -151,12 +165,16 @@ function migrateLegacyDataIfNeeded() {
       }
     }
 
-    const stableIdByEmail = new Map(dedupedCustomers.map((customer) => [customer.email, customer.id]));
+    const stableIdByEmail = new Map(
+      dedupedCustomers.map((customer) => [customer.email, customer.id]),
+    );
     const migratedOrders = orders.map((order) => {
       const email = normalizeEmail(order.email);
       const stableId = stableIdByEmail.get(email);
       if (stableId && order.customerId !== stableId) {
-        report.push(`Pedido ${order.id} vinculado de ${order.customerId} a ${stableId} por coincidencia de email.`);
+        report.push(
+          `Pedido ${order.id} vinculado de ${order.customerId} a ${stableId} por coincidencia de email.`,
+        );
         return { ...order, customerId: stableId, email };
       }
       if (order.email !== email) return { ...order, email };
@@ -170,7 +188,10 @@ function migrateLegacyDataIfNeeded() {
       console.info("[litoral migración v1→v2]", report.join("\n"));
     }
   } catch (error) {
-    console.warn("No se pudo completar la migración de datos heredados.", error);
+    console.warn(
+      "No se pudo completar la migración de datos heredados.",
+      error,
+    );
   } finally {
     localStorage.setItem(STORAGE_VERSION_KEY, String(STORAGE_VERSION));
   }
@@ -182,18 +203,25 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   // silencio a Local, que generaría datos divergentes entre dispositivos.
   const { adapter, configError } = useMemo(() => {
     try {
-      return { adapter: getPersistenceAdapter(), configError: null as string | null };
+      return {
+        adapter: getPersistenceAdapter(),
+        configError: null as string | null,
+      };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return { adapter: createFailingAdapter(message), configError: message };
     }
   }, []);
   const [ready, setReady] = useState(false);
-  const [products, setProducts] = useState<Product[]>(productsSeed as Product[]);
+  const [products, setProducts] = useState<Product[]>(
+    productsSeed as Product[],
+  );
   const [cart, setCart] = useState<CartLine[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [customerSession, setCustomerSessionState] = useState<Session | null>(null);
+  const [customerSession, setCustomerSessionState] = useState<Session | null>(
+    null,
+  );
   const [adminSession, setAdminSessionState] = useState<Session | null>(null);
   const [auditLog, setAuditLog] = useState<AuditEntry[]>([]);
 
@@ -201,7 +229,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (configError) return;
     const timer = window.setTimeout(async () => {
       migrateLegacyDataIfNeeded();
-      const loadedCustomerSession = read<Session | null>(keys.customerSession, null);
+      const loadedCustomerSession = read<Session | null>(
+        keys.customerSession,
+        null,
+      );
       const loadedAdminSession = read<Session | null>(keys.adminSession, null);
 
       // Con Supabase, la caché local (`expiresAt` capturado en el último
@@ -220,14 +251,24 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         restoredCustomer = restored?.user.role === "customer" ? restored : null;
         restoredAdmin = restored?.user.role === "admin" ? restored : null;
       } else {
-        restoredCustomer = isSessionExpired(loadedCustomerSession) ? null : loadedCustomerSession;
-        restoredAdmin = isSessionExpired(loadedAdminSession) ? null : loadedAdminSession;
+        restoredCustomer = isSessionExpired(loadedCustomerSession)
+          ? null
+          : loadedCustomerSession;
+        restoredAdmin = isSessionExpired(loadedAdminSession)
+          ? null
+          : loadedAdminSession;
       }
 
       // Todas las consultas protegidas ocurren DESPUÉS de restaurar la
       // sesión. Así Supabase aplica RLS con el usuario correcto desde la
       // primera carga, sin necesitar F5 para ver pedidos o carrito.
-      const [loadedProducts, remoteCart, loadedOrders, loadedCustomers, loadedAuditLog] = await Promise.all([
+      const [
+        loadedProducts,
+        remoteCart,
+        loadedOrders,
+        loadedCustomers,
+        loadedAuditLog,
+      ] = await Promise.all([
         adapter.listProducts(),
         adapter.loadCart(restoredCustomer?.user.id),
         adapter.listOrders(),
@@ -264,12 +305,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [cart, ready, adapter, customerSession]);
   useEffect(() => {
     if (!ready) return;
-    if (customerSession) localStorage.setItem(keys.customerSession, JSON.stringify(customerSession));
+    if (customerSession)
+      localStorage.setItem(
+        keys.customerSession,
+        JSON.stringify(customerSession),
+      );
     else localStorage.removeItem(keys.customerSession);
   }, [customerSession, ready]);
   useEffect(() => {
     if (!ready) return;
-    if (adminSession) localStorage.setItem(keys.adminSession, JSON.stringify(adminSession));
+    if (adminSession)
+      localStorage.setItem(keys.adminSession, JSON.stringify(adminSession));
     else localStorage.removeItem(keys.adminSession);
   }, [adminSession, ready]);
 
@@ -285,13 +331,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         const latest = await adapter.listOrders();
         if (!stopped) setOrders(latest);
       } catch (error) {
-        console.warn("No se pudieron actualizar las notificaciones de pedidos.", error);
+        console.warn(
+          "No se pudieron actualizar las notificaciones de pedidos.",
+          error,
+        );
       }
     };
     const onVisibilityChange = () => {
       if (document.visibilityState === "visible") void refreshOrders();
     };
-    const timer = window.setInterval(() => void refreshOrders(), ORDER_REFRESH_INTERVAL_MS);
+    const timer = window.setInterval(
+      () => void refreshOrders(),
+      ORDER_REFRESH_INTERVAL_MS,
+    );
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => {
       stopped = true;
@@ -300,65 +352,102 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     };
   }, [ready, adapter, adminSession, customerSession]);
 
-  const addToCart = useCallback((productId: string, quantity = 1) => {
-    setCart((current) => {
-      const existing = current.find((line) => line.productId === productId);
-      if (existing) {
-        return current.map((line) =>
-          line.productId === productId
-            ? { ...line, quantity: line.quantity + quantity }
-            : line,
-        );
+  const addToCart = useCallback(
+    (productId: string, quantity = 1) => {
+      setCart((current) => {
+        const product = products.find((item) => item.id === productId);
+        if (!product) return current;
+        const existing = current.find((line) => line.productId === productId);
+        if (existing) {
+          return current.map((line) =>
+            line.productId === productId
+              ? {
+                  ...line,
+                  quantity: clampPurchaseQuantity(
+                    product,
+                    line.quantity + quantity,
+                  ),
+                }
+              : line,
+          );
+        }
+        return [
+          ...current,
+          { productId, quantity: clampPurchaseQuantity(product, quantity) },
+        ];
+      });
+    },
+    [products],
+  );
+
+  const setCartQuantity = useCallback(
+    (productId: string, quantity: number) => {
+      setCart((current) =>
+        quantity <= 0
+          ? current.filter((line) => line.productId !== productId)
+          : current.map((line) =>
+              line.productId === productId
+                ? {
+                    ...line,
+                    quantity: clampPurchaseQuantity(
+                      products.find((product) => product.id === productId) ?? {
+                        purchaseLimit: 3,
+                      },
+                      quantity,
+                    ),
+                  }
+                : line,
+            ),
+      );
+    },
+    [products],
+  );
+
+  const setCustomerSession = useCallback(
+    async (value: Session | null) => {
+      if (!value) {
+        setCustomerSessionState(null);
+        setOrders([]);
+        setCart(read<CartLine[]>(keys.guestCart, []));
+        return;
       }
-      return [...current, { productId, quantity }];
-    });
-  }, []);
-
-  const setCartQuantity = useCallback((productId: string, quantity: number) => {
-    setCart((current) =>
-      quantity <= 0
-        ? current.filter((line) => line.productId !== productId)
-        : current.map((line) =>
-            line.productId === productId ? { ...line, quantity } : line,
-          ),
-    );
-  }, []);
-
-  const setCustomerSession = useCallback(async (value: Session | null) => {
-    if (!value) {
-      setCustomerSessionState(null);
-      setOrders([]);
-      setCart(read<CartLine[]>(keys.guestCart, []));
-      return;
-    }
-    const [remoteCart, ownOrders] = await Promise.all([
-      adapter.loadCart(value.user.id),
-      adapter.listOrders(),
-    ]);
-    const mergedCart = mergeCartLines(cart, remoteCart);
-    await adapter.saveCart(mergedCart, value.user.id);
-    localStorage.removeItem(keys.guestCart);
-    setCart(mergedCart);
-    setOrders(ownOrders);
-    setAdminSessionState(null);
-    setCustomerSessionState(value);
-  }, [adapter, cart]);
-
-  const setAdminSession = useCallback(async (value: Session | null) => {
-    if (!value) {
+      const [remoteCart, ownOrders] = await Promise.all([
+        adapter.loadCart(value.user.id),
+        adapter.listOrders(),
+      ]);
+      const mergedCart = mergeCartLines(cart, remoteCart);
+      await adapter.saveCart(mergedCart, value.user.id);
+      localStorage.removeItem(keys.guestCart);
+      setCart(mergedCart);
+      setOrders(ownOrders);
       setAdminSessionState(null);
-      return;
-    }
-    const [loadedProducts, loadedOrders, loadedCustomers, loadedAuditLog] = await Promise.all([
-      adapter.listProducts(), adapter.listOrders(), adapter.listCustomers(), adapter.listAuditLog(),
-    ]);
-    setProducts(loadedProducts);
-    setOrders(loadedOrders);
-    setCustomers(loadedCustomers);
-    setAuditLog(loadedAuditLog);
-    setCustomerSessionState(null);
-    setAdminSessionState(value);
-  }, [adapter]);
+      setCustomerSessionState(value);
+    },
+    [adapter, cart],
+  );
+
+  const setAdminSession = useCallback(
+    async (value: Session | null) => {
+      if (!value) {
+        setAdminSessionState(null);
+        return;
+      }
+      const [loadedProducts, loadedOrders, loadedCustomers, loadedAuditLog] =
+        await Promise.all([
+          adapter.listProducts(),
+          adapter.listOrders(),
+          adapter.listCustomers(),
+          adapter.listAuditLog(),
+        ]);
+      setProducts(loadedProducts);
+      setOrders(loadedOrders);
+      setCustomers(loadedCustomers);
+      setAuditLog(loadedAuditLog);
+      setCustomerSessionState(null);
+      setAdminSessionState(value);
+    },
+    [adapter],
+  );
 
   const signOutCustomer = useCallback(async () => {
     if (customerSession) await adapter.saveCart(cart, customerSession.user.id);
@@ -386,11 +475,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     (product: Product) => {
       const result = applySaveProduct(products, adminSession, product);
       if (!result.applied || !result.auditEntry) {
-        console.warn("Intento de guardar un producto sin sesión de administrador válida.");
+        console.warn(
+          "Intento de guardar un producto sin sesión de administrador válida.",
+        );
         return;
       }
       setProducts(result.next);
-      setAuditLog((current) => appendAuditEntry(current, result.auditEntry as AuditEntry));
+      setAuditLog((current) =>
+        appendAuditEntry(current, result.auditEntry as AuditEntry),
+      );
       void adapter.upsertProduct(product);
       void adapter.appendAuditEntry(result.auditEntry);
     },
@@ -401,11 +494,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     (id: string) => {
       const result = applyDeleteProduct(products, adminSession, id);
       if (!result.applied || !result.auditEntry) {
-        console.warn("Intento de eliminar un producto sin sesión de administrador válida.");
+        console.warn(
+          "Intento de eliminar un producto sin sesión de administrador válida.",
+        );
         return;
       }
       setProducts(result.next);
-      setAuditLog((current) => appendAuditEntry(current, result.auditEntry as AuditEntry));
+      setAuditLog((current) =>
+        appendAuditEntry(current, result.auditEntry as AuditEntry),
+      );
       void adapter.deleteProduct(id);
       void adapter.appendAuditEntry(result.auditEntry);
     },
@@ -416,15 +513,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     async (next: Product[]) => {
       const result = applyReplaceProducts(products, adminSession, next);
       if (!result.applied || !result.auditEntry) {
-        throw new Error("La sesión de administrador venció. Volvé a ingresar antes de sincronizar.");
+        throw new Error(
+          "La sesión de administrador venció. Volvé a ingresar antes de sincronizar.",
+        );
       }
       const persisted = await adapter.replaceCatalog(result.next);
       setProducts(persisted);
-      setAuditLog((current) => appendAuditEntry(current, result.auditEntry as AuditEntry));
+      setAuditLog((current) =>
+        appendAuditEntry(current, result.auditEntry as AuditEntry),
+      );
       try {
         await adapter.appendAuditEntry(result.auditEntry);
       } catch (error) {
-        console.warn("El catálogo se sincronizó, pero no se pudo guardar la auditoría.", error);
+        console.warn(
+          "El catálogo se sincronizó, pero no se pudo guardar la auditoría.",
+          error,
+        );
       }
       return persisted;
     },
@@ -434,7 +538,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const createOrder = useCallback(
     async (order: Order) => {
       const persisted = await adapter.createOrder(order);
-      setOrders((current) => [persisted, ...current.filter((item) => item.id !== persisted.id)]);
+      setOrders((current) => [
+        persisted,
+        ...current.filter((item) => item.id !== persisted.id),
+      ]);
+      try {
+        await flushOrderNotifications(persisted.id);
+      } catch (error) {
+        console.warn(
+          "El pedido se guardó y el correo quedó en la cola para reintento.",
+          error,
+        );
+      }
       return persisted;
     },
     [adapter],
@@ -447,13 +562,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         throw new Error("La sesión de administrador venció. Volvé a ingresar.");
       }
       const persisted = await adapter.updateOrderStatus(id, status);
-      if (!persisted) throw new Error("Supabase no confirmó el cambio de estado.");
-      setOrders((current) => current.map((order) => order.id === id ? persisted : order));
-      setAuditLog((current) => appendAuditEntry(current, result.auditEntry as AuditEntry));
+      if (!persisted)
+        throw new Error("Supabase no confirmó el cambio de estado.");
+      setOrders((current) =>
+        current.map((order) => (order.id === id ? persisted : order)),
+      );
+      setAuditLog((current) =>
+        appendAuditEntry(current, result.auditEntry as AuditEntry),
+      );
       try {
         await adapter.appendAuditEntry(result.auditEntry);
       } catch (error) {
-        console.warn("El estado cambió, pero no se pudo guardar la auditoría.", error);
+        console.warn(
+          "El estado cambió, pero no se pudo guardar la auditoría.",
+          error,
+        );
+      }
+      try {
+        await flushOrderNotifications(id);
+      } catch (error) {
+        console.warn(
+          "El estado se guardó y el correo quedó en la cola para reintento.",
+          error,
+        );
       }
       return persisted;
     },
@@ -462,18 +593,42 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const updateOrderPaymentStatus = useCallback(
     async (id: string, paymentStatus: NonNullable<Order["paymentStatus"]>) => {
-      const result = applyUpdateOrderPaymentStatus(orders, adminSession, id, paymentStatus);
+      const result = applyUpdateOrderPaymentStatus(
+        orders,
+        adminSession,
+        id,
+        paymentStatus,
+      );
       if (!result.applied || !result.auditEntry) {
         throw new Error("La sesión de administrador venció. Volvé a ingresar.");
       }
-      const persisted = await adapter.updateOrderPaymentStatus(id, paymentStatus);
-      if (!persisted) throw new Error("Supabase no confirmó el estado del pago.");
-      setOrders((current) => current.map((order) => order.id === id ? persisted : order));
-      setAuditLog((current) => appendAuditEntry(current, result.auditEntry as AuditEntry));
+      const persisted = await adapter.updateOrderPaymentStatus(
+        id,
+        paymentStatus,
+      );
+      if (!persisted)
+        throw new Error("Supabase no confirmó el estado del pago.");
+      setOrders((current) =>
+        current.map((order) => (order.id === id ? persisted : order)),
+      );
+      setAuditLog((current) =>
+        appendAuditEntry(current, result.auditEntry as AuditEntry),
+      );
       try {
         await adapter.appendAuditEntry(result.auditEntry);
       } catch (error) {
-        console.warn("El pago cambió, pero no se pudo guardar la auditoría.", error);
+        console.warn(
+          "El pago cambió, pero no se pudo guardar la auditoría.",
+          error,
+        );
+      }
+      try {
+        await flushOrderNotifications(id);
+      } catch (error) {
+        console.warn(
+          "El pago se guardó y el correo quedó en la cola para reintento.",
+          error,
+        );
       }
       return persisted;
     },
@@ -491,7 +646,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (customer.role !== "customer") return;
       const email = normalizeEmail(customer.email);
       setCustomers((current) => {
-        const index = current.findIndex((item) => normalizeEmail(item.email) === email);
+        const index = current.findIndex(
+          (item) => normalizeEmail(item.email) === email,
+        );
         if (index === -1) return [{ ...customer, email }, ...current];
         const next = [...current];
         next[index] = { ...next[index], ...customer, email };
@@ -515,7 +672,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const guestId = guestIdFromEmail(email);
       if (guestId === accountId) return;
       setOrders((current) =>
-        current.map((order) => (order.customerId === guestId ? { ...order, customerId: accountId } : order)),
+        current.map((order) =>
+          order.customerId === guestId
+            ? { ...order, customerId: accountId }
+            : order,
+        ),
       );
       void adapter.reassignOrdersCustomer(guestId, accountId);
     },
@@ -605,7 +766,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     );
   }
 
-  return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
+  return (
+    <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
+  );
 }
 
 export function useStore() {

@@ -11,7 +11,13 @@
  * mantiene a mano en sincronía con las migraciones.
  */
 
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 export type Database = {
   public: {
@@ -54,6 +60,7 @@ export type Database = {
           images: string[];
           stock: number;
           low_stock_threshold: number;
+          purchase_limit: number;
           active: boolean;
           featured: boolean;
           description: string | null;
@@ -82,6 +89,7 @@ export type Database = {
           images?: string[];
           stock?: number;
           low_stock_threshold?: number;
+          purchase_limit?: number;
           active?: boolean;
           featured?: boolean;
           description?: string | null;
@@ -111,10 +119,23 @@ export type Database = {
           shipping: number;
           delivery_method: "envio" | "retiro";
           address: string | null;
-          status: "pendiente" | "pago_simulado" | "preparando" | "enviado" | "entregado" | "cancelado";
+          status:
+            | "pendiente"
+            | "pago_simulado"
+            | "preparando"
+            | "listo"
+            | "enviado"
+            | "entregado"
+            | "cancelado";
           created_at: string;
           payment_reference: string | null;
-          payment_status: "pending" | "approved" | "rejected" | "cancelled" | "refunded" | "charged_back";
+          payment_status:
+            | "pending"
+            | "approved"
+            | "rejected"
+            | "cancelled"
+            | "refunded"
+            | "charged_back";
           phone: string | null;
           postal_code: string | null;
           province: string | null;
@@ -132,7 +153,17 @@ export type Database = {
           shipping_branch_id: string | null;
           shipping_branch_name: string | null;
           shipping_branch_address: string | null;
-          shipping_status: "manual_quote" | "quoted" | "creating" | "processing" | "ready" | "in_transit" | "delivered" | "cancelled" | "error" | null;
+          shipping_status:
+            | "manual_quote"
+            | "quoted"
+            | "creating"
+            | "processing"
+            | "ready"
+            | "in_transit"
+            | "delivered"
+            | "cancelled"
+            | "error"
+            | null;
           shipping_tracking_number: string | null;
           shipping_label_ready: boolean;
         };
@@ -146,10 +177,23 @@ export type Database = {
           shipping?: number;
           delivery_method: "envio" | "retiro";
           address?: string | null;
-          status?: "pendiente" | "pago_simulado" | "preparando" | "enviado" | "entregado" | "cancelado";
+          status?:
+            | "pendiente"
+            | "pago_simulado"
+            | "preparando"
+            | "listo"
+            | "enviado"
+            | "entregado"
+            | "cancelado";
           created_at?: string;
           payment_reference?: string | null;
-          payment_status?: "pending" | "approved" | "rejected" | "cancelled" | "refunded" | "charged_back";
+          payment_status?:
+            | "pending"
+            | "approved"
+            | "rejected"
+            | "cancelled"
+            | "refunded"
+            | "charged_back";
           phone?: string | null;
           postal_code?: string | null;
           province?: string | null;
@@ -167,7 +211,17 @@ export type Database = {
           shipping_branch_id?: string | null;
           shipping_branch_name?: string | null;
           shipping_branch_address?: string | null;
-          shipping_status?: "manual_quote" | "quoted" | "creating" | "processing" | "ready" | "in_transit" | "delivered" | "cancelled" | "error" | null;
+          shipping_status?:
+            | "manual_quote"
+            | "quoted"
+            | "creating"
+            | "processing"
+            | "ready"
+            | "in_transit"
+            | "delivered"
+            | "cancelled"
+            | "error"
+            | null;
           shipping_tracking_number?: string | null;
           shipping_label_ready?: boolean;
         };

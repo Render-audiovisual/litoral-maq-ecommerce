@@ -3,6 +3,9 @@ import {
   verifyMercadoPagoSignature,
 } from "../_shared/payments/mercadopago.ts";
 import { serviceClient } from "../_shared/http.ts";
+import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
+
+declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object"
@@ -137,6 +140,10 @@ Deno.serve(async (request) => {
     const { error: orderError } = await db.from("orders").update(orderUpdate)
       .eq("id", orderId);
     if (orderError) throw orderError;
+
+    EdgeRuntime.waitUntil(
+      processPendingOrderNotifications(db, orderId, 10).catch(() => undefined),
+    );
 
     await db.from("payment_events").update({
       processed_at: now,
