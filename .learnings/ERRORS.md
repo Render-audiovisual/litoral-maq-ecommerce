@@ -71,3 +71,11 @@ Una prueba aislada aprobaba pero falló al correr en paralelo porque hacía `got
 ## 2026-08-28 — El token GitHub actual no puede modificar workflows
 
 Un push de la integración de cuentas fue rechazado porque el commit incluía `.github/workflows/deploy-hostinger.yml` y la credencial OAuth no tiene scope `workflow`. No ampliar ni reemplazar credenciales por este motivo: separar el cambio funcional del ajuste de workflow, publicar la rama sin ese archivo y dejar la variable de build como paso explícito para una credencial autorizada.
+
+## 2026-08-28 — Un worktree nuevo no comparte `node_modules`
+
+La validación de la rama de cuentas falló con `vitest: not found` porque el worktree temporal no tenía dependencias instaladas. Antes de ejecutar tests o builds en un worktree nuevo, correr `npm ci`; no asumir que reutiliza el `node_modules` de otra copia del repositorio.
+
+## 2026-08-28 — Este proyecto no define `npm run typecheck`
+
+La cadena de validación se detuvo después de 240 tests correctos porque `package.json` no tiene un script `typecheck`. En Litoral Maq, verificar TypeScript con `npx tsc --noEmit` y después continuar con `npm run lint` y los builds; revisar los scripts antes de encadenar comandos largos.

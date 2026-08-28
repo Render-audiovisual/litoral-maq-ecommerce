@@ -7,7 +7,7 @@ import { getAuthAdapter, supportsOAuth } from "@/services/auth";
 // El proveedor se habilita primero en Google Cloud + Supabase y recién
 // después se publica el botón. Así nunca ofrecemos un acceso que todavía
 // devuelve "provider disabled" en producción.
-const GOOGLE_AUTH_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
+const GOOGLE_AUTH_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED !== "false";
 
 /**
  * Ingreso real con Google (Supabase OAuth). No se renderiza nada con el
