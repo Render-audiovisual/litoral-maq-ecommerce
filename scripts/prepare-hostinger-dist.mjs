@@ -48,10 +48,9 @@ const STORE_HTACCESS = `Options -MultiViews
 DirectoryIndex index.html
 RewriteEngine On
 
-# Bloquea cualquier intento de acceder a rutas de administración desde el
-# dominio de tienda — el artefacto de tienda no las contiene, pero esta
-# regla además evita que Apache intente resolverlas de otra forma.
-RewriteRule ^admin(/.*)?$ - [F,L]
+# El panel vive en un subdominio separado. Conservamos esa separación, pero
+# redirigimos los enlaces históricos /admin para que no terminen en un 403.
+RewriteRule ^admin(?:/(.*))?/?$ https://admin-litoralmaqrender.rendercorrientes.com/admin/$1 [R=302,L,NE]
 
 # Next exporta las rutas como archivos .html. Esto permite abrir /productos
 # y las fichas individuales sin mostrar la extensión. Esta regla debe ir antes
