@@ -94,6 +94,11 @@ El análisis completo para llevar pagos, pedidos, envíos, stock, imágenes y
 notificaciones a producción está en
 [`docs/PLAN_CONEXIONES_PRODUCCION.md`](./docs/PLAN_CONEXIONES_PRODUCCION.md).
 
+Las cuentas de cliente (compra como invitado, conversión a cuenta
+permanente, Google, emails transaccionales y captcha) tienen su propia guía
+con los pasos manuales exactos en
+[`docs/CUENTAS_DE_CLIENTE.md`](./docs/CUENTAS_DE_CLIENTE.md).
+
 Copiar `.env.example` a `.env.local` y completar únicamente las credenciales
 del servicio que se vaya conectando.
 

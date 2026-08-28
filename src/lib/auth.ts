@@ -34,6 +34,22 @@ export function isValidCustomerSession(session: Session | null): session is Sess
   return !!session && session.user?.role === "customer" && !isSessionExpired(session);
 }
 
+/**
+ * Una sesión de invitado (signInAnonymously) es una sesión de cliente
+ * válida — puede ver SU pedido en ESTE navegador — pero no es una cuenta.
+ * Todo lo que diga "tu cuenta" en la interfaz tiene que preguntar por esto,
+ * no por `isValidCustomerSession`: mostrar el nombre de un invitado en el
+ * header significaba mostrar una cadena vacía.
+ */
+export function isAnonymousSession(session: Session | null): boolean {
+  return !!session && session.user?.isAnonymous === true;
+}
+
+/** Sesión de cliente con cuenta permanente detrás (email o Google verificados). */
+export function isPermanentCustomerSession(session: Session | null): session is Session {
+  return isValidCustomerSession(session) && !isAnonymousSession(session);
+}
+
 export function isValidAdminSession(session: Session | null): session is Session {
   return !!session && session.user?.role === "admin" && !isSessionExpired(session);
 }

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
+import { useCaptcha } from "@/components/use-captcha";
 import { getAuthAdapter } from "@/services/auth";
 import { useStore } from "@/store/store";
 
@@ -15,17 +16,22 @@ function AdminLoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const denied = params.get("denied") === "1";
+  // "Enable CAPTCHA protection" es un ajuste del PROYECTO Supabase, no de
+  // cada formulario: al activarlo, signInWithPassword exige el token
+  // también acá. Sin él, el panel quedaría sin poder ingresar.
+  const captcha = useCaptcha();
 
   async function signIn(event: FormEvent) {
     event.preventDefault();
     setError("");
     setLoading(true);
     try {
-      const session = await getAuthAdapter().signInAdmin(email, password);
+      const session = await getAuthAdapter().signInAdmin(email, password, captcha.token);
       await setAdminSession(session);
       router.push(params.get("next") || "/admin");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo ingresar.");
+      captcha.reset();
     } finally {
       setLoading(false);
     }
@@ -68,8 +74,9 @@ function AdminLoginForm() {
                 placeholder="Mínimo 4 caracteres"
               />
             </label>
-            {error && <div className="error-message">{error}</div>}
-            <button className="button primary large full" disabled={loading}>
+            {captcha.field}
+            {error && <div className="error-message" role="alert">{error}</div>}
+            <button className="button primary large full" disabled={loading || !captcha.solved}>
               {loading ? "Ingresando…" : "Ingresar"}
             </button>
           </form>

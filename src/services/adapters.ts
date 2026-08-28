@@ -1,11 +1,25 @@
 import type { Customer, Order, Product, Session } from "@/lib/types";
 
+/**
+ * `captchaToken` es el token de Cloudflare Turnstile. Va en TODOS los
+ * métodos que golpean un endpoint de GoTrue protegible: al activar "Enable
+ * CAPTCHA protection" en el proyecto, Supabase lo exige en signup, signin,
+ * recover, resend y anonymous — no es opcional por método, es por proyecto.
+ * Queda `?` porque el modo local y los entornos sin site key configurada no
+ * lo usan (ver `components/use-captcha.tsx`).
+ */
 export interface AuthAdapter {
-  signInCustomer(email: string, password: string): Promise<Session>;
-  signUpCustomer(name: string, email: string, password: string, emailRedirectTo?: string): Promise<Session>;
-  signInAdmin(email: string, password: string): Promise<Session>;
-  requestPasswordReset(email: string, redirectTo: string): Promise<void>;
-  resendCustomerConfirmation(email: string, emailRedirectTo: string): Promise<void>;
+  signInCustomer(email: string, password: string, captchaToken?: string): Promise<Session>;
+  signUpCustomer(
+    name: string,
+    email: string,
+    password: string,
+    emailRedirectTo?: string,
+    captchaToken?: string,
+  ): Promise<Session>;
+  signInAdmin(email: string, password: string, captchaToken?: string): Promise<Session>;
+  requestPasswordReset(email: string, redirectTo: string, captchaToken?: string): Promise<void>;
+  resendCustomerConfirmation(email: string, emailRedirectTo: string, captchaToken?: string): Promise<void>;
   updateCustomerPassword(password: string): Promise<void>;
   signOut(): Promise<void>;
 }

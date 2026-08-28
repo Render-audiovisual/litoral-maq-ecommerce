@@ -10,7 +10,11 @@ export default function AdminSettingsPage() {
   const integrations = [
     { name: "Base de datos", variable: "DATABASE_URL", status: isSupabase ? "Supabase conectada" : "Modo local", ready: isSupabase },
     { name: "Mercado Pago", variable: "MP_ACCESS_TOKEN", status: "Pendiente de conversación con el cliente", ready: false },
-    { name: "Google Login", variable: "GOOGLE_CLIENT_ID", status: "Pendiente", ready: false },
+    // El código ya usa OAuth real de Supabase; falta cargar el proveedor en
+    // el dashboard (ver docs/CUENTAS_DE_CLIENTE.md §4.3).
+    { name: "Google Login", variable: "Supabase → Providers → Google", status: "Código listo, falta habilitar el proveedor", ready: false },
+    { name: "Captcha (Turnstile)", variable: "NEXT_PUBLIC_TURNSTILE_SITE_KEY", status: "Código listo, falta el widget y la secret en Supabase", ready: false },
+    { name: "Emails de cuenta", variable: "SMTP en Supabase", status: "Plantillas listas, falta SMTP propio", ready: false },
     { name: "Google Sheets", variable: "GOOGLE_SHEETS_ID", status: "Catálogo conectado", ready: true },
     { name: "Imágenes", variable: "STORAGE_*", status: "Pendiente", ready: false },
     { name: "Andreani", variable: "SHIPPING_API_KEY", status: "Credenciales API pendientes", ready: false },

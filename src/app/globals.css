@@ -329,6 +329,15 @@ textarea { min-height: 100px; resize: vertical; }
 .auth-card form, .settings-grid form { display: flex; flex-direction: column; gap: 16px; }
 .auth-card form + p, .auth-card > p:last-child { margin: 20px 0 0; text-align: center; }
 .auth-card a { color: var(--orange); font-weight: 700; }
+/* Cuentas de cliente: separador social/email, captcha y oferta de cuenta. */
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.captcha-field { display: flex; flex-direction: column; gap: 8px; }
+.captcha-field .form-helper { margin: 0; }
+.account-upsell { margin: 26px auto 0; padding: 22px; width: min(100%, 460px); display: flex; flex-direction: column; gap: 12px; text-align: left; border: 1px solid var(--line); background: #fff; }
+.account-upsell h2 { margin: 0; font-size: 1.35rem; }
+.account-upsell p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.account-upsell .form-helper { margin: 0; }
 .demo-credentials { margin-top: 22px; padding: 13px; display: flex; flex-direction: column; background: #eef5f8; color: var(--navy); font-size: 11px; }
 .simple-auth-page { min-height: 760px; padding: 70px 20px; display: grid; place-items: center; background: var(--soft); }
 .account-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 35px; }

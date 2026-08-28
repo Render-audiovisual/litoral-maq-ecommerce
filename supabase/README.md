@@ -240,10 +240,16 @@ la misma forma) — ver §12.
     — no por una comparación de email hardcodeada como en el modelo local,
     sino porque el trigger `handle_new_user` fuerza `role='customer'`
     siempre, estructuralmente, en la base.
-  - `signInCustomerWithGoogle`: sigue **simulado** (no hay redirect OAuth
-    real, eso sigue fuera de alcance — Etapa 3), pero ahora contra una
-    cuenta demo real en Supabase Auth en vez de un objeto en memoria.
+  - `startGoogleSignIn`: OAuth **real** de Supabase. Elige solo entre
+    `signInWithOAuth({ provider: 'google' })` —sin sesión o con cuenta
+    permanente— y `linkIdentity({ provider: 'google' })` cuando hay una
+    sesión anónima, que conserva el mismo uid y con él los pedidos del
+    invitado. El retorno lo procesa `/auth/callback`. Ya no existe ningún
+    login social simulado (ver `no-shared-credentials.test.ts`).
   - `ensureGuestSession`: `signInAnonymously()` — ver §4.3.
+  - Todos los métodos que pegan a un endpoint protegible de GoTrue aceptan
+    un `captchaToken` (Cloudflare Turnstile). Ver
+    `docs/CUENTAS_DE_CLIENTE.md`.
 - `index.ts` — `getAuthAdapter()`, mismo selector y misma política de
   "fallar visible" que `getPersistenceAdapter()` (usa el mismo
   `services/provider.ts`, para que nunca queden desincronizados: nunca
@@ -284,14 +290,25 @@ siempre (sin cambios). La sesión anónima resultante se guarda como
 autenticada más (`role: customer`, `isAnonymous: true`), no una ausencia de
 sesión.
 
-**Conversión a cuenta nueva** (`signUpCustomer` con sesión anónima activa):
-en vez de crear un usuario nuevo, llama `client.auth.updateUser({email,
-password})` sobre la sesión anónima existente — Supabase convierte esa
-misma fila de `auth.users` en una cuenta permanente, **conservando el
-mismo `uid`**. Como los pedidos ya quedaron guardados con ese `uid`, no
-hace falta reasignar nada (a diferencia del modelo local, donde
-`convertGuestToAccount` sí tiene que reescribir `customerId` en cada pedido
-porque el invitado local no tiene un id real).
+**Conversión a cuenta nueva — en dos pasos, que es la secuencia que
+Supabase documenta hoy** (`linkEmailToGuestAccount`, no `signUpCustomer`):
+
+1. `client.auth.updateUser({ email }, { emailRedirectTo })` sobre la sesión
+   anónima: **vincula** el email a esa misma fila de `auth.users`,
+   conservando el `uid`. La persona recibe un correo y confirma.
+2. Recién con el email verificado, `/crear-clave` llama
+   `updateUser({ password })`.
+
+La versión anterior mandaba email y contraseña en una sola llamada: eso
+fijaba una contraseña sobre un email que nadie había confirmado. Un signUp
+normal con la sesión anónima viva está bloqueado a propósito (crearía un
+uid nuevo y dejaría los pedidos del invitado inalcanzables).
+
+Como los pedidos ya quedaron guardados con ese `uid`, no hace falta
+reasignar nada (a diferencia del modelo local, donde `convertGuestToAccount`
+sí tiene que reescribir `customerId` en cada pedido porque el invitado local
+no tiene un id real). `profiles.email` e `is_anonymous` los actualiza un
+trigger de la base (migración 0008), no el navegador.
 
 **Mecanismo seguro para el conflicto con una cuenta existente** — el punto
 central de este apartado: si el email ya pertenece a otra cuenta permanente,
@@ -307,6 +324,15 @@ fuera de alcance sin un proyecto real con envío de emails configurado. Esto
 está probado con mocks: ver `supabase-auth-adapter.test.ts`, casos de
 conversión exitosa (mismo uid, sin llamar a `signUp`) y de conflicto
 (rechazo sin fusionar).
+
+**Conversión con Google**: `linkIdentity({ provider: 'google' })` desde la
+sesión anónima, mismo criterio y mismo uid. Si esa identidad de Google ya
+pertenece a otra cuenta, Supabase devuelve `identity_already_exists`:
+`/auth/callback` lo muestra pidiendo ingresar con esa cuenta y **no** mueve
+ningún pedido ni cierra la sesión de invitado.
+
+Los pasos manuales del dueño (Google Cloud, SMTP, Turnstile, allow-list de
+redirects) están en **`docs/CUENTAS_DE_CLIENTE.md`**.
 
 ## 5. Estrategia de migración
 

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+  <body style="margin:0;padding:0;background:#f5f7f8;font-family:Arial,Helvetica,sans-serif;color:#003b63;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7f8;padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border:1px solid #dfe5e9;">
+            <tr>
+              <td style="background:#003b63;padding:22px 28px;">
+                <span style="color:#ffffff;font-size:20px;font-weight:bold;letter-spacing:-0.02em;">LITORAL MAQ</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px 28px;">
+                <h1 style="margin:0 0 14px;font-size:22px;color:#002a49;">Confirmá tu email</h1>
+                <p style="margin:0 0 22px;font-size:15px;line-height:1.6;color:#697785;">Creaste una cuenta en Litoral Maq. Confirmá esta dirección para poder ingresar y ver el estado de tus pedidos.</p>
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background:#ff6500;">
+                      <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 28px;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;">Confirmar mi email</a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:22px 0 0;font-size:13px;line-height:1.6;color:#697785;">
+                  Si el botón no funciona, copiá y pegá este enlace en tu navegador:<br />
+                  <a href="{{ .ConfirmationURL }}" style="color:#ff6500;word-break:break-all;">{{ .ConfirmationURL }}</a>
+                </p>
+                <p style="margin:22px 0 0;font-size:13px;line-height:1.6;color:#697785;">El enlace vence en 24 horas. Si no creaste ninguna cuenta, ignorá este mensaje: no se activa nada sin este paso.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:18px 28px;border-top:1px solid #dfe5e9;font-size:12px;color:#697785;">
+                Litoral Maq · Sáenz 1587, Corrientes<br />
+                Este es un mensaje automático de seguridad. No respondas a esta dirección.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

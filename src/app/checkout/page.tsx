@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { useCaptcha } from "@/components/use-captcha";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { guestIdFromEmail, normalizeEmail } from "@/lib/auth";
@@ -17,6 +18,12 @@ export default function CheckoutPage() {
   const [shipping, setShipping] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // La compra como invitado crea un usuario REAL en Supabase Auth
+  // (signInAnonymously), así que ese endpoint necesita la misma protección
+  // antiabuso que un registro. Con sesión ya iniciada no hace falta: no se
+  // crea ninguna identidad nueva.
+  const captcha = useCaptcha();
+  const needsGuestSession = !customerSession;
   const [form, setForm] = useState({
     name: customerSession?.user.name || "",
     email: customerSession?.user.email || "",
@@ -66,10 +73,11 @@ export default function CheckoutPage() {
       const authAdapter = getAuthAdapter();
       if (supportsGuestSessions(authAdapter)) {
         try {
-          guestSession = await authAdapter.ensureGuestSession();
+          guestSession = await authAdapter.ensureGuestSession(captcha.token);
           customerId = guestSession.user.id;
         } catch (caught) {
           setError(caught instanceof Error ? caught.message : "No se pudo iniciar la compra como invitado.");
+          captcha.reset();
           setLoading(false);
           return;
         }
@@ -127,6 +135,12 @@ export default function CheckoutPage() {
               <label>Email<input required type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} /></label>
               <label>Teléfono<input required value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} /></label>
             </div>
+            {needsGuestSession && (
+              <>
+                <p className="helper">No hace falta crear una cuenta para comprar. Después de enviar la solicitud vas a poder crearla si querés guardar el historial.</p>
+                {captcha.field}
+              </>
+            )}
           </section>
           <section className="form-card">
             <div className="step-number">2</div><h2>Entrega</h2>
@@ -151,7 +165,7 @@ export default function CheckoutPage() {
           <div><span>Subtotal</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
           <div><span>Entrega</span><strong>{shipping === null ? "Sin confirmar" : method === "retiro" ? "Gratis" : "A cotizar"}</strong></div><hr />
           <div className="summary-total"><span>Total de productos</span><strong>{formatCurrency(cartSubtotal)}</strong></div>
-          <button className="button primary large full" disabled={loading || shipping === null}>{loading ? "Enviando…" : shipping === null ? "Confirmá la entrega para continuar" : "Enviar solicitud de compra"}</button>
+          <button className="button primary large full" disabled={loading || shipping === null || (needsGuestSession && !captcha.solved)}>{loading ? "Enviando…" : shipping === null ? "Confirmá la entrega para continuar" : "Enviar solicitud de compra"}</button>
           <small>No se realizará ningún cobro en este paso.</small>
         </aside>
       </form>

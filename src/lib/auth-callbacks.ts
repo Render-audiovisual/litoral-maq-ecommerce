@@ -16,6 +16,15 @@ export const AUTH_CALLBACK_PATHS = {
   emailConfirmed: "/login?confirmed=1",
   /** Tras abrir el enlace de recuperación de contraseña. */
   passwordRecovery: "/restablecer-clave",
+  /**
+   * Tras confirmar el email que un invitado anónimo vinculó a su sesión.
+   * Es el paso 2 del flujo documentado por Supabase para convertir un
+   * usuario anónimo: primero se verifica el email, y recién ahí se puede
+   * establecer una contraseña (ver `supabase-auth-adapter.ts`).
+   */
+  passwordSetup: "/crear-clave",
+  /** Retorno de Google (signInWithOAuth y linkIdentity). */
+  oauth: "/auth/callback",
 } as const;
 
 export type AuthCallbackKind = keyof typeof AUTH_CALLBACK_PATHS;
@@ -67,3 +76,24 @@ export function developmentRedirectUrls(stagingOrigins: string[] = []): string[]
 
 /** El Site URL del proyecto productivo: a dónde cae un redirect que no matchea. */
 export const SITE_URL = AUTH_ORIGINS.production;
+
+/**
+ * Error devuelto por Supabase en el retorno de un enlace o de OAuth.
+ *
+ * Llega en el fragmento (`#error=...`) con el flujo implícito —el único
+ * posible en un export estático, ver `lib/password-recovery.ts`— y en la
+ * query (`?error=...`) cuando el proveedor falla antes de emitir tokens.
+ * Se leen los dos porque ninguna de las dos formas está garantizada.
+ */
+export type AuthUrlError = { code: string; description: string };
+
+export function readAuthErrorFromUrl(href: string): AuthUrlError | null {
+  const url = new URL(href);
+  const fromHash = new URLSearchParams(url.hash.replace(/^#/, ""));
+  const error = url.searchParams.get("error") ?? fromHash.get("error");
+  if (!error) return null;
+  const code = url.searchParams.get("error_code") ?? fromHash.get("error_code") ?? error;
+  const description =
+    url.searchParams.get("error_description") ?? fromHash.get("error_description") ?? "";
+  return { code, description };
+}

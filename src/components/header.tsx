@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useStore } from "@/store/store";
-import { isValidCustomerSession } from "@/lib/auth";
+import { isPermanentCustomerSession, isValidCustomerSession } from "@/lib/auth";
 import { selectOwnOrders } from "@/lib/orders";
 import { isActiveOrder } from "@/lib/order-details";
 
@@ -15,6 +15,9 @@ export function Header() {
   const { cartCount, customerSession, orders } = useStore();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  // Una sesión de invitado (anónima) NO es una cuenta: mostrar su nombre
+  // significaba mostrar una cadena vacía al lado del ícono de usuario.
+  const account = isPermanentCustomerSession(customerSession) ? customerSession : null;
   const activeOrderCount = isValidCustomerSession(customerSession)
     ? selectOwnOrders(orders, customerSession).filter(isActiveOrder).length
     : 0;
@@ -79,10 +82,10 @@ export function Header() {
           </Link>
         </nav>
         <div className="header-actions">
-          <Link href={customerSession ? "/cuenta/pedidos" : "/login"} className="icon-link">
+          <Link href={account ? "/cuenta/pedidos" : "/login"} className="icon-link">
             <span aria-hidden>◎</span>
             <span className="desktop-only">
-              {customerSession ? customerSession.user.name.split(" ")[0] : "Ingresar"}
+              {account ? account.user.name.split(" ")[0] || "Mi cuenta" : "Ingresar"}
             </span>
           </Link>
           <Link href="/carrito" className="cart-link" aria-label={`Carrito, ${cartCount} productos`}>

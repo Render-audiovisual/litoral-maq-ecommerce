@@ -6,6 +6,7 @@ import { FormEvent, Suspense, useState } from "react";
 import { authCallbackUrl } from "@/lib/auth-callbacks";
 import { friendlyAuthError, RESEND_COOLDOWN_SECONDS } from "@/lib/auth-errors";
 import { useCooldown } from "@/components/use-cooldown";
+import { useCaptcha } from "@/components/use-captcha";
 import { getAuthAdapter } from "@/services/auth";
 
 /** Neutro a propósito: no revela si el email corresponde a una cuenta. */
@@ -19,24 +20,25 @@ function RecoveryForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const cooldown = useCooldown(RESEND_COOLDOWN_SECONDS);
+  const captcha = useCaptcha();
 
   async function submit(event: FormEvent) {
     event.preventDefault(); setError("");
     await cooldown.run(async () => {
       setLoading(true);
       try {
-        await getAuthAdapter().requestPasswordReset(email, authCallbackUrl("passwordRecovery", window.location.origin));
+        await getAuthAdapter().requestPasswordReset(email, authCallbackUrl("passwordRecovery", window.location.origin), captcha.token);
         setSent(true);
       } catch (caught) {
         // Un fallo del envío tampoco puede delatar si el email existe: solo
         // se distingue el rate limit, que no depende de la cuenta.
         setError(friendlyAuthError(caught, NEUTRAL_NOTICE));
         setSent(true);
-      } finally { setLoading(false); }
+      } finally { captcha.reset(); setLoading(false); }
     });
   }
 
-  const disabled = loading || cooldown.active;
+  const disabled = loading || cooldown.active || !captcha.solved;
   const label = loading ? "Enviando…" : cooldown.active ? `Esperá ${cooldown.remaining}s` : "Enviar enlace";
 
   return <main className="simple-auth-page"><section className="auth-card">
@@ -45,7 +47,8 @@ function RecoveryForm() {
     {sent && <div className="success-message">{NEUTRAL_NOTICE}</div>}
     <form onSubmit={submit}>
       <label>Email<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
-      {error && <div className="error-message">{error}</div>}
+      {captcha.field}
+      {error && <div className="error-message" role="alert">{error}</div>}
       <button className="button primary large full" disabled={disabled}>{label}</button>
       {cooldown.active && <p className="form-helper">Podés pedir otro enlace en {cooldown.remaining} segundos.</p>}
     </form>
