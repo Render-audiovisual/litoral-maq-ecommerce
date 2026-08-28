@@ -28,6 +28,10 @@ export function useInfinitePointerMarquee({
 }: InfinitePointerMarqueeOptions) {
   const railRef = useRef<HTMLDivElement>(null);
   const velocityRef = useRef(autoSpeed);
+  // Conservamos la posición con decimales fuera del DOM. Algunos navegadores
+  // móviles redondean scrollLeft a enteros; si se lee y reescribe en cada
+  // frame, un avance menor a 1 px se pierde y el automático queda detenido.
+  const positionRef = useRef<number | null>(null);
   const mouseVelocityRef = useRef(autoSpeed);
   const mouseInsideRef = useRef(false);
   const touchingRef = useRef(false);
@@ -52,9 +56,10 @@ export function useInfinitePointerMarquee({
 
         const loopWidth = rail.scrollWidth / 2;
         if (loopWidth > 0) {
-          let next = rail.scrollLeft + velocityRef.current * dt;
+          let next = (positionRef.current ?? rail.scrollLeft) + velocityRef.current * dt;
           while (next >= loopWidth) next -= loopWidth;
           while (next < 0) next += loopWidth;
+          positionRef.current = next;
           rail.scrollLeft = next;
         }
       }
@@ -78,6 +83,7 @@ export function useInfinitePointerMarquee({
 
   function onPointerEnter(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType !== "mouse") return;
+    positionRef.current = event.currentTarget.scrollLeft;
     mouseInsideRef.current = true;
     updateMouseDirection(event);
   }
@@ -91,6 +97,7 @@ export function useInfinitePointerMarquee({
     touchingRef.current = true;
     draggedRef.current = false;
     velocityRef.current = 0;
+    positionRef.current = railRef.current?.scrollLeft ?? 0;
     touchRef.current = {
       pointerId: event.pointerId,
       lastX: event.clientX,
@@ -116,11 +123,12 @@ export function useInfinitePointerMarquee({
     if (Math.abs(dx) > 2) draggedRef.current = true;
 
     const loopWidth = rail.scrollWidth / 2;
-    let next = rail.scrollLeft - dx;
+    let next = (positionRef.current ?? rail.scrollLeft) - dx;
     if (loopWidth > 0) {
       while (next >= loopWidth) next -= loopWidth;
       while (next < 0) next += loopWidth;
     }
+    positionRef.current = next;
     rail.scrollLeft = next;
     velocityRef.current = Math.max(
       -touchMaxSpeed,
