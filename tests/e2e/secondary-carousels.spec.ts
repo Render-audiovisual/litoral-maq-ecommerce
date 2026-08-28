@@ -7,7 +7,6 @@ for (const carousel of [
   test(`el carrusel de ${carousel.name} sigue el mouse en ambas direcciones`, async ({ page }) => {
     await page.goto("/");
     const rail = page.locator(carousel.selector);
-    const firstCard = rail.locator(carousel.card).first();
     await expect(rail).toBeVisible();
     await rail.scrollIntoViewIfNeeded();
     await rail.evaluate((element) => {
