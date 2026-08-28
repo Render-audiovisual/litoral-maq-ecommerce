@@ -290,7 +290,7 @@ export default function CheckoutPage() {
                 <label>Código postal<input value={form.postalCode} maxLength={4} inputMode="numeric" onChange={(event) => updateForm({ postalCode: event.target.value.replace(/\D/g, "") })} /></label>
                 <label>Localidad<input value={form.locality} onChange={(event) => updateForm({ locality: event.target.value })} /></label>
                 {deliveryType === "domicilio" && <><label className="wide">Calle<input value={form.street} onChange={(event) => updateForm({ street: event.target.value })} /></label><label>Número<input value={form.streetNumber} maxLength={5} onChange={(event) => updateForm({ streetNumber: event.target.value })} /></label><label>Piso (opcional)<input value={form.floor} maxLength={6} onChange={(event) => updateForm({ floor: event.target.value })} /></label><label>Depto. (opcional)<input value={form.apartment} maxLength={4} onChange={(event) => updateForm({ apartment: event.target.value })} /></label></>}
-                <label className="wide">Referencia (opcional)<input value={form.reference} onChange={(event) => updateForm({ reference: event.target.value })} /></label>
+                <label className="wide">Referencia (opcional)<input placeholder="Ej.: portón negro, entre calle X y calle Y" value={form.reference} onChange={(event) => updateForm({ reference: event.target.value })} /></label>
               </div>
             </>}
             <button type="button" className="button secondary" onClick={confirmDelivery} disabled={quoting || (method === "envio" && needsGuestSession && !captcha.solved)}>{quoting ? "Cotizando…" : method === "envio" ? "Calcular opciones de envío" : "Confirmar retiro"}</button>
