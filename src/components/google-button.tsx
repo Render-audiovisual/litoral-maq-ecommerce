@@ -4,6 +4,11 @@ import { useState } from "react";
 import { authCallbackUrl } from "@/lib/auth-callbacks";
 import { getAuthAdapter, supportsOAuth } from "@/services/auth";
 
+// El proveedor se habilita primero en Google Cloud + Supabase y recién
+// después se publica el botón. Así nunca ofrecemos un acceso que todavía
+// devuelve "provider disabled" en producción.
+const GOOGLE_AUTH_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
+
 /**
  * Ingreso real con Google (Supabase OAuth). No se renderiza nada con el
  * adaptador local: ofrecer el botón sin OAuth detrás fue exactamente el
@@ -23,6 +28,8 @@ export function GoogleSignInButton({
 }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  if (!GOOGLE_AUTH_ENABLED) return null;
 
   let adapter;
   try {

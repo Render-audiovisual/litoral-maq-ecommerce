@@ -79,6 +79,7 @@ con email y contraseña; si una sesión de Google resultara administrativa,
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Pública | Entorno de build del sitio |
 | `NEXT_PUBLIC_PERSISTENCE_PROVIDER=supabase` | Pública | Entorno de build del sitio |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | **Pública por diseño** | Entorno de build del sitio |
+| `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` | Pública (`true`/`false`) | Variable de Actions; `true` solo después de configurar Google |
 | Turnstile **Secret Key** | 🔒 Secreta | Solo Cloudflare + Supabase (Attack Protection) |
 | Google **Client Secret** | 🔒 Secreta | Solo Google Cloud + Supabase (provider Google) |
 | Contraseña SMTP / API key de Resend | 🔒 Secreta | Solo el proveedor + Supabase (SMTP settings) |
@@ -172,6 +173,9 @@ escribe `'customer'` literal y nunca lee la metadata del usuario.
 3. Copiar **Client ID** y **Client Secret** → Supabase → Providers → Google.
    El Client Secret no se guarda en este repositorio ni en ninguna variable
    del sitio.
+4. Probar el proveedor y recién después definir en GitHub Actions la variable
+   `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` y volver a desplegar. Hasta ese
+   momento el botón permanece oculto para no ofrecer un acceso incompleto.
 
 ### 4.4 Emails transaccionales — Resend (recomendado)
 
@@ -228,8 +232,8 @@ registro y la compra como invitado.
      agregar `localhost` (o usar un widget aparte).
    - Modo: **Managed** (invisible salvo sospecha).
    - Copiar **Site Key** y **Secret Key**.
-2. Publicar el sitio con `NEXT_PUBLIC_TURNSTILE_SITE_KEY=<site key>` en el
-   entorno de build. Hasta acá el widget se muestra y el token se manda,
+2. Guardar la site key pública en el entorno de build con el nombre
+   `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y volver a desplegar. Hasta acá el widget se muestra y el token se manda,
    pero Supabase todavía no lo exige: nada se rompe.
 3. Recién entonces: Supabase → Authentication → **Attack Protection →
    Enable CAPTCHA protection** → proveedor **Turnstile** → pegar la

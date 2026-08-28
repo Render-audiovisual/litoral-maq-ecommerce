@@ -67,3 +67,7 @@ El E2E pudo enviar el checkout inmediatamente después de confirmar el retiro, a
 ## 2026-08-24 — Esperar la navegación de login antes de abrir una ruta protegida
 
 Una prueba aislada aprobaba pero falló al correr en paralelo porque hacía `goto('/admin/productos')` inmediatamente después del clic de ingreso. Esperar explícitamente la URL `/admin` antes de navegar a otra ruta protegida, para no competir con la escritura asíncrona de la sesión.
+
+## 2026-08-28 — El token GitHub actual no puede modificar workflows
+
+Un push de la integración de cuentas fue rechazado porque el commit incluía `.github/workflows/deploy-hostinger.yml` y la credencial OAuth no tiene scope `workflow`. No ampliar ni reemplazar credenciales por este motivo: separar el cambio funcional del ajuste de workflow, publicar la rama sin ese archivo y dejar la variable de build como paso explícito para una credencial autorizada.
