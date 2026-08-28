@@ -80,6 +80,11 @@ export function Header() {
           <Link href="/cuenta/pedidos" className="nav-orders-link" onClick={() => setOpen(false)}>
             Mis pedidos {activeOrderCount > 0 && <b>{activeOrderCount}</b>}
           </Link>
+          {/* La Res. 424/2020 exige el enlace en la primera pantalla, no sólo
+              en el footer: por eso vive también acá, en la barra fija. */}
+          <Link href="/arrepentimiento" className="nav-legal-link" onClick={() => setOpen(false)}>
+            Arrepentimiento
+          </Link>
         </nav>
         <div className="header-actions">
           <Link href={account ? "/cuenta/pedidos" : "/login"} className="icon-link">

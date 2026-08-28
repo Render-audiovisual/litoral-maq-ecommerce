@@ -34,6 +34,8 @@ export function ProductDetailClient({ slug }: { slug: string }) {
           <h1>{product.name}</h1>
           <span className="detail-code">Código de producto: <strong>{product.code}</strong></span>
           <strong className="detail-price">{formatCurrency(product.price)}</strong>
+          {/* Art. 4 Ley 24.240: el precio exhibido debe ser el precio final. */}
+          <small className="price-tax-note">Precio final en pesos, impuestos incluidos. No incluye envío.</small>
           <div className="availability"><span className={`dot ${availability === "available" ? "green" : availability === "unknown" ? "orange" : "red"}`} />{availabilityText}<small>{availability === "unknown" ? "Confirmamos las unidades antes de cerrar la compra" : `${product.stock} unidades confirmadas`}</small></div>
           <p className="detail-description">{product.description || "Información técnica y descripción comercial pendientes de completar desde el panel."}</p>
           <div className="buy-row">

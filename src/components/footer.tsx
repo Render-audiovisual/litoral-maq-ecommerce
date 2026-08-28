@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { BUSINESS, DEFENSA_CONSUMIDOR_URL } from "@/lib/business";
 
 export function Footer() {
   const pathname = usePathname();
@@ -32,16 +33,35 @@ export function Footer() {
       </div>
 
       <nav className="footer-nav">
-        <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
+        <a href={BUSINESS.mapsUrl} target="_blank" rel="noopener noreferrer">
           Ubicación
         </a>
-        <span>Lun a Vie 8 a 17 hs · Sáb 8:30 a 12:30 hs</span>
+        <span>{BUSINESS.horarios}</span>
         <Link href="/productos">Productos</Link>
         <Link href="/cuenta/pedidos">Seguimiento</Link>
         <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
           WhatsApp comercial
         </a>
       </nav>
+
+      {/* Enlaces exigidos por la Ley 24.240, la Res. 424/2020 y la Ley 25.326. */}
+      <nav className="footer-legal" aria-label="Información legal">
+        <Link href="/legales#terminos">Términos y Condiciones</Link>
+        <Link href="/legales#privacidad">Política de Privacidad</Link>
+        <Link href="/arrepentimiento" className="footer-legal-highlight">
+          Botón de Arrepentimiento
+        </Link>
+        <a href={DEFENSA_CONSUMIDOR_URL} target="_blank" rel="noopener noreferrer">
+          Defensa del Consumidor
+        </a>
+      </nav>
+
+      <address className="footer-identity">
+        {BUSINESS.razonSocial && <>{BUSINESS.razonSocial} · </>}
+        {BUSINESS.cuit && <>CUIT {BUSINESS.cuit} · </>}
+        {BUSINESS.domicilio} ·{" "}
+        <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
+      </address>
 
       <div className="footer-bottom">
         <span>Design by Render</span>

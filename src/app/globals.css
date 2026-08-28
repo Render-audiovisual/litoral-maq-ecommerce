@@ -646,3 +646,30 @@ td > small { margin-top: 4px; color: var(--muted); }
   html { scroll-behavior: auto; }
   .announcement > span, .hero-promo-stack, .spinner { animation: none; }
 }
+
+/* Páginas e enlaces legales (Ley 24.240, Res. 424/2020, Ley 25.326). */
+.nav-legal-link { font-weight: 600; font-size: 13px; color: var(--muted); }
+.footer-legal { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 22px; font-size: 14px; }
+.footer-legal a { color: #93a9b8; transition: color .15s ease; }
+.footer-legal a:hover { color: #fff; }
+.footer-legal-highlight { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.footer-identity { max-width: 760px; color: #7f96a6; font-size: 13px; font-style: normal; line-height: 1.6; text-align: center; }
+.footer-identity a { color: #93a9b8; text-decoration: underline; text-underline-offset: 2px; }
+.footer-identity a:hover { color: #fff; }
+.price-tax-note { color: var(--muted); font-size: 12px; font-weight: 500; }
+.detail-price + .price-tax-note { display: block; margin: -8px 0 14px; }
+.legal-consent a { color: var(--orange); text-decoration: underline; text-underline-offset: 2px; }
+.legal-page { max-width: 860px; }
+.legal-index { margin-bottom: 40px; padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 10px 24px; border: 1px solid var(--line); background: #f8f9fa; font-size: 14px; font-weight: 650; }
+.legal-index a { color: var(--navy); }
+.legal-index a:hover { color: var(--orange); }
+.legal-section { margin-bottom: 44px; scroll-margin-top: 110px; }
+.legal-section h2 { margin-bottom: 18px; padding-bottom: 12px; font-size: 1.6rem; border-bottom: 1px solid var(--line); }
+.legal-section h3 { margin: 26px 0 8px; color: var(--navy); font-size: 1rem; }
+.legal-section p, .legal-section li { color: var(--ink); font-size: 15px; line-height: 1.75; }
+.legal-section ul { margin: 12px 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; list-style: disc; }
+.legal-section a { color: var(--orange); text-decoration: underline; text-underline-offset: 2px; }
+.legal-section a.button { text-decoration: none; }
+.legal-callout { margin-top: 16px; padding: 16px 18px; border-left: 3px solid var(--orange); background: #f8f9fa; font-size: 13.5px !important; color: var(--muted) !important; }
+.legal-page .form-card { padding: 26px; border: 1px solid var(--line); background: #fff; box-shadow: var(--shadow); }
+.legal-page .form-card h2 { border-bottom: 0; }

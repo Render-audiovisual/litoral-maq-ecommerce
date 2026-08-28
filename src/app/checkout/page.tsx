@@ -156,6 +156,13 @@ export default function CheckoutPage() {
             <div className="step-number">3</div><h2>Revisión y contacto</h2>
             <div className="payment-option selected"><span>✓</span><div><strong>Primero confirmamos todo</strong><small>Stock, entrega y total final</small></div><b>SIN COBRO</b></div>
             <p className="helper">Enviar la solicitud no realiza ningún pago. Litoral Maq se contactará con vos para confirmar disponibilidad, cotizar el envío si corresponde y coordinar el medio de pago.</p>
+            {/* Ley 25.326 art. 6: informar la finalidad y el destino de los datos
+                antes de recolectarlos, con el enlace a la política completa. */}
+            <p className="helper legal-consent">
+              Al enviar la solicitud aceptás los <Link href="/legales#terminos">Términos y Condiciones</Link> y
+              la <Link href="/legales#privacidad">Política de Privacidad</Link>. Usamos tus datos únicamente
+              para procesar este pedido y contactarte; no los cedemos con fines comerciales.
+            </p>
           </section>
           {error && <div className="error-message">{error}</div>}
         </div>

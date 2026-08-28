@@ -125,7 +125,11 @@ export function CatalogClient() {
         </aside>
         <section>
           <div className="catalog-toolbar">
-            <span><strong>{filtered.length}</strong> productos encontrados</span>
+            <span>
+              <strong>{filtered.length}</strong> productos encontrados
+              {/* Art. 4 Ley 24.240: aviso único para toda la grilla de precios. */}
+              <small className="price-tax-note"> · Precios finales en pesos, impuestos incluidos</small>
+            </span>
             <select value={sort} onChange={(event) => { setSort(event.target.value); resetVisibleCount(); }}>
               <option value="featured">Destacados primero</option>
               <option value="price-asc">Menor precio</option>
