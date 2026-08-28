@@ -12,11 +12,9 @@ export default function AdminSettingsPage() {
   const integrations = [
     { name: "Base de datos", variable: "DATABASE_URL", status: isSupabase ? "Supabase conectada" : "Modo local", ready: isSupabase },
     { name: "Mercado Pago", variable: "MP_ACCESS_TOKEN", status: isPaymentEnabled ? "Checkout Pro activo" : "Código listo; faltan credenciales, webhook y pruebas", ready: isPaymentEnabled },
-    // El código ya usa OAuth real de Supabase; falta cargar el proveedor en
-    // el dashboard (ver docs/CUENTAS_DE_CLIENTE.md §4.3).
-    { name: "Google Login", variable: "Supabase → Providers → Google", status: "Código listo, falta habilitar el proveedor", ready: false },
-    { name: "Captcha (Turnstile)", variable: "NEXT_PUBLIC_TURNSTILE_SITE_KEY", status: "Código listo, falta el widget y la secret en Supabase", ready: false },
-    { name: "Emails de cuenta", variable: "SMTP en Supabase", status: "Plantillas listas, falta SMTP propio", ready: false },
+    { name: "Google Login", variable: "Supabase Auth + Google OAuth", status: "Activo y probado en producción", ready: true },
+    { name: "Captcha (Turnstile)", variable: "Cloudflare + Supabase", status: "Activo en accesos y compra invitada", ready: true },
+    { name: "Emails de cuenta", variable: "Resend SMTP + Supabase", status: "Activo; plantillas en español", ready: true },
     { name: "Google Sheets", variable: "GOOGLE_SHEETS_ID", status: "Catálogo conectado", ready: true },
     { name: "Imágenes", variable: "STORAGE_*", status: "Pendiente", ready: false },
     { name: "Envíopack", variable: "ENVIOPACK_API_KEY", status: isShippingEnabled ? "Integración automática activa" : "Código listo; faltan credenciales y activación", ready: isShippingEnabled },
