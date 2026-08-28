@@ -208,6 +208,15 @@ video.testimonial-media { object-fit: contain; background: #000; }
 .page-hero h1 { color: #fff; margin: 10px 0; }
 .page-hero p { color: #bfd0dc; margin-bottom: 0; }
 .page-hero.compact h1 { font-size: clamp(2.5rem, 5vw, 4.2rem); }
+.legal-page { width: min(100% - 32px, 900px); margin: 0 auto; padding: 72px 0 96px; }
+.legal-page header { margin-bottom: 38px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+.legal-page header h1 { margin: 14px 0; font-size: clamp(2.5rem, 6vw, 4.5rem); }
+.legal-page header p, .legal-page section > p, .legal-page li { color: var(--muted); line-height: 1.75; }
+.legal-page section { font-size: 16px; }
+.legal-page h2 { margin: 36px 0 12px; font-size: clamp(1.4rem, 3vw, 2rem); }
+.legal-page ul { padding-left: 22px; }
+.legal-page li + li { margin-top: 8px; }
+.legal-page a { color: var(--orange); font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
 .catalog-layout { max-width: 1460px; margin: auto; padding: 50px 4vw 90px; display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
 .filters { padding: 24px; border: 1px solid var(--line); position: sticky; top: 110px; display: flex; flex-direction: column; gap: 20px; }
 .price-filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
