@@ -71,6 +71,7 @@ jobs:
           NEXT_PUBLIC_STORE_DOMAIN: litoralmaqrender.rendercorrientes.com
           NEXT_PUBLIC_ADMIN_DOMAIN: admin-litoralmaqrender.rendercorrientes.com
           NEXT_PUBLIC_PERSISTENCE_PROVIDER: supabase
+          NEXT_PUBLIC_MERCADO_PAGO_ENABLED: true
           NEXT_PUBLIC_SUPABASE_URL: https://bhtaecnzpuotlsenbdlz.supabase.co
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ot0t-AIGmUf53YpE1eb60A_awTiE0FQ
         run: npm run build:hostinger
