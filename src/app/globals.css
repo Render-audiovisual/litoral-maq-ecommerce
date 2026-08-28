@@ -37,10 +37,12 @@ h1 { font-size: clamp(2.2rem, 4vw, 4.8rem); line-height: .98; }
 h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .sr-only { width: 1px; height: 1px; padding: 0; position: absolute; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .announcement { background: var(--navy-dark); color: #fff; padding: 9px 0; display: flex; gap: var(--marquee-gap); overflow: hidden; }
-.announcement > span { flex-shrink: 0; color: #fff; font-size: 11px; font-weight: 750; letter-spacing: .08em; white-space: nowrap; animation: marquee 8s linear infinite; }
+.announcement > span { flex-shrink: 0; color: #fff; font-size: 11px; font-weight: 750; letter-spacing: .08em; white-space: nowrap; will-change: transform; animation: marquee 8s linear infinite; }
 .announcement > span b { margin: 0 .85rem; color: var(--cyan); }
-.announcement:hover > span { animation-play-state: paused; }
-@keyframes marquee { to { transform: translateX(calc(-100% - var(--marquee-gap))); } }
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-100% - var(--marquee-gap)), 0, 0); }
+}
 .site-header { min-height: 82px; padding: 0 5vw; display: grid; grid-template-columns: auto minmax(220px, 1fr) auto auto; align-items: center; gap: clamp(14px, 2vw, 28px); border-bottom: 1px solid var(--line); background: rgba(255,255,255,.97); position: sticky; top: 0; z-index: 50; }
 .brand img { display: block; width: 160px; height: auto; }
 .header-search { min-width: 0; height: 46px; position: relative; display: flex; align-items: center; }
@@ -655,5 +657,5 @@ td > small { margin-top: 4px; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .announcement > span, .hero-promo-stack, .spinner { animation: none; }
+  .hero-promo-stack, .spinner { animation: none; }
 }
