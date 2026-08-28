@@ -18,13 +18,15 @@ const catalog = [
   product("TALADRO ATORNILLADOR INALÁMBRICO 12V", { brand: "DEWALT" }),
   product("AMOLADORA ANGULAR 4.5 PULGADAS", { brand: "BOSCH" }),
   product("KIT ACOPLE RAPIDO P AIRE", { code: "3840" }),
+  // Su categoría contiene "Taladros" aunque el producto no sea uno: sirve
+  // para comprobar que el nombre pesa más que la categoría.
+  product("DESTORNILLADOR PHILLIPS", { category: "Taladros y atornilladores" }),
 ];
 
 describe("buscador del catálogo", () => {
   it("sugiere con la palabra a medio escribir", () => {
     const names = searchProducts(catalog, "tala").map((item) => item.name);
-    expect(names).toHaveLength(2);
-    expect(names.every((name) => name.startsWith("TALADRO"))).toBe(true);
+    expect(names.slice(0, 2).every((name) => name.startsWith("TALADRO"))).toBe(true);
   });
 
   it("ignora los acentos en los dos sentidos", () => {
@@ -48,6 +50,34 @@ describe("buscador del catálogo", () => {
     const results = searchProducts(catalog, "acople");
     // "ACOPLE" está en el medio del nombre, igual tiene que aparecer.
     expect(results[0].name).toBe("KIT ACOPLE RAPIDO P AIRE");
+  });
+
+  it("perdona una letra de más, de menos o cambiada", () => {
+    // Tres: los dos taladros y el destornillador de la categoría "Taladros".
+    expect(searchProducts(catalog, "taldro")).toHaveLength(3);   // falta una letra
+    expect(searchProducts(catalog, "taladrro")).toHaveLength(3); // sobra una letra
+    expect(searchProducts(catalog, "amoladore")).toHaveLength(1); // letra cambiada
+    expect(searchProducts(catalog, "amolda")).toHaveLength(1);   // dos letras invertidas
+  });
+
+  it("con typo, el nombre pesa más que la categoría", () => {
+    // "taldro" alcanza al destornillador por su categoría, pero los taladros
+    // de verdad tienen que ir primero.
+    const names = searchProducts(catalog, "taldro").map((item) => item.name);
+    expect(names.slice(0, 2).every((name) => name.startsWith("TALADRO"))).toBe(true);
+    expect(names.at(-1)).toBe("DESTORNILLADOR PHILLIPS");
+  });
+
+  it("no inventa resultados cuando de verdad no hay nada", () => {
+    expect(searchProducts(catalog, "zzzqqq")).toHaveLength(0);
+    expect(searchProducts(catalog, "heladera")).toHaveLength(0);
+  });
+
+  it("el typo no ensucia lo que ya coincide literalmente", () => {
+    // "amola" coincide de verdad: la pasada aproximada ni siquiera corre y
+    // no aparecen taladros parecidos.
+    const names = searchProducts(catalog, "amola").map((item) => item.name);
+    expect(names).toEqual(["AMOLADORA ANGULAR 4.5 PULGADAS"]);
   });
 
   it("respeta el límite y devuelve todo con consulta vacía", () => {

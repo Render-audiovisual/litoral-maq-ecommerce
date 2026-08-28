@@ -6,7 +6,9 @@ test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ pa
   await page.goto("/checkout");
 
   await expect(page.getByRole("heading", { name: "Confirmá tu pedido" })).toBeVisible();
-  await expect(page.getByText(/Mercado Pago|pago simulado|DEMO/i)).toHaveCount(0);
+  // Con límites de palabra: sin ellos, "DEMO" pegaba dentro de "cedemos" en
+  // el texto legal y el test fallaba por una palabra del todo inocente.
+  await expect(page.getByText(/\bMercado Pago\b|\bpago simulado\b|\bDEMO\b/i)).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Confirmá la entrega para continuar" })).toBeDisabled();
 
   await page.getByLabel("Nombre y apellido").fill("Cliente Envío E2E");
