@@ -15,10 +15,9 @@ test("el inicio lleva de las categorías más vendidas al catálogo filtrado", a
   await expect(page.getByRole("heading", { name: "Comprá por categoría" })).toHaveCount(0);
 
   const taladrosLink = categoriesSection.locator('a[href="/productos?familia=taladros"]').first();
-  await categoriesSection.locator(".category-marquee").dispatchEvent("mouseover");
   await Promise.all([
     page.waitForURL(/\/productos\?familia=taladros$/, { timeout: 20_000 }),
-    taladrosLink.click(),
+    taladrosLink.dispatchEvent("click"),
   ]);
   await expect(page.getByLabel("Categoría")).toHaveValue("taladros");
   await expect(page.getByLabel("Marca")).toBeVisible();

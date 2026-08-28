@@ -9,6 +9,7 @@ import { formatCurrency } from "@/lib/utils";
 import {
   getLaunchFamilyCards,
 } from "@/lib/launch-catalog";
+import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 
@@ -328,59 +329,26 @@ function CategoryWinnerCard({
 }
 
 const CATEGORY_AUTO_SCROLL_SPEED = 38;
-const CATEGORY_TOUCH_RESUME_DELAY = 2200;
+const CATEGORY_MOUSE_MAX_SPEED = 260;
+const CATEGORY_TOUCH_MAX_SPEED = 1500;
 
 type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
 
 function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
-  const railRef = useRef<HTMLDivElement>(null);
-  const pausedRef = useRef(false);
-  const resumeTimer = useRef<number | undefined>(undefined);
   const trackItems = [...categories, ...categories];
-
-  useEffect(() => {
-    if (categories.length < 2) return;
-    let raf: number;
-    let last = performance.now();
-
-    function step(now: number) {
-      const dt = (now - last) / 1000;
-      last = now;
-      const rail = railRef.current;
-      if (rail && !pausedRef.current) {
-        rail.scrollLeft += CATEGORY_AUTO_SCROLL_SPEED * dt;
-        const half = rail.scrollWidth / 2;
-        if (rail.scrollLeft >= half) rail.scrollLeft -= half;
-      }
-      raf = requestAnimationFrame(step);
-    }
-
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [categories.length]);
-
-  useEffect(() => {
-    return () => {
-      window.clearTimeout(resumeTimer.current);
-    };
-  }, []);
+  const { railRef, dragging, handlers } = useInfinitePointerMarquee({
+    itemCount: categories.length,
+    autoSpeed: CATEGORY_AUTO_SCROLL_SPEED,
+    mouseMaxSpeed: CATEGORY_MOUSE_MAX_SPEED,
+    touchMaxSpeed: CATEGORY_TOUCH_MAX_SPEED,
+  });
 
   return (
     <div
       ref={railRef}
-      className="category-marquee"
+      className={`category-marquee${dragging ? " is-dragging" : ""}`}
       aria-label="Categorías de productos, se puede deslizar"
-      onMouseEnter={() => { pausedRef.current = true; }}
-      onMouseLeave={() => { pausedRef.current = false; }}
-      onTouchStart={() => {
-        pausedRef.current = true;
-        window.clearTimeout(resumeTimer.current);
-      }}
-      onTouchEnd={() => {
-        resumeTimer.current = window.setTimeout(() => {
-          pausedRef.current = false;
-        }, CATEGORY_TOUCH_RESUME_DELAY);
-      }}
+      {...handlers}
     >
       <div className="winner-grid category-track">
         {trackItems.map((category, index) => (

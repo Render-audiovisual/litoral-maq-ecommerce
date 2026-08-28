@@ -119,8 +119,9 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .winner-heading p { margin: 9px 0 0; color: #a9c0cf; }
 .winner-heading .text-link { color: #fff; }
 .winner-grid { display: flex; gap: 16px; }
-.category-marquee { width: 100%; max-width: 1590px; margin: 0 auto; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; user-select: none; }
+.category-marquee { width: 100%; max-width: 1590px; margin: 0 auto; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; user-select: none; touch-action: pan-y; cursor: ew-resize; }
 .category-marquee::-webkit-scrollbar { display: none; }
+.category-marquee.is-dragging { cursor: grabbing; }
 .category-track { width: max-content; }
 .winner-card { min-width: 0; overflow: hidden; display: grid; grid-template-rows: 255px auto; border-radius: 7px; background: #fff; box-shadow: 0 20px 55px rgba(0,20,36,.28); transition: transform .22s ease, box-shadow .22s ease; }
 .category-track .winner-card { width: clamp(310px, 29vw, 410px); flex: 0 0 auto; }
@@ -179,7 +180,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .home-products-section .section-heading p { margin: 9px 0 0; color: var(--muted); }
 .star-products-grid { width: 100%; max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .testimonials-section { overflow: hidden; }
-.testimonial-marquee { width: 100%; max-width: 1590px; margin: 0 auto; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; cursor: grab; user-select: none; }
+.testimonial-marquee { width: 100%; max-width: 1590px; margin: 0 auto; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; cursor: ew-resize; user-select: none; touch-action: pan-y; }
 .testimonial-marquee::-webkit-scrollbar { display: none; }
 .testimonial-marquee.is-dragging { cursor: grabbing; }
 .testimonial-track { width: max-content; display: flex; gap: 18px; }

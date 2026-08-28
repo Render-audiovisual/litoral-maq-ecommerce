@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
 
 type Testimonial = {
   id: string;
@@ -34,7 +35,8 @@ const TESTIMONIALS: Testimonial[] = [
 const TRACK_ITEMS = [...TESTIMONIALS, ...TESTIMONIALS];
 
 const AUTO_SCROLL_SPEED = 42; // px por segundo
-const TOUCH_RESUME_DELAY = 2200; // ms tras soltar el dedo antes de retomar el auto-scroll
+const MOUSE_MAX_SPEED = 280;
+const TOUCH_MAX_SPEED = 1650;
 
 function TestimonialCard({
   item,
@@ -72,94 +74,14 @@ function TestimonialCard({
 }
 
 export function TestimonialsSection() {
-  const trackRef = useRef<HTMLDivElement>(null);
   const [playingCount, setPlayingCount] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const pausedRef = useRef(false);
-  const draggingRef = useRef(false);
-  const dragStart = useRef({ x: 0, scrollLeft: 0 });
-  const resumeTimer = useRef<number | undefined>(undefined);
-
-  // Auto-scroll continuo por rAF sobre un elemento con scroll nativo real,
-  // en vez de una animacion CSS: asi el usuario puede arrastrar/deslizar en
-  // cualquier momento sin pelear con la animacion, y no depende de que el
-  // navegador tenga las animaciones CSS habilitadas.
-  useEffect(() => {
-    let raf: number;
-    let last = performance.now();
-
-    function step(now: number) {
-      const dt = (now - last) / 1000;
-      last = now;
-      const el = trackRef.current;
-      if (el && !draggingRef.current && !pausedRef.current && playingCount === 0) {
-        el.scrollLeft += AUTO_SCROLL_SPEED * dt;
-        const half = el.scrollWidth / 2;
-        if (el.scrollLeft >= half) el.scrollLeft -= half;
-      }
-      raf = requestAnimationFrame(step);
-    }
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [playingCount]);
-
-  function onTouchStart() {
-    pausedRef.current = true;
-    window.clearTimeout(resumeTimer.current);
-  }
-
-  function onTouchEnd() {
-    resumeTimer.current = window.setTimeout(() => {
-      pausedRef.current = false;
-    }, TOUCH_RESUME_DELAY);
-  }
-
-  function onMouseEnter() {
-    pausedRef.current = true;
-  }
-
-  function onMouseLeave() {
-    if (!draggingRef.current) pausedRef.current = false;
-    endDrag();
-  }
-
-  function onMouseDown(event: React.MouseEvent<HTMLDivElement>) {
-    const el = trackRef.current;
-    // Solo el clic izquierdo arrastra. Con el derecho se abre el menu
-    // contextual del navegador y nunca llega un mouseup a este elemento,
-    // asi que si lo tratabamos como arrastre quedaba trabado para siempre.
-    if (!el || event.button !== 0) return;
-    // Sin esto, arrastrar sobre una imagen dispara el drag-and-drop nativo
-    // del navegador, que se queda con mousemove/mouseup y el scroll queda pegado.
-    event.preventDefault();
-    draggingRef.current = true;
-    setDragging(true);
-    dragStart.current = { x: event.clientX, scrollLeft: el.scrollLeft };
-  }
-
-  function onMouseMove(event: React.MouseEvent<HTMLDivElement>) {
-    if (!draggingRef.current) return;
-    const el = trackRef.current;
-    if (!el) return;
-    el.scrollLeft = dragStart.current.scrollLeft - (event.clientX - dragStart.current.x);
-  }
-
-  function endDrag() {
-    draggingRef.current = false;
-    setDragging(false);
-  }
-
-  // Red de seguridad: si el mouseup nunca llega al elemento (soltar afuera
-  // de la ventana, perder el foco, un popup que se roba el evento), esto
-  // igual libera el arrastre para que el carrusel no quede pegado.
-  useEffect(() => {
-    window.addEventListener("mouseup", endDrag);
-    window.addEventListener("blur", endDrag);
-    return () => {
-      window.removeEventListener("mouseup", endDrag);
-      window.removeEventListener("blur", endDrag);
-    };
-  }, []);
+  const { railRef, dragging, handlers } = useInfinitePointerMarquee({
+    itemCount: TESTIMONIALS.length,
+    autoSpeed: AUTO_SCROLL_SPEED,
+    mouseMaxSpeed: MOUSE_MAX_SPEED,
+    touchMaxSpeed: TOUCH_MAX_SPEED,
+    paused: playingCount > 0,
+  });
 
   return (
     <section className="section testimonials-section">
@@ -172,16 +94,10 @@ export function TestimonialsSection() {
       </div>
 
       <div
-        ref={trackRef}
+        ref={railRef}
         className={`testimonial-marquee${dragging ? " is-dragging" : ""}`}
         aria-label="Testimonios de clientes, se puede deslizar"
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={endDrag}
+        {...handlers}
       >
         <div className="testimonial-track">
           {TRACK_ITEMS.map((item, index) => (
