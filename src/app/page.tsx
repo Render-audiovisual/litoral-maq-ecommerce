@@ -92,6 +92,187 @@ const STAR_PRODUCTS = [
   { productId: "3658", image: "/products/catalog/3658-aa623-220.webp" },
 ] as const;
 
+const HERO_AUTO_SPEED = 0.18;
+const HERO_MOUSE_MAX_SPEED = 0.82;
+const HERO_TOUCH_MAX_SPEED = 2.8;
+
+type PromoSlide = (typeof PROMO_SLIDES)[number];
+
+function wrapCarouselDelta(value: number, length: number) {
+  let wrapped = value;
+  if (wrapped > length / 2) wrapped -= length;
+  if (wrapped < -length / 2) wrapped += length;
+  return wrapped;
+}
+
+function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<Array<HTMLAnchorElement | null>>([]);
+  const positionRef = useRef(0);
+  const velocityRef = useRef(HERO_AUTO_SPEED);
+  const mouseVelocityRef = useRef(HERO_AUTO_SPEED);
+  const mouseInsideRef = useRef(false);
+  const touchingRef = useRef(false);
+  const draggedRef = useRef(false);
+  const touchRef = useRef({ pointerId: -1, x: 0, lastX: 0, lastTime: 0, position: 0 });
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    let raf = 0;
+    let last = performance.now();
+    let renderedActive = 0;
+
+    function render(now: number) {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+
+      if (!touchingRef.current) {
+        const target = mouseInsideRef.current ? mouseVelocityRef.current : HERO_AUTO_SPEED;
+        const response = mouseInsideRef.current ? 5.5 : 1.8;
+        velocityRef.current += (target - velocityRef.current) * Math.min(1, dt * response);
+        positionRef.current = (positionRef.current + velocityRef.current * dt + slides.length) % slides.length;
+      }
+
+      const position = positionRef.current;
+      const nearest = Math.round(position) % slides.length;
+      if (nearest !== renderedActive) {
+        renderedActive = nearest;
+        setActiveIndex(nearest);
+      }
+
+      cardRefs.current.forEach((card, index) => {
+        if (!card) return;
+        const delta = wrapCarouselDelta(index - position, slides.length);
+        const distance = Math.abs(delta);
+        const scale = Math.max(0.76, 1 - Math.min(distance, 2.3) * 0.095);
+        const opacity = Math.max(0, 1 - Math.max(0, distance - 1.1) * 0.72);
+        const x = delta * 78;
+        card.style.transform = `translate3d(calc(-50% + ${x}%), -50%, 0) scale(${scale}) rotate(${delta * 1.65}deg)`;
+        card.style.opacity = `${opacity}`;
+        card.style.zIndex = `${Math.max(1, 20 - Math.round(distance * 6))}`;
+        card.style.pointerEvents = distance < 1.55 ? "auto" : "none";
+      });
+
+      raf = requestAnimationFrame(render);
+    }
+
+    raf = requestAnimationFrame(render);
+    return () => cancelAnimationFrame(raf);
+  }, [slides.length]);
+
+  function updateMouseDirection(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "mouse" || touchingRef.current) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const normalized = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2));
+    const strength = Math.abs(normalized);
+    mouseVelocityRef.current = strength < 0.08
+      ? 0
+      : -Math.sign(normalized) * (0.12 + strength * HERO_MOUSE_MAX_SPEED);
+  }
+
+  function startTouch(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === "mouse") return;
+    touchingRef.current = true;
+    draggedRef.current = false;
+    velocityRef.current = 0;
+    touchRef.current = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      lastX: event.clientX,
+      lastTime: performance.now(),
+      position: positionRef.current,
+    };
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // El navegador puede cancelar el puntero antes de capturarlo; el gesto
+      // sigue funcionando mientras los eventos continúen sobre el carrusel.
+    }
+  }
+
+  function moveTouch(event: React.PointerEvent<HTMLDivElement>) {
+    if (!touchingRef.current || touchRef.current.pointerId !== event.pointerId) return;
+    const width = Math.max(210, Math.min(340, event.currentTarget.clientWidth * 0.68));
+    const dx = event.clientX - touchRef.current.x;
+    const now = performance.now();
+    const segmentDx = event.clientX - touchRef.current.lastX;
+    const elapsed = Math.max(16, now - touchRef.current.lastTime);
+    if (Math.abs(dx) > 6) draggedRef.current = true;
+    positionRef.current = (touchRef.current.position - dx / width + slides.length) % slides.length;
+    velocityRef.current = Math.max(
+      -HERO_TOUCH_MAX_SPEED,
+      Math.min(HERO_TOUCH_MAX_SPEED, -(segmentDx / width) / (elapsed / 1000)),
+    );
+    touchRef.current.lastX = event.clientX;
+    touchRef.current.lastTime = now;
+  }
+
+  function endTouch(event: React.PointerEvent<HTMLDivElement>) {
+    if (!touchingRef.current || touchRef.current.pointerId !== event.pointerId) return;
+    touchingRef.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  if (slides.length === 0) return null;
+
+  return (
+    <div
+      ref={sliderRef}
+      className="hero-promo-slider"
+      aria-label="Promociones destacadas"
+      aria-roledescription="carrusel"
+      onPointerEnter={(event) => {
+        if (event.pointerType !== "mouse") return;
+        mouseInsideRef.current = true;
+        updateMouseDirection(event);
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === "mouse") mouseInsideRef.current = false;
+      }}
+      onPointerMove={(event) => {
+        updateMouseDirection(event);
+        moveTouch(event);
+      }}
+      onPointerDown={startTouch}
+      onPointerUp={endTouch}
+      onPointerCancel={endTouch}
+      onClickCapture={(event) => {
+        if (!draggedRef.current) return;
+        event.preventDefault();
+        event.stopPropagation();
+        draggedRef.current = false;
+      }}
+    >
+      <span className="sr-only" aria-live="polite">
+        {activeIndex + 1} de {slides.length}: {slides[activeIndex]?.label}
+      </span>
+      {slides.map((slide, index) => (
+        <Link
+          ref={(node) => { cardRefs.current[index] = node; }}
+          href={slide.href}
+          className="hero-promo-card"
+          aria-label={`Ver ${slide.label}`}
+          aria-current={activeIndex === index ? "true" : undefined}
+          tabIndex={activeIndex === index ? 0 : -1}
+          key={slide.id}
+        >
+          <Image
+            src={slide.image}
+            alt={slide.label}
+            fill
+            sizes="(max-width: 560px) 76vw, (max-width: 820px) 360px, 340px"
+            loading={index <= 1 || index === slides.length - 1 ? "eager" : "lazy"}
+            priority={index === 0}
+            draggable={false}
+          />
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 function CategoryWinnerCard({
   slug,
   label,
@@ -217,7 +398,6 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
 
 export default function Home() {
   const { products } = useStore();
-  const [activePromo, setActivePromo] = useState(0);
   const activeProducts = products.filter((product) => product.active);
   const categories = getLaunchFamilyCards(activeProducts);
   const promoSlides = PROMO_SLIDES.filter((slide) =>
@@ -227,18 +407,6 @@ export default function Home() {
     const product = activeProducts.find((candidate) => candidate.id === item.productId);
     return product ? [{ product, image: item.image }] : [];
   });
-  const promo = promoSlides[activePromo % promoSlides.length];
-  const previousPromo = promoSlides[(activePromo - 1 + promoSlides.length) % promoSlides.length];
-  const nextPromo = promoSlides[(activePromo + 1) % promoSlides.length];
-
-  useEffect(() => {
-    if (promoSlides.length < 2) return;
-    const timer = window.setInterval(() => {
-      setActivePromo((current) => (current + 1) % promoSlides.length);
-    }, 3500);
-    return () => window.clearInterval(timer);
-  }, [promoSlides.length]);
-
   return (
     <main>
       <section className="commerce-hero">
@@ -251,59 +419,7 @@ export default function Home() {
           </p>
         </div>
 
-        {promo && previousPromo && nextPromo && <div
-          className="hero-promo-slider"
-          aria-label="Promociones destacadas"
-          aria-roledescription="carrusel"
-        >
-          <div className="hero-promo-stack" key={promo.id}>
-            <Link
-              href={previousPromo.href}
-              className="hero-promo-preview previous"
-              aria-label={`Ver ${previousPromo.label}`}
-            >
-              <Image
-                src={previousPromo.image}
-                alt={previousPromo.label}
-                fill
-                sizes="(max-width: 560px) 68vw, 300px"
-                loading="lazy"
-              />
-            </Link>
-
-            <article
-              className="hero-promo-slide"
-              aria-label={`${(activePromo % promoSlides.length) + 1} de ${promoSlides.length}: ${promo.label}`}
-            >
-              <Link href={promo.href} className="hero-promo-link" aria-label={`Ver ${promo.label}`}>
-                <div className="hero-promo-media">
-                  <Image
-                    src={promo.image}
-                    alt={promo.label}
-                    fill
-                    sizes="(max-width: 560px) 92vw, (max-width: 820px) 360px, 340px"
-                    loading={activePromo === 0 ? "eager" : "lazy"}
-                    priority={activePromo === 0}
-                  />
-                </div>
-              </Link>
-            </article>
-
-            <Link
-              href={nextPromo.href}
-              className="hero-promo-preview next"
-              aria-label={`Ver ${nextPromo.label}`}
-            >
-              <Image
-                src={nextPromo.image}
-                alt={nextPromo.label}
-                fill
-                sizes="(max-width: 560px) 68vw, 300px"
-                loading="lazy"
-              />
-            </Link>
-          </div>
-        </div>}
+        <HeroPromoCarousel slides={promoSlides} />
 
         <div className="hero-actions commerce-hero-actions">
           <div className="hero-buttons">

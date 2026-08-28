@@ -107,22 +107,12 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .commerce-metrics { display: flex; gap: 34px; color: var(--muted); font-size: 11px; }
 .commerce-metrics span { display: flex; flex-direction: column; }
 .commerce-metrics strong { color: var(--navy); font-size: 23px; }
-.hero-promo-slider { min-width: 0; min-height: 570px; grid-area: promo; position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; user-select: none; }
-.hero-promo-stack { position: absolute; inset: 0; display: grid; place-items: center; will-change: transform, opacity; animation: promo-stack-enter .92s cubic-bezier(.16, 1, .3, 1) both; }
-.hero-promo-preview { width: min(46%, 300px); aspect-ratio: 9 / 16; position: absolute; z-index: 1; overflow: hidden; border: 4px solid rgba(255,255,255,.92); border-radius: 20px; background: #fff; box-shadow: 0 22px 55px rgba(0,42,73,.2); opacity: .78; filter: brightness(.8) saturate(.86); }
-.hero-promo-preview.previous { transform: translateX(-48%) scale(.9) rotate(-2.2deg); }
-.hero-promo-preview.next { transform: translateX(48%) scale(.9) rotate(2.2deg); }
-.hero-promo-preview img { object-fit: cover; object-position: center; }
-.hero-promo-slide { width: min(50%, 330px); aspect-ratio: 9 / 16; position: relative; z-index: 3; overflow: hidden; border: 6px solid #fff; border-radius: 22px; background: #fff; box-shadow: 0 28px 70px rgba(0,42,73,.25); }
-@keyframes promo-stack-enter {
-  from { opacity: .38; transform: translate3d(5%, 0, 0) scale(.992); }
-  60% { opacity: .94; }
-  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-}
-.hero-promo-link, .hero-promo-media { width: 100%; height: 100%; display: block; }
-.hero-promo-link:focus-visible { outline: 4px solid var(--cyan); outline-offset: -6px; }
-.hero-promo-media { position: relative; overflow: hidden; background: var(--navy-dark); }
-.hero-promo-media img { object-fit: cover; object-position: center; }
+.hero-promo-slider { min-width: 0; min-height: 570px; grid-area: promo; position: relative; isolation: isolate; overflow: hidden; user-select: none; touch-action: pan-y; cursor: ew-resize; }
+.hero-promo-card { width: min(50%, 330px); aspect-ratio: 9 / 16; position: absolute; left: 50%; top: 50%; overflow: hidden; border: 5px solid rgba(255,255,255,.96); border-radius: 22px; background: var(--navy-dark); box-shadow: 0 24px 64px rgba(0,42,73,.22); opacity: 0; transform: translate3d(-50%, -50%, 0); transform-origin: center; will-change: transform, opacity; transition: box-shadow .35s ease, filter .35s ease; }
+.hero-promo-card[aria-current="true"] { box-shadow: 0 31px 76px rgba(0,42,73,.29); filter: brightness(1) saturate(1); }
+.hero-promo-card:not([aria-current="true"]) { filter: brightness(.8) saturate(.86); }
+.hero-promo-card:focus-visible { outline: 4px solid var(--cyan); outline-offset: -7px; }
+.hero-promo-card img { object-fit: cover; object-position: center; pointer-events: none; -webkit-user-drag: none; }
 .winner-section { padding: 78px 6vw 88px; background: var(--navy-dark); }
 .winner-heading { align-items: flex-end; }
 .winner-heading h2 { color: #fff; font-size: clamp(2rem, 4vw, 3.5rem); }
@@ -491,8 +481,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .product-grid .product-card:nth-child(n+7) { display: none; }
   .hero { grid-template-columns: 1fr .75fr; }
   .commerce-hero { grid-template-columns: .95fr 1.05fr; column-gap: 2vw; }
-  .hero-promo-slide { width: min(56%, 320px); }
-  .hero-promo-preview { width: min(50%, 285px); }
+  .hero-promo-card { width: min(56%, 320px); }
   .hero-visual::before { width: 340px; height: 340px; }
   .hero-tool { font-size: 200px; }
   .orbit-one { width: 420px; height: 420px; }
@@ -530,7 +519,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .hero-buttons { justify-content: center; }
   .pickup-banner { margin-left: auto; margin-right: auto; }
   .hero-promo-slider { width: 100%; min-height: 600px; margin-top: 18px; }
-  .hero-promo-slide { width: min(50%, 330px); }
+  .hero-promo-card { width: min(50%, 330px); }
   .winner-grid .winner-card { flex-basis: 46%; }
   .category-track .winner-card { width: 46vw; flex: 0 0 46vw; }
   .star-products-grid { display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
@@ -590,10 +579,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .pickup-banner b { font-size: 18px; }
   .commerce-metrics { display: none; }
   .hero-promo-slider { min-height: 520px; margin-top: 14px; }
-  .hero-promo-preview { width: min(70%, 270px); border-width: 3px; border-radius: 16px; opacity: .72; }
-  .hero-promo-preview.previous { transform: translateX(-38%) scale(.91) rotate(-1.6deg); }
-  .hero-promo-preview.next { transform: translateX(38%) scale(.91) rotate(1.6deg); }
-  .hero-promo-slide { width: min(76%, 288px); border-width: 4px; border-radius: 18px; }
+  .hero-promo-card { width: min(76%, 288px); border-width: 4px; border-radius: 18px; }
   .winner-section { padding: 52px 4vw 58px; }
   .winner-heading { align-items: flex-start; }
   .winner-grid { gap: 8px; }
@@ -657,5 +643,10 @@ td > small { margin-top: 4px; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero-promo-stack, .spinner { animation: none; }
+  .spinner { animation: none; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .hero-promo-slider { cursor: grab; }
+  .hero-promo-slider:active { cursor: grabbing; }
 }
