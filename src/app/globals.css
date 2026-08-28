@@ -93,8 +93,9 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .hero-note { left: 0; bottom: 15%; color: var(--navy); font-size: 11px; }
 .commerce-hero { min-height: 680px; padding: 54px 6vw 60px; display: grid; grid-template-columns: .86fr 1.14fr; grid-template-rows: auto 1fr; grid-template-areas: "copy promo" "actions promo"; column-gap: 4vw; align-items: center; overflow: hidden; background: linear-gradient(118deg, #fff 0 48%, #edf7f8 48% 100%); }
 .commerce-hero-copy { grid-area: copy; align-self: end; padding-left: clamp(18px, 2vw, 32px); }
-.commerce-hero-copy h1 { max-width: 720px; margin: 20px 0; font-size: clamp(3.3rem, 6vw, 6.4rem); line-height: .92; text-transform: uppercase; }
-.commerce-hero-copy h1 em { display: block; color: var(--orange); font-style: normal; }
+.commerce-hero-copy h1 { max-width: 760px; margin: 20px 0; font-size: clamp(3.7rem, 6.65vw, 7rem); font-weight: 900; letter-spacing: -.072em; line-height: .84; text-transform: uppercase; text-wrap: balance; }
+.commerce-hero-copy h1 em { width: fit-content; display: block; position: relative; z-index: 0; color: var(--orange); font-style: normal; }
+.commerce-hero-copy h1 em::after { content: ""; height: .2em; position: absolute; right: -.02em; bottom: -.01em; left: -.01em; z-index: -1; background: rgba(25,185,194,.42); }
 .commerce-hero-copy > p { max-width: 610px; color: var(--muted); font-size: 17px; line-height: 1.65; }
 .commerce-hero-actions { grid-area: actions; align-self: start; display: block; margin: 26px 0 0; padding-left: clamp(18px, 2vw, 32px); }
 .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -582,7 +583,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .hero h1 { font-size: 3rem; }
   .commerce-hero { padding: 20px 4vw 30px; background: linear-gradient(#fff 0 29%, #edf7f8 29%); }
   .commerce-hero .hero-pill { padding: 7px 9px; font-size: 9px; letter-spacing: .11em; }
-  .commerce-hero-copy h1 { margin: 16px 0 13px; font-size: 2.3rem; line-height: .95; }
+  .commerce-hero-copy h1 { margin: 16px 0 15px; font-size: clamp(2.65rem, 13.5vw, 3.45rem); letter-spacing: -.067em; line-height: .86; }
   .commerce-hero-copy > p { margin-bottom: 0; font-size: 13px; line-height: 1.55; }
   .commerce-hero .hero-actions { width: 100%; margin: 16px 0 0; }
   .commerce-hero .hero-buttons { display: flex; flex-direction: column; align-items: center; gap: 8px; }
