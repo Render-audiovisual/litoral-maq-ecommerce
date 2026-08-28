@@ -38,6 +38,8 @@ export function Footer() {
         <span>Lun a Vie 8 a 17 hs · Sáb 8:30 a 12:30 hs</span>
         <Link href="/productos">Productos</Link>
         <Link href="/cuenta/pedidos">Seguimiento</Link>
+        <Link href="/politica-de-privacidad">Privacidad</Link>
+        <Link href="/terminos-y-condiciones">Términos</Link>
         <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
           WhatsApp comercial
         </a>
