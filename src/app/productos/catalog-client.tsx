@@ -10,6 +10,7 @@ import {
 } from "@/lib/launch-catalog";
 import { useStore } from "@/store/store";
 import { getProductAvailability } from "@/lib/product-availability";
+import { searchProducts } from "@/lib/search";
 
 const PAGE_SIZE = 24;
 
@@ -46,19 +47,14 @@ export function CatalogClient() {
     [catalogProducts, family],
   );
   const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
     const minimum = minimumPrice === "" ? null : Number(minimumPrice);
     const maximum = maximumPrice === "" ? null : Number(maximumPrice);
-    return catalogProducts
+    // Mismo matcher que las sugerencias del header: si el cartel ofrece
+    // "ver los 23 resultados", la grilla tiene que mostrar esos 23.
+    return searchProducts(catalogProducts, query)
       .filter((product) => {
-        const matches =
-          !normalized ||
-          product.name.toLowerCase().includes(normalized) ||
-          product.code?.toLowerCase().includes(normalized) ||
-          product.brand.toLowerCase().includes(normalized);
         return (
           product.active &&
-          matches &&
           (!offersOnly || winnerRanks.has(product.id)) &&
           (!family || matchesLaunchFamily(product, family)) &&
           (!brand || product.brand === brand) &&
