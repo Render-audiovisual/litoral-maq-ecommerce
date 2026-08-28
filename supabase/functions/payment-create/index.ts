@@ -80,7 +80,10 @@ Deno.serve(async (request) => {
       ...new Set(requestedLines.map((line) => line.productId)),
     ];
     const { data: products, error: productError } = await db.from("products")
-      .select("id,code,name,price,stock,active").in("id", productIds);
+      .select("id,code,name,price,stock,active,incomplete").in(
+        "id",
+        productIds,
+      );
     if (productError || !products || products.length !== productIds.length) {
       throw new HttpError(409, "Uno o más productos ya no están disponibles.");
     }
@@ -93,6 +96,15 @@ Deno.serve(async (request) => {
         throw new HttpError(
           409,
           "Uno o más productos no tienen un precio vigente.",
+        );
+      }
+      if (
+        Array.isArray(product.incomplete) &&
+        product.incomplete.includes("stock")
+      ) {
+        throw new HttpError(
+          409,
+          `El stock de ${product.name} todavía no fue verificado por Litoral. Confirmalo antes de cobrar.`,
         );
       }
       if (Number(product.stock) < line.quantity) {
