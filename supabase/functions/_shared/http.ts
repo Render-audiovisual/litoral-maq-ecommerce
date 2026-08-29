@@ -13,7 +13,7 @@ export class HttpError extends Error {
 
 function allowedOrigins() {
   return (Deno.env.get("CORS_ALLOWED_ORIGINS") ||
-    "http://localhost:3000,https://litoralmaqrender.rendercorrientes.com")
+    "http://localhost:3000,https://litoralmaqrender.rendercorrientes.com,https://admin-litoralmaqrender.rendercorrientes.com")
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean);
