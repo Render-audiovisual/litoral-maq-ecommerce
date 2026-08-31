@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { ORDER_STATUS_LABELS } from "@/lib/order-details";
@@ -23,7 +24,7 @@ export default function AdminDashboardPage() {
         <section className="admin-card wide">
           <div className="card-heading"><div><h2>Pedidos recientes</h2><p>Últimos movimientos del e-commerce</p></div><Link href="/admin/pedidos">Ver todos →</Link></div>
           {!orders.length ? <div className="empty-inline">Todavía no hay solicitudes. Cuando un cliente confirme su pedido va a aparecer acá.</div> : (
-            <div className="table-wrap"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Total productos</th><th>Estado</th></tr></thead><tbody>{orders.slice(0, 6).map((order) => <tr key={order.id}><td><strong>{order.id}</strong></td><td>{order.customerName}</td><td>{formatDate(order.createdAt)}</td><td>{formatCurrency(order.total)}</td><td><span className={`status status-${order.status}`}>{ORDER_STATUS_LABELS[order.status]}</span></td></tr>)}</tbody></table></div>
+            <TableScroll><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Total productos</th><th>Estado</th></tr></thead><tbody>{orders.slice(0, 6).map((order) => <tr key={order.id}><td><strong>{order.id}</strong></td><td>{order.customerName}</td><td>{formatDate(order.createdAt)}</td><td>{formatCurrency(order.total)}</td><td><span className={`status status-${order.status}`}>{ORDER_STATUS_LABELS[order.status]}</span></td></tr>)}</tbody></table></TableScroll>
           )}
         </section>
         <section className="admin-card">

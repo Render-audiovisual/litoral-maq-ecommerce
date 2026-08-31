@@ -1,6 +1,8 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, Suspense, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { TableScroll } from "@/components/table-scroll";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
@@ -42,8 +44,13 @@ const emptyProduct = (): Product => ({
   shippingEnabled: false,
 });
 
-export default function AdminProductsPage() {
+function AdminProductsContent() {
   const { products, saveProduct, deleteProduct, replaceProducts } = useStore();
+  // Acceso directo desde /admin/categorias: la categoría llega por query
+  // string y queda en estado local para poder limpiarla sin navegar.
+  const [category, setCategory] = useState(
+    useSearchParams().get("categoria") ?? "",
+  );
   const [query, setQuery] = useState("");
   const [editing, setEditing] = useState<Product | null>(null);
   const [message, setMessage] = useState("");
@@ -59,6 +66,7 @@ export default function AdminProductsPage() {
   const filtered = useMemo(
     () =>
       products
+        .filter((product) => !category || product.category === category)
         .filter(
           (product) =>
             !query ||
@@ -66,7 +74,7 @@ export default function AdminProductsPage() {
             product.code?.includes(query),
         )
         .slice(0, 100),
-    [products, query],
+    [products, query, category],
   );
 
   async function submit(event: FormEvent) {
@@ -256,9 +264,19 @@ export default function AdminProductsPage() {
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Buscar por nombre o código…"
           />
+          {category && (
+            <button
+              type="button"
+              className="filter-chip"
+              onClick={() => setCategory("")}
+              title="Quitar filtro de categoría"
+            >
+              {category} ×
+            </button>
+          )}
           <span>Mostrando {filtered.length} resultados</span>
         </div>
-        <div className="table-wrap">
+        <TableScroll>
           <table>
             <thead>
               <tr>
@@ -340,7 +358,7 @@ export default function AdminProductsPage() {
               ))}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
       </section>
       {editing && (
         <div
@@ -631,5 +649,19 @@ export default function AdminProductsPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function AdminProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="admin-content">
+          <div className="spinner" />
+        </main>
+      }
+    >
+      <AdminProductsContent />
+    </Suspense>
   );
 }

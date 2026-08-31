@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { ORDER_STATUS_LABELS, resolveOrderLines } from "@/lib/order-details";
@@ -317,7 +318,7 @@ export default function AdminOrdersPage() {
             <p>Probá otro término o limpiá el filtro de estado.</p>
           </div>
         ) : (
-          <div className="table-wrap">
+          <TableScroll>
             <table>
               <thead>
                 <tr>
@@ -406,7 +407,7 @@ export default function AdminOrdersPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TableScroll>
         )}
       </section>
 
