@@ -12,10 +12,13 @@ veredicto se hizo **después** del despliegue del PR #9.
 >
 > El único bloqueo que tenía esta auditoría —el error 403 al abrir cualquier
 > ruta por URL directa o recarga— **está resuelto y verificado en producción**
-> (PR #9). La corrida de control posterior al despliegue da **20 de 20 vistas
-> en HTTP 200**, **35 enlaces internos todos en 200**, **0 hallazgos
-> críticos**, 0 enlaces rotos, 0 desbordes y 0 textos de prueba. Detalle y
-> evidencia en §7.1.
+> (PR #9). Las **cabeceras de seguridad** ya están aplicadas en los dos sitios
+> y verificadas (§1).
+>
+> Corrida de control con todo eso ya en línea: **20 de 20 vistas en HTTP
+> 200**, **35 enlaces internos todos en 200**, **0 hallazgos críticos**, 0
+> enlaces rotos, 0 desbordes, 0 textos de prueba y **0 violaciones de la
+> política de contenido**. Detalle y evidencia en §7.1.
 >
 > Queda un solo punto abierto, y **no bloquea la demo**: la confirmación del
 > acceso del dueño (§3).
@@ -78,6 +81,29 @@ Los 468 restantes están cargados pero **inactivos**: no aparecen en la tienda.
 Publicar más es cambiarles la visibilidad desde el panel, sin tocar código ni
 volver a publicar el sitio. Ninguno de los productos retirados quedó activo por
 error (`activeRetiredProducts: 0`).
+
+### Cabeceras de seguridad
+
+Aplicadas a mano en el hosting y **verificadas en los dos sitios**. Las siete
+responden y coinciden exactamente con lo que define
+`scripts/security-headers.mjs`:
+
+| Cabecera | Para qué |
+|---|---|
+| `Content-Security-Policy` | Limita de dónde puede cargar código, estilos, imágenes y a dónde puede conectarse el sitio |
+| `Strict-Transport-Security` | Obliga a HTTPS por un año |
+| `X-Content-Type-Options: nosniff` | El navegador no adivina tipos de archivo |
+| `X-Frame-Options: DENY` | Nadie puede embeber el sitio en un iframe |
+| `Referrer-Policy` | No filtra la URL completa a sitios de terceros |
+| `Permissions-Policy` | Cámara, micrófono y ubicación quedan deshabilitados |
+| `Cross-Origin-Opener-Policy` | Aísla la pestaña, dejando pasar los popups de login |
+
+**Lo importante era que la política no rompiera nada**, porque una CSP mal
+armada deja el sitio funcionando "de a ratos". Se recorrieron portada,
+catálogo, checkout y acceso al panel, en escritorio y móvil: **0 violaciones**.
+Los dos destinos externos que el sitio necesita siguen permitidos y
+funcionando —Supabase (`connect-src`) y el captcha de Cloudflare (`script-src`
+y `frame-src`)—, y no hay ningún otro host externo en juego.
 
 ### Backend
 
@@ -328,6 +354,13 @@ antiabuso, y esa verificación rechaza navegadores automatizados. **Es el
 comportamiento buscado, no una falla**: una persona con un navegador normal
 entra sin problema. Es solo una limitación de la auditoría automática: no pude
 completar un inicio de sesión real en el panel.
+
+Todo lo que la última corrida reporta en esa pantalla sale de acá: el aviso
+`[Cloudflare Turnstile] Error: 110200` ("navegador no soportado"), el HTTP 400
+que devuelve el servicio del captcha y un `warning: No available adapters.` que
+emite el propio script de Cloudflare. **No son de nuestro código ni de la
+política de contenido**: el sondeo específico de CSP no encontró ninguna
+violación, y el captcha carga porque la política lo permite explícitamente.
 
 ### 7.3 🟡 Los errores del backend se ven todos iguales
 
