@@ -82,9 +82,15 @@ async function recorrer(browser, viewport) {
       consola.push({ tipo: msg.type(), texto: texto.slice(0, 400) });
     });
     page.on("pageerror", (err) => consola.push({ tipo: "pageerror", texto: String(err.message).slice(0, 400) }));
-    page.on("requestfailed", (req) =>
-      fallidos.push({ url: req.url(), motivo: req.failure()?.errorText ?? "desconocido" }),
-    );
+    page.on("requestfailed", (req) => {
+      const motivo = req.failure()?.errorText ?? "desconocido";
+      // ERR_ABORTED no es un recurso caído: es una petición que el propio
+      // navegador canceló. Next precarga las rutas enlazadas y aborta esas
+      // precargas al cambiar de página o al cerrarla. Contarlas como fallas
+      // llenaba el informe de ruido sobre URLs que responden 200.
+      if (motivo === "net::ERR_ABORTED") return;
+      fallidos.push({ url: req.url(), motivo });
+    });
     page.on("response", (res) => {
       if (res.status() >= 400) fallidos.push({ url: res.url(), motivo: `HTTP ${res.status()}` });
     });

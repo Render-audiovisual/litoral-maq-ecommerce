@@ -1,19 +1,24 @@
 # Entrega — Litoral Maq
 
 Documento de entrega y guion de demo. Preparado a partir de una auditoría
-independiente sobre `main` (`833684c`) y sobre los dos sitios publicados, sin
-crear pedidos, cuentas ni datos reales.
+independiente sobre `main` y sobre los dos sitios publicados, sin crear
+pedidos, cuentas ni datos reales. La corrida de control que sostiene el
+veredicto se hizo **después** del despliegue del PR #9.
 
 - **Tienda**: https://litoralmaqrender.rendercorrientes.com
 - **Panel**: https://admin-litoralmaqrender.rendercorrientes.com/admin.html
 
-> **Veredicto de la auditoría: BLOQUEADO, con la corrección ya lista.** Un
-> defecto de servidor rompía todo acceso por URL directa, recarga (F5) o
-> enlace compartido en ambos sitios. **La corrección ya está incorporada y
-> validada en el PR #8**; el bloqueo se levanta cuando ese PR se fusione y se
-> despliegue, y Wilson verifique producción. Detalle en §7.1. Esta rama es
-> solo documentación: no contiene la corrección ni ningún cambio de código.
-> Todo lo demás de este documento está verificado y en pie.
+> ## ✅ Veredicto: APTO PARA ENTREGA
+>
+> El único bloqueo que tenía esta auditoría —el error 403 al abrir cualquier
+> ruta por URL directa o recarga— **está resuelto y verificado en producción**
+> (PR #9). La corrida de control posterior al despliegue da **20 de 20 vistas
+> en HTTP 200**, **35 enlaces internos todos en 200**, **0 hallazgos
+> críticos**, 0 enlaces rotos, 0 desbordes y 0 textos de prueba. Detalle y
+> evidencia en §7.1.
+>
+> Queda un solo punto abierto, y **no bloquea la demo**: la confirmación del
+> acceso del dueño (§3).
 
 ---
 
@@ -34,6 +39,7 @@ persona (sin enviar formularios ni crear datos).
 | Carrito | ✅ | agrega, muestra código, precio unitario, cantidad ± y total |
 | Inicio de checkout | ✅ | formulario con nombre, email y teléfono; entrega por envío (domicilio o sucursal) o retiro en Sáenz 1587. **No se envió ninguna solicitud** |
 | Login / registro de clientes | ✅ | el formulario carga y valida |
+| **URL directa, F5 y enlaces compartidos** | ✅ | 20 de 20 vistas en HTTP 200 tras el PR #9; 35 enlaces internos todos en 200 (§7.1) |
 
 ### Panel de administración
 
@@ -45,16 +51,18 @@ persona (sin enviar formularios ni crear datos).
 
 ### Calidad del código (todo desde cero, en limpio)
 
+Reejecutado sobre `main` con el PR #9 ya incorporado:
+
 | Gate | Resultado |
 |---|---|
 | `npm ci` | ✅ 0 vulnerabilidades |
 | `npx tsc --noEmit` | ✅ sin errores |
 | `npm run lint` | ✅ sin errores |
 | `npm test` (unitarios) | ✅ **259 de 259** en 27 archivos |
-| `npx playwright test` (E2E) | ✅ **45 pasaron**, 2 salteados (los de staging, sin backend declarado) |
+| `npx playwright test` (E2E) | ✅ **45 pasaron**, 2 salteados (los de staging, sin backend declarado). En una corrida en frío puede fallar 1 por compilación lenta; pasa al repetirla (§7.5) |
 | `npm run validate:catalog` | ✅ **PASS** — 508 productos vigentes del Sheet, 0 filas inválidas, 0 códigos duplicados, 0 sin código/nombre/precio |
-| `npm run build` / `build:hostinger` / `build:admin` | ✅ los tres artefactos se generan |
-| `npm run validate:separation` | ✅ 25 de 25 comprobaciones |
+| `npm run build` / `build:hostinger` / `build:admin` | ✅ los tres artefactos se generan (en Windows, ver §7.5) |
+| `npm run validate:separation` | ✅ **34 de 34** comprobaciones, incluidas las de índice físico por ruta que agregó el PR #9 |
 
 ### El catálogo: dos números, y no son lo mismo
 
@@ -81,15 +89,11 @@ Las 7 Edge Functions están **ACTIVE** en el proyecto de producción:
 
 ## 2. Guion de demo — 10 minutos
 
-> **Regla de oro, solo si el PR #8 todavía no se desplegó: navegá siempre
-> haciendo clic. No escribas URLs a mano, no uses F5 y no abras enlaces
-> guardados.** Mientras el defecto §7.1 siga en línea, eso muestra una
-> pantalla de error del servidor; si pasa, volvé al inicio y seguí con clics.
->
-> **Con el PR #8 ya desplegado y verificado, esta restricción desaparece** y
-> se puede demostrar con total libertad, incluso abriendo un enlace de
-> producto compartido por WhatsApp — que es, de hecho, una buena cosa para
-> mostrar.
+> **Sin restricciones para demostrar.** El defecto que obligaba a navegar solo
+> con clics está resuelto y verificado (§7.1): se puede escribir la dirección,
+> recargar con F5, usar el historial y abrir enlaces guardados. Es más: **abrir
+> un enlace de producto como si llegara por WhatsApp es una buena cosa para
+> mostrar**, porque es exactamente como llegan los clientes.
 
 | Min | Qué mostrar | Cómo |
 |---|---|---|
@@ -159,6 +163,30 @@ Secretos que consume, cargados directamente en Supabase (nunca en Git ni en
 variables `NEXT_PUBLIC_*`): `RESEND_API_KEY`, `RESEND_FROM_EMAIL`,
 `LITORAL_ORDERS_EMAIL`, `STORE_PUBLIC_URL`, `ADMIN_PUBLIC_URL`,
 `ORDER_NOTIFICATIONS_CRON_SECRET`.
+
+### Qué recibe el cliente después de comprar
+
+Al confirmar la solicitud salen **dos correos en el mismo momento**: uno al
+cliente ("Recibimos tu pedido", con productos, total y forma de entrega) y otro
+al equipo ("Nuevo pedido", con botón directo al panel).
+
+Los demás avisos —pedido listo, enviado, entregado— **salen cuando alguien
+cambia el estado en el panel**. Los de pago aprobado o rechazado no se disparan
+hoy, porque dependen de Mercado Pago, que está apagado (§5).
+
+**No hay WhatsApp automático.** Los botones de WhatsApp del sitio los aprieta
+una persona: en la pantalla de confirmación hay un "Avisar por WhatsApp" que
+abre un mensaje ya redactado con el número de solicitud y los productos, pero
+lo envía el cliente si quiere. El sistema nunca manda un WhatsApp por su
+cuenta.
+
+> **Pendiente menor**: la cola de correos se procesa al crear un pedido, al
+> cambiar un estado, con el botón "Reintentar correos pendientes" del panel, o
+> por un proceso periódico (`ORDER_NOTIFICATIONS_CRON_SECRET`). **No pude
+> verificar si ese proceso periódico está efectivamente programado** — la
+> consulta a la base fue bloqueada por la política de permisos del entorno. Si
+> no lo estuviera, un correo que falle esperaría hasta que alguien entre al
+> panel y apriete el botón. Conviene confirmarlo.
 
 > **Alcance de lo verificado**: confirmé que la función está desplegada y
 > activa, y revisé el código del envío y de la cola. **No envié correos yo**,
@@ -232,73 +260,65 @@ depende de que el correo salga.
 
 ## 7. Riesgos reales y pasos posteriores
 
-### 7.1 🔴 BLOQUEANTE — corregido en el PR #8, pendiente de fusionar y desplegar
+### 7.1 ✅ RESUELTO — el 403 en URL directa y recarga
 
-> **Estado**: la corrección ya está incorporada y validada por Wilson en el
-> **PR #8**. El bloqueo se levanta cuando ese PR se fusione, se despliegue y
-> Wilson verifique producción. Hasta entonces, **lo publicado sigue con el
-> defecto** y la regla de oro de la demo (§2) sigue vigente.
+> **Estado: cerrado.** Corregido en el **PR #9**, fusionado y desplegado.
+> Wilson verificó URL directa y recarga en tienda y panel, en escritorio y
+> móvil, con HTTP 200 y contenido real. Confirmado además por una corrida
+> independiente del script de auditoría (evidencia abajo).
 
-**Qué pasa.** Cualquier ruta que no sea la portada, si se abre escribiendo la
+**Qué pasaba.** Cualquier ruta que no fuera la portada, abierta escribiendo la
 dirección, recargando con F5, volviendo con el historial o entrando por un
-enlace compartido, responde una redirección y después un error **403
-Forbidden**. Afecta a los dos sitios.
+enlace compartido, respondía **403 Forbidden**. Afectaba a los dos sitios. La
+navegación por clics funcionaba, porque no le pide la página al servidor.
 
-**Cómo reproducirlo** (10 segundos, sin herramientas):
+**Por qué pasaba.** El sitio exportaba cada ruta como archivo
+(`productos.html`) y además como carpeta homónima (`productos/`, con los datos
+internos de la página). Apache veía la carpeta primero, agregaba la barra final
+y, al no haber índice adentro, respondía 403 antes de que la regla de
+`.htaccess` sirviera el `.html`.
+
+**Cómo se resolvió.** El primer intento fue desactivar ese comportamiento de
+Apache con `DirectorySlash Off` (PR #8), que funcionaba en un Apache de
+laboratorio. **Hostinger lo ignora**, así que no alcanzó. La solución
+definitiva, en el **PR #9**, ataca la causa en vez del síntoma: materializa
+cada ruta también como `ruta/index.html`. Ahora la carpeta sí tiene índice, y
+la barra final que agrega Apache deja de ser un problema — deja de depender de
+qué directivas respete el hosting.
+
+**Evidencia de la verificación posterior al despliegue** (`node
+scripts/audit-produccion.mjs`, recorrido de solo lectura):
+
+| Comprobación | Resultado |
+|---|---|
+| Vistas en HTTP 200 con contenido renderizado | **20 de 20** (10 rutas × escritorio y móvil) |
+| Enlaces internos verificados uno por uno | **35, todos 200** |
+| Hallazgos críticos | **0** |
+| Enlaces rotos · desbordes · textos de prueba | **0 · 0 · 0** |
+| Separación tienda / panel | **4 de 4** |
+| `/admin.html` → login del panel con formulario | ✅ |
+| Código de salida del script | **0** |
+
+Rutas confirmadas por URL directa, que antes daban 403:
 
 ```
-https://litoralmaqrender.rendercorrientes.com/productos   → 301 → /productos/ → 403
-https://litoralmaqrender.rendercorrientes.com/carrito     → 403
-https://litoralmaqrender.rendercorrientes.com/checkout    → 403
-https://litoralmaqrender.rendercorrientes.com/login       → 403
-https://admin-litoralmaqrender.rendercorrientes.com/admin/login    → 403
-https://admin-litoralmaqrender.rendercorrientes.com/admin/pedidos  → 403
+tienda: /productos  /carrito  /checkout  /login  /registro  /productos/<ficha>
+panel:  /admin/login  /admin/pedidos  /admin/productos  /admin/clientes
+        /admin/configuracion
 ```
 
-**Qué SÍ funciona**: navegar con clics desde la portada. La aplicación cambia
-de página sin pedirle nada al servidor, así que el recorrido completo
-—catálogo, búsqueda, filtros, ficha, carrito, checkout— anda bien. El error
-aparece en cuanto el navegador vuelve a pedir la página al servidor.
-
-**Por qué pasa.** El sitio exporta cada ruta como archivo (`productos.html`) y
-además como carpeta con el mismo nombre (`productos/`, con los datos internos
-de la página). Apache ve la carpeta primero, agrega la barra final
-(`/productos/`), y como esa carpeta no tiene índice, responde 403 antes de
-que la regla de `.htaccess` pueda servir el `.html`.
-
-**Verificación hecha.** Serví el artefacto de `main` con un Apache real en un
-contenedor: reproduce el mismo 301 → 403. Agregando una sola línea
-(`DirectorySlash Off`) al principio del `.htaccess`, **las seis rutas pasan a
-responder 200** y la redirección de `/admin` al subdominio sigue funcionando.
-Esa es la corrección que Wilson incorporó y validó en el **PR #8**; esta rama
-de auditoría no la contiene, y no debe contenerla.
-
-**Ojo con el orden.** Producción estaba corriendo además un artefacto **más
-viejo que `main`** (`/admin` respondía 404 en vez de la redirección que define
-el `.htaccess` actual). Por eso **republicar sin el PR #8 no alcanzaba**: el
-defecto también estaba en `main`. Con el PR #8 fusionado, el despliegue sí
-cierra las dos cosas de una vez.
-
-**Cómo confirmar que quedó resuelto**, después del despliegue:
+**Comprobación rápida**, si alguien quiere repetirla en 10 segundos:
 
 ```bash
-# Las seis tienen que responder 200, sin redirección intermedia.
 for u in /productos /carrito /checkout /login; do
-  curl -sS -o /dev/null -w "$u -> %{http_code}\n" \
-    https://litoralmaqrender.rendercorrientes.com$u
-done
-for u in /admin/login /admin/pedidos; do
-  curl -sS -o /dev/null -w "$u -> %{http_code}\n" \
-    https://admin-litoralmaqrender.rendercorrientes.com$u
+  curl -sSL -o /dev/null -w "$u -> %{http_code}
+"     https://litoralmaqrender.rendercorrientes.com$u
 done
 ```
 
-O, más completo, `node scripts/audit-produccion.mjs` (ver el final de este
-documento): tiene que terminar con 0 hallazgos críticos.
-
-**Impacto para el negocio.** Un enlace de producto compartido por WhatsApp no
-abre. Un cliente que recarga pierde la página. Quien entre al panel escribiendo
-la dirección no puede trabajar. Es lo primero a resolver.
+Nota: es normal ver un salto intermedio `301` hacia la misma ruta con barra
+final (`/productos/`). Lo que importa es que **termina en 200 con la página
+real**; por eso el `-L` en el comando.
 
 ### 7.2 🟡 El captcha bloquea navegadores automatizados
 
@@ -322,15 +342,32 @@ No apareció ningún texto de demo, relleno o dato de prueba en las páginas
 públicas, ni desbordes horizontales en escritorio o móvil, ni mezcla entre
 tienda y panel.
 
+### 7.5 🟡 Dos asperezas del entorno de desarrollo (no afectan a producción)
+
+Ninguna toca el sitio publicado; son molestias para quien trabaje en el
+código.
+
+**Los builds de tienda y panel no corren en Windows.** Los scripts
+`build:hostinger` y `build:admin` usan la forma
+`ALLOW_LOCAL_ADAPTER=false next build`, que es sintaxis de Linux y macOS.
+En Windows falla con *"ALLOW_LOCAL_ADAPTER no se reconoce como un comando"*.
+**No afecta a la publicación**: el workflow corre en `ubuntu-latest`, donde
+esa sintaxis es la correcta, y verifiqué que ambos artefactos se generan bien
+al ejecutarlos con la variable puesta a la manera de Linux. Quien compile
+desde Windows tiene que hacer lo mismo.
+
+**Un E2E falla en frío.** `next dev` compila cada ruta la primera vez que se
+visita, y en una corrida desde cero eso puede pasarse del tiempo de espera
+—le tocó a `admin-orders`—. Repetida en caliente pasa sin problema, y en CI lo
+cubre `retries: 2`. Es preexistente y no lo introduce ningún cambio reciente.
+
 ### Pasos posteriores, en orden
 
-1. **Fusionar el PR #8 y desplegar** (§7.1). Cierra el bloqueo y, de paso, la
-   diferencia entre lo publicado y el repositorio.
-2. **Que Wilson verifique producción** con los comandos de §7.1. Recién ahí el
-   veredicto pasa a APTO PARA ENTREGA.
-3. **Confirmar el acceso del dueño** (§3) — pendiente para mañana.
-4. Decidir fecha para encender Mercado Pago y Envíopack (§5).
-5. Mejorar los mensajes de error del panel (§7.3).
+1. **Confirmar el acceso del dueño** (§3) — pendiente para mañana. Único punto
+   abierto, y no bloquea la demo.
+2. Confirmar que el procesador periódico de correos está programado (§4).
+3. Decidir fecha para encender Mercado Pago y Envíopack (§5).
+4. Mejorar los mensajes de error del panel (§7.3).
 
 ---
 
