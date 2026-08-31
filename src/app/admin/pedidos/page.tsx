@@ -4,7 +4,11 @@ import { useMemo, useState } from "react";
 import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { ORDER_STATUS_LABELS, resolveOrderLines } from "@/lib/order-details";
+import {
+  ADMIN_ORDER_STATUS_LABELS,
+  ORDER_STATUS_LABELS,
+  resolveOrderLines,
+} from "@/lib/order-details";
 import type { Order, PaymentStatus } from "@/lib/types";
 import { createShipping, downloadShippingLabel } from "@/services/shipping";
 import { flushOrderNotifications } from "@/services/order-notifications";
@@ -116,7 +120,7 @@ export default function AdminOrdersPage() {
         current?.id === order.id ? persisted : current,
       );
       setMessage(
-        `${order.id} actualizado a ${ORDER_STATUS_LABELS[nextStatus]}.`,
+        `${order.id} actualizado a ${ADMIN_ORDER_STATUS_LABELS[nextStatus]}.`,
       );
     } catch (caught) {
       setError(
@@ -243,17 +247,17 @@ export default function AdminOrdersPage() {
 
       <section className="stats-grid order-stats">
         <article className="warning">
-          <span>Para revisar</span>
+          <span>Paso 0 · Pedido recibido</span>
           <strong>{pendingCount}</strong>
           <small>Esperan confirmación del equipo</small>
         </article>
         <article>
-          <span>Preparando</span>
+          <span>Paso 1 · Preparando</span>
           <strong>{preparingCount}</strong>
           <small>Pedidos en proceso</small>
         </article>
         <article>
-          <span>En camino</span>
+          <span>Paso 3 · Enviado</span>
           <strong>{shippedCount}</strong>
           <small>Marcados como enviados</small>
         </article>
@@ -297,7 +301,7 @@ export default function AdminOrdersPage() {
             <option value="">Todos los estados</option>
             {statusOptionsFor(status || "pendiente").map((item) => (
               <option value={item} key={item}>
-                {ORDER_STATUS_LABELS[item]}
+                {ADMIN_ORDER_STATUS_LABELS[item]}
               </option>
             ))}
           </select>
@@ -389,7 +393,7 @@ export default function AdminOrdersPage() {
                       >
                         {statusOptionsFor(order.status).map((item) => (
                           <option value={item} key={item}>
-                            {ORDER_STATUS_LABELS[item]}
+                            {ADMIN_ORDER_STATUS_LABELS[item]}
                           </option>
                         ))}
                       </select>
@@ -488,7 +492,7 @@ export default function AdminOrdersPage() {
                 >
                   {statuses.map((item) => (
                     <option value={item} key={item}>
-                      {ORDER_STATUS_LABELS[item]}
+                      {ADMIN_ORDER_STATUS_LABELS[item]}
                     </option>
                   ))}
                 </select>
