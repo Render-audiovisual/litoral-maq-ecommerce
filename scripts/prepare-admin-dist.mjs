@@ -13,6 +13,7 @@
 // "/admin/clientes", "/admin/configuracion".
 import { cp, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { APACHE_SECURITY_HEADERS } from "./security-headers.mjs";
 
 const root = process.cwd();
 const nextExport = path.join(root, "dist");
@@ -62,7 +63,9 @@ async function keepOnlyAdminSurface(dir) {
 }
 
 const ADMIN_HTACCESS = `Options -MultiViews
+DirectorySlash Off
 DirectoryIndex admin.html
+${APACHE_SECURITY_HEADERS}
 RewriteEngine On
 
 # Next exporta las rutas como archivos .html. Permite abrir /admin/productos,

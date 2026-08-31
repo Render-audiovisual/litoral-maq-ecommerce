@@ -39,6 +39,16 @@ async function readIfExists(targetPath) {
   }
 }
 
+async function collectFiles(dir, predicate, files = []) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) await collectFiles(full, predicate, files);
+    else if (predicate(full)) files.push(full);
+  }
+  return files;
+}
+
 async function listTopLevel(dir) {
   try {
     return await readdir(dir);
@@ -207,12 +217,54 @@ async function main() {
   } else {
     fail("[tienda] .htaccess no define la raíz del sitio.");
   }
+  if (storeHtaccess?.includes("DirectorySlash Off")) {
+    ok("[tienda] .htaccess evita que Apache priorice las carpetas RSC sobre los HTML de ruta.");
+  } else {
+    fail("[tienda] .htaccess no desactiva DirectorySlash para las rutas exportadas.");
+  }
 
   const adminHtaccess = await readIfExists(path.join(adminDir, ".htaccess"));
   if (adminHtaccess?.includes("RewriteRule ^$ admin.html [L]")) {
     ok("[admin] .htaccess redirige la raíz del subdominio a admin.html.");
   } else {
     fail("[admin] .htaccess no redirige la raíz a admin.html.");
+  }
+  if (adminHtaccess?.includes("DirectorySlash Off")) {
+    ok("[admin] .htaccess evita que Apache priorice las carpetas RSC sobre los HTML de ruta.");
+  } else {
+    fail("[admin] .htaccess no desactiva DirectorySlash para las rutas exportadas.");
+  }
+
+  const requiredSecurityHeaders = [
+    "Content-Security-Policy",
+    "Strict-Transport-Security",
+    "X-Content-Type-Options",
+    "X-Frame-Options",
+    "Referrer-Policy",
+    "Permissions-Policy",
+    "Cross-Origin-Opener-Policy",
+  ];
+  for (const [label, htaccess] of [["tienda", storeHtaccess], ["admin", adminHtaccess]]) {
+    const missing = requiredSecurityHeaders.filter((header) => !htaccess?.includes(header));
+    if (missing.length === 0) ok(`[${label}] .htaccess incluye todos los headers de seguridad requeridos.`);
+    else fail(`[${label}] .htaccess no incluye: ${missing.join(", ")}.`);
+  }
+
+  const jsFiles = [
+    ...(await collectFiles(path.join(storeDir, "_next"), (file) => file.endsWith(".js"))),
+    ...(await collectFiles(path.join(adminDir, "_next"), (file) => file.endsWith(".js"))),
+  ];
+  const forbiddenProductionMarkers = ["admin123", "demo-admin-", "litoral-accounts-v1"];
+  for (const marker of forbiddenProductionMarkers) {
+    let found = false;
+    for (const file of jsFiles) {
+      if ((await readFile(file, "utf8")).includes(marker)) {
+        found = true;
+        fail(`[producción] El bundle contiene el marcador demo prohibido "${marker}".`);
+        break;
+      }
+    }
+    if (!found) ok(`[producción] El bundle no contiene el marcador demo "${marker}".`);
   }
 
   // 5. Acceso directo y refresh de rutas profundas.

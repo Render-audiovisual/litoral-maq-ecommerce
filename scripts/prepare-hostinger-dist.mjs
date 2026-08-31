@@ -15,6 +15,7 @@
 // "Qué separación demuestra esto y qué no").
 import { cp, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { APACHE_SECURITY_HEADERS } from "./security-headers.mjs";
 
 const root = process.cwd();
 const nextExport = path.join(root, "dist");
@@ -45,7 +46,9 @@ async function removeAdminRoutes(dir) {
 }
 
 const STORE_HTACCESS = `Options -MultiViews
+DirectorySlash Off
 DirectoryIndex index.html
+${APACHE_SECURITY_HEADERS}
 RewriteEngine On
 
 # El panel vive en un subdominio separado. Conservamos esa separación, pero
