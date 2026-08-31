@@ -242,7 +242,7 @@ export function Header() {
           <Link href="/productos" onClick={() => setOpen(false)}>
             Productos
           </Link>
-          <Link href="/productos?categoria=Ofertas" onClick={() => setOpen(false)}>
+          <Link href="/#productos-estrella" onClick={() => setOpen(false)}>
             Ofertas
           </Link>
           <Link href="/cuenta/pedidos" className="nav-orders-link" onClick={() => setOpen(false)}>
