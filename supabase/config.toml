@@ -21,3 +21,31 @@ verify_jwt = false
 [functions.order-notifications]
 # La función valida sesiones de usuario o el secreto exclusivo del cron.
 verify_jwt = false
+
+# ---------------------------------------------------------------------------
+# Staging local (chore/p2-supabase-staging). Estas secciones SOLO afectan al
+# stack que levanta `npx supabase start` en la máquina de quien desarrolla o
+# en CI. No se aplican al proyecto hosteado salvo que alguien corra
+# `supabase config push` a propósito — cosa que ningún workflow hace.
+# ---------------------------------------------------------------------------
+
+[db.seed]
+enabled = true
+# Datos ficticios mínimos para los E2E. Ver supabase/staging/seed.sql.
+sql_paths = ["./staging/seed.sql"]
+
+[auth]
+# El checkout de invitado usa signInAnonymously (ver checkout/page.tsx):
+# sin esto, el E2E de pedidos no puede crear la sesión de invitado.
+enable_anonymous_sign_ins = true
+
+[auth.email]
+# En local no hay servidor de correo real (Mailpit intercepta todo). Sin
+# confirmación automática, cualquier alta de cuenta quedaría colgada.
+enable_confirmations = false
+
+[analytics]
+# Logflare no arranca en Docker Desktop/Windows (pide un plan de Stripe que la
+# imagen local no trae) y su health check tumba el `supabase start` entero.
+# La app no lo usa: los logs locales se leen con `docker logs`.
+enabled = false
