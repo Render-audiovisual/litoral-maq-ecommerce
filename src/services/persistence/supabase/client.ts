@@ -11,6 +11,17 @@ export type SupabaseConfig = {
 
 const SECRET_KEY_PREFIXES = ["sb_secret_", "service_role"];
 
+const HOSTED_SUPABASE_URL = /^https:\/\/.+\.supabase\.co\/?$/;
+/**
+ * El stack local del CLI (`npx supabase start`) sirve la misma API en
+ * `http://127.0.0.1:54321`. Sin esta excepción no hay forma de apuntar la
+ * app a un entorno de staging que no sea un proyecto hosteado — ver
+ * `docs/staging-supabase.md`. Se acepta únicamente loopback: cualquier otro
+ * host sigue teniendo que ser `https://<ref>.supabase.co`, así que un build
+ * de producción mal configurado se sigue frenando igual que antes.
+ */
+const LOCAL_SUPABASE_URL = /^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/?$/;
+
 /**
  * Lee la configuración pública de Supabase del entorno y valida su forma.
  * Nunca lanza por ausencia total de variables (eso es "modo local", el caso
@@ -75,7 +86,7 @@ export function readSupabaseConfig(overrideEnv?: Record<string, string | undefin
       reason: "Falta NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (o, como alias legacy, NEXT_PUBLIC_SUPABASE_ANON_KEY).",
     };
   }
-  if (!/^https:\/\/.+\.supabase\.co\/?$/.test(url)) {
+  if (!HOSTED_SUPABASE_URL.test(url) && !LOCAL_SUPABASE_URL.test(url)) {
     return { status: "invalid", reason: `NEXT_PUBLIC_SUPABASE_URL no parece una URL de Supabase válida: "${url}".` };
   }
   const lowerKey = publishableKey.toLowerCase();

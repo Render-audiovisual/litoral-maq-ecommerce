@@ -20,7 +20,8 @@
     "prepare:products-migration": "node scripts/prepare-products-migration.mjs",
     "test": "vitest run",
     "test:unit": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:staging": "node --env-file=.env.staging.local node_modules/@playwright/test/cli.js test --grep @staging"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.111.0",

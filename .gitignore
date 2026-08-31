@@ -29,3 +29,6 @@ playwright-report/
 
 # Estado local del CLI de Supabase (link al proyecto, versiones detectadas)
 supabase/.temp/
+
+# Estado local del CLI de Supabase (rama de db local)
+supabase/.branches/
