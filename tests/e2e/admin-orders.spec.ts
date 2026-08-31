@@ -30,7 +30,7 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await expect(page).toHaveTitle(/^\(1\) Pedidos pendientes/);
   await expect(page.getByLabel("1 pedidos pendientes")).toBeVisible();
   await expect(page.locator('.admin-sidebar a[href="/admin/pedidos"] .nav-notification-badge')).toHaveText("1");
-  await expect(row).toContainText("1 unidades");
+  await expect(row).toContainText("1 unidad");
   await expect(row.locator(".status-select")).toHaveValue("pendiente");
   await expect(row).toContainText("Entrega Gratis");
   await row.getByRole("button", { name: "Ver detalle" }).click();
