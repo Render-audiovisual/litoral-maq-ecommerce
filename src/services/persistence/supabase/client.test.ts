@@ -62,6 +62,24 @@ describe("readSupabaseConfig", () => {
     expect(result.status).toBe("invalid");
   });
 
+  it("acepta el stack local del CLI (loopback) como staging", () => {
+    for (const url of ["http://127.0.0.1:54321", "http://localhost:54321"]) {
+      const result = readSupabaseConfig({
+        NEXT_PUBLIC_SUPABASE_URL: url,
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_" + "a".repeat(30),
+      });
+      expect(result.status).toBe("ok");
+    }
+  });
+
+  it("no acepta http hacia un host que no sea loopback", () => {
+    const result = readSupabaseConfig({
+      NEXT_PUBLIC_SUPABASE_URL: "http://192.168.0.10:54321",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_" + "a".repeat(30),
+    });
+    expect(result.status).toBe("invalid");
+  });
+
   it("key demasiado corta → invalid", () => {
     const result = readSupabaseConfig({
       NEXT_PUBLIC_SUPABASE_URL: "https://abcdefghijklmno.supabase.co",
