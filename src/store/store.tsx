@@ -56,8 +56,8 @@ type Store = {
   setAdminSession: (session: Session | null) => Promise<void>;
   signOutCustomer: () => Promise<void>;
   signOutAdmin: () => Promise<void>;
-  saveProduct: (product: Product) => void;
-  deleteProduct: (id: string) => void;
+  saveProduct: (product: Product) => Promise<Product>;
+  deleteProduct: (id: string) => Promise<void>;
   replaceProducts: (products: Product[]) => Promise<Product[]>;
   createOrder: (order: Order) => Promise<Order>;
   updateOrderStatus: (id: string, status: Order["status"]) => Promise<Order>;
@@ -472,39 +472,63 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const saveProduct = useCallback(
-    (product: Product) => {
+    async (product: Product) => {
       const result = applySaveProduct(products, adminSession, product);
       if (!result.applied || !result.auditEntry) {
-        console.warn(
-          "Intento de guardar un producto sin sesión de administrador válida.",
+        throw new Error(
+          "La sesión de administrador venció. Volvé a ingresar antes de guardar.",
         );
-        return;
       }
-      setProducts(result.next);
+
+      const persisted = await adapter.upsertProduct(product);
+      setProducts((current) => {
+        const exists = current.some((item) => item.id === persisted.id);
+        return exists
+          ? current.map((item) =>
+              item.id === persisted.id ? persisted : item,
+            )
+          : [persisted, ...current];
+      });
       setAuditLog((current) =>
         appendAuditEntry(current, result.auditEntry as AuditEntry),
       );
-      void adapter.upsertProduct(product);
-      void adapter.appendAuditEntry(result.auditEntry);
+      try {
+        await adapter.appendAuditEntry(result.auditEntry);
+      } catch (error) {
+        console.warn(
+          "El producto se guardó, pero no se pudo registrar la auditoría.",
+          error,
+        );
+      }
+      return persisted;
     },
     [products, adminSession, adapter],
   );
 
   const deleteProduct = useCallback(
-    (id: string) => {
+    async (id: string) => {
       const result = applyDeleteProduct(products, adminSession, id);
       if (!result.applied || !result.auditEntry) {
-        console.warn(
-          "Intento de eliminar un producto sin sesión de administrador válida.",
+        throw new Error(
+          "La sesión de administrador venció. Volvé a ingresar antes de eliminar.",
         );
-        return;
       }
-      setProducts(result.next);
+
+      await adapter.deleteProduct(id);
+      setProducts((current) =>
+        current.filter((product) => product.id !== id),
+      );
       setAuditLog((current) =>
         appendAuditEntry(current, result.auditEntry as AuditEntry),
       );
-      void adapter.deleteProduct(id);
-      void adapter.appendAuditEntry(result.auditEntry);
+      try {
+        await adapter.appendAuditEntry(result.auditEntry);
+      } catch (error) {
+        console.warn(
+          "El producto se eliminó, pero no se pudo registrar la auditoría.",
+          error,
+        );
+      }
     },
     [products, adminSession, adapter],
   );

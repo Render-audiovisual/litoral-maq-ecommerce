@@ -79,3 +79,7 @@ La validación de la rama de cuentas falló con `vitest: not found` porque el wo
 ## 2026-08-28 — Este proyecto no define `npm run typecheck`
 
 La cadena de validación se detuvo después de 240 tests correctos porque `package.json` no tiene un script `typecheck`. En Litoral Maq, verificar TypeScript con `npx tsc --noEmit` y después continuar con `npm run lint` y los builds; revisar los scripts antes de encadenar comandos largos.
+
+## 2026-08-31 — Esperar la finalización real de `npm ci` antes de validar
+
+El orquestador devolvió una sesión mientras `npm ci` seguía activo, pero se interpretó como finalización y se lanzaron TypeScript, ESLint y Vitest contra un `node_modules` incompleto. Una segunda instalación simultánea terminó en `ENOTEMPTY`. Si `exec_command` devuelve `session_id`, esperar esa sesión con `write_stdin` antes de iniciar otro proceso que lea o modifique dependencias; después comprobar `node_modules/.bin/{tsc,eslint,vitest}`.

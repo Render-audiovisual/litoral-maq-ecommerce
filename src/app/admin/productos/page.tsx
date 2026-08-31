@@ -51,6 +51,7 @@ export default function AdminProductsPage() {
     "success",
   );
   const [syncing, setSyncing] = useState(false);
+  const [pendingProductId, setPendingProductId] = useState<string | null>(null);
   const provider = resolveRequestedProvider();
   const sheetProductCount = products.filter(
     (product) => product.source === "google-sheet",
@@ -68,7 +69,7 @@ export default function AdminProductsPage() {
     [products, query],
   );
 
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault();
     if (
       !editing?.name.trim() ||
@@ -103,15 +104,68 @@ export default function AdminProductsPage() {
       );
       return;
     }
-    saveProduct({
+    const product = {
       ...editing,
       incomplete: editing.incomplete.filter(
         (item) => !["code", "price"].includes(item),
       ),
-    });
-    setEditing(null);
-    setMessageKind("success");
-    setMessage("Producto guardado correctamente.");
+    };
+    setPendingProductId(product.id);
+    setMessage("");
+    try {
+      await saveProduct(product);
+      setEditing(null);
+      setMessageKind("success");
+      setMessage("Producto guardado correctamente.");
+    } catch (error) {
+      setMessageKind("error");
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo guardar el producto.",
+      );
+    } finally {
+      setPendingProductId(null);
+    }
+  }
+
+  async function toggleVisibility(product: Product) {
+    setPendingProductId(product.id);
+    setMessage("");
+    try {
+      await saveProduct({ ...product, active: !product.active });
+      setMessageKind("success");
+      setMessage("Visibilidad actualizada correctamente.");
+    } catch (error) {
+      setMessageKind("error");
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo cambiar la visibilidad.",
+      );
+    } finally {
+      setPendingProductId(null);
+    }
+  }
+
+  async function removeProduct(product: Product) {
+    if (!confirm(`¿Eliminar ${product.name}?`)) return;
+    setPendingProductId(product.id);
+    setMessage("");
+    try {
+      await deleteProduct(product.id);
+      setMessageKind("success");
+      setMessage("Producto eliminado correctamente.");
+    } catch (error) {
+      setMessageKind("error");
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "No se pudo eliminar el producto.",
+      );
+    } finally {
+      setPendingProductId(null);
+    }
   }
 
   function setStockConfirmed(confirmed: boolean) {
@@ -167,7 +221,7 @@ export default function AdminProductsPage() {
             type="button"
             className="button secondary"
             onClick={sync}
-            disabled={syncing}
+            disabled={syncing || pendingProductId !== null}
           >
             {syncing ? "Sincronizando…" : "↻ Actualizar desde Sheet"}
           </button>
@@ -175,6 +229,7 @@ export default function AdminProductsPage() {
             type="button"
             className="button primary"
             onClick={() => setEditing(emptyProduct())}
+            disabled={pendingProductId !== null}
           >
             + Nuevo producto
           </button>
@@ -256,9 +311,8 @@ export default function AdminProductsPage() {
                     <button
                       type="button"
                       className={product.active ? "toggle active" : "toggle"}
-                      onClick={() =>
-                        saveProduct({ ...product, active: !product.active })
-                      }
+                      onClick={() => void toggleVisibility(product)}
+                      disabled={pendingProductId !== null}
                     >
                       <span />
                     </button>
@@ -268,16 +322,15 @@ export default function AdminProductsPage() {
                       <button
                         type="button"
                         onClick={() => setEditing({ ...product })}
+                        disabled={pendingProductId !== null}
                       >
                         Editar
                       </button>
                       <button
                         type="button"
                         className="danger-link"
-                        onClick={() => {
-                          if (confirm(`¿Eliminar ${product.name}?`))
-                            deleteProduct(product.id);
-                        }}
+                        onClick={() => void removeProduct(product)}
+                        disabled={pendingProductId !== null}
                       >
                         Eliminar
                       </button>
@@ -290,7 +343,12 @@ export default function AdminProductsPage() {
         </div>
       </section>
       {editing && (
-        <div className="modal-backdrop" onMouseDown={() => setEditing(null)}>
+        <div
+          className="modal-backdrop"
+          onMouseDown={() => {
+            if (pendingProductId !== editing.id) setEditing(null);
+          }}
+        >
           <form
             className="modal"
             onSubmit={submit}
@@ -305,7 +363,11 @@ export default function AdminProductsPage() {
                     : "Editar producto"}
                 </h2>
               </div>
-              <button type="button" onClick={() => setEditing(null)}>
+              <button
+                type="button"
+                onClick={() => setEditing(null)}
+                disabled={pendingProductId === editing.id}
+              >
                 ×
               </button>
             </div>
@@ -552,10 +614,18 @@ export default function AdminProductsPage() {
                 type="button"
                 className="button secondary"
                 onClick={() => setEditing(null)}
+                disabled={pendingProductId === editing.id}
               >
                 Cancelar
               </button>
-              <button className="button primary">Guardar producto</button>
+              <button
+                className="button primary"
+                disabled={pendingProductId === editing.id}
+              >
+                {pendingProductId === editing.id
+                  ? "Guardando…"
+                  : "Guardar producto"}
+              </button>
             </div>
           </form>
         </div>
