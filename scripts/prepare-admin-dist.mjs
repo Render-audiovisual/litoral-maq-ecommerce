@@ -13,6 +13,7 @@
 // "/admin/clientes", "/admin/configuracion".
 import { cp, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { APACHE_SECURITY_HEADERS } from "./security-headers.mjs";
 
 const root = process.cwd();
 const nextExport = path.join(root, "dist");
@@ -61,8 +62,33 @@ async function keepOnlyAdminSurface(dir) {
   return removed;
 }
 
+async function materializeDirectoryIndexes(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isFile() || !entry.name.endsWith(".html")) continue;
+    if (["index.html", "404.html", "_not-found.html"].includes(entry.name)) continue;
+
+    const routeName = entry.name.slice(0, -".html".length);
+    const routeDir = path.join(dir, routeName);
+    try {
+      if (!(await stat(routeDir)).isDirectory()) continue;
+    } catch {
+      continue;
+    }
+    await cp(path.join(dir, entry.name), path.join(routeDir, "index.html"));
+  }
+
+  for (const entry of entries) {
+    if (entry.isDirectory() && entry.name !== "_next") {
+      await materializeDirectoryIndexes(path.join(dir, entry.name));
+    }
+  }
+}
+
 const ADMIN_HTACCESS = `Options -MultiViews
+DirectorySlash Off
 DirectoryIndex admin.html
+${APACHE_SECURITY_HEADERS}
 RewriteEngine On
 
 # Next exporta las rutas como archivos .html. Permite abrir /admin/productos,
@@ -95,6 +121,12 @@ async function main() {
   await cp(nextExport, output, { recursive: true });
 
   const removed = await keepOnlyAdminSurface(output);
+
+  await materializeDirectoryIndexes(output);
+  // La raíz del subdominio no tiene index.html en el export original.
+  // Copiar la entrada del panel evita un 403 aun si DirectoryIndex o las
+  // reglas de rewrite son restringidas por el hosting.
+  await cp(path.join(output, "admin.html"), path.join(output, "index.html"));
 
   await writeFile(path.join(output, ".htaccess"), ADMIN_HTACCESS);
 

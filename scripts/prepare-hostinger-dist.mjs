@@ -15,6 +15,7 @@
 // "Qué separación demuestra esto y qué no").
 import { cp, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { APACHE_SECURITY_HEADERS } from "./security-headers.mjs";
 
 const root = process.cwd();
 const nextExport = path.join(root, "dist");
@@ -44,8 +45,33 @@ async function removeAdminRoutes(dir) {
   return removed;
 }
 
+async function materializeDirectoryIndexes(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isFile() || !entry.name.endsWith(".html")) continue;
+    if (["index.html", "404.html", "_not-found.html"].includes(entry.name)) continue;
+
+    const routeName = entry.name.slice(0, -".html".length);
+    const routeDir = path.join(dir, routeName);
+    try {
+      if (!(await stat(routeDir)).isDirectory()) continue;
+    } catch {
+      continue;
+    }
+    await cp(path.join(dir, entry.name), path.join(routeDir, "index.html"));
+  }
+
+  for (const entry of entries) {
+    if (entry.isDirectory() && entry.name !== "_next") {
+      await materializeDirectoryIndexes(path.join(dir, entry.name));
+    }
+  }
+}
+
 const STORE_HTACCESS = `Options -MultiViews
+DirectorySlash Off
 DirectoryIndex index.html
+${APACHE_SECURITY_HEADERS}
 RewriteEngine On
 
 # El panel vive en un subdominio separado. Conservamos esa separación, pero
@@ -79,6 +105,12 @@ async function main() {
   await cp(nextExport, output, { recursive: true });
 
   const removed = await removeAdminRoutes(output);
+
+  // Hostinger/LiteSpeed redirige `/ruta` a `/ruta/` cuando conviven
+  // `ruta.html` y la carpeta RSC `ruta/`, antes de evaluar el rewrite. Un
+  // index físico dentro de cada carpeta hace que URL directa, F5 y enlaces
+  // compartidos terminen en 200 incluso si DirectorySlash Off es ignorado.
+  await materializeDirectoryIndexes(output);
 
   await writeFile(path.join(output, ".htaccess"), STORE_HTACCESS);
 

@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && node scripts/prepare-sites-dist.mjs",
-    "build:hostinger": "next build && node scripts/prepare-hostinger-dist.mjs",
-    "build:admin": "next build && node scripts/prepare-admin-dist.mjs",
+    "build:hostinger": "node scripts/clean-next-dist.mjs && ALLOW_LOCAL_ADAPTER=false next build && node scripts/prepare-hostinger-dist.mjs",
+    "build:admin": "node scripts/clean-next-dist.mjs && ALLOW_LOCAL_ADAPTER=false next build && node scripts/prepare-admin-dist.mjs",
     "validate:separation": "node scripts/validate-separation.mjs",
     "manifest:deploy": "node scripts/create-deployment-manifest.mjs",
     "preview:hostinger": "node scripts/preview-hostinger.mjs",

@@ -83,3 +83,7 @@ La cadena de validación se detuvo después de 240 tests correctos porque `packa
 ## 2026-08-31 — Esperar la finalización real de `npm ci` antes de validar
 
 El orquestador devolvió una sesión mientras `npm ci` seguía activo, pero se interpretó como finalización y se lanzaron TypeScript, ESLint y Vitest contra un `node_modules` incompleto. Una segunda instalación simultánea terminó en `ENOTEMPTY`. Si `exec_command` devuelve `session_id`, esperar esa sesión con `write_stdin` antes de iniciar otro proceso que lea o modifique dependencias; después comprobar `node_modules/.bin/{tsc,eslint,vitest}`.
+
+## 2026-08-31 — Turbopack ignoró el alias configurado solo para Webpack
+
+El build de Next 16 compiló correctamente, pero el control del artefacto encontró las credenciales demo porque `webpack.resolve.alias` no se aplica al bundler predeterminado. Configurar también `turbopack.resolveAlias` y verificar el JavaScript generado, no solo el resultado de compilación.
