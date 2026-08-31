@@ -7,11 +7,13 @@ crear pedidos, cuentas ni datos reales.
 - **Tienda**: https://litoralmaqrender.rendercorrientes.com
 - **Panel**: https://admin-litoralmaqrender.rendercorrientes.com/admin.html
 
-> **Veredicto de la auditoría: BLOQUEADO.** Hay un defecto de servidor que
-> rompe todo acceso por URL directa, recarga (F5) o enlace compartido, en
-> ambos sitios. Está detallado en "Riesgos reales" §7.1 y **no fue corregido**
-> en esta rama, que es solo documentación. Todo lo demás de este documento
-> está verificado y en pie.
+> **Veredicto de la auditoría: BLOQUEADO, con la corrección ya lista.** Un
+> defecto de servidor rompía todo acceso por URL directa, recarga (F5) o
+> enlace compartido en ambos sitios. **La corrección ya está incorporada y
+> validada en el PR #8**; el bloqueo se levanta cuando ese PR se fusione y se
+> despliegue, y Wilson verifique producción. Detalle en §7.1. Esta rama es
+> solo documentación: no contiene la corrección ni ningún cambio de código.
+> Todo lo demás de este documento está verificado y en pie.
 
 ---
 
@@ -25,7 +27,7 @@ persona (sin enviar formularios ni crear datos).
 | Área | Estado | Evidencia |
 |---|---|---|
 | Home (desktop y móvil) | ✅ | HTTP 200, sin desborde horizontal, sin errores de consola propios |
-| Catálogo | ✅ | 24 productos por página, navegando desde el menú |
+| Catálogo | ✅ | 24 productos por página, navegando desde el menú. **60 productos activos** a la vista del público |
 | Búsqueda | ✅ | "amoladora" desde el buscador → 8 resultados |
 | Filtros por familia | ✅ | taladros, amoladoras, escaleras, compresores, aspiradoras, motosierras, kits |
 | Ficha de producto | ✅ | abre desde la grilla, con código y precio |
@@ -50,9 +52,24 @@ persona (sin enviar formularios ni crear datos).
 | `npm run lint` | ✅ sin errores |
 | `npm test` (unitarios) | ✅ **259 de 259** en 27 archivos |
 | `npx playwright test` (E2E) | ✅ **45 pasaron**, 2 salteados (los de staging, sin backend declarado) |
-| `npm run validate:catalog` | ✅ **PASS** — 508 productos, 0 filas inválidas, 0 códigos duplicados, 0 sin código/nombre/precio |
+| `npm run validate:catalog` | ✅ **PASS** — 508 productos vigentes del Sheet, 0 filas inválidas, 0 códigos duplicados, 0 sin código/nombre/precio |
 | `npm run build` / `build:hostinger` / `build:admin` | ✅ los tres artefactos se generan |
 | `npm run validate:separation` | ✅ 25 de 25 comprobaciones |
+
+### El catálogo: dos números, y no son lo mismo
+
+Es la confusión más fácil de cometer en la demo, así que conviene tenerla
+clara:
+
+| Número | Qué es |
+|---|---|
+| **60 productos activos** | Lo que **ve el público** hoy. Son los que se muestran en el catálogo, y las 60 fichas que genera el sitio. |
+| **528 productos versionados** | El histórico completo guardado en el repositorio: 508 vigentes en el Google Sheet + 20 ya retirados. |
+
+Los 468 restantes están cargados pero **inactivos**: no aparecen en la tienda.
+Publicar más es cambiarles la visibilidad desde el panel, sin tocar código ni
+volver a publicar el sitio. Ninguno de los productos retirados quedó activo por
+error (`activeRetiredProducts: 0`).
 
 ### Backend
 
@@ -64,10 +81,15 @@ Las 7 Edge Functions están **ACTIVE** en el proyecto de producción:
 
 ## 2. Guion de demo — 10 minutos
 
-> **Regla de oro para la demo: navegá siempre haciendo clic. No escribas URLs
-> a mano, no uses F5 y no abras enlaces guardados.** Mientras el defecto §7.1
-> siga abierto, eso muestra una pantalla de error del servidor. Si pasa,
-> volvé al inicio del sitio y seguí navegando con clics.
+> **Regla de oro, solo si el PR #8 todavía no se desplegó: navegá siempre
+> haciendo clic. No escribas URLs a mano, no uses F5 y no abras enlaces
+> guardados.** Mientras el defecto §7.1 siga en línea, eso muestra una
+> pantalla de error del servidor; si pasa, volvé al inicio y seguí con clics.
+>
+> **Con el PR #8 ya desplegado y verificado, esta restricción desaparece** y
+> se puede demostrar con total libertad, incluso abriendo un enlace de
+> producto compartido por WhatsApp — que es, de hecho, una buena cosa para
+> mostrar.
 
 | Min | Qué mostrar | Cómo |
 |---|---|---|
@@ -77,7 +99,7 @@ Las 7 Edge Functions están **ACTIVE** en el proyecto de producción:
 | 4–6 | **Checkout, sin comprar** | "Solicitar compra". Mostrar los datos de contacto, y las dos formas de entrega: retiro gratis en Sáenz 1587, o envío a domicilio / sucursal. Señalar el texto "Confirmamos stock y entrega antes de cobrar": **hoy no se cobra en el sitio**. *No enviar la solicitud durante la demo.* |
 | 6–7 | **Cuenta de cliente** | Mostrar "Ingresar": alta con email o con Google, y recuperación de contraseña. Explicar que se puede comprar como invitado, sin cuenta. |
 | 7–9 | **Panel** | Abrir el panel en el subdominio. Mostrar que pide acceso. Ya dentro: *Pedidos* (estados y detalle), *Productos* (el Google Sheet manda código, nombre y precio; el panel controla visibilidad, ficha y límite por compra), *Clientes*. |
-| 9–10 | **Cierre** | Catálogo de 508 productos sincronizado desde el Google Sheet; los pedidos llegan por correo al equipo; pagos y envíos automáticos están listos para encenderse cuando se decida. |
+| 9–10 | **Cierre** | 60 productos publicados hoy, sobre un catálogo de 508 ya cargado y sincronizado desde el Google Sheet: ampliar la vidriera es cambiar una visibilidad, no rehacer el sitio. Los pedidos llegan por correo al equipo. Pagos y envíos automáticos están listos para encenderse cuando se decida. |
 
 **Preparación previa (5 minutos antes):** entrar al panel y dejar la sesión
 abierta en una pestaña, con el navegador ya verificado; así el captcha no
@@ -87,10 +109,10 @@ interrumpe la demo.
 
 ## 3. Acceso del dueño — pendiente de confirmar email
 
-> ⚠️ **No verificado por esta auditoría.** La consulta de solo lectura a la
-> base de producción fue bloqueada por la política de permisos del entorno, y
-> no la forcé. Lo que sigue es el procedimiento, no una confirmación del
-> estado actual.
+> ⏳ **Estado: pendiente. Se confirma mañana.** La consulta de solo lectura a
+> la base de producción fue bloqueada por la política de permisos del entorno,
+> y no la forcé: el estado que sigue lo reporta el equipo, no lo verificó esta
+> auditoría. Lo que sigue es el procedimiento.
 
 El alta de un administrador tiene dos pasos y **el segundo lo tiene que hacer
 la persona dueña, desde su propia casilla**:
@@ -102,23 +124,25 @@ la persona dueña, desde su propia casilla**:
    Supabase (ver `supabase/README.md` §9, paso 6): ningún registro público ni
    inicio de sesión con Google puede crear un administrador por su cuenta.
 
-**Qué hacer antes de la reunión:**
+**Qué hacer mañana, antes de la reunión:**
 
 - [ ] Confirmar que la persona dueña recibió el correo (revisar spam).
 - [ ] Que haga clic en el enlace de confirmación.
 - [ ] Verificar que puede entrar al panel.
 - [ ] Si el correo venció o no llegó, reenviarlo desde el panel de Supabase.
 
-Si el acceso todavía no está confirmado, la demo del panel se hace con la
-cuenta administrativa que ya funciona, y el traspaso queda como primer paso
-posterior a la entrega.
+Si al momento de la reunión el acceso todavía no está confirmado, **la demo
+del panel se hace igual** con la cuenta administrativa que ya funciona, y el
+traspaso queda como primer paso posterior a la entrega. No es un bloqueo para
+mostrar el producto.
 
 ---
 
 ## 4. Resend — correos operativos
 
-**Estado: configurado y desplegado.** La función `order-notifications` está
-`ACTIVE` en producción.
+**Estado: activo y probado con envío real.** La función `order-notifications`
+está `ACTIVE` en producción, y ya se hizo una prueba real de punta a punta:
+**2 correos aceptados, 0 fallidos.**
 
 Cómo funciona:
 
@@ -136,10 +160,10 @@ variables `NEXT_PUBLIC_*`): `RESEND_API_KEY`, `RESEND_FROM_EMAIL`,
 `LITORAL_ORDERS_EMAIL`, `STORE_PUBLIC_URL`, `ADMIN_PUBLIC_URL`,
 `ORDER_NOTIFICATIONS_CRON_SECRET`.
 
-> ⚠️ **Alcance de lo verificado**: confirmé que la función está desplegada y
-> activa, y revisé el código del envío y de la cola. **No envié correos de
-> prueba**, porque hacerlo habría creado datos reales. La confirmación de que
-> los correos llegan a destino es del equipo, no de esta auditoría.
+> **Alcance de lo verificado**: confirmé que la función está desplegada y
+> activa, y revisé el código del envío y de la cola. **No envié correos yo**,
+> porque hacerlo habría creado datos reales. La prueba real de envío (2
+> aceptados, 0 fallidos) la ejecutó y confirmó el equipo.
 
 ---
 
@@ -174,11 +198,12 @@ interruptor en el build. Ver `docs/MERCADO_PAGO_INTEGRATION.md` y
 
 ### Volver a una versión anterior del sitio
 
-Los dos sitios son archivos estáticos. Recuperar una versión previa es
-resubir el artefacto anterior a `public_html`; no hay base de datos que
-migrar ni servidor que reiniciar. **Conservar el contenido de
-`hostinger-ready/` y `admin-ready/` de la entrega actual antes de publicar
-cualquier cambio** es todo el respaldo que hace falta.
+**El deploy actual ya hace backup y rollback automáticos.** Antes de publicar,
+guarda el sitio que está en línea; si la publicación falla, restaura sola la
+versión anterior. No hay que conservar carpetas a mano ni resubir nada.
+
+Los dos sitios son archivos estáticos, así que la recuperación es inmediata:
+no hay base de datos que migrar ni servidor que reiniciar.
 
 ### Volver a modo local (sin Supabase)
 
@@ -207,7 +232,12 @@ depende de que el correo salga.
 
 ## 7. Riesgos reales y pasos posteriores
 
-### 7.1 🔴 BLOQUEANTE — todo acceso por URL directa o recarga termina en error
+### 7.1 🔴 BLOQUEANTE — corregido en el PR #8, pendiente de fusionar y desplegar
+
+> **Estado**: la corrección ya está incorporada y validada por Wilson en el
+> **PR #8**. El bloqueo se levanta cuando ese PR se fusione, se despliegue y
+> Wilson verifique producción. Hasta entonces, **lo publicado sigue con el
+> defecto** y la regla de oro de la demo (§2) sigue vigente.
 
 **Qué pasa.** Cualquier ruta que no sea la portada, si se abre escribiendo la
 dirección, recargando con F5, volviendo con el historial o entrando por un
@@ -236,16 +266,35 @@ de la página). Apache ve la carpeta primero, agrega la barra final
 (`/productos/`), y como esa carpeta no tiene índice, responde 403 antes de
 que la regla de `.htaccess` pueda servir el `.html`.
 
-**Verificación hecha.** Serví el artefacto actual de `main` con un Apache real
-en un contenedor: reproduce el mismo 301 → 403. Agregando una sola línea
+**Verificación hecha.** Serví el artefacto de `main` con un Apache real en un
+contenedor: reproduce el mismo 301 → 403. Agregando una sola línea
 (`DirectorySlash Off`) al principio del `.htaccess`, **las seis rutas pasan a
 responder 200** y la redirección de `/admin` al subdominio sigue funcionando.
-La corrección **no fue aplicada**: esta rama es solo documentación.
+Esa es la corrección que Wilson incorporó y validó en el **PR #8**; esta rama
+de auditoría no la contiene, y no debe contenerla.
 
-**Además**: producción está corriendo un artefacto **más viejo que `main`**
-(`/admin` responde 404 en vez de la redirección que define el `.htaccess`
-actual). Republicar tal como está **no alcanza**: el defecto también está en
-`main`.
+**Ojo con el orden.** Producción estaba corriendo además un artefacto **más
+viejo que `main`** (`/admin` respondía 404 en vez de la redirección que define
+el `.htaccess` actual). Por eso **republicar sin el PR #8 no alcanzaba**: el
+defecto también estaba en `main`. Con el PR #8 fusionado, el despliegue sí
+cierra las dos cosas de una vez.
+
+**Cómo confirmar que quedó resuelto**, después del despliegue:
+
+```bash
+# Las seis tienen que responder 200, sin redirección intermedia.
+for u in /productos /carrito /checkout /login; do
+  curl -sS -o /dev/null -w "$u -> %{http_code}\n" \
+    https://litoralmaqrender.rendercorrientes.com$u
+done
+for u in /admin/login /admin/pedidos; do
+  curl -sS -o /dev/null -w "$u -> %{http_code}\n" \
+    https://admin-litoralmaqrender.rendercorrientes.com$u
+done
+```
+
+O, más completo, `node scripts/audit-produccion.mjs` (ver el final de este
+documento): tiene que terminar con 0 hallazgos críticos.
 
 **Impacto para el negocio.** Un enlace de producto compartido por WhatsApp no
 abre. Un cliente que recarga pierde la página. Quien entre al panel escribiendo
@@ -275,14 +324,13 @@ tienda y panel.
 
 ### Pasos posteriores, en orden
 
-1. **Corregir el 403** (§7.1) y publicar. Sin esto no conviene difundir el
-   sitio.
-2. **Republicar los dos sitios** desde `main` con la corrección, para cerrar
-   además la diferencia entre lo publicado y el repositorio.
-3. **Confirmar el acceso del dueño** (§3).
-4. Enviar un pedido de prueba real y confirmar que el correo llega (§4).
-5. Decidir fecha para encender Mercado Pago y Envíopack (§5).
-6. Mejorar los mensajes de error del panel (§7.3).
+1. **Fusionar el PR #8 y desplegar** (§7.1). Cierra el bloqueo y, de paso, la
+   diferencia entre lo publicado y el repositorio.
+2. **Que Wilson verifique producción** con los comandos de §7.1. Recién ahí el
+   veredicto pasa a APTO PARA ENTREGA.
+3. **Confirmar el acceso del dueño** (§3) — pendiente para mañana.
+4. Decidir fecha para encender Mercado Pago y Envíopack (§5).
+5. Mejorar los mensajes de error del panel (§7.3).
 
 ---
 
