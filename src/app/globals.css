@@ -436,6 +436,53 @@ textarea { min-height: 100px; resize: vertical; }
 .card-heading a { color: var(--orange); font-weight: 750; font-size: 11px; }
 .empty-inline { padding: 30px; text-align: center; color: var(--muted); background: var(--soft); }
 .table-wrap { overflow-x: auto; }
+/* Segunda barra de scroll, arriba de la tabla y espejada con la de abajo
+   (ver components/table-scroll.tsx). En una notebook de 15,6" las tablas del
+   panel no entran, y la barra propia del contenedor queda al final de la
+   lista: había que bajar hasta el último registro para correrse a la derecha.
+   Sólo se renderiza cuando hay desborde. */
+/* `scroll` y no `auto`: la barra tiene que estar siempre que haya desborde,
+   porque su trabajo acá es justamente anunciar que hay más tabla a la
+   derecha. Con alto explícito para que no dependa de cómo cada navegador
+   dimensione una barra superpuesta. */
+.table-scroll-top {
+  height: 12px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background: #eef2f5;
+  scrollbar-width: thin;
+  scrollbar-color: #b9c4cc #eef2f5;
+}
+.table-scroll-top > div { height: 1px; }
+.table-scroll-top::-webkit-scrollbar { height: 12px; }
+.table-scroll-top::-webkit-scrollbar-track { background: #eef2f5; border-radius: 6px; }
+.table-scroll-top::-webkit-scrollbar-thumb { background: #b9c4cc; border-radius: 6px; border: 3px solid #eef2f5; }
+.table-scroll-top::-webkit-scrollbar-thumb:hover { background: var(--orange); }
+/* La última columna de cada tabla del panel lleva la acción de la fila
+   ("Ver detalle", "Editar"). En una pantalla de 15" la tabla de pedidos no
+   entra entera y esa columna quedaba fuera de la vista, con la barra de
+   scroll horizontal abajo de todo —fuera de la pantalla— sin nada que la
+   anunciara. Fijándola a la derecha la acción está siempre a mano y el
+   scroll pasa a ser opcional, para mirar el resto de los datos. */
+.table-wrap th:last-child,
+.table-wrap td:last-child {
+  position: sticky;
+  right: 0;
+  border-left: 1px solid var(--line);
+  background: #fff;
+}
+.table-wrap th:last-child { background: #f8fafb; }
+/* El nombre del producto es texto libre y puede ser largo: se recorta en vez
+   de empujar el resto de las columnas fuera de la pantalla. El nombre
+   completo queda en el title y en el detalle del pedido. */
+.order-products strong {
+  max-width: 24ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 13px 11px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
 th { color: var(--muted); background: #f8fafb; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
@@ -503,6 +550,10 @@ td > small { margin-top: 4px; color: var(--muted); }
 .category-admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .category-admin-grid h2 { margin: 18px 0 6px; font-size: 18px; }
 .category-admin-grid p { color: var(--muted); }
+.category-card { transition: transform .15s, box-shadow .15s; }
+.category-card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,42,73,.12); }
+.category-card-link { display: block; color: inherit; text-decoration: none; }
+.filter-chip { padding: 6px 12px; border: 1px solid var(--orange); border-radius: 999px; background: var(--orange-soft); color: var(--orange); font-size: 11px; cursor: pointer; white-space: nowrap; }
 .category-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: var(--orange-soft); color: var(--orange); }
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
 .settings-grid h2 { margin-bottom: 25px; }

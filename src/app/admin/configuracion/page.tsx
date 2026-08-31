@@ -1,6 +1,7 @@
 "use client";
 
 import { useStore } from "@/store/store";
+import { TableScroll } from "@/components/table-scroll";
 import { formatDate } from "@/lib/utils";
 import { resolveRequestedProvider } from "@/services/provider";
 
@@ -155,7 +156,7 @@ export default function AdminSettingsPage() {
               Todavía no se registraron acciones administrativas.
             </div>
           ) : (
-            <div className="table-wrap">
+            <TableScroll>
               <table>
                 <thead>
                   <tr>
@@ -176,7 +177,7 @@ export default function AdminSettingsPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </TableScroll>
           )}
         </section>
       </div>

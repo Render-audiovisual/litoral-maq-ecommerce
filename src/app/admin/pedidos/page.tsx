@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { ORDER_STATUS_LABELS, resolveOrderLines } from "@/lib/order-details";
@@ -9,6 +10,24 @@ import { createShipping, downloadShippingLabel } from "@/services/shipping";
 import { flushOrderNotifications } from "@/services/order-notifications";
 
 const statuses = Object.keys(ORDER_STATUS_LABELS) as Order["status"][];
+
+/**
+ * `pago_simulado` ("Pago demo") quedó del período de pruebas. Los pedidos
+ * históricos que lo tienen se siguen mostrando —por eso no se borra de
+ * ORDER_STATUS_LABELS—, pero no se ofrece más como opción elegible: verlo en
+ * el desplegable de un panel en producción hace parecer que el sistema sigue
+ * siendo una demo.
+ */
+const SELECTABLE_STATUSES: Order["status"][] = statuses.filter(
+  (status) => status !== "pago_simulado",
+);
+
+/** Los estados de la fila incluyen el actual aunque ya no sea elegible. */
+function statusOptionsFor(current: Order["status"]) {
+  return SELECTABLE_STATUSES.includes(current)
+    ? SELECTABLE_STATUSES
+    : [current, ...SELECTABLE_STATUSES];
+}
 
 function deliveryAmountLabel(order: Order) {
   if (order.deliveryMethod === "retiro") return "Gratis";
@@ -56,6 +75,22 @@ export default function AdminOrdersPage() {
           )),
     );
   }, [orders, query, status]);
+
+  /**
+   * Resumen de productos por fila. Antes la columna decía "1 unidades · 1
+   * renglones", que no responde la pregunta que uno le hace a la tabla:
+   * *qué* pidió el cliente. Se resuelve acá y no en el render de cada fila
+   * para no recorrer el catálogo entero en cada repintado.
+   */
+  const rows = useMemo(
+    () =>
+      filtered.map((order) => {
+        const lines = resolveOrderLines(order, products);
+        const units = lines.reduce((sum, line) => sum + line.quantity, 0);
+        return { order, first: lines[0], extra: lines.length - 1, units };
+      }),
+    [filtered, products],
+  );
 
   const pendingCount = orders.filter((order) =>
     ["pendiente", "pago_simulado"].includes(order.status),
@@ -210,7 +245,7 @@ export default function AdminOrdersPage() {
         <article className="warning">
           <span>Para revisar</span>
           <strong>{pendingCount}</strong>
-          <small>Pendientes o con pago demo</small>
+          <small>Esperan confirmación del equipo</small>
         </article>
         <article>
           <span>Preparando</span>
@@ -260,7 +295,7 @@ export default function AdminOrdersPage() {
             }
           >
             <option value="">Todos los estados</option>
-            {statuses.map((item) => (
+            {statusOptionsFor(status || "pendiente").map((item) => (
               <option value={item} key={item}>
                 {ORDER_STATUS_LABELS[item]}
               </option>
@@ -283,7 +318,7 @@ export default function AdminOrdersPage() {
             <p>Probá otro término o limpiá el filtro de estado.</p>
           </div>
         ) : (
-          <div className="table-wrap">
+          <TableScroll>
             <table>
               <thead>
                 <tr>
@@ -298,7 +333,7 @@ export default function AdminOrdersPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((order) => (
+                {rows.map(({ order, first, extra, units }) => (
                   <tr key={order.id}>
                     <td>
                       <strong>{order.id}</strong>
@@ -308,12 +343,17 @@ export default function AdminOrdersPage() {
                       {order.customerName}
                       <small>{order.email}</small>
                     </td>
-                    <td>
-                      {order.lines.reduce(
-                        (sum, line) => sum + line.quantity,
-                        0,
-                      )}{" "}
-                      unidades<small>{order.lines.length} renglones</small>
+                    <td className="order-products">
+                      <strong title={first?.productName}>
+                        {first?.productName ?? "Sin productos"}
+                      </strong>
+                      <small>
+                        {units} {units === 1 ? "unidad" : "unidades"}
+                        {first?.productCode ? ` · Cód. ${first.productCode}` : ""}
+                        {extra > 0
+                          ? ` · +${extra} producto${extra === 1 ? "" : "s"} más`
+                          : ""}
+                      </small>
                     </td>
                     <td>
                       {order.deliveryMethod === "envio"
@@ -347,7 +387,7 @@ export default function AdminOrdersPage() {
                           )
                         }
                       >
-                        {statuses.map((item) => (
+                        {statusOptionsFor(order.status).map((item) => (
                           <option value={item} key={item}>
                             {ORDER_STATUS_LABELS[item]}
                           </option>
@@ -367,7 +407,7 @@ export default function AdminOrdersPage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </TableScroll>
         )}
       </section>
 
