@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { Product } from "@/lib/types";
-import { parseSheetProducts } from "./sheet-sync";
+import { looksLikeHtml, parseSheetProducts } from "./sheet-sync";
+import { DEFAULT_PURCHASE_LIMIT } from "@/lib/purchase-limits";
+import { DEFAULT_PURCHASE_LIMIT as PARSER_PURCHASE_LIMIT } from "../../supabase/functions/_shared/sheet-parser";
 
 const existing: Product = {
   id: "1",
@@ -81,5 +83,32 @@ describe("sincronización real de Google Sheets", () => {
 
   it("rechaza respuestas parciales para no borrar el catálogo por accidente", () => {
     expect(() => parseSheetProducts("codigo,articulo,preciocon\n1,Uno,$100", [existing])).toThrow(/solo 1 productos/i);
+  });
+
+  it("omite la fila mal cargada y sincroniza el resto", () => {
+    const csv = `${validCsv()}\n,Sin código,"$ 900,00"\n9001,Sin precio,`;
+    const result = parseSheetProducts(csv, [existing]);
+    expect(result.skipped).toBe(2);
+    expect(result.products).toHaveLength(101);
+    expect(result.warnings.some((warning) => /omitieron 2 filas/.test(warning))).toBe(true);
+  });
+
+  it("aborta si el Sheet viene mayormente inválido en vez de vaciar el catálogo", () => {
+    const rows = ["codigo,articulo,preciocon"];
+    for (let index = 0; index < 120; index += 1) rows.push(`,Fila rota ${index},`);
+    for (let index = 0; index < 100; index += 1) {
+      rows.push(`${index + 2},Producto ${index + 2},"$ 1.000,00"`);
+    }
+    expect(() => parseSheetProducts(rows.join("\n"), [existing])).toThrow(/filas inválidas/i);
+  });
+
+  it("no confunde el login de Google con datos del Sheet", () => {
+    expect(looksLikeHtml('<!DOCTYPE html><html><body>Iniciá sesión')).toBe(true);
+    expect(looksLikeHtml("codigo,articulo,preciocon", "text/csv")).toBe(false);
+    expect(looksLikeHtml("codigo,articulo", "text/html; charset=utf-8")).toBe(true);
+  });
+
+  it("mantiene el tope por pedido igual en el parser compartido y en el panel", () => {
+    expect(PARSER_PURCHASE_LIMIT).toBe(DEFAULT_PURCHASE_LIMIT);
   });
 });

@@ -722,3 +722,70 @@ salir mal si se omite.
 Ningún paso de este checklist se ejecutó en esta entrega — todos requieren
 el proyecto Supabase remoto y/o Docker local, ninguno de los dos autorizado
 ni disponible acá (ver §8 y §12).
+
+## 14. Sincronización con el Google Sheet (`sync-products`)
+
+El Sheet es la fuente del stock y de los precios. Hasta esta entrega lo leía
+el navegador del panel, y eso fallaba por dos motivos independientes:
+
+1. El CSP del panel (`admin-ready/.htaccess`) sólo permite
+   `connect-src 'self' https://*.supabase.co`. `docs.google.com` queda
+   bloqueado.
+2. Aunque se agregara al CSP, el endpoint de export de Google no devuelve
+   cabeceras CORS: el navegador seguiría sin poder leer la respuesta.
+
+Agregar `docs.google.com` al CSP tapa (1) y no resuelve (2). La lectura
+entera pasó al servidor.
+
+### Qué hace la función
+
+`POST {SUPABASE_URL}/functions/v1/sync-products` (sólo admin, vía
+`requireAdmin`):
+
+1. Lee el Sheet. Con `GOOGLE_SERVICE_ACCOUNT_JSON` cargado usa la Google
+   Sheets API v4 (el Sheet puede estar privado); sin ese secreto cae al CSV
+   publicado, que es lo que funciona hoy. Timeout de 20 s y un reintento.
+2. Valida antes de escribir: encabezados, códigos duplicados, filas sin
+   código/nombre/precio válido, y dos cortes de seguridad — aborta si más del
+   10 % de las filas es inválido o si el Sheet trae menos de 100 productos
+   (señal de export truncado o de que Google devolvió otra cosa).
+3. Escribe todo en una sola sentencia (`public.apply_sheet_catalog`), que es
+   atómica: entra el catálogo entero o no entra nada.
+4. Registra la corrida en `public.sheet_sync_runs` — fecha, contadores y
+   detalle técnico. **Las corridas fallidas también dejan fila**: son las que
+   interesan cuando el catálogo quedó viejo.
+
+Ningún camino borra productos. Los que desaparecen del Sheet quedan
+`active=false` con `sheet-absent` en `incomplete`, como ya hacía el parser.
+
+Si algo falla en los pasos 1 o 2, **el catálogo vigente queda intacto**: el
+panel sigue mostrando la última versión buena en vez de vaciarse.
+
+### Despliegue
+
+```bash
+supabase db push                        # migración 0011
+supabase functions deploy sync-products
+```
+
+### Para pasar del CSV a la API de Google
+
+No hay que redesplegar la función, alcanza con cargar el secreto:
+
+1. En Google Cloud, crear un proyecto y una **service account**; habilitar
+   la Google Sheets API; generar una clave JSON.
+2. Compartir el Sheet (lectura) con el `client_email` de esa cuenta.
+3. `supabase secrets set GOOGLE_SERVICE_ACCOUNT_JSON="$(cat clave.json)"`
+
+La próxima sincronización ya usa la API; el `source` del reporte y de
+`sheet_sync_runs` dice cuál de las dos vías se usó. Opcional:
+`GOOGLE_SHEET_RANGE` (por defecto `A:Z`).
+
+### Por qué el parser vive en `functions/_shared/sheet-parser.ts`
+
+Lo comparten dos runtimes: la Edge Function (Deno) y el bundle del panel
+(Next, modo preview local). Es un archivo **sin imports** a propósito —
+nada fuera de `supabase/functions/` viaja en el bundle de deploy. Que su
+`SheetProduct` siga siendo estructuralmente igual a `Product`, y su copia de
+`DEFAULT_PURCHASE_LIMIT` siga valiendo lo mismo, lo verifican `tsc` y un test
+en `src/services/sheet-sync.test.ts`; no un comentario pidiendo cuidado.

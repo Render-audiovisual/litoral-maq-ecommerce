@@ -45,13 +45,24 @@ export interface ImageStorageAdapter {
   upload(file: File): Promise<{ url: string; simulated: boolean }>;
 }
 
+/**
+ * `products` sólo llega en el modo preview local, donde el navegador parsea
+ * el CSV y el panel escribe el resultado. Con Supabase la Edge Function
+ * `sync-products` ya dejó el catálogo escrito en la base y el panel se
+ * limita a releerlo: por eso el reporte trae contadores, no productos.
+ */
+export type SheetSyncReport = {
+  source: string;
+  created: number;
+  updated: number;
+  removed: number;
+  skipped: number;
+  errors: number;
+  syncedAt: string;
+  warnings: string[];
+  products?: Product[];
+};
+
 export interface SheetSyncAdapter {
-  sync(currentProducts: Product[]): Promise<{
-    products: Product[];
-    source: string;
-    created: number;
-    updated: number;
-    removed: number;
-    warnings: string[];
-  }>;
+  sync(currentProducts: Product[]): Promise<SheetSyncReport>;
 }

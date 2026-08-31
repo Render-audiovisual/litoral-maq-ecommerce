@@ -43,7 +43,8 @@ const emptyProduct = (): Product => ({
 });
 
 export default function AdminProductsPage() {
-  const { products, saveProduct, deleteProduct, replaceProducts } = useStore();
+  const { products, saveProduct, deleteProduct, replaceProducts, refreshProducts } =
+    useStore();
   const [query, setQuery] = useState("");
   const [editing, setEditing] = useState<Product | null>(null);
   const [message, setMessage] = useState("");
@@ -183,7 +184,12 @@ export default function AdminProductsPage() {
     setMessage("");
     try {
       const result = await googleSheetSyncAdapter.sync(products);
-      const persisted = await replaceProducts(result.products);
+      // Con Supabase la Edge Function ya escribió el catálogo validado: acá
+      // sólo se vuelve a leer. `replaceProducts` queda para el preview
+      // local, donde el parseo ocurre en este mismo navegador.
+      const persisted = result.products
+        ? await replaceProducts(result.products)
+        : await refreshProducts();
       const localNotice =
         provider === "local"
           ? " Modo preview: el cambio se guardó solo en este navegador."
@@ -191,7 +197,8 @@ export default function AdminProductsPage() {
       setMessageKind("success");
       setMessage(
         `Google Sheet sincronizado: ${persisted.filter((product) => product.source === "google-sheet").length} productos · ` +
-          `${result.created} nuevos · ${result.updated} actualizados · ${result.removed} retirados.${localNotice}`,
+          `${result.created} nuevos · ${result.updated} actualizados · ${result.removed} retirados` +
+          `${result.skipped ? ` · ${result.skipped} filas omitidas` : ""}.${localNotice}`,
       );
     } catch (error) {
       setMessageKind("error");

@@ -66,6 +66,7 @@ type Store = {
     status: NonNullable<Order["paymentStatus"]>,
   ) => Promise<Order>;
   refreshOrders: () => Promise<Order[]>;
+  refreshProducts: () => Promise<Product[]>;
   addCustomer: (customer: Customer) => void;
   convertGuestToAccount: (email: string, accountId: string) => void;
   auditLog: AuditEntry[];
@@ -665,6 +666,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     return latest;
   }, [adapter]);
 
+  /**
+   * La sincronización con el Sheet ya no viaja por `replaceProducts`: la
+   * Edge Function escribe el catálogo en la base y el panel sólo vuelve a
+   * leerlo. Así el navegador nunca decide qué productos existen — si la
+   * función aborta, acá no cambia nada.
+   */
+  const refreshProducts = useCallback(async () => {
+    const latest = await adapter.listProducts();
+    setProducts(latest);
+    return latest;
+  }, [adapter]);
+
   const addCustomer = useCallback(
     (customer: Customer) => {
       if (customer.role !== "customer") return;
@@ -738,6 +751,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       updateOrderStatus,
       updateOrderPaymentStatus,
       refreshOrders,
+      refreshProducts,
       addCustomer,
       convertGuestToAccount,
       auditLog,
@@ -765,6 +779,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       updateOrderStatus,
       updateOrderPaymentStatus,
       refreshOrders,
+      refreshProducts,
       addCustomer,
       convertGuestToAccount,
       auditLog,
