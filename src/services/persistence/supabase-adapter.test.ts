@@ -146,6 +146,12 @@ describe("supabase persistence adapter", () => {
     expect(upsertCall?.args[1]).toEqual({ onConflict: "id" });
   });
 
+  it("upsertProduct propaga el error de Postgres en vez de confirmar un guardado falso", async () => {
+    const { client } = createFakeClient({ products: { data: null, error: new Error("boom") } });
+    const adapter = createSupabasePersistenceAdapter(client);
+    await expect(adapter.upsertProduct(product)).rejects.toThrow("boom");
+  });
+
   it("deleteProduct filtra por id con eq", async () => {
     const { client, builders } = createFakeClient({ products: { data: null, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);
