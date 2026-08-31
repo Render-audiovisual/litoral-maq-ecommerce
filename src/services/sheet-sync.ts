@@ -1,6 +1,9 @@
 import type { Product } from "@/lib/types";
 import { DEFAULT_PURCHASE_LIMIT } from "@/lib/purchase-limits";
 import type { SheetSyncAdapter } from "./adapters";
+import {
+  readSupabaseConfig,
+} from "@/services/persistence/supabase/client";
 
 export const LITORAL_SHEET_ID = "17Y7jES70K_Gr-nQO6Om5PtRFu7nnNObDlbsRsXLdIrA";
 export const LITORAL_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${LITORAL_SHEET_ID}/export?format=csv&gid=0`;
@@ -327,16 +330,66 @@ export function parseSheetProducts(csv: string, currentProducts: Product[]) {
 }
 
 export const googleSheetSyncAdapter: SheetSyncAdapter = {
-  async sync(currentProducts) {
-    const response = await fetch(`${LITORAL_SHEET_CSV_URL}&_=${Date.now()}`, {
-      cache: "no-store",
-    });
-    if (!response.ok)
-      throw new Error(`Google Sheets respondió ${response.status}.`);
-    const result = parseSheetProducts(await response.text(), currentProducts);
-    return {
-      ...result,
-      source: "Google Sheet · Lista de precios - LitoralMaq",
-    };
+  async sync(accessToken) {
+    const endpointOverride = process.env.NEXT_PUBLIC_SHEET_SYNC_ENDPOINT?.trim();
+    const config = readSupabaseConfig();
+    if (!endpointOverride && config.status !== "ok") {
+      throw new Error(
+        "La sincronización del Sheet requiere el backend Supabase configurado.",
+      );
+    }
+    if (!accessToken) {
+      throw new Error("La sesión de administrador venció. Volvé a ingresar.");
+    }
+
+    const endpoint = endpointOverride ||
+      `${config.status === "ok" ? config.config.url.replace(/\/$/, "") : ""}/functions/v1/admin-sync-products`;
+    const controller = new AbortController();
+    const timeout = globalThis.setTimeout(() => controller.abort(), 30_000);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+          ...(config.status === "ok" ? { apikey: config.config.publishableKey } : {}),
+          "content-type": "application/json",
+        },
+        body: "{}",
+        cache: "no-store",
+      });
+      const payload = await response.json().catch(() => null) as
+        | ({ error?: string } & Awaited<ReturnType<SheetSyncAdapter["sync"]>>)
+        | null;
+      if (!response.ok) {
+        throw new Error(
+          payload?.error ||
+            "No se pudo sincronizar el Sheet. El catálogo actual no fue modificado.",
+        );
+      }
+      if (
+        !payload ||
+        !Number.isInteger(payload.total) ||
+        !Number.isInteger(payload.created) ||
+        !Number.isInteger(payload.updated) ||
+        !Number.isInteger(payload.unchanged) ||
+        !Number.isInteger(payload.removed) ||
+        !payload.lastSyncedAt
+      ) {
+        throw new Error(
+          "El servidor devolvió un resultado de sincronización inválido. Recargá el panel antes de reintentar.",
+        );
+      }
+      return payload;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        throw new Error(
+          "La sincronización tardó demasiado. El catálogo actual se conservó; reintentá en un minuto.",
+        );
+      }
+      throw error;
+    } finally {
+      globalThis.clearTimeout(timeout);
+    }
   },
 };

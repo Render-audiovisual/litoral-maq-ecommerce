@@ -5,7 +5,6 @@ import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { googleSheetSyncAdapter } from "@/services/sheet-sync";
-import { resolveRequestedProvider } from "@/services/provider";
 
 function stockStatus(product: Product) {
   if (!product.incomplete.includes("stock")) return String(product.stock);
@@ -43,7 +42,13 @@ const emptyProduct = (): Product => ({
 });
 
 export default function AdminProductsPage() {
-  const { products, saveProduct, deleteProduct, replaceProducts } = useStore();
+  const {
+    products,
+    saveProduct,
+    deleteProduct,
+    refreshProducts,
+    adminSession,
+  } = useStore();
   const [query, setQuery] = useState("");
   const [editing, setEditing] = useState<Product | null>(null);
   const [message, setMessage] = useState("");
@@ -52,7 +57,6 @@ export default function AdminProductsPage() {
   );
   const [syncing, setSyncing] = useState(false);
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
-  const provider = resolveRequestedProvider();
   const sheetProductCount = products.filter(
     (product) => product.source === "google-sheet",
   ).length;
@@ -182,16 +186,14 @@ export default function AdminProductsPage() {
     setSyncing(true);
     setMessage("");
     try {
-      const result = await googleSheetSyncAdapter.sync(products);
-      const persisted = await replaceProducts(result.products);
-      const localNotice =
-        provider === "local"
-          ? " Modo preview: el cambio se guardó solo en este navegador."
-          : "";
+      const result = await googleSheetSyncAdapter.sync(adminSession?.token || "");
+      const persisted = await refreshProducts();
       setMessageKind("success");
       setMessage(
-        `Google Sheet sincronizado: ${persisted.filter((product) => product.source === "google-sheet").length} productos · ` +
-          `${result.created} nuevos · ${result.updated} actualizados · ${result.removed} retirados.${localNotice}`,
+        `Google Sheet sincronizado: ${result.total} productos · ` +
+          `${result.created} nuevos · ${result.updated} actualizados · ` +
+          `${result.unchanged} sin cambios · ${result.removed} retirados. ` +
+          `Catálogo recargado: ${persisted.length} registros.`,
       );
     } catch (error) {
       setMessageKind("error");

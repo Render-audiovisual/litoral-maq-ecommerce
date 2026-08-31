@@ -1,0 +1,4 @@
+-- Esta versión ya existe en el historial remoto de Supabase y corresponde
+-- al despliegue productivo de 0007_shipping_enviopack.sql. El contenido se
+-- mantiene en 0007 para que una base nueva conserve el orden lógico; este
+-- marcador evita que el CLI intente volver a aplicar el mismo cambio remoto.

@@ -22,6 +22,10 @@ verify_jwt = false
 # La función valida sesiones de usuario o el secreto exclusivo del cron.
 verify_jwt = false
 
+[functions.admin-sync-products]
+# La función valida el JWT y el rol admin explícitamente con requireAdmin.
+verify_jwt = true
+
 # ---------------------------------------------------------------------------
 # Staging local (chore/p2-supabase-staging). Estas secciones SOLO afectan al
 # stack que levanta `npx supabase start` en la máquina de quien desarrolla o
