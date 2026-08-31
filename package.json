@@ -8,6 +8,7 @@
     "build:hostinger": "next build && node scripts/prepare-hostinger-dist.mjs",
     "build:admin": "next build && node scripts/prepare-admin-dist.mjs",
     "validate:separation": "node scripts/validate-separation.mjs",
+    "manifest:deploy": "node scripts/create-deployment-manifest.mjs",
     "preview:hostinger": "node scripts/preview-hostinger.mjs",
     "preview:admin": "ROOT_DIR=admin-ready PORT=3112 node scripts/preview-hostinger.mjs",
     "start": "next start",

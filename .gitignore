@@ -10,6 +10,7 @@ tsconfig.tsbuildinfo
 # Artefactos de build generados (Etapa 6 — despliegue separado)
 hostinger-ready/
 admin-ready/
+deployment-manifest.json
 
 # Entorno local (nunca credenciales reales versionadas)
 .env.local
