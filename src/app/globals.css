@@ -436,6 +436,29 @@ textarea { min-height: 100px; resize: vertical; }
 .card-heading a { color: var(--orange); font-weight: 750; font-size: 11px; }
 .empty-inline { padding: 30px; text-align: center; color: var(--muted); background: var(--soft); }
 .table-wrap { overflow-x: auto; }
+/* La última columna de cada tabla del panel lleva la acción de la fila
+   ("Ver detalle", "Editar"). En una pantalla de 15" la tabla de pedidos no
+   entra entera y esa columna quedaba fuera de la vista, con la barra de
+   scroll horizontal abajo de todo —fuera de la pantalla— sin nada que la
+   anunciara. Fijándola a la derecha la acción está siempre a mano y el
+   scroll pasa a ser opcional, para mirar el resto de los datos. */
+.table-wrap th:last-child,
+.table-wrap td:last-child {
+  position: sticky;
+  right: 0;
+  border-left: 1px solid var(--line);
+  background: #fff;
+}
+.table-wrap th:last-child { background: #f8fafb; }
+/* El nombre del producto es texto libre y puede ser largo: se recorta en vez
+   de empujar el resto de las columnas fuera de la pantalla. El nombre
+   completo queda en el title y en el detalle del pedido. */
+.order-products strong {
+  max-width: 24ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 13px 11px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
 th { color: var(--muted); background: #f8fafb; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }

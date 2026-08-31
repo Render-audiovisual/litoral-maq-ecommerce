@@ -56,7 +56,7 @@ test.describe("@staging", () => {
 
     const row = page.locator("tbody tr").filter({ hasText: customerName });
     await expect(row).toHaveCount(1, CROSS_ROUTE);
-    await expect(row).toContainText("1 unidades");
+    await expect(row).toContainText("1 unidad");
     const statusSelect = row.locator(".status-select");
     await expect(statusSelect).toHaveValue("pendiente");
 
