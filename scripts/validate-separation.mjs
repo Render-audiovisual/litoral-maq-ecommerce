@@ -217,12 +217,22 @@ async function main() {
   } else {
     fail("[tienda] .htaccess no define la raíz del sitio.");
   }
+  if (storeHtaccess?.includes("DirectorySlash Off")) {
+    ok("[tienda] .htaccess evita que Apache priorice las carpetas RSC sobre los HTML de ruta.");
+  } else {
+    fail("[tienda] .htaccess no desactiva DirectorySlash para las rutas exportadas.");
+  }
 
   const adminHtaccess = await readIfExists(path.join(adminDir, ".htaccess"));
   if (adminHtaccess?.includes("RewriteRule ^$ admin.html [L]")) {
     ok("[admin] .htaccess redirige la raíz del subdominio a admin.html.");
   } else {
     fail("[admin] .htaccess no redirige la raíz a admin.html.");
+  }
+  if (adminHtaccess?.includes("DirectorySlash Off")) {
+    ok("[admin] .htaccess evita que Apache priorice las carpetas RSC sobre los HTML de ruta.");
+  } else {
+    fail("[admin] .htaccess no desactiva DirectorySlash para las rutas exportadas.");
   }
 
   const requiredSecurityHeaders = [

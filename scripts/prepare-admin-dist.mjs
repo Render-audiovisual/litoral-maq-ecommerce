@@ -63,6 +63,7 @@ async function keepOnlyAdminSurface(dir) {
 }
 
 const ADMIN_HTACCESS = `Options -MultiViews
+DirectorySlash Off
 DirectoryIndex admin.html
 ${APACHE_SECURITY_HEADERS}
 RewriteEngine On

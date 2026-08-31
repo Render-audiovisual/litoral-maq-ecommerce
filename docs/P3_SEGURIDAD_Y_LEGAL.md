@@ -11,6 +11,9 @@
   contiene `admin123`, `demo-admin-` o el almacén de cuentas demo.
 - Cada build de Hostinger limpia primero el `dist/` generado para que una
   ejecución previa de `next dev` no contamine el artefacto productivo.
+- Los dos `.htaccess` desactivan `DirectorySlash` para que Apache sirva
+  `ruta.html` antes que la carpeta RSC homónima; esto permite URL directa,
+  recarga y enlaces compartidos sin redirección a una carpeta 403.
 - Una configuración productiva accidental en modo local falla de forma
   visible: nunca recupera silenciosamente el adaptador demo.
 

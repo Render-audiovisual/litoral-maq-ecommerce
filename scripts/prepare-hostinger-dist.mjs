@@ -46,6 +46,7 @@ async function removeAdminRoutes(dir) {
 }
 
 const STORE_HTACCESS = `Options -MultiViews
+DirectorySlash Off
 DirectoryIndex index.html
 ${APACHE_SECURITY_HEADERS}
 RewriteEngine On
