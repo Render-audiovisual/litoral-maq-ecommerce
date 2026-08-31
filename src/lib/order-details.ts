@@ -18,6 +18,17 @@ export const ORDER_STATUS_LABELS: Record<Order["status"], string> = {
   cancelado: "Cancelado",
 };
 
+/** Etiquetas del circuito operativo que ve el equipo en el panel. */
+export const ADMIN_ORDER_STATUS_LABELS: Record<Order["status"], string> = {
+  pendiente: "Paso 0 · Pedido recibido",
+  pago_simulado: "Paso 0 · Pedido de prueba",
+  preparando: "Paso 1 · Preparando",
+  listo: "Paso 2 · Listo para entregar",
+  enviado: "Paso 3 · Enviado",
+  entregado: "Paso 4 · Entregado",
+  cancelado: "Cancelado · Fuera del circuito",
+};
+
 export const ORDER_STATUS_MESSAGES: Record<Order["status"], string> = {
   pendiente:
     "Recibimos tu solicitud. Estamos verificando stock, entrega y total final.",

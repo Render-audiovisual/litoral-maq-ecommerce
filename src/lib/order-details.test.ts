@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Order, Product } from "./types";
-import { isActiveOrder, ORDER_STATUS_MESSAGES, resolveOrderLines, snapshotOrderLines } from "./order-details";
+import { ADMIN_ORDER_STATUS_LABELS, isActiveOrder, ORDER_STATUS_MESSAGES, resolveOrderLines, snapshotOrderLines } from "./order-details";
 
 const product = { id: "p1", name: "Taladro", code: "T-1", price: 250 } as Product;
 
@@ -26,5 +26,14 @@ describe("detalle histórico de pedidos", () => {
     expect(ORDER_STATUS_MESSAGES.pendiente).toMatch(/verificando stock/i);
     expect(isActiveOrder({ status: "preparando" } as Order)).toBe(true);
     expect(isActiveOrder({ status: "entregado" } as Order)).toBe(false);
+  });
+
+  it("enumera el circuito operativo del panel desde el paso cero", () => {
+    expect(ADMIN_ORDER_STATUS_LABELS.pendiente).toBe("Paso 0 · Pedido recibido");
+    expect(ADMIN_ORDER_STATUS_LABELS.preparando).toBe("Paso 1 · Preparando");
+    expect(ADMIN_ORDER_STATUS_LABELS.listo).toBe("Paso 2 · Listo para entregar");
+    expect(ADMIN_ORDER_STATUS_LABELS.enviado).toBe("Paso 3 · Enviado");
+    expect(ADMIN_ORDER_STATUS_LABELS.entregado).toBe("Paso 4 · Entregado");
+    expect(ADMIN_ORDER_STATUS_LABELS.cancelado).not.toMatch(/Paso/);
   });
 });
