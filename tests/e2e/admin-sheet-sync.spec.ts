@@ -1,15 +1,27 @@
 import { expect, test } from "@playwright/test";
 
-test("el administrador sincroniza y persiste el catálogo del Google Sheet", async ({ page }) => {
-  const rows = ["codigo,articulo,preciocon"];
-  for (let index = 1; index <= 101; index += 1) {
-    rows.push(`SYNC-${index},Producto sincronizado ${index},${index}000`);
-  }
-  await page.route("https://docs.google.com/spreadsheets/**", async (route) => {
+test("el administrador sincroniza por el backend sin conectar el navegador a Google", async ({ page }) => {
+  let googleWasCalled = false;
+  await page.route("https://docs.google.com/**", async (route) => {
+    googleWasCalled = true;
+    await route.abort();
+  });
+  await page.route("**/api/admin/sync-products", async (route) => {
+    expect(route.request().method()).toBe("POST");
+    expect(route.request().headers().authorization).toMatch(/^Bearer demo-admin-/);
     await route.fulfill({
       status: 200,
-      contentType: "text/csv; charset=utf-8",
-      body: rows.join("\n"),
+      contentType: "application/json; charset=utf-8",
+      body: JSON.stringify({
+        total: 508,
+        created: 2,
+        updated: 4,
+        unchanged: 502,
+        removed: 1,
+        source: "Google Sheet · Lista de precios - LitoralMaq",
+        lastSyncedAt: "2026-08-31T14:00:00.000Z",
+        warnings: [],
+      }),
     });
   });
 
@@ -20,26 +32,11 @@ test("el administrador sincroniza y persiste el catálogo del Google Sheet", asy
   await expect(page).toHaveURL(/\/admin$/);
   await page.goto("/admin/productos");
 
-  const initialSummary = await page
-    .getByRole("main")
-    .getByText(/\d+ productos · \d+ provenientes del Google Sheet/)
-    .textContent();
-  const initialCount = Number(initialSummary?.match(/^(\d+) productos/)?.[1]);
-  expect(initialCount).toBeGreaterThan(100);
-  const synchronizedCount = initialCount + 101;
-
   await page.getByRole("button", { name: "Actualizar desde Sheet" }).click();
   await expect(
     page.getByText(
-      `Google Sheet sincronizado: ${synchronizedCount} productos · 101 nuevos · 0 actualizados · ${initialCount} retirados.`,
+      /Google Sheet sincronizado: 508 productos · 2 nuevos · 4 actualizados · 502 sin cambios · 1 retirados\./,
     ),
   ).toBeVisible();
-  await expect(
-    page.getByText(`${synchronizedCount} productos · ${synchronizedCount} provenientes del Google Sheet`),
-  ).toBeVisible();
-
-  await page.reload();
-  await expect(
-    page.getByText(`${synchronizedCount} productos · ${synchronizedCount} provenientes del Google Sheet`),
-  ).toBeVisible();
+  expect(googleWasCalled).toBe(false);
 });

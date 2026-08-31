@@ -45,6 +45,10 @@ const serverEnv: Record<string, string> = stagingUrl
     }
   : { NEXT_PUBLIC_PERSISTENCE_PROVIDER: 'local' };
 
+if (!stagingUrl) {
+  serverEnv.NEXT_PUBLIC_SHEET_SYNC_ENDPOINT = '/api/admin/sync-products';
+}
+
 export default defineConfig({
   testDir: './tests/e2e',
   timeout: 30000,

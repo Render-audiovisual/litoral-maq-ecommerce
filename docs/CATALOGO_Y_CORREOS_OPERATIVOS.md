@@ -24,8 +24,12 @@ Resultado esperado del validador: `verdict: PASS`, sin códigos duplicados, fila
 ## 2. Activación en Supabase
 
 1. Ejecutar completa la migración `supabase/migrations/0010_catalog_limits_order_notifications.sql` en SQL Editor.
-2. Desde el panel administrativo, abrir **Productos** y tocar **Actualizar desde Sheet**. El upsert conserva las fichas verificadas y agrega los productos nuevos como ocultos.
-3. Confirmar en el mensaje del panel el total sincronizado. No usar `DELETE` ni `TRUNCATE` manual.
+2. Ejecutar completa la migración `supabase/migrations/20260831160000_server_catalog_sync.sql`.
+3. Desplegar `admin-sync-products` con `npx supabase functions deploy admin-sync-products --project-ref bhtaecnzpuotlsenbdlz`.
+4. Desde el panel administrativo, abrir **Productos** y tocar **Actualizar desde Sheet**. El navegador llama únicamente a la Edge Function autenticada; Google Sheets se consulta desde el servidor. El RPC aplica todo en una transacción, conserva las fichas verificadas y agrega los productos nuevos como ocultos.
+5. Confirmar en el mensaje del panel total, nuevos, actualizados, sin cambios y retirados. No usar `DELETE` ni `TRUNCATE` manual.
+
+Si Google no responde, cambian los encabezados, hay filas inválidas/duplicadas o llegan menos de 100 productos, la operación se cancela antes de escribir y el catálogo anterior queda intacto. Cada intento queda registrado en `catalog_sync_runs` con fecha, resultado y detalle técnico.
 
 La migración agrega el límite por compra, el estado `listo`, una outbox privada y triggers idempotentes. No envía correos por sí sola hasta desplegar la función y cargar el secreto.
 

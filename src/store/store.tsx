@@ -59,6 +59,7 @@ type Store = {
   saveProduct: (product: Product) => Promise<Product>;
   deleteProduct: (id: string) => Promise<void>;
   replaceProducts: (products: Product[]) => Promise<Product[]>;
+  refreshProducts: () => Promise<Product[]>;
   createOrder: (order: Order) => Promise<Order>;
   updateOrderStatus: (id: string, status: Order["status"]) => Promise<Order>;
   updateOrderPaymentStatus: (
@@ -559,6 +560,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [products, adminSession, adapter],
   );
 
+  const refreshProducts = useCallback(async () => {
+    const refreshed = await adapter.listProducts();
+    setProducts(refreshed);
+    return refreshed;
+  }, [adapter]);
+
   const createOrder = useCallback(
     async (order: Order) => {
       const persisted = await adapter.createOrder(order);
@@ -734,6 +741,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       saveProduct,
       deleteProduct,
       replaceProducts,
+      refreshProducts,
       createOrder,
       updateOrderStatus,
       updateOrderPaymentStatus,
@@ -761,6 +769,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       saveProduct,
       deleteProduct,
       replaceProducts,
+      refreshProducts,
       createOrder,
       updateOrderStatus,
       updateOrderPaymentStatus,
