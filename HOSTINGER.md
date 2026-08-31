@@ -2,24 +2,39 @@
 
 ## Despliegue automático actual
 
-El workflow `.github/workflows/deploy-hostinger.yml` publica automáticamente
-las dos superficies después de cada push a `main` (por ejemplo, al fusionar
-una rama aprobada):
+El workflow `.github/workflows/deploy-hostinger.yml` verifica cada pull request
+hacia `main` y publica automáticamente las dos superficies únicamente después
+de fusionar una rama aprobada o ejecutar manualmente el workflow:
 
 | Superficie | URL | Directorio remoto |
 |---|---|---|
 | Tienda | `litoralmaqrender.rendercorrientes.com` | `public_html/litoralmaqrender/` |
 | Administración | `admin-litoralmaqrender.rendercorrientes.com` | `public_html/admin-litoralmaqrender/` |
 
-Antes de publicar ejecuta TypeScript, ESLint, tests, validación del catálogo,
-los dos builds y la validación de separación. Si cualquiera falla no modifica
-Hostinger. La publicación usa `rsync --delete`, por lo que reemplaza el
-contenido anterior de esas dos carpetas sin crear un backup automático.
+Antes de publicar ejecuta TypeScript, ESLint, tests, E2E, validación del
+catálogo versionado, los dos builds y la validación de separación. Si cualquiera
+falla no modifica Hostinger. El job guarda durante 30 días un artefacto llamado
+`litoral-maq-<commit>` con la tienda, el admin y el catálogo exactos que pasaron
+los checks.
 
-Supabase queda expresamente fuera de esta etapa: el workflow fuerza
-`NEXT_PUBLIC_PERSISTENCE_PROVIDER=local`. Como tienda y administración están
-en orígenes distintos, los cambios hechos en el admin local no aparecen en la
-tienda pública hasta conectar una persistencia compartida.
+El catálogo **no se descarga desde Google Sheets durante el deploy**. La
+sincronización es una operación separada: sus cambios deben quedar en
+`src/data/products.json`, validarse y revisarse por pull request. Cada artefacto
+incluye `deployment-manifest.json` con commit, referencia, ejecución, hash
+SHA-256 del catálogo y conteos total/activo. El manifiesto queda en el
+artefacto y en el área privada de deployments del servidor, no dentro de los
+document roots públicos.
+
+Antes del primer `rsync --delete`, el workflow sube un release inmutable y copia
+ambos sitios actuales a un backup remoto. Si falla la tienda, el admin o la
+verificación final, restaura automáticamente las dos superficies desde ese
+backup. El commit y el último backup quedan registrados en
+`/home/u471562620/deployments/litoral-maq/current-release` y `last-backup`.
+
+Producción compila con `NEXT_PUBLIC_PERSISTENCE_PROVIDER=supabase`. Los E2E usan
+el adaptador local mientras no existan `E2E_SUPABASE_URL` y
+`E2E_SUPABASE_PUBLISHABLE_KEY`; cuando se configuren, deben pertenecer
+exclusivamente al proyecto de staging, nunca al Supabase productivo.
 
 Secrets requeridos en el environment de GitHub `production`:
 
@@ -36,9 +51,9 @@ su propia raíz de publicación en Hostinger:
 | Tienda pública | dominio principal (ej. `www.litoralmaq.com`) | `hostinger-ready/` | `public_html` del dominio principal |
 | Administración | subdominio (ej. `admin.litoralmaq.com`) | `admin-ready/` | document root propio del subdominio |
 
-No necesita Node.js, PHP ni base de datos mientras siga usando los flujos
-simulados del navegador (`localStorage`, Etapa 5 preparada pero no
-conectada — ver `supabase/README.md`).
+Los sitios publicados son estáticos y no requieren Node.js ni PHP en
+Hostinger. La persistencia compartida y la autenticación funcionan contra
+Supabase; Hostinger sirve únicamente HTML, JavaScript y recursos públicos.
 
 ## 0. Qué separación demuestra esto y qué no
 
@@ -203,10 +218,24 @@ Ambos incluyen `ErrorDocument 404 /404.html`.
    ninguna petición a rutas `/admin/*`, y que el admin no carga
    `productos.html`, `carrito.html` ni `checkout.html`.
 
-## 7. Rollback independiente
+## 7. Rollback
 
-Cada superficie se reemplaza de forma independiente — no hace falta tocar
-la otra:
+El workflow hace rollback automático de **las dos superficies juntas** si
+falla cualquier paso posterior al backup. Esto evita publicar una tienda nueva
+con un administrador viejo, o al revés.
+
+Los releases y backups remotos quedan bajo:
+
+```text
+/home/u471562620/deployments/litoral-maq/releases/<commit>/
+/home/u471562620/deployments/litoral-maq/backups/<fecha>-<commit-corto>/
+```
+
+Para un rollback manual, tomar la ruta exacta de `last-backup` y sincronizar sus
+directorios `store/` y `admin/` hacia los dos document roots. Hacerlo solamente
+con acceso SSH autorizado y después verificar `index.html` y `admin.html`.
+
+Si se necesita restaurar una sola superficie por una causa excepcional:
 
 - **Tienda**: volver a subir una versión anterior de `hostinger-ready/` a
   `public_html/` (o restaurar backup previo). No afecta al subdominio
@@ -217,9 +246,8 @@ la otra:
   **una sola carpeta** que de un despliegue mezclado — esa es la ganancia
   concreta de tener document roots separados.
 
-Recomendado: conservar el `hostinger-ready/`/`admin-ready/` previos (o un
-zip de cada `public_html`) antes de cada reemplazo, para poder rollback
-sin tener que reconstruir desde el código.
+Además, GitHub conserva durante 30 días el artefacto exacto de cada ejecución,
+por lo que un release se puede reconstruir sin volver a consultar el Sheet.
 
 ## 8. Modificar el código
 

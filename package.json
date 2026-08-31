@@ -8,6 +8,7 @@
     "build:hostinger": "next build && node scripts/prepare-hostinger-dist.mjs",
     "build:admin": "next build && node scripts/prepare-admin-dist.mjs",
     "validate:separation": "node scripts/validate-separation.mjs",
+    "manifest:deploy": "node scripts/create-deployment-manifest.mjs",
     "preview:hostinger": "node scripts/preview-hostinger.mjs",
     "preview:admin": "ROOT_DIR=admin-ready PORT=3112 node scripts/preview-hostinger.mjs",
     "start": "next start",
@@ -19,7 +20,8 @@
     "prepare:products-migration": "node scripts/prepare-products-migration.mjs",
     "test": "vitest run",
     "test:unit": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:staging": "node --env-file=.env.staging.local node_modules/@playwright/test/cli.js test --grep @staging"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.111.0",

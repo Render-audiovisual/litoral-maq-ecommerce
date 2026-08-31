@@ -10,6 +10,7 @@ tsconfig.tsbuildinfo
 # Artefactos de build generados (Etapa 6 — despliegue separado)
 hostinger-ready/
 admin-ready/
+deployment-manifest.json
 
 # Entorno local (nunca credenciales reales versionadas)
 .env.local
@@ -28,3 +29,6 @@ playwright-report/
 
 # Estado local del CLI de Supabase (link al proyecto, versiones detectadas)
 supabase/.temp/
+
+# Estado local del CLI de Supabase (rama de db local)
+supabase/.branches/
