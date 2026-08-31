@@ -1,5 +1,5 @@
 import { ProviderConfigError, resolveRequestedProvider } from "@/services/provider";
-import { createLocalPersistenceAdapter } from "./local-adapter";
+import { createLocalPersistenceAdapter } from "@/services/persistence/local-adapter";
 import { createSupabasePersistenceAdapter } from "./supabase-adapter";
 import { getTypedSupabaseClient, readSupabaseConfig } from "./supabase/client";
 import type { PersistenceAdapter } from "./types";

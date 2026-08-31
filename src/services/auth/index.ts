@@ -1,7 +1,7 @@
 import type { Session } from "@/lib/types";
 import { getTypedSupabaseClient, readSupabaseConfig } from "@/services/persistence/supabase/client";
 import { ProviderConfigError, resolveRequestedProvider } from "@/services/provider";
-import { localAuthAdapter } from "./local-auth-adapter";
+import { localAuthAdapter } from "@/services/auth/local-auth-adapter";
 import { createSupabaseAuthAdapter } from "./supabase-auth-adapter";
 import { supportsSessionRestore } from "./types";
 import type { AuthAdapter } from "./types";
