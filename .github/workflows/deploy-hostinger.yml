@@ -1,23 +1,25 @@
-name: Publicar Litoral Maq en Hostinger
+name: Verificar y publicar Litoral Maq
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
   workflow_dispatch:
 
 concurrency:
-  group: litoral-maq-production
-  cancel-in-progress: false
+  group: litoral-maq-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
 jobs:
-  build-and-deploy:
-    name: Compilar y publicar tienda + admin
+  verify:
+    name: Verificar, compilar y empaquetar
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - name: Descargar el código
@@ -41,10 +43,15 @@ jobs:
       - name: Instalar navegador para E2E
         run: npx playwright install --with-deps chromium
 
-      # Sin E2E_SUPABASE_URL, playwright.config.ts fuerza el modo local: los
-      # E2E nunca escriben en la base de producción. Cuando exista el proyecto
-      # de staging, definir los secrets E2E_SUPABASE_URL y
-      # E2E_SUPABASE_PUBLISHABLE_KEY para que corran contra el camino real.
+      # Cuando exista el proyecto aislado de staging, estos secrets harán que
+      # Playwright use Supabase real. Nunca deben apuntar a producción.
+      - name: Validar destino E2E
+        env:
+          E2E_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
+          E2E_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.E2E_SUPABASE_PUBLISHABLE_KEY }}
+          PRODUCTION_SUPABASE_URL: https://bhtaecnzpuotlsenbdlz.supabase.co
+        run: node scripts/validate-e2e-environment.mjs
+
       - name: Pruebas E2E
         env:
           E2E_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
@@ -55,16 +62,14 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ github.sha }}
           path: playwright-report/
           retention-days: 7
 
-      - name: Importar catálogo vigente desde Google Sheets
-        run: npm run import:sheet
-
-      - name: Validar catálogo importado
-        run: |
-          npm run validate:catalog
+      # El deploy usa exclusivamente el catálogo versionado en el commit.
+      # Actualizar desde Sheets es una operación separada, revisable por PR.
+      - name: Validar catálogo versionado
+        run: npm run validate:catalog
 
       - name: Compilar tienda
         env:
@@ -87,6 +92,38 @@ jobs:
       - name: Validar separación de artefactos
         run: npm run validate:separation
 
+      - name: Firmar artefactos y catálogo
+        env:
+          DEPLOY_COMMIT: ${{ github.sha }}
+          DEPLOY_REF: ${{ github.ref }}
+          DEPLOY_RUN_ID: ${{ github.run_id }}
+        run: node scripts/create-deployment-manifest.mjs
+
+      - name: Guardar artefacto reproducible
+        uses: actions/upload-artifact@v4
+        with:
+          name: litoral-maq-${{ github.sha }}
+          path: |
+            hostinger-ready/
+            admin-ready/
+            src/data/products.json
+            deployment-manifest.json
+          if-no-files-found: error
+          retention-days: 30
+
+  deploy:
+    name: Publicar con backup y rollback
+    if: github.event_name != 'pull_request'
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Descargar artefacto verificado
+        uses: actions/download-artifact@v4
+        with:
+          name: litoral-maq-${{ github.sha }}
+
       - name: Preparar acceso SSH
         env:
           HOSTINGER_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
@@ -108,12 +145,60 @@ jobs:
           done
           sort -u -o "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts"
 
-      - name: Publicar tienda y administración
+      - name: Subir release inmutable
         env:
           HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
           HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
           HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+          RELEASE_ID: ${{ github.sha }}
         run: |
           SSH_COMMAND="ssh -i $HOME/.ssh/litoral_maq -p $HOSTINGER_PORT"
-          rsync -az --delete -e "$SSH_COMMAND" hostinger-ready/ "$HOSTINGER_USER@$HOSTINGER_HOST:/home/u471562620/domains/rendercorrientes.com/public_html/litoralmaqrender/"
-          rsync -az --delete -e "$SSH_COMMAND" admin-ready/ "$HOSTINGER_USER@$HOSTINGER_HOST:/home/u471562620/domains/rendercorrientes.com/public_html/admin-litoralmaqrender/"
+          RELEASE_ROOT="/home/u471562620/deployments/litoral-maq/releases/$RELEASE_ID"
+          ssh -i "$HOME/.ssh/litoral_maq" -p "$HOSTINGER_PORT" "$HOSTINGER_USER@$HOSTINGER_HOST" \
+            "mkdir -p '$RELEASE_ROOT/store' '$RELEASE_ROOT/admin'"
+          rsync -az --delete -e "$SSH_COMMAND" hostinger-ready/ "$HOSTINGER_USER@$HOSTINGER_HOST:$RELEASE_ROOT/store/"
+          rsync -az --delete -e "$SSH_COMMAND" admin-ready/ "$HOSTINGER_USER@$HOSTINGER_HOST:$RELEASE_ROOT/admin/"
+          rsync -az -e "$SSH_COMMAND" deployment-manifest.json "$HOSTINGER_USER@$HOSTINGER_HOST:$RELEASE_ROOT/deployment-manifest.json"
+
+      - name: Publicar con rollback automático
+        env:
+          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+          HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+          HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+          RELEASE_ID: ${{ github.sha }}
+        run: |
+          ssh -i "$HOME/.ssh/litoral_maq" -p "$HOSTINGER_PORT" "$HOSTINGER_USER@$HOSTINGER_HOST" \
+            "bash -s -- '$RELEASE_ID'" <<'REMOTE_SCRIPT'
+          set -euo pipefail
+
+          release_id="$1"
+          deploy_root="/home/u471562620/deployments/litoral-maq"
+          release_root="$deploy_root/releases/$release_id"
+          backup_root="$deploy_root/backups/$(date -u +%Y%m%dT%H%M%SZ)-${release_id:0:12}"
+          store_live="/home/u471562620/domains/rendercorrientes.com/public_html/litoralmaqrender"
+          admin_live="/home/u471562620/domains/rendercorrientes.com/public_html/admin-litoralmaqrender"
+
+          test -f "$release_root/store/index.html"
+          test -f "$release_root/admin/admin.html"
+          test -f "$release_root/deployment-manifest.json"
+          mkdir -p "$backup_root/store" "$backup_root/admin"
+          rsync -a "$store_live/" "$backup_root/store/"
+          rsync -a "$admin_live/" "$backup_root/admin/"
+
+          rollback() {
+            echo "El deploy falló; restaurando el backup $backup_root" >&2
+            rsync -a --delete "$backup_root/store/" "$store_live/"
+            rsync -a --delete "$backup_root/admin/" "$admin_live/"
+          }
+          trap rollback ERR
+
+          rsync -a --delete "$release_root/store/" "$store_live/"
+          rsync -a --delete "$release_root/admin/" "$admin_live/"
+          test -f "$store_live/index.html"
+          test -f "$admin_live/admin.html"
+
+          trap - ERR
+          printf '%s\n' "$release_id" > "$deploy_root/current-release"
+          printf '%s\n' "$backup_root" > "$deploy_root/last-backup"
+          cp "$release_root/deployment-manifest.json" "$deploy_root/current-manifest.json"
+          REMOTE_SCRIPT
