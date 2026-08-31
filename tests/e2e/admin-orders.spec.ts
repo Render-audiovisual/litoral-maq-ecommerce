@@ -41,7 +41,9 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await expect(modal).toContainText("Pago a coordinar");
 
   await modal.getByLabel(/Estado de .* en detalle/).selectOption("preparando");
-  await expect(page.getByText(/actualizado a Preparando/)).toBeVisible();
+  await expect(
+    page.getByText(/actualizado a Paso 1 · Preparando/),
+  ).toBeVisible();
   await expect(page.getByLabel("0 pedidos pendientes")).toBeVisible();
   await page.reload();
   await expect(page.locator("tbody tr").filter({ hasText: "Cliente Pedido E2E" }).locator(".status-select")).toHaveValue("preparando");
