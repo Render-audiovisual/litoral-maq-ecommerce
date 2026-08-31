@@ -86,13 +86,16 @@ async function checkAssetsExist(artifactDir, htmlFiles, label) {
 }
 
 async function checkDeepRouteResolves(artifactDir, routePath, label) {
-  // Replica la condición real del .htaccess: RewriteCond .../$1.html -f
+  // El .html cubre servidores que respetan el rewrite. El index físico
+  // cubre Hostinger/LiteSpeed, que puede redirigir primero a la carpeta RSC.
   const htmlPath = path.join(artifactDir, `${routePath}.html`.replace(/^\//, ""));
-  if (await exists(htmlPath)) {
-    ok(`[${label}] ${routePath} resuelve a ${path.relative(artifactDir, htmlPath)} (acceso directo/refresh funcionaría).`);
-  } else {
-    fail(`[${label}] ${routePath} NO tiene un .html correspondiente — el .htaccess no podría resolverlo.`);
-  }
+  const directoryIndexPath = path.join(artifactDir, routePath.replace(/^\//, ""), "index.html");
+  const missing = [];
+  if (!(await exists(htmlPath))) missing.push(path.relative(artifactDir, htmlPath));
+  if (!(await exists(directoryIndexPath))) missing.push(path.relative(artifactDir, directoryIndexPath));
+  if (missing.length === 0) {
+    ok(`[${label}] ${routePath} tiene HTML de rewrite e index físico para Hostinger.`);
+  } else fail(`[${label}] ${routePath} no puede resolver de forma portable; faltan: ${missing.join(", ")}.`);
 }
 
 async function main() {
@@ -161,13 +164,13 @@ async function main() {
     }
   }
 
-  const FORBIDDEN_IN_ADMIN = ["index.html", "productos.html", "productos", "carrito.html", "checkout.html", "login.html", "registro.html", "cuenta", "products"];
+  const FORBIDDEN_IN_ADMIN = ["productos.html", "productos", "carrito.html", "checkout.html", "login.html", "registro.html", "cuenta", "products"];
   const adminTop = await listTopLevel(adminDir);
   const commercialEntriesInAdmin = adminTop.filter((entry) => FORBIDDEN_IN_ADMIN.includes(entry));
   if (commercialEntriesInAdmin.length) {
     fail(`[admin] Contiene rutas/assets comerciales de tienda: ${commercialEntriesInAdmin.join(", ")}`);
   } else {
-    ok("[admin] Sin rutas comerciales de tienda a nivel raíz (index, productos, carrito, checkout, login público, registro, cuenta, products/).");
+    ok("[admin] Sin rutas comerciales de tienda a nivel raíz (productos, carrito, checkout, login público, registro, cuenta, products/).");
   }
 
   const adminHtmlFiles = [];
@@ -228,6 +231,11 @@ async function main() {
     ok("[admin] .htaccess redirige la raíz del subdominio a admin.html.");
   } else {
     fail("[admin] .htaccess no redirige la raíz a admin.html.");
+  }
+  if (await exists(path.join(adminDir, "index.html"))) {
+    ok("[admin] La raíz tiene index.html físico para hosts que ignoran DirectoryIndex.");
+  } else {
+    fail("[admin] Falta index.html físico en la raíz del subdominio.");
   }
   if (adminHtaccess?.includes("DirectorySlash Off")) {
     ok("[admin] .htaccess evita que Apache priorice las carpetas RSC sobre los HTML de ruta.");
