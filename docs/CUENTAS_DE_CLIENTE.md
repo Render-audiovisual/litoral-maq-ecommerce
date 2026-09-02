@@ -99,13 +99,13 @@ lista del dashboard y el código no puedan divergir.
 Configuration → Redirect URLs), las cuatro, sin comodines:
 
 ```
-https://litoralmaqrender.rendercorrientes.com/login?confirmed=1
-https://litoralmaqrender.rendercorrientes.com/restablecer-clave
-https://litoralmaqrender.rendercorrientes.com/crear-clave
-https://litoralmaqrender.rendercorrientes.com/auth/callback
+https://litoralmaq.com/login?confirmed=1
+https://litoralmaq.com/restablecer-clave
+https://litoralmaq.com/crear-clave
+https://litoralmaq.com/auth/callback
 ```
 
-**Site URL:** `https://litoralmaqrender.rendercorrientes.com`
+**Site URL:** `https://litoralmaq.com`
 
 `http://localhost:3000` **no** va en producción: autorizarlo permite que un
 enlace con su token termine en una app corriendo en la máquina de quien
@@ -161,13 +161,13 @@ escribe `'customer'` literal y nunca lee la metadata del usuario.
    - Tipo: **External**. Publicar la app (en "Testing" solo entran las
      cuentas que se carguen a mano).
    - Nombre de la app: `Litoral Maq`. Email de asistencia y de contacto.
-   - Logo y dominio de la app: `litoralmaqrender.rendercorrientes.com`.
-   - Dominios autorizados: `rendercorrientes.com` y `supabase.co`.
+   - Logo y dominio de la app: `litoralmaq.com`.
+   - Dominios autorizados: `litoralmaq.com` y `supabase.co`.
    - Scopes: solo `openid`, `email`, `profile`. Nada más: pedir permisos de
      más dispara revisión de Google y no hace falta ninguno.
 2. **Credenciales → Crear credenciales → ID de cliente de OAuth → Aplicación web**
    - Orígenes autorizados de JavaScript:
-     `https://litoralmaqrender.rendercorrientes.com`
+     `https://litoralmaq.com`
    - URI de redireccionamiento autorizado (exacto, uno solo):
      `https://bhtaecnzpuotlsenbdlz.supabase.co/auth/v1/callback`
 3. Copiar **Client ID** y **Client Secret** → Supabase → Providers → Google.
@@ -228,7 +228,7 @@ publicar un build que mande el token, dejan de funcionar el login, el
 registro y la compra como invitado.
 
 1. dash.cloudflare.com → **Turnstile → Add widget**.
-   - Hostnames: `litoralmaqrender.rendercorrientes.com`. Para desarrollo,
+   - Hostnames: `litoralmaq.com`, `www.litoralmaq.com`. Para desarrollo,
      agregar `localhost` (o usar un widget aparte).
    - Modo: **Managed** (invisible salvo sospecha).
    - Copiar **Site Key** y **Secret Key**.

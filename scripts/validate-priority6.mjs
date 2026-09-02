@@ -1,8 +1,8 @@
 import { chromium } from "@playwright/test";
 import assert from "node:assert/strict";
 
-const storeUrl = (process.env.PRIORITY6_STORE_URL || "https://litoralmaqrender.rendercorrientes.com").replace(/\/$/, "");
-const adminUrl = (process.env.PRIORITY6_ADMIN_URL || "https://admin-litoralmaqrender.rendercorrientes.com").replace(/\/$/, "");
+const storeUrl = (process.env.PRIORITY6_STORE_URL || "https://litoralmaq.com").replace(/\/$/, "");
+const adminUrl = (process.env.PRIORITY6_ADMIN_URL || "https://admin.litoralmaq.com").replace(/\/$/, "");
 const adminEmail = process.env.PRIORITY6_ADMIN_EMAIL?.trim();
 const adminPassword = process.env.PRIORITY6_ADMIN_PASSWORD;
 const customersOnly = process.argv.includes("--customers-only");

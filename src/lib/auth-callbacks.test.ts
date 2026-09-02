@@ -12,8 +12,8 @@ import { friendlyAuthError, isRateLimitError } from "./auth-errors";
 
 describe("URLs de callback de Supabase Auth", () => {
   it("arma la URL de confirmación sobre el origen recibido", () => {
-    expect(authCallbackUrl("emailConfirmed", "https://litoralmaqrender.rendercorrientes.com")).toBe(
-      "https://litoralmaqrender.rendercorrientes.com/login?confirmed=1",
+    expect(authCallbackUrl("emailConfirmed", "https://litoralmaq.com")).toBe(
+      "https://litoralmaq.com/login?confirmed=1",
     );
   });
 
@@ -30,10 +30,10 @@ describe("URLs de callback de Supabase Auth", () => {
   it("la lista de producción cubre solo las rutas exactas de producción", () => {
     const urls = productionRedirectUrls();
     expect(urls).toEqual([
-      "https://litoralmaqrender.rendercorrientes.com/login?confirmed=1",
-      "https://litoralmaqrender.rendercorrientes.com/restablecer-clave",
-      "https://litoralmaqrender.rendercorrientes.com/crear-clave",
-      "https://litoralmaqrender.rendercorrientes.com/auth/callback",
+      "https://litoralmaq.com/login?confirmed=1",
+      "https://litoralmaq.com/restablecer-clave",
+      "https://litoralmaq.com/crear-clave",
+      "https://litoralmaq.com/auth/callback",
     ]);
   });
 
@@ -76,13 +76,13 @@ describe("URLs de callback de Supabase Auth", () => {
     // Si estas dos rutas no están cargadas en Supabase, el enlace cae al
     // Site URL y la conversión del invitado se pierde en silencio.
     const urls = productionRedirectUrls();
-    expect(urls).toContain("https://litoralmaqrender.rendercorrientes.com/crear-clave");
-    expect(urls).toContain("https://litoralmaqrender.rendercorrientes.com/auth/callback");
+    expect(urls).toContain("https://litoralmaq.com/crear-clave");
+    expect(urls).toContain("https://litoralmaq.com/auth/callback");
   });
 
   it("el Site URL es el de producción vigente", () => {
     expect(SITE_URL).toBe(AUTH_ORIGINS.production);
-    expect(SITE_URL).toBe("https://litoralmaqrender.rendercorrientes.com");
+    expect(SITE_URL).toBe("https://litoralmaq.com");
   });
 
   it("ninguna pantalla arma su callback a mano", async () => {

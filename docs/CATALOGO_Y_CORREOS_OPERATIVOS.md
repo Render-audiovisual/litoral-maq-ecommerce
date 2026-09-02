@@ -52,10 +52,10 @@ Crear una API key de Resend con permiso **Sending access** y cargarla directamen
 
 ```text
 RESEND_API_KEY=<secreto>
-RESEND_FROM_EMAIL=Litoral Maq <pedidos@litoralmaqrender.rendercorrientes.com>
+RESEND_FROM_EMAIL=Litoral Maq <pedidos@litoralmaq.com>
 LITORAL_ORDERS_EMAIL=<correo operativo que recibe pedidos nuevos>
-STORE_PUBLIC_URL=https://litoralmaqrender.rendercorrientes.com
-ADMIN_PUBLIC_URL=https://admin-litoralmaqrender.rendercorrientes.com
+STORE_PUBLIC_URL=https://litoralmaq.com
+ADMIN_PUBLIC_URL=https://admin.litoralmaq.com
 ORDER_NOTIFICATIONS_CRON_SECRET=<cadena aleatoria de al menos 24 caracteres>
 ```
 
