@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/store/store";
 import { isValidAdminSession, isValidCustomerSession } from "@/lib/auth";
 import { getStoreUrl } from "@/lib/domain-config";
 import { resolveRequestedProvider } from "@/services/provider";
+import { getAuthAdapter, supportsSessionRestore } from "@/services/auth";
 
 const links = [
   ["/admin", "Resumen", "◫"],
@@ -19,6 +20,19 @@ const links = [
 ];
 
 const ADMIN_LOGIN_PATH = "/admin/login";
+const SESSION_RESTORE_TIMEOUT_MS = 10_000;
+
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error("La verificación de sesión agotó el tiempo de espera.")), timeoutMs);
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+}
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -26,6 +40,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const { adminSession, customerSession, orders, ready, setAdminSession, signOutAdmin } = useStore();
   const isLoginRoute = pathname === ADMIN_LOGIN_PATH;
   const loggingOutRef = useRef(false);
+  const [authCheck, setAuthCheck] = useState(0);
   const pendingOrderCount = useMemo(
     () => orders.filter((order) => order.status === "pendiente").length,
     [orders],
@@ -37,13 +52,56 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isLoginRoute || !ready || loggingOutRef.current) return;
+
+    // React no vuelve a renderizar solo porque Date.now() alcanzó el
+    // expiresAt guardado. Programamos una comprobación exacta y otra al
+    // regresar a la pestaña, cubriendo suspensión del equipo y pestañas
+    // inactivas sin depender del refresco periódico de pedidos.
+    const delay = adminSession?.expiresAt
+      ? Math.max(0, adminSession.expiresAt - Date.now() + 50)
+      : 0;
+    const timer = window.setTimeout(() => setAuthCheck((value) => value + 1), delay);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") setAuthCheck((value) => value + 1);
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [ready, adminSession, isLoginRoute]);
+
+  useEffect(() => {
+    if (isLoginRoute || !ready || loggingOutRef.current) return;
     if (isValidAdminSession(adminSession)) return;
-    if (adminSession) void setAdminSession(null);
-    const insufficientPermission = isValidCustomerSession(customerSession);
-    router.replace(
-      `${ADMIN_LOGIN_PATH}?${insufficientPermission ? "denied=1&" : ""}next=${encodeURIComponent(pathname)}`,
-    );
-  }, [ready, adminSession, customerSession, pathname, router, isLoginRoute, setAdminSession]);
+
+    let cancelled = false;
+    const verifyAccess = async () => {
+      try {
+        const authAdapter = getAuthAdapter();
+        const restored = supportsSessionRestore(authAdapter)
+          ? await withTimeout(authAdapter.restoreSession(), SESSION_RESTORE_TIMEOUT_MS)
+          : null;
+        if (cancelled) return;
+        if (isValidAdminSession(restored)) {
+          await setAdminSession(restored);
+          return;
+        }
+      } catch (error) {
+        console.warn("No se pudo renovar la sesión administrativa.", error);
+      }
+      if (cancelled) return;
+      if (adminSession) await setAdminSession(null);
+      const insufficientPermission = isValidCustomerSession(customerSession);
+      router.replace(
+        `${ADMIN_LOGIN_PATH}?${insufficientPermission ? "denied=1&" : ""}next=${encodeURIComponent(pathname)}`,
+      );
+    };
+    void verifyAccess();
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, adminSession, customerSession, pathname, router, isLoginRoute, setAdminSession, authCheck]);
 
   async function logout() {
     loggingOutRef.current = true;
