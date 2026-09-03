@@ -210,7 +210,7 @@ async function main() {
 
   // 4. Reglas .htaccess esperadas.
   const storeHtaccess = await readIfExists(path.join(storeDir, ".htaccess"));
-  if (storeHtaccess?.includes("https://admin-litoralmaqrender.rendercorrientes.com/admin/$1")) {
+  if (storeHtaccess?.includes("https://admin.litoralmaq.com/admin/$1")) {
     ok("[tienda] .htaccess redirige /admin al subdominio administrativo.");
   } else {
     fail("[tienda] .htaccess no redirige /admin al subdominio administrativo.");

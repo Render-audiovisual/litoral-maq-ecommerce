@@ -8,8 +8,8 @@ de fusionar una rama aprobada o ejecutar manualmente el workflow:
 
 | Superficie | URL | Directorio remoto |
 |---|---|---|
-| Tienda | `litoralmaqrender.rendercorrientes.com` | `public_html/litoralmaqrender/` |
-| Administración | `admin-litoralmaqrender.rendercorrientes.com` | `public_html/admin-litoralmaqrender/` |
+| Tienda | `litoralmaq.com` | `/home/u471562620/domains/litoralmaq.com/public_html/` |
+| Administración | `admin.litoralmaq.com` | `/home/u471562620/domains/litoralmaq.com/public_html/admin/` |
 
 Antes de publicar ejecuta TypeScript, ESLint, tests, E2E, validación del
 catálogo versionado, los dos builds y la validación de separación. Si cualquiera
@@ -48,8 +48,8 @@ su propia raíz de publicación en Hostinger:
 
 | Superficie | Dominio | Artefacto local | Document root en Hostinger |
 |---|---|---|---|
-| Tienda pública | dominio principal (ej. `www.litoralmaq.com`) | `hostinger-ready/` | `public_html` del dominio principal |
-| Administración | subdominio (ej. `admin.litoralmaq.com`) | `admin-ready/` | document root propio del subdominio |
+| Tienda pública | `litoralmaq.com` | `hostinger-ready/` | `/home/u471562620/domains/litoralmaq.com/public_html/` |
+| Administración | `admin.litoralmaq.com` | `admin-ready/` | `/home/u471562620/domains/litoralmaq.com/public_html/admin/` |
 
 Los sitios publicados son estáticos y no requieren Node.js ni PHP en
 Hostinger. La persistencia compartida y la autenticación funcionan contra
@@ -94,7 +94,7 @@ Antes de desplegar, es importante entender qué nivel de separación es real:
 `src/lib/domain-config.ts` lee dos variables en tiempo de build:
 
 ```bash
-NEXT_PUBLIC_STORE_DOMAIN=www.litoralmaq.com
+NEXT_PUBLIC_STORE_DOMAIN=litoralmaq.com
 NEXT_PUBLIC_ADMIN_DOMAIN=admin.litoralmaq.com
 ```
 
@@ -122,12 +122,12 @@ reutilizan archivos de una corrida anterior**, cada uno corre su propio
 npm install
 
 # Tienda → hostinger-ready/
-NEXT_PUBLIC_STORE_DOMAIN=www.litoralmaq.com \
+NEXT_PUBLIC_STORE_DOMAIN=litoralmaq.com \
 NEXT_PUBLIC_ADMIN_DOMAIN=admin.litoralmaq.com \
 npm run build:hostinger
 
 # Administración → admin-ready/
-NEXT_PUBLIC_STORE_DOMAIN=www.litoralmaq.com \
+NEXT_PUBLIC_STORE_DOMAIN=litoralmaq.com \
 NEXT_PUBLIC_ADMIN_DOMAIN=admin.litoralmaq.com \
 npm run build:admin
 

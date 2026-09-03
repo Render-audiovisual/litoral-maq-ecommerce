@@ -15,8 +15,9 @@ function allowedOrigins() {
   const configured = (Deno.env.get("CORS_ALLOWED_ORIGINS") || "").split(",");
   return [...new Set([
     "http://localhost:3000",
-    "https://litoralmaqrender.rendercorrientes.com",
-    "https://admin-litoralmaqrender.rendercorrientes.com",
+    "https://litoralmaq.com",
+    "https://www.litoralmaq.com",
+    "https://admin.litoralmaq.com",
     Deno.env.get("STORE_PUBLIC_URL") || "",
     Deno.env.get("ADMIN_PUBLIC_URL") || "",
     ...configured,

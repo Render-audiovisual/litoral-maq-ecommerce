@@ -20,7 +20,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * cualquier entorno donde todavía no se creó el widget.
  */
 
-const PRODUCTION_STORE_DOMAIN = "litoralmaqrender.rendercorrientes.com";
+const PRODUCTION_STORE_DOMAIN = "litoralmaq.com";
 // La clave del widget es pública. El fallback queda limitado al dominio real
 // para que desarrollo y E2E sigan sin CAPTCHA salvo que definan su propia key.
 const PRODUCTION_SITE_KEY = "0x4AAAAAAEfSCNhlTi3BDkDF";

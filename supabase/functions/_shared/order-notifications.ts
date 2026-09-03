@@ -179,11 +179,11 @@ export async function processPendingOrderNotifications(
   const apiKey = Deno.env.get("RESEND_API_KEY") || "";
   const teamEmail = (Deno.env.get("LITORAL_ORDERS_EMAIL") || "").trim();
   const from = Deno.env.get("RESEND_FROM_EMAIL") ||
-    "Litoral Maq <pedidos@litoralmaqrender.rendercorrientes.com>";
+    "Litoral Maq <pedidos@litoralmaq.com>";
   const storeUrl = Deno.env.get("STORE_PUBLIC_URL") ||
-    "https://litoralmaqrender.rendercorrientes.com";
+    "https://litoralmaq.com";
   const adminUrl = Deno.env.get("ADMIN_PUBLIC_URL") ||
-    "https://admin-litoralmaqrender.rendercorrientes.com";
+    "https://admin.litoralmaq.com";
   if (!apiKey) throw new Error("Falta configurar RESEND_API_KEY.");
 
   const { data, error } = await db.rpc("claim_order_notifications", {

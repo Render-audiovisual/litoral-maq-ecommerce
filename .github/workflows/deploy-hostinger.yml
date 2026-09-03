@@ -73,18 +73,20 @@ jobs:
 
       - name: Compilar tienda
         env:
-          NEXT_PUBLIC_STORE_DOMAIN: litoralmaqrender.rendercorrientes.com
-          NEXT_PUBLIC_ADMIN_DOMAIN: admin-litoralmaqrender.rendercorrientes.com
+          NEXT_PUBLIC_STORE_DOMAIN: litoralmaq.com
+          NEXT_PUBLIC_ADMIN_DOMAIN: admin.litoralmaq.com
           NEXT_PUBLIC_PERSISTENCE_PROVIDER: supabase
+          NEXT_PUBLIC_MERCADO_PAGO_ENABLED: ${{ vars.NEXT_PUBLIC_MERCADO_PAGO_ENABLED || 'false' }}
           NEXT_PUBLIC_SUPABASE_URL: https://bhtaecnzpuotlsenbdlz.supabase.co
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ot0t-AIGmUf53YpE1eb60A_awTiE0FQ
         run: npm run build:hostinger
 
       - name: Compilar administración
         env:
-          NEXT_PUBLIC_STORE_DOMAIN: litoralmaqrender.rendercorrientes.com
-          NEXT_PUBLIC_ADMIN_DOMAIN: admin-litoralmaqrender.rendercorrientes.com
+          NEXT_PUBLIC_STORE_DOMAIN: litoralmaq.com
+          NEXT_PUBLIC_ADMIN_DOMAIN: admin.litoralmaq.com
           NEXT_PUBLIC_PERSISTENCE_PROVIDER: supabase
+          NEXT_PUBLIC_MERCADO_PAGO_ENABLED: ${{ vars.NEXT_PUBLIC_MERCADO_PAGO_ENABLED || 'false' }}
           NEXT_PUBLIC_SUPABASE_URL: https://bhtaecnzpuotlsenbdlz.supabase.co
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ot0t-AIGmUf53YpE1eb60A_awTiE0FQ
         run: npm run build:admin
@@ -175,24 +177,24 @@ jobs:
           deploy_root="/home/u471562620/deployments/litoral-maq"
           release_root="$deploy_root/releases/$release_id"
           backup_root="$deploy_root/backups/$(date -u +%Y%m%dT%H%M%SZ)-${release_id:0:12}"
-          store_live="/home/u471562620/domains/rendercorrientes.com/public_html/litoralmaqrender"
-          admin_live="/home/u471562620/domains/rendercorrientes.com/public_html/admin-litoralmaqrender"
+          store_live="/home/u471562620/domains/litoralmaq.com/public_html"
+          admin_live="$store_live/admin"
 
           test -f "$release_root/store/index.html"
           test -f "$release_root/admin/admin.html"
           test -f "$release_root/deployment-manifest.json"
           mkdir -p "$backup_root/store" "$backup_root/admin"
-          rsync -a "$store_live/" "$backup_root/store/"
+          rsync -a --exclude '/admin/' "$store_live/" "$backup_root/store/"
           rsync -a "$admin_live/" "$backup_root/admin/"
 
           rollback() {
             echo "El deploy falló; restaurando el backup $backup_root" >&2
-            rsync -a --delete "$backup_root/store/" "$store_live/"
+            rsync -a --delete --exclude '/admin/' "$backup_root/store/" "$store_live/"
             rsync -a --delete "$backup_root/admin/" "$admin_live/"
           }
           trap rollback ERR
 
-          rsync -a --delete "$release_root/store/" "$store_live/"
+          rsync -a --delete --exclude '/admin/' "$release_root/store/" "$store_live/"
           rsync -a --delete "$release_root/admin/" "$admin_live/"
           test -f "$store_live/index.html"
           test -f "$admin_live/admin.html"

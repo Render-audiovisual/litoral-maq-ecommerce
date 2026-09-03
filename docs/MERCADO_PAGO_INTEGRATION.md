@@ -93,10 +93,10 @@ En `Tus integraciones → Litoral Maq Ecommerce → Webhooks`:
 MP_ACCESS_TOKEN=<access token de prueba>
 MP_WEBHOOK_SECRET=<secreto del webhook>
 MP_COLLECTOR_ID=<ID de usuario vendedor>
-STORE_PUBLIC_URL=https://litoralmaqrender.rendercorrientes.com
+STORE_PUBLIC_URL=https://litoralmaq.com
 MP_USE_SANDBOX=true
 MP_MAX_INSTALLMENTS=12
-CORS_ALLOWED_ORIGINS=https://litoralmaqrender.rendercorrientes.com,https://admin-litoralmaqrender.rendercorrientes.com
+CORS_ALLOWED_ORIGINS=https://litoralmaq.com,https://www.litoralmaq.com,https://admin.litoralmaq.com
 ```
 
 Checkpoint: mostrar solo los nombres de los secretos y que están guardados;

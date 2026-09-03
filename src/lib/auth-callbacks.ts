@@ -32,7 +32,7 @@ export type AuthCallbackKind = keyof typeof AUTH_CALLBACK_PATHS;
 /** Orígenes por ambiente. El de producción es el que está publicado hoy. */
 export const AUTH_ORIGINS = {
   local: "http://localhost:3000",
-  production: "https://litoralmaqrender.rendercorrientes.com",
+  production: "https://litoralmaq.com",
 } as const;
 
 function normalizeOrigin(origin: string) {
