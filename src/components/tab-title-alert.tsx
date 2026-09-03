@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useStore } from "@/store/store";
+import { isAdminSurface } from "@/lib/site-surface";
 
 const LEAVING = "🚨 ¡No te vayas!";
 const CHECKOUT = "🛒 Enviá tu solicitud";
@@ -10,12 +11,16 @@ const CHECKOUT = "🛒 Enviá tu solicitud";
 export function TabTitleAlert() {
   const pathname = usePathname();
   const { cartCount, orders } = useStore();
-  const enabled = !pathname.startsWith("/admin");
+  const adminSurface = isAdminSurface(
+    pathname,
+    typeof window === "undefined" ? undefined : window.location.hostname,
+  );
+  const enabled = !adminSurface;
   const hasCart = cartCount > 0;
   const pendingOrderCount = orders.filter((order) => order.status === "pendiente").length;
 
   useEffect(() => {
-    if (!pathname.startsWith("/admin") || pathname === "/admin/login") return;
+    if (!adminSurface || pathname === "/admin/login") return;
 
     const title = pendingOrderCount > 0
       ? `(${pendingOrderCount}) Pedidos pendientes · Litoral Maq`
@@ -29,7 +34,7 @@ export function TabTitleAlert() {
     observer.observe(document.head, { childList: true, subtree: true, characterData: true });
 
     return () => observer.disconnect();
-  }, [pathname, pendingOrderCount]);
+  }, [adminSurface, pathname, pendingOrderCount]);
 
   useEffect(() => {
     if (!enabled) return;

@@ -2,10 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { isAdminSurface } from "@/lib/site-surface";
 
 export function FloatingWhatsApp() {
   const pathname = usePathname();
-  if (pathname.startsWith("/admin")) return null;
+  if (isAdminSurface(pathname, typeof window === "undefined" ? undefined : window.location.hostname)) {
+    return null;
+  }
 
   return (
     <a
