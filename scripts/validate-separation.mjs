@@ -227,15 +227,16 @@ async function main() {
   }
 
   const adminHtaccess = await readIfExists(path.join(adminDir, ".htaccess"));
-  if (adminHtaccess?.includes("RewriteRule ^$ admin.html [L]")) {
-    ok("[admin] .htaccess redirige la raíz del subdominio a admin.html.");
+  if (adminHtaccess?.includes("RewriteRule ^$ /admin [R=302,L]")) {
+    ok("[admin] .htaccess redirige la raíz del subdominio a /admin.");
   } else {
-    fail("[admin] .htaccess no redirige la raíz a admin.html.");
+    fail("[admin] .htaccess no redirige la raíz a /admin.");
   }
-  if (await exists(path.join(adminDir, "index.html"))) {
-    ok("[admin] La raíz tiene index.html físico para hosts que ignoran DirectoryIndex.");
+  const adminRootIndex = await readIfExists(path.join(adminDir, "index.html"));
+  if (adminRootIndex?.includes('window.location.replace("/admin")')) {
+    ok("[admin] La raíz tiene un index físico que redirige a /admin si el host ignora mod_rewrite.");
   } else {
-    fail("[admin] Falta index.html físico en la raíz del subdominio.");
+    fail("[admin] Falta el index físico de fallback que redirige la raíz a /admin.");
   }
   if (adminHtaccess?.includes("DirectorySlash Off")) {
     ok("[admin] .htaccess evita que Apache priorice las carpetas RSC sobre los HTML de ruta.");

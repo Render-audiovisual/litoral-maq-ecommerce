@@ -11,6 +11,7 @@ import { isActiveOrder } from "@/lib/order-details";
 import { searchProducts } from "@/lib/search";
 import { formatCurrency } from "@/lib/utils";
 import { availabilityLabel, getProductAvailability } from "@/lib/product-availability";
+import { isAdminSurface } from "@/lib/site-surface";
 
 /** Desde cuántas letras vale la pena sugerir: con una sola, medio catálogo
  * coincide y el cartel no ayuda. */
@@ -52,7 +53,9 @@ export function Header() {
     return () => media.removeEventListener("change", update);
   }, []);
 
-  if (pathname.startsWith("/admin")) return null;
+  if (isAdminSurface(pathname, typeof window === "undefined" ? undefined : window.location.hostname)) {
+    return null;
+  }
 
   function productHref(slug: string) {
     return `/producto?slug=${encodeURIComponent(slug)}`;

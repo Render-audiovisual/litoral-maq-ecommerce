@@ -85,11 +85,32 @@ async function materializeDirectoryIndexes(dir) {
   }
 }
 
+const ADMIN_ROOT_REDIRECT = `<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="refresh" content="0; url=/admin">
+    <meta name="robots" content="noindex">
+    <link rel="canonical" href="/admin">
+    <title>Panel Litoral Maq</title>
+    <script>window.location.replace("/admin");</script>
+  </head>
+  <body>
+    <p>Abriendo el <a href="/admin">panel de administracion</a>...</p>
+  </body>
+</html>
+`;
+
 const ADMIN_HTACCESS = `Options -MultiViews
 DirectorySlash Off
-DirectoryIndex admin.html
+DirectoryIndex index.html
 ${APACHE_SECURITY_HEADERS}
 RewriteEngine On
+
+# La raiz del subdominio tiene que cambiar tambien la URL del navegador a
+# /admin. Si solo entrega admin.html internamente, Next cree que esta en "/"
+# y monta por error la cabecera, el footer y el carrito de la tienda.
+RewriteRule ^$ /admin [R=302,L]
 
 # Next exporta las rutas como archivos .html. Permite abrir /admin/productos,
 # /admin/pedidos, etc. sin mostrar la extensión, y que el refresh del
@@ -104,12 +125,6 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Raíz del subdominio → ruta real de inicio admin ("/admin", detectada en
-# src/app/admin/page.tsx). AdminShell decide desde ahí, en el cliente, si
-# corresponde mostrar el dashboard o redirigir a /admin/login según haya
-# o no sesión válida — este .htaccess no duplica esa lógica de auth.
-RewriteRule ^$ admin.html [L]
-
 ErrorDocument 404 /404.html
 `;
 
@@ -123,10 +138,10 @@ async function main() {
   const removed = await keepOnlyAdminSurface(output);
 
   await materializeDirectoryIndexes(output);
-  // La raíz del subdominio no tiene index.html en el export original.
-  // Copiar la entrada del panel evita un 403 aun si DirectoryIndex o las
-  // reglas de rewrite son restringidas por el hosting.
-  await cp(path.join(output, "admin.html"), path.join(output, "index.html"));
+  // Fallback para hosts que ignoren mod_rewrite: no copiar admin.html a la
+  // raíz porque eso conserva pathname="/" y vuelve a montar la tienda. Este
+  // index cambia la URL real a /admin antes de cargar la aplicación.
+  await writeFile(path.join(output, "index.html"), ADMIN_ROOT_REDIRECT);
 
   await writeFile(path.join(output, ".htaccess"), ADMIN_HTACCESS);
 
