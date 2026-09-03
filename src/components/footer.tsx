@@ -4,12 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { isAdminSurface } from "@/lib/site-surface";
 
 export function Footer() {
   const pathname = usePathname();
   // Igual criterio que Header: el panel admin arma su propio layout
   // (AdminShell) y no debe mostrar navegación comercial de la tienda.
-  if (pathname.startsWith("/admin")) return null;
+  if (isAdminSurface(pathname, typeof window === "undefined" ? undefined : window.location.hostname)) {
+    return null;
+  }
 
   return (
     <footer className="footer">
