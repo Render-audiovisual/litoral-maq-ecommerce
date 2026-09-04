@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, Suspense, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useCaptcha } from "@/components/use-captcha";
+import { isValidAdminSession } from "@/lib/auth";
 import { getAuthAdapter } from "@/services/auth";
 import { useStore } from "@/store/store";
 
 function AdminLoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const { setAdminSession } = useStore();
+  const { adminSession, ready, setAdminSession } = useStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,6 +21,12 @@ function AdminLoginForm() {
   // cada formulario: al activarlo, signInWithPassword exige el token
   // también acá. Sin él, el panel quedaría sin poder ingresar.
   const captcha = useCaptcha();
+
+  useEffect(() => {
+    if (ready && isValidAdminSession(adminSession)) {
+      router.replace(params.get("next") || "/admin");
+    }
+  }, [adminSession, params, ready, router]);
 
   async function signIn(event: FormEvent) {
     event.preventDefault();
@@ -35,6 +42,10 @@ function AdminLoginForm() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (!ready || isValidAdminSession(adminSession)) {
+    return <main className="center-state"><div className="spinner" /><p>Abriendo el panel…</p></main>;
   }
 
   return (
