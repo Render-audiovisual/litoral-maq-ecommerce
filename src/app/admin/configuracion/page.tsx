@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
     {
       name: "Captcha (Turnstile)",
       variable: "Cloudflare + Supabase",
-      status: "Activo en accesos y compra invitada",
+      status: "Activo y exigido por Supabase en accesos y compra invitada",
       ready: true,
     },
     {
@@ -47,9 +47,8 @@ export default function AdminSettingsPage() {
     {
       name: "Correos de pedidos",
       variable: "Resend API + Outbox",
-      status:
-        "Código listo; falta desplegar función y validar destinatario operativo",
-      ready: false,
+      status: "Activo; envío al cliente probado. Falta validar la casilla operativa",
+      ready: true,
     },
     {
       name: "Google Sheets",
@@ -68,13 +67,13 @@ export default function AdminSettingsPage() {
       variable: "ENVIOPACK_API_KEY",
       status: isShippingEnabled
         ? "Integración automática activa"
-        : "Código listo; faltan credenciales y activación",
+        : "Descartado para la operación actual; integración desactivada",
       ready: isShippingEnabled,
     },
     {
       name: "Andreani",
       variable: "SHIPPING_PROVIDER",
-      status: "Adaptador futuro; sin acoplar checkout",
+      status: "Opción logística a evaluar con el cliente",
       ready: false,
     },
   ];
@@ -108,7 +107,7 @@ export default function AdminSettingsPage() {
             <small>
               {isShippingEnabled
                 ? "Cotiza OCA/Urbano; pesos incompletos o bultos fuera de límite pasan a revisión manual."
-                : "La integración está implementada pero no se anuncia activa hasta cargar y validar credenciales."}
+                : "Retiro gratis y cotización manual hasta elegir operador y validar su integración."}
             </small>
           </div>
           <div>
