@@ -351,6 +351,7 @@ textarea { min-height: 100px; resize: vertical; }
 .whatsapp-button { background: #1fa855; color: #fff; }
 .whatsapp-button:hover { background: #188b46; }
 .auth-page { min-height: calc(100vh - 114px); display: grid; grid-template-columns: 1fr 1fr; }
+.admin-auth-page { min-height: 100vh; min-height: 100dvh; }
 .auth-panel { padding: 7vw; display: flex; flex-direction: column; justify-content: center; }
 .auth-panel.visual { background: var(--soft); }
 .auth-panel.visual h1 { margin: 60px 0 20px; font-size: clamp(3rem, 5vw, 5.5rem); text-transform: uppercase; }
