@@ -74,6 +74,13 @@ DirectoryIndex index.html
 ${APACHE_SECURITY_HEADERS}
 RewriteEngine On
 
+# www.litoralmaq.com sirve el mismo document root que el dominio raíz (no es
+# un subdominio aparte en Hostinger): sin esta regla responde el mismo
+# contenido en dos hosts, contenido duplicado para buscadores. Va primero y
+# antes que cualquier chequeo de archivo, conserva ruta y query string.
+RewriteCond %{HTTP_HOST} ^www\\.litoralmaq\\.com$ [NC]
+RewriteRule ^(.*)$ https://litoralmaq.com/$1 [R=301,L,QSA]
+
 # El panel vive en un subdominio separado. Conservamos esa separación, pero
 # redirigimos los enlaces históricos /admin para que no terminen en un 403.
 RewriteRule ^admin(?:/(.*))?/?$ https://admin.litoralmaq.com/admin/$1 [R=302,L,NE]
