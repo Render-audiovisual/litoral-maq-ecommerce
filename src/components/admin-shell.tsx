@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/store/store";
 import { isValidAdminSession, isValidCustomerSession } from "@/lib/auth";
 import { getStoreUrl } from "@/lib/domain-config";
+import { isAdminLoginPath } from "@/lib/admin-routing";
 import { resolveRequestedProvider } from "@/services/provider";
 import { getAuthAdapter, supportsSessionRestore } from "@/services/auth";
 
@@ -38,7 +39,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { adminSession, customerSession, orders, ready, setAdminSession, signOutAdmin } = useStore();
-  const isLoginRoute = pathname === ADMIN_LOGIN_PATH;
+  // El hosting estático puede servir esta página como /admin/login/.
+  // Ambas URL deben quedar fuera del shell; de otro modo el formulario se
+  // monta dentro del panel autenticado y las dos interfaces se superponen.
+  const isLoginRoute = isAdminLoginPath(pathname);
   const loggingOutRef = useRef(false);
   const [authCheck, setAuthCheck] = useState(0);
   const pendingOrderCount = useMemo(
