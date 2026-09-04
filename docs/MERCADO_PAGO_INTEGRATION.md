@@ -14,6 +14,9 @@ solicitud manual mientras `NEXT_PUBLIC_MERCADO_PAGO_ENABLED=false`.
 - `payments`: una preferencia idempotente por pedido.
 - `payment_events`: historial mínimo e idempotente de notificaciones, sin datos
   de tarjeta ni secretos.
+- `order_notification_outbox`: al cambiar el pago a `approved`, genera una sola
+  notificación al email del pedido. El mensaje confirma el cobro y, si es un
+  envío, aclara que el correo/logística se definirá antes del despacho.
 
 La URL de retorno del navegador nunca aprueba pagos. La fuente de verdad es
 `GET /v1/payments/:id` después de validar el webhook.
@@ -155,7 +158,7 @@ Solo después de aprobar las tres pruebas:
    productiva sea la guardada como `MP_WEBHOOK_SECRET`.
 4. Cambiar `MP_USE_SANDBOX=false`.
 5. Hacer una compra real controlada de importe bajo y comprobar acreditación,
-   webhook, panel y correo.
+   webhook, panel y correo de pago confirmado al cliente.
 6. Recién con esa compra aprobada pedir el cambio técnico controlado a
    `NEXT_PUBLIC_MERCADO_PAGO_ENABLED=true` y ejecutar el workflow. Hasta ese
    momento la variable debe seguir ausente o en `false`.

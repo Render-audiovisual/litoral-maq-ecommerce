@@ -23,7 +23,7 @@ export default function AdminSettingsPage() {
       variable: "MP_ACCESS_TOKEN",
       status: isPaymentEnabled
         ? "Checkout Pro activo"
-        : "Código listo; faltan credenciales, webhook y pruebas",
+        : "Backend y correo postpago listos; faltan credenciales productivas y pruebas",
       ready: isPaymentEnabled,
     },
     {
@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
     {
       name: "Captcha (Turnstile)",
       variable: "Cloudflare + Supabase",
-      status: "Activo en accesos y compra invitada",
+      status: "Activo y exigido por Supabase en accesos y compra invitada",
       ready: true,
     },
     {
@@ -48,7 +48,14 @@ export default function AdminSettingsPage() {
       name: "Correos de pedidos",
       variable: "Resend API + Outbox",
       status:
-        "Código listo; falta desplegar función y validar destinatario operativo",
+        "Activo para clientes; falta aprobar y validar la casilla operativa del negocio",
+      ready: true,
+    },
+    {
+      name: "WhatsApp automático",
+      variable: "Proveedor oficial + plantilla",
+      status:
+        "Contacto manual por ahora; automatización pendiente de proveedor y aprobación",
       ready: false,
     },
     {
@@ -68,13 +75,13 @@ export default function AdminSettingsPage() {
       variable: "ENVIOPACK_API_KEY",
       status: isShippingEnabled
         ? "Integración automática activa"
-        : "Código listo; faltan credenciales y activación",
+        : "Descartado para la operación actual; integración desactivada",
       ready: isShippingEnabled,
     },
     {
       name: "Andreani",
       variable: "SHIPPING_PROVIDER",
-      status: "Adaptador futuro; sin acoplar checkout",
+      status: "Opción logística a evaluar con el cliente",
       ready: false,
     },
   ];
@@ -108,7 +115,7 @@ export default function AdminSettingsPage() {
             <small>
               {isShippingEnabled
                 ? "Cotiza OCA/Urbano; pesos incompletos o bultos fuera de límite pasan a revisión manual."
-                : "La integración está implementada pero no se anuncia activa hasta cargar y validar credenciales."}
+                : "Retiro gratis y cotización manual hasta elegir operador y validar su integración."}
             </small>
           </div>
           <div>
@@ -118,8 +125,8 @@ export default function AdminSettingsPage() {
             </strong>
             <small>
               {isPaymentEnabled
-                ? "El webhook firmado confirma el pago; el regreso del navegador no cambia estados."
-                : "La guía se crea solo después de confirmar el pago."}
+                ? "El webhook firmado confirma el pago y envía el aviso al cliente; el regreso del navegador no cambia estados."
+                : "Al activarlo, el webhook confirmará el cobro y avisará al cliente por email. La logística se definirá después."}
             </small>
           </div>
         </section>
