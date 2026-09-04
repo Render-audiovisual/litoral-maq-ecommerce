@@ -16,8 +16,10 @@ Reglas que siguen las tres, tomadas de la guía de reputación de Supabase
   seguridad, no marketing. Mezclarlos empeora la entregabilidad de ambos.
 - Un solo llamado a la acción por mensaje.
 - Asunto corto y literal, sin emojis.
-- El único dato variable es el enlace (`{{ .ConfirmationURL }}`): no se
-  interpola nombre ni email del usuario.
+- El único dato variable es el enlace: no se interpola nombre ni email del
+  usuario. En recuperación, el enlace real de Supabase viaja codificado
+  dentro de `/confirmar-recuperacion` para que un analizador automático del
+  correo no consuma el token antes que la persona.
 
 El asunto se configura en el campo "Subject heading" de cada pestaña:
 
