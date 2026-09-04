@@ -23,7 +23,7 @@ export default function AdminSettingsPage() {
       variable: "MP_ACCESS_TOKEN",
       status: isPaymentEnabled
         ? "Checkout Pro activo"
-        : "Código listo; faltan credenciales, webhook y pruebas",
+        : "Backend y correo postpago listos; faltan credenciales productivas y pruebas",
       ready: isPaymentEnabled,
     },
     {
@@ -47,8 +47,16 @@ export default function AdminSettingsPage() {
     {
       name: "Correos de pedidos",
       variable: "Resend API + Outbox",
-      status: "Activo; envío al cliente probado. Falta validar la casilla operativa",
+      status:
+        "Activo para clientes; falta aprobar y validar la casilla operativa del negocio",
       ready: true,
+    },
+    {
+      name: "WhatsApp automático",
+      variable: "Proveedor oficial + plantilla",
+      status:
+        "Contacto manual por ahora; automatización pendiente de proveedor y aprobación",
+      ready: false,
     },
     {
       name: "Google Sheets",
@@ -117,8 +125,8 @@ export default function AdminSettingsPage() {
             </strong>
             <small>
               {isPaymentEnabled
-                ? "El webhook firmado confirma el pago; el regreso del navegador no cambia estados."
-                : "La guía se crea solo después de confirmar el pago."}
+                ? "El webhook firmado confirma el pago y envía el aviso al cliente; el regreso del navegador no cambia estados."
+                : "Al activarlo, el webhook confirmará el cobro y avisará al cliente por email. La logística se definirá después."}
             </small>
           </div>
         </section>

@@ -52,7 +52,7 @@ Crear una API key de Resend con permiso **Sending access** y cargarla directamen
 
 ```text
 RESEND_API_KEY=<secreto>
-RESEND_FROM_EMAIL=Litoral Maq <pedidos@litoralmaq.com>
+RESEND_FROM_EMAIL=<remitente transaccional verificado en Resend>
 LITORAL_ORDERS_EMAIL=<correo operativo que recibe pedidos nuevos>
 STORE_PUBLIC_URL=https://litoralmaq.com
 ADMIN_PUBLIC_URL=https://admin.litoralmaq.com
@@ -60,6 +60,18 @@ ORDER_NOTIFICATIONS_CRON_SECRET=<cadena aleatoria de al menos 24 caracteres>
 ```
 
 `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` son secretos provistos por Supabase a las Edge Functions. No copiarlos al navegador.
+
+`RESEND_FROM_EMAIL` y `LITORAL_ORDERS_EMAIL` cumplen funciones distintas. El
+primero es el remitente técnico y debe pertenecer a un dominio verificado; el
+segundo es la casilla interna que el negocio elija para recibir pedidos. No se
+debe inventar ni fijar esa casilla mientras Litoral Maq no la apruebe.
+
+Cuando Mercado Pago confirma un cobro, el destinatario es siempre el email que
+el cliente cargó en su pedido. Para envíos, ese mensaje confirma el pago y
+aclara que Litoral Maq todavía debe elegir el correo/logística disponible para
+el destino. WhatsApp continúa como contacto manual hasta contratar un proveedor
+oficial, aprobar plantillas y definir consentimiento; no se simula una
+automatización con enlaces personales.
 
 ### Despliegue
 
