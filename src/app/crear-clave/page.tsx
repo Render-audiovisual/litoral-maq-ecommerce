@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PasswordInput } from "@/components/password-input";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { friendlyAuthError } from "@/lib/auth-errors";
@@ -104,8 +105,8 @@ export default function CreatePasswordPage() {
     <div className="success-message">Confirmamos <strong>{session.user.email}</strong>. Tus pedidos anteriores ya están en esta cuenta.</div>
     <p>Debe tener al menos 6 caracteres.</p>
     <form onSubmit={submit}>
-      <label>Contraseña<input required type="password" autoComplete="new-password" minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
-      <label>Repetir contraseña<input required type="password" autoComplete="new-password" minLength={6} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} /></label>
+      <PasswordInput id="create-password" label="Contraseña" required autoComplete="new-password" minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} />
+      <PasswordInput id="create-password-confirmation" label="Repetir contraseña" required autoComplete="new-password" minLength={6} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} />
       {error && <div className="error-message" role="alert">{error}</div>}
       <button className="button primary large full" disabled={loading}>{loading ? "Guardando…" : "Guardar contraseña"}</button>
     </form>

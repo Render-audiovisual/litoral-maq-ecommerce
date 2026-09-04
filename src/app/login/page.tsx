@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 import { GoogleSignInButton } from "@/components/google-button";
+import { PasswordInput } from "@/components/password-input";
 import { useCaptcha } from "@/components/use-captcha";
 import { getAuthAdapter } from "@/services/auth";
 import { useStore } from "@/store/store";
@@ -52,7 +53,7 @@ function LoginForm() {
           <p className="auth-divider"><span>o con tu email</span></p>
           <form onSubmit={signIn}>
             <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@email.com" /></label>
-            <label>Contraseña<input required type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Tu contraseña" /></label>
+            <PasswordInput id="customer-password" label="Contraseña" required autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Tu contraseña" />
             <p className="form-helper"><Link href={`/recuperar-clave${email ? `?email=${encodeURIComponent(email)}` : ""}`}>¿Olvidaste tu contraseña?</Link></p>
             {captcha.field}
             {error && <div className="error-message" role="alert">{error}</div>}

@@ -22,3 +22,18 @@ test("el acceso administrativo cubre todo el alto en una pantalla grande", async
   expect(dimensions.layoutBottom).toBeGreaterThanOrEqual(dimensions.viewportHeight - 1);
   expect(dimensions.visualBottom).toBeGreaterThanOrEqual(dimensions.viewportHeight - 1);
 });
+
+test("la contraseña se puede mostrar y volver a ocultar", async ({ page }) => {
+  await page.goto("/admin/login/");
+
+  const password = page.getByLabel("Contraseña");
+  await password.fill("clave-de-prueba");
+  await expect(password).toHaveAttribute("type", "password");
+
+  await page.getByRole("button", { name: "Ver clave" }).click();
+  await expect(password).toHaveAttribute("type", "text");
+  await expect(password).toHaveValue("clave-de-prueba");
+
+  await page.getByRole("button", { name: "Ocultar clave" }).click();
+  await expect(password).toHaveAttribute("type", "password");
+});
