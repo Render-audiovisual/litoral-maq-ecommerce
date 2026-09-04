@@ -18,8 +18,9 @@ Reglas que siguen las tres, tomadas de la guía de reputación de Supabase
 - Asunto corto y literal, sin emojis.
 - El único dato variable es el enlace: no se interpola nombre ni email del
   usuario. En recuperación, el enlace real de Supabase viaja codificado
-  dentro de `/confirmar-recuperacion` para que un analizador automático del
-  correo no consuma el token antes que la persona.
+  dentro del fragmento privado de `/confirmar-recuperacion` para que un
+  analizador automático del correo no consuma el token antes que la persona
+  y para conservar completa la URL de verificación.
 
 El asunto se configura en el campo "Subject heading" de cada pestaña:
 
