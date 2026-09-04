@@ -87,3 +87,7 @@ El orquestador devolvió una sesión mientras `npm ci` seguía activo, pero se i
 ## 2026-08-31 — Turbopack ignoró el alias configurado solo para Webpack
 
 El build de Next 16 compiló correctamente, pero el control del artefacto encontró las credenciales demo porque `webpack.resolve.alias` no se aplica al bundler predeterminado. Configurar también `turbopack.resolveAlias` y verificar el JavaScript generado, no solo el resultado de compilación.
+## 2026-09-04 — Estado derivado dentro de un efecto
+
+- **Qué pasó:** el primer parche de recuperación calculaba el enlace del fragmento con `setState` sincrónico dentro de `useEffect`; el lint de React lo rechazó.
+- **Qué hacer distinto:** para estado externo del navegador que también debe hidratar bien, usar `useSyncExternalStore` o derivar el valor durante el render, sin un efecto que copie estado.

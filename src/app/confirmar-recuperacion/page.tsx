@@ -2,19 +2,35 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import { safeRecoveryConfirmationUrl } from "@/lib/recovery-confirmation";
+import { Suspense, useSyncExternalStore } from "react";
+import {
+  recoveryConfirmationUrlFromHash,
+  safeRecoveryConfirmationUrl,
+} from "@/lib/recovery-confirmation";
 
 function RecoveryConfirmation() {
   const params = useSearchParams();
-  const confirmationUrl = safeRecoveryConfirmationUrl(params.get("confirmation_url"));
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false,
+  );
+  // Los correos nuevos usan el fragmento para no truncar ni filtrar el
+  // token. El parámetro queda como compatibilidad para enlaces anteriores
+  // que hayan llegado correctamente codificados.
+  const confirmationUrl = mounted
+    ? recoveryConfirmationUrlFromHash(window.location.hash) ||
+      safeRecoveryConfirmationUrl(params.get("confirmation_url"))
+    : null;
 
   return (
     <main className="simple-auth-page">
       <section className="auth-card">
         <span className="eyebrow orange">RECUPERAR ACCESO</span>
         <h1>Confirmá que fuiste vos</h1>
-        {confirmationUrl ? (
+        {!mounted ? (
+          <div className="spinner" aria-label="Validando enlace" />
+        ) : confirmationUrl ? (
           <>
             <p>
               Para proteger tu cuenta, el enlace se activa recién cuando tocás el botón. Después vas a poder elegir

@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { safeRecoveryConfirmationUrl } from "./recovery-confirmation";
+import {
+  recoveryConfirmationUrlFromHash,
+  safeRecoveryConfirmationUrl,
+} from "./recovery-confirmation";
 
 const SUPABASE_URL = "https://bhtaecnzpuotlsenbdlz.supabase.co";
 const VALID_URL =
@@ -9,6 +12,22 @@ const VALID_URL =
 describe("safeRecoveryConfirmationUrl", () => {
   it("acepta únicamente un enlace de recuperación del proyecto esperado", () => {
     expect(safeRecoveryConfirmationUrl(VALID_URL, SUPABASE_URL)).toBe(VALID_URL);
+  });
+
+  it("conserva completa la URL de Supabase cuando viaja en el fragmento", () => {
+    expect(
+      recoveryConfirmationUrlFromHash(`#confirmation_url=${VALID_URL}`, SUPABASE_URL),
+    ).toBe(VALID_URL);
+  });
+
+  it("rechaza fragmentos con otro nombre o sin un enlace seguro", () => {
+    expect(recoveryConfirmationUrlFromHash(`#otra_url=${VALID_URL}`, SUPABASE_URL)).toBeNull();
+    expect(
+      recoveryConfirmationUrlFromHash(
+        "#confirmation_url=https://evil.example/auth/v1/verify?token=x&type=recovery",
+        SUPABASE_URL,
+      ),
+    ).toBeNull();
   });
 
   it.each([
