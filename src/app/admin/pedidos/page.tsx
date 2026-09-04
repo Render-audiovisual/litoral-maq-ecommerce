@@ -424,6 +424,9 @@ export default function AdminOrdersPage() {
             <div className="modal-heading">
               <div>
                 <span className="eyebrow orange">PEDIDO {selected.id}</span>
+                <small className="order-detail-created-at">
+                  {formatDate(selected.createdAt)}
+                </small>
                 <h2>Detalle operativo</h2>
               </div>
               <button type="button" onClick={() => setSelected(null)}>

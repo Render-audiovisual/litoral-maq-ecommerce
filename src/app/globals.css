@@ -524,6 +524,7 @@ td > small { margin-top: 4px; color: var(--muted); }
 .modal-heading { display: flex; justify-content: space-between; }
 .modal-heading h2 { margin: 7px 0 25px; }
 .modal-heading > button { border: 0; background: none; font-size: 26px; }
+.order-detail-created-at { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
 .modal-actions { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; }
 .order-detail-modal { width: min(900px, 100%); }
 .order-detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
