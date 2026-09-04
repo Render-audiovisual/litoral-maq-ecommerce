@@ -49,7 +49,7 @@ function AdminLoginForm() {
   }
 
   return (
-    <main className="auth-page">
+    <main className="auth-page admin-auth-page">
       <section className="auth-panel visual">
         <Image src="/brand/AZUL.png" alt="Litoral Maq" width={210} height={78} />
         <h1>Panel de<br />administración.</h1>
