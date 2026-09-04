@@ -6,13 +6,23 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FloatingWhatsApp } from "@/components/floating-whatsapp";
 import { TabTitleAlert } from "@/components/tab-title-alert";
+import { readStoreDomain } from "@/lib/domain-config";
 
 const montserrat = Montserrat({
   variable: "--font-main",
   subsets: ["latin"],
 });
 
+const storeDomain = readStoreDomain();
+
 export const metadata: Metadata = {
+  // Sin NEXT_PUBLIC_STORE_DOMAIN (desarrollo local) no hay dominio base que
+  // declarar. Solo fija metadataBase: el canonical de cada ruta lo declara
+  // esa ruta (ver src/app/page.tsx) — ponerlo acá cascadearía "/" a todas
+  // las páginas hijas, incluida cada ficha de producto y el propio admin.
+  ...(storeDomain.status === "ok"
+    ? { metadataBase: new URL(storeDomain.url) }
+    : {}),
   title: {
     default: "Litoral Maq | Máquinas y herramientas",
     template: "%s | Litoral Maq",
