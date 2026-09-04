@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 import { GoogleSignInButton } from "@/components/google-button";
+import { PasswordInput } from "@/components/password-input";
 import { useCaptcha } from "@/components/use-captcha";
 import { isAnonymousSession } from "@/lib/auth";
 import { authCallbackUrl } from "@/lib/auth-callbacks";
@@ -89,7 +90,7 @@ function RegisterForm() {
           {convertingGuest ? (
             <p className="form-helper">Primero confirmás el email. En el paso siguiente elegís tu contraseña.</p>
           ) : (
-            <label>Contraseña<input required type="password" autoComplete="new-password" minLength={6} value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} /></label>
+            <PasswordInput id="register-password" label="Contraseña" required autoComplete="new-password" minLength={6} value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} />
           )}
           {captcha.field}
           {error && <div className="error-message" role="alert">{error}</div>}

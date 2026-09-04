@@ -245,6 +245,13 @@ video.testimonial-media { object-fit: contain; background: #000; }
 label { display: flex; flex-direction: column; gap: 7px; color: var(--navy); font-weight: 700; font-size: 12px; }
 input, select, textarea { min-height: 44px; padding: 10px 12px; border: 1px solid #cfd8de; background: #fff; color: var(--ink); border-radius: 4px; outline: none; }
 input:focus, select:focus, textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,101,0,.1); }
+.password-field { display: flex; flex-direction: column; gap: 7px; }
+.password-input { position: relative; display: block; width: 100%; }
+.password-input input { width: 100%; padding-right: 50px; }
+.password-toggle { position: absolute; top: 50%; right: 3px; width: 38px; height: 38px; padding: 0; display: grid; place-items: center; transform: translateY(-50%); border: 0; border-radius: 4px; background: transparent; color: var(--muted); cursor: pointer; }
+.password-toggle:hover { color: var(--navy); background: var(--soft); }
+.password-toggle:focus-visible { outline: 2px solid var(--orange); outline-offset: -2px; }
+.password-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 textarea { min-height: 100px; resize: vertical; }
 .check-row { flex-direction: row; align-items: center; gap: 9px; }
 .check-row input { min-height: 0; accent-color: var(--orange); }

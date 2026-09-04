@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PasswordInput } from "@/components/password-input";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState, useSyncExternalStore } from "react";
 import { friendlyAuthError } from "@/lib/auth-errors";
@@ -70,8 +71,8 @@ export default function ResetPasswordPage() {
     <span className="eyebrow orange">NUEVA CONTRASEÑA</span><h1>Elegí una nueva clave</h1>
     <p>Debe tener al menos 6 caracteres.</p>
     <form onSubmit={submit}>
-      <label>Nueva contraseña<input required type="password" minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
-      <label>Repetir contraseña<input required type="password" minLength={6} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} /></label>
+      <PasswordInput id="reset-password" label="Nueva contraseña" required autoComplete="new-password" minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} />
+      <PasswordInput id="reset-password-confirmation" label="Repetir contraseña" required autoComplete="new-password" minLength={6} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} />
       {error && <div className="error-message">{error}</div>}
       <button className="button primary large full" disabled={loading}>{loading ? "Guardando…" : "Guardar contraseña"}</button>
     </form>
