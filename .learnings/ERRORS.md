@@ -91,3 +91,7 @@ El build de Next 16 compiló correctamente, pero el control del artefacto encont
 
 - **Qué pasó:** el primer parche de recuperación calculaba el enlace del fragmento con `setState` sincrónico dentro de `useEffect`; el lint de React lo rechazó.
 - **Qué hacer distinto:** para estado externo del navegador que también debe hidratar bien, usar `useSyncExternalStore` o derivar el valor durante el render, sin un efecto que copie estado.
+## 2026-09-04 — Backticks dentro del cuerpo de un comando
+
+- **Qué pasó:** al crear el PR, los backticks del texto se interpretaron como sustitución de comandos del shell y generaron un error, aunque el PR llegó a crearse.
+- **Qué hacer distinto:** pasar textos de PR con comillas simples sin backticks o mediante un archivo preparado de forma segura; revisar luego el cuerpo publicado.
