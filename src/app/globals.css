@@ -377,6 +377,9 @@ textarea { min-height: 100px; resize: vertical; }
 .auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .captcha-field { display: flex; flex-direction: column; gap: 8px; }
 .captcha-field .form-helper { margin: 0; }
+.captcha-feedback { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.captcha-retry { padding: 0; border: 0; background: transparent; color: var(--navy); font: inherit; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.captcha-retry:hover { color: var(--orange-dark); }
 .account-upsell { margin: 26px auto 0; padding: 22px; width: min(100%, 460px); display: flex; flex-direction: column; gap: 12px; text-align: left; border: 1px solid var(--line); background: #fff; }
 .account-upsell h2 { margin: 0; font-size: 1.35rem; }
 .account-upsell p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
