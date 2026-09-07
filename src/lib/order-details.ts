@@ -42,6 +42,59 @@ export const ORDER_STATUS_MESSAGES: Record<Order["status"], string> = {
     "La solicitud fue cancelada. Si necesitás ayuda, comunicate con Litoral Maq.",
 };
 
+const DELIVERY_STATUS_FLOW: Record<
+  Order["deliveryMethod"],
+  Order["status"][]
+> = {
+  envio: ["pendiente", "preparando", "listo", "enviado", "entregado", "cancelado"],
+  retiro: ["pendiente", "preparando", "listo", "entregado", "cancelado"],
+};
+
+/**
+ * El retiro en sucursal no atraviesa el paso "Enviado": se prepara, se
+ * avisa que está listo y finalmente se marca como retirado. Conservamos el
+ * estado actual al principio para que un pedido histórico con una combinación
+ * vieja pueda corregirse desde el panel.
+ */
+export function orderStatusOptions(order: Order) {
+  const flow = DELIVERY_STATUS_FLOW[order.deliveryMethod];
+  return flow.includes(order.status) ? flow : [order.status, ...flow];
+}
+
+export function adminOrderStatusLabel(
+  status: Order["status"],
+  deliveryMethod: Order["deliveryMethod"],
+) {
+  if (deliveryMethod === "retiro") {
+    if (status === "listo") return "Paso 2 · Listo para retirar";
+    if (status === "entregado") return "Retirado · Fuera del circuito";
+  }
+  if (deliveryMethod === "envio" && status === "listo") {
+    return "Paso 2 · Listo para despachar";
+  }
+  return ADMIN_ORDER_STATUS_LABELS[status];
+}
+
+export function orderStatusLabel(order: Order) {
+  if (order.deliveryMethod === "retiro") {
+    if (order.status === "listo") return "Listo para retirar";
+    if (order.status === "entregado") return "Retirado";
+  }
+  return ORDER_STATUS_LABELS[order.status];
+}
+
+export function orderStatusMessage(order: Order) {
+  if (order.deliveryMethod === "retiro") {
+    if (order.status === "listo") {
+      return "Tu pedido está preparado. Ya podés retirarlo en Sáenz 1587.";
+    }
+    if (order.status === "entregado") {
+      return "Tu pedido ya fue retirado de la sucursal.";
+    }
+  }
+  return ORDER_STATUS_MESSAGES[order.status];
+}
+
 export function isActiveOrder(order: Order) {
   return !["entregado", "cancelado"].includes(order.status);
 }

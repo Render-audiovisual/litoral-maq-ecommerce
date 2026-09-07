@@ -40,6 +40,15 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await expect(modal).toContainText("3794000000");
   await expect(modal).toContainText("Pago a coordinar");
 
+  const rowStatus = row.locator(".status-select");
+  await expect(rowStatus.locator('option[value="listo"]')).toHaveText(
+    "Paso 2 · Listo para retirar",
+  );
+  await expect(rowStatus.locator('option[value="enviado"]')).toHaveCount(0);
+  await expect(
+    rowStatus.locator('option[value="entregado"]'),
+  ).toHaveText("Retirado · Fuera del circuito");
+
   await modal.getByLabel(/Estado de .* en detalle/).selectOption("preparando");
   await expect(
     page.getByText(/actualizado a Paso 1 · Preparando/),

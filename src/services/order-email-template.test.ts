@@ -50,6 +50,40 @@ describe("correo posterior al pago", () => {
     expect(email.html).toContain("cuando el pedido esté listo para retirar");
   });
 
+  it("para retiro usa el aviso listo para retirar y cierra como retirado", () => {
+    const ready = renderOrderEmail(
+      "customer_order_ready",
+      order("retiro"),
+      "https://litoralmaq.com",
+    );
+    const collected = renderOrderEmail(
+      "customer_order_delivered",
+      order("retiro"),
+      "https://litoralmaq.com",
+    );
+
+    expect(ready.subject).toContain("listo para retirar");
+    expect(ready.html).toContain("ya podés retirarlo en Sáenz 1587");
+    expect(collected.subject).toContain("retirado");
+    expect(collected.html).toContain("retirado de la sucursal");
+  });
+
+  it("conserva los textos de despacho y entrega para logística", () => {
+    const ready = renderOrderEmail(
+      "customer_order_ready",
+      order("envio"),
+      "https://litoralmaq.com",
+    );
+    const delivered = renderOrderEmail(
+      "customer_order_delivered",
+      order("envio"),
+      "https://litoralmaq.com",
+    );
+
+    expect(ready.html).toContain("listo para ser despachado");
+    expect(delivered.subject).toContain("entregado");
+  });
+
   it("escapa contenido del pedido antes de insertarlo en el HTML", () => {
     const email = renderOrderEmail(
       "customer_order_received",

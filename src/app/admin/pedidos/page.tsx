@@ -5,8 +5,10 @@ import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
+  adminOrderStatusLabel,
   ADMIN_ORDER_STATUS_LABELS,
   ORDER_STATUS_LABELS,
+  orderStatusOptions,
   resolveOrderLines,
 } from "@/lib/order-details";
 import type { Order, PaymentStatus } from "@/lib/types";
@@ -27,7 +29,7 @@ const SELECTABLE_STATUSES: Order["status"][] = statuses.filter(
 );
 
 /** Los estados de la fila incluyen el actual aunque ya no sea elegible. */
-function statusOptionsFor(current: Order["status"]) {
+function filterStatusOptions(current: Order["status"]) {
   return SELECTABLE_STATUSES.includes(current)
     ? SELECTABLE_STATUSES
     : [current, ...SELECTABLE_STATUSES];
@@ -120,7 +122,7 @@ export default function AdminOrdersPage() {
         current?.id === order.id ? persisted : current,
       );
       setMessage(
-        `${order.id} actualizado a ${ADMIN_ORDER_STATUS_LABELS[nextStatus]}.`,
+        `${order.id} actualizado a ${adminOrderStatusLabel(nextStatus, order.deliveryMethod)}.`,
       );
     } catch (caught) {
       setError(
@@ -299,7 +301,7 @@ export default function AdminOrdersPage() {
             }
           >
             <option value="">Todos los estados</option>
-            {statusOptionsFor(status || "pendiente").map((item) => (
+            {filterStatusOptions(status || "pendiente").map((item) => (
               <option value={item} key={item}>
                 {ADMIN_ORDER_STATUS_LABELS[item]}
               </option>
@@ -391,9 +393,9 @@ export default function AdminOrdersPage() {
                           )
                         }
                       >
-                        {statusOptionsFor(order.status).map((item) => (
+                        {orderStatusOptions(order).map((item) => (
                           <option value={item} key={item}>
-                            {ADMIN_ORDER_STATUS_LABELS[item]}
+                            {adminOrderStatusLabel(item, order.deliveryMethod)}
                           </option>
                         ))}
                       </select>
@@ -493,9 +495,9 @@ export default function AdminOrdersPage() {
                     )
                   }
                 >
-                  {statuses.map((item) => (
+                  {orderStatusOptions(selected).map((item) => (
                     <option value={item} key={item}>
-                      {ADMIN_ORDER_STATUS_LABELS[item]}
+                      {adminOrderStatusLabel(item, selected.deliveryMethod)}
                     </option>
                   ))}
                 </select>

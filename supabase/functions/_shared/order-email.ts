@@ -107,10 +107,14 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
         "No se generó ningún cobro aprobado. Podés volver a intentar desde tu pedido o comunicarte con Litoral Maq.",
     },
     customer_order_ready: {
-      subject: `Tu pedido ${order.id} está preparado`,
-      title: "Tu pedido está listo",
+      subject: order.delivery_method === "retiro"
+        ? `Tu pedido ${order.id} está listo para retirar`
+        : `Tu pedido ${order.id} está preparado`,
+      title: order.delivery_method === "retiro"
+        ? "Ya podés retirar tu pedido"
+        : "Tu pedido está listo",
       intro: order.delivery_method === "retiro"
-        ? "Ya podés coordinar el retiro en Sáenz 1587."
+        ? "Tu pedido está preparado y ya podés retirarlo en Sáenz 1587."
         : "El pedido quedó preparado y está listo para ser despachado.",
     },
     customer_order_shipped: {
@@ -119,10 +123,15 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
       intro: tracking,
     },
     customer_order_delivered: {
-      subject: `Pedido ${order.id} entregado`,
-      title: "Tu pedido fue entregado",
-      intro:
-        "El pedido figura como entregado. Si necesitás ayuda, comunicate con Litoral Maq.",
+      subject: order.delivery_method === "retiro"
+        ? `Pedido ${order.id} retirado`
+        : `Pedido ${order.id} entregado`,
+      title: order.delivery_method === "retiro"
+        ? "Tu pedido fue retirado"
+        : "Tu pedido fue entregado",
+      intro: order.delivery_method === "retiro"
+        ? "El pedido figura como retirado de la sucursal. Si necesitás ayuda, comunicate con Litoral Maq."
+        : "El pedido figura como entregado. Si necesitás ayuda, comunicate con Litoral Maq.",
     },
   };
   return copies[eventType];
