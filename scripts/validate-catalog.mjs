@@ -58,6 +58,42 @@ function duplicates(values) {
   return [...counts].filter(([, count]) => count > 1);
 }
 
+const currentProducts = products.filter(
+  (product) => !(product.incomplete || []).includes("sheet-absent"),
+);
+const retiredProducts = products.filter(
+  (product) => (product.incomplete || []).includes("sheet-absent"),
+);
+const duplicateImportedCodes = duplicates(products.map((product) => product.code));
+const productsMissingCodeNameOrPrice = products.filter(
+  (product) =>
+    !product.code ||
+    !product.name.trim() ||
+    typeof product.price !== "number" ||
+    !Number.isFinite(product.price),
+).length;
+const activeRetiredProducts = retiredProducts.filter((product) => product.active).length;
+const committedCatalogIsValid =
+  duplicateImportedCodes.length === 0 &&
+  productsMissingCodeNameOrPrice === 0 &&
+  activeRetiredProducts === 0;
+
+if (!process.argv.includes("--live")) {
+  const result = {
+    mode: "committed-catalog",
+    importedProducts: products.length,
+    currentProducts: currentProducts.length,
+    retiredProducts: retiredProducts.length,
+    activeRetiredProducts,
+    duplicateImportedCodes,
+    duplicateImportedNames: duplicates(products.map((product) => product.name)),
+    productsMissingCodeNameOrPrice,
+    verdict: committedCatalogIsValid ? "PASS" : "FAIL",
+  };
+
+  console.log(JSON.stringify(result, null, 2));
+  if (result.verdict !== "PASS") process.exitCode = 1;
+} else {
 const response = await fetch(SHEET_URL);
 if (!response.ok) throw new Error(`No se pudo leer el Sheet: ${response.status}`);
 const rows = parseCsv(await response.text());
@@ -75,12 +111,6 @@ const invalidRows = nonEmptyRows.filter(([code, article, price]) => {
 });
 
 const productsByCode = new Map(products.map((product) => [normalize(product.code), product]));
-const currentProducts = products.filter(
-  (product) => !(product.incomplete || []).includes("sheet-absent"),
-);
-const retiredProducts = products.filter(
-  (product) => (product.incomplete || []).includes("sheet-absent"),
-);
 const mismatches = [];
 for (let index = 0; index < nonEmptyRows.length; index += 1) {
   const [code, article, rawPrice] = nonEmptyRows[index];
@@ -96,34 +126,29 @@ for (let index = 0; index < nonEmptyRows.length; index += 1) {
 }
 
 const result = {
+  mode: "live-sheet-reconciliation",
   header,
   csvRecordsIncludingHeader: rows.length,
   sourceProductRows: nonEmptyRows.length,
   importedProducts: products.length,
   currentProducts: currentProducts.length,
   retiredProducts: retiredProducts.length,
-  activeRetiredProducts: retiredProducts.filter((product) => product.active).length,
+  activeRetiredProducts,
   emptyRowsInsideExportedRange: emptyRows.length,
   repeatedHeaders: repeatedHeaders.length,
   invalidRows: invalidRows.length,
   duplicateSourceCodes: duplicates(nonEmptyRows.map(([code]) => code)),
   duplicateSourceNames: duplicates(nonEmptyRows.map(([, name]) => name)),
-  duplicateImportedCodes: duplicates(products.map((product) => product.code)),
+  duplicateImportedCodes,
   duplicateImportedNames: duplicates(products.map((product) => product.name)),
-  productsMissingCodeNameOrPrice: products.filter(
-    (product) =>
-      !product.code ||
-      !product.name.trim() ||
-      typeof product.price !== "number" ||
-      !Number.isFinite(product.price),
-  ).length,
+  productsMissingCodeNameOrPrice,
   sourceToImportMismatches: mismatches,
   verdict:
     nonEmptyRows.length === currentProducts.length &&
     invalidRows.length === 0 &&
     repeatedHeaders.length === 0 &&
     duplicates(nonEmptyRows.map(([code]) => code)).length === 0 &&
-    duplicates(products.map((product) => product.code)).length === 0 &&
+    committedCatalogIsValid &&
     retiredProducts.every((product) => !product.active) &&
     mismatches.length === 0
       ? "PASS"
@@ -132,3 +157,4 @@ const result = {
 
 console.log(JSON.stringify(result, null, 2));
 if (result.verdict !== "PASS") process.exitCode = 1;
+}

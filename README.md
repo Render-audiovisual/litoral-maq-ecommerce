@@ -115,5 +115,7 @@ del servicio que se vaya conectando.
 - `src/data/products.json`
 - `src/data/import-report.json`
 
-`npm run validate:catalog` compara nuevamente las 460 filas comerciales del
-Sheet con el JSON importado y falla ante diferencias, datos inválidos o pérdidas.
+`npm run validate:catalog` verifica de forma determinista el JSON versionado que
+se despliega. `npm run validate:catalog:live` compara además ese catálogo con el
+Sheet actual y falla ante diferencias, datos inválidos o pérdidas; conviene
+ejecutarlo antes de cada importación de stock y precios.
