@@ -253,7 +253,11 @@ export function Header() {
           </Link>
         </nav>
         <div className="header-actions">
-          <Link href={account ? "/cuenta/pedidos" : "/login"} className="icon-link">
+          <Link
+            href={account ? "/cuenta/pedidos" : "/login"}
+            className="icon-link"
+            aria-label={account ? "Mi cuenta" : "Ingresar"}
+          >
             <span aria-hidden>◎</span>
             <span className="desktop-only">
               {account ? account.user.name.split(" ")[0] || "Mi cuenta" : "Ingresar"}

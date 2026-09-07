@@ -65,4 +65,25 @@ test.describe("layout móvil", () => {
       await search.evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize)),
     ).toBeGreaterThanOrEqual(16);
   });
+
+  test("la cabecera y el hero mantienen una jerarquía compacta", async ({ page }) => {
+    await page.goto("/");
+
+    const header = page.locator(".site-header");
+    expect(await header.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(105);
+
+    const primaryAction = page.getByRole("link", { name: "Explorar catálogo" });
+    const promo = page.locator(".hero-promo-slider");
+    const [actionBox, promoBox] = await Promise.all([
+      primaryAction.boundingBox(),
+      promo.boundingBox(),
+    ]);
+    expect(actionBox).not.toBeNull();
+    expect(promoBox).not.toBeNull();
+    expect(actionBox!.y + actionBox!.height).toBeLessThan(promoBox!.y);
+
+    await page.evaluate(() => document.scrollingElement?.scrollTo(0, 900));
+    await expect(header).toBeInViewport();
+    expect(await header.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(105);
+  });
 });
