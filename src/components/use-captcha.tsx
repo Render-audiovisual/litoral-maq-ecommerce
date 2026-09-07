@@ -66,7 +66,7 @@ function loadTurnstileScript(): Promise<void> {
 
 export const CAPTCHA_PENDING_NOTICE = "Completá la verificación de seguridad para continuar.";
 export const CAPTCHA_FAILED_NOTICE =
-  "No pudimos cargar la verificación de seguridad. Revisá tu conexión y recargá la página.";
+  "La verificación de seguridad falló. Desactivá el bloqueador de anuncios para este sitio y volvé a intentar.";
 
 export function useCaptcha() {
   const [token, setToken] = useState("");
@@ -82,6 +82,13 @@ export function useCaptcha() {
         if (cancelled || !containerRef.current || !window.turnstile) return;
         widgetRef.current = window.turnstile.render(containerRef.current, {
           sitekey: SITE_KEY,
+          // Cloudflare puede fallar de forma transitoria por red, extensiones o
+          // por un desafío vencido. Hacemos explícita la recuperación automática
+          // y además ofrecemos un reintento manual debajo del widget.
+          retry: "auto",
+          "retry-interval": 3000,
+          "refresh-expired": "auto",
+          "refresh-timeout": "auto",
           // Un token vencido o con error vuelve a dejar el formulario en
           // "falta verificar" en vez de mandar un token muerto: Supabase lo
           // rechazaría y la persona vería un error sin saber qué hacer.
@@ -92,6 +99,10 @@ export function useCaptcha() {
           "expired-callback": () => setToken(""),
           "timeout-callback": () => setToken(""),
           "error-callback": () => {
+            setToken("");
+            setFailed(true);
+          },
+          "unsupported-callback": () => {
             setToken("");
             setFailed(true);
           },
@@ -112,6 +123,7 @@ export function useCaptcha() {
   /** Los tokens son de un solo uso: tras cada envío hay que pedir otro. */
   const reset = useCallback(() => {
     setToken("");
+    setFailed(false);
     if (widgetRef.current && window.turnstile) window.turnstile.reset(widgetRef.current);
   }, []);
 
@@ -122,9 +134,16 @@ export function useCaptcha() {
     <div className="captcha-field">
       <div ref={containerRef} />
       {required && !token && (
-        <p className="form-helper" role="status" aria-live="polite">
-          {failed ? CAPTCHA_FAILED_NOTICE : CAPTCHA_PENDING_NOTICE}
-        </p>
+        <div className="captcha-feedback" role="status" aria-live="polite">
+          <p className="form-helper">
+            {failed ? CAPTCHA_FAILED_NOTICE : CAPTCHA_PENDING_NOTICE}
+          </p>
+          {failed && (
+            <button className="captcha-retry" type="button" onClick={reset}>
+              Reintentar verificación
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

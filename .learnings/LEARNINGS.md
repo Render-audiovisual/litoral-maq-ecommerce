@@ -11,3 +11,7 @@ Buscar un SKU con `includes` incorporó por error `PA20C1` al seleccionar `A20C1
 ## 2026-08-31 — Generar los artefactos después del último E2E
 
 Playwright levanta `next dev`, que vuelve a escribir dentro de `dist/`. Aunque el build productivo anterior haya sido correcto, empaquetar después del E2E puede incorporar la carpeta de desarrollo. El orden final debe ser: E2E, build productivo limpio, preparación de tienda/admin y validación de los artefactos.
+
+## 2026-09-07 — No confundir el beacon de analítica con un fallo de Turnstile
+
+Permitir o bloquear `static.cloudflareinsights.com` en la CSP no corrige un CAPTCHA que muestra “La verificación falló”. Para problemas de acceso, revisar la captura del widget y su `error-callback`, reproducir el login publicado y comprobar el token antes de afirmar que está resuelto. Dar recuperación visible y señalar bloqueadores de anuncios cuando `challenges.cloudflare.com` puede estar filtrado.
