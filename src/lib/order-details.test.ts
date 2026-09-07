@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 import type { Order, Product } from "./types";
-import { ADMIN_ORDER_STATUS_LABELS, isActiveOrder, ORDER_STATUS_MESSAGES, resolveOrderLines, snapshotOrderLines } from "./order-details";
+import {
+  adminOrderStatusLabel,
+  ADMIN_ORDER_STATUS_LABELS,
+  isActiveOrder,
+  ORDER_STATUS_MESSAGES,
+  orderStatusLabel,
+  orderStatusMessage,
+  orderStatusOptions,
+  resolveOrderLines,
+  snapshotOrderLines,
+} from "./order-details";
 
 const product = { id: "p1", name: "Taladro", code: "T-1", price: 250 } as Product;
 
@@ -35,5 +45,45 @@ describe("detalle histórico de pedidos", () => {
     expect(ADMIN_ORDER_STATUS_LABELS.enviado).toBe("Paso 3 · Enviado");
     expect(ADMIN_ORDER_STATUS_LABELS.entregado).toBe("Paso 4 · Entregado");
     expect(ADMIN_ORDER_STATUS_LABELS.cancelado).not.toMatch(/Paso/);
+  });
+
+  it("acorta el circuito de retiro y adapta sus etiquetas", () => {
+    const pickup = {
+      status: "preparando",
+      deliveryMethod: "retiro",
+    } as Order;
+
+    expect(orderStatusOptions(pickup)).toEqual([
+      "pendiente",
+      "preparando",
+      "listo",
+      "entregado",
+      "cancelado",
+    ]);
+    expect(orderStatusOptions(pickup)).not.toContain("enviado");
+    expect(adminOrderStatusLabel("listo", "retiro")).toBe(
+      "Paso 2 · Listo para retirar",
+    );
+    expect(adminOrderStatusLabel("entregado", "retiro")).toBe(
+      "Retirado · Fuera del circuito",
+    );
+    expect(orderStatusLabel({ ...pickup, status: "listo" })).toBe(
+      "Listo para retirar",
+    );
+    expect(orderStatusMessage({ ...pickup, status: "entregado" })).toMatch(
+      /retirado de la sucursal/i,
+    );
+  });
+
+  it("mantiene el circuito completo para envíos por logística", () => {
+    const shipping = {
+      status: "preparando",
+      deliveryMethod: "envio",
+    } as Order;
+
+    expect(orderStatusOptions(shipping)).toContain("enviado");
+    expect(adminOrderStatusLabel("listo", "envio")).toBe(
+      "Paso 2 · Listo para despachar",
+    );
   });
 });
