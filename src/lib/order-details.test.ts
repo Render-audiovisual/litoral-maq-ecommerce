@@ -65,8 +65,9 @@ describe("detalle histórico de pedidos", () => {
       "Paso 2 · Listo para retirar",
     );
     expect(adminOrderStatusLabel("entregado", "retiro")).toBe(
-      "Retirado · Fuera del circuito",
+      "Retirado",
     );
+    expect(adminOrderStatusLabel("cancelado", "retiro")).toBe("Cancelado");
     expect(orderStatusLabel({ ...pickup, status: "listo" })).toBe(
       "Listo para retirar",
     );

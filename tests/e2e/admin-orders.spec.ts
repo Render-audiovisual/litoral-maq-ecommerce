@@ -47,7 +47,10 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await expect(rowStatus.locator('option[value="enviado"]')).toHaveCount(0);
   await expect(
     rowStatus.locator('option[value="entregado"]'),
-  ).toHaveText("Retirado · Fuera del circuito");
+  ).toHaveText("Retirado");
+  await expect(
+    rowStatus.locator('option[value="cancelado"]'),
+  ).toHaveText("Cancelado");
 
   await modal.getByLabel(/Estado de .* en detalle/).selectOption("preparando");
   await expect(
