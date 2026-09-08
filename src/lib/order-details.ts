@@ -26,7 +26,7 @@ export const ADMIN_ORDER_STATUS_LABELS: Record<Order["status"], string> = {
   listo: "Paso 2 · Listo para entregar",
   enviado: "Paso 3 · Enviado",
   entregado: "Paso 4 · Entregado",
-  cancelado: "Cancelado · Fuera del circuito",
+  cancelado: "Cancelado",
 };
 
 export const ORDER_STATUS_MESSAGES: Record<Order["status"], string> = {
@@ -67,7 +67,7 @@ export function adminOrderStatusLabel(
 ) {
   if (deliveryMethod === "retiro") {
     if (status === "listo") return "Paso 2 · Listo para retirar";
-    if (status === "entregado") return "Retirado · Fuera del circuito";
+    if (status === "entregado") return "Retirado";
   }
   if (deliveryMethod === "envio" && status === "listo") {
     return "Paso 2 · Listo para despachar";
