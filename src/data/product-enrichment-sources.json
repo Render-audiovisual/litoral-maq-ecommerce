@@ -1062,5 +1062,101 @@
       "Peso: catálogo oficial indica 19,5kg, el distribuidor RSP indica 18kg - se usó el valor del catálogo oficial (fuente de mayor jerarquía) en la descripción."
     ],
     "verifiedAt": "2026-08-27"
+  },
+  {
+    "productId": "1779",
+    "model": "P12/2/25",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_87?searchCode=P12%2F2%2F25",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_087.jpg",
+    "localImage": "/products/catalog/1779-p12-2-25-gbs.webp",
+    "specificationImage": "/products/specs/1779-p12-2-25-gbs-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-09"
+  },
+  {
+    "productId": "3217",
+    "model": "DP06",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_244?searchCode=DP06",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_244.jpg",
+    "localImage": "/products/catalog/3217-dp06-gbs.webp",
+    "specificationImage": "/products/specs/3217-dp06-gbs-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-09"
+  },
+  {
+    "productId": "3384",
+    "model": "GWP2/1",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_227?searchCode=GWP2%2F1",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_227.jpg",
+    "localImage": "/products/catalog/3384-gwp2-1-gbs.webp",
+    "specificationImage": "/products/specs/3384-gwp2-1-gbs-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-09"
+  },
+  {
+    "productId": "3389",
+    "model": "CT10",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_254?searchCode=CT10",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_254.jpg",
+    "localImage": "/products/catalog/3389-ct10-gbs.webp",
+    "specificationImage": "/products/specs/3389-ct10-gbs-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-09"
+  },
+  {
+    "productId": "3535",
+    "model": "LI12650/20K2-4",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/NEO_23?searchCode=LI12650%2F20K2-4",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/NEO_-_Catalogo_interactivo_2026_Page_023.jpg",
+    "localImage": "/products/catalog/3535-li12650-20k2-4-gbs.webp",
+    "specificationImage": "/products/specs/3535-li12650-20k2-4-gbs-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-09"
+  },
+  {
+    "productId": "3657",
+    "model": "AG115/1/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_31?searchCode=AG115%2F1%2F220",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_031.jpg",
+    "localImage": "/products/catalog/3657-ag115-1-220-gbs.webp",
+    "specificationImage": "/products/specs/3657-ag115-1-220-gbs-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-09"
+  },
+  {
+    "productId": "3770",
+    "model": "SP25",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_277?searchCode=SP25",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_277.jpg",
+    "localImage": "/products/catalog/3770-sp25-gbs.webp",
+    "specificationImage": "/products/specs/3770-sp25-gbs-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-09"
+  },
+  {
+    "productId": "3771",
+    "model": "SP32",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_278?searchCode=SP32",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_278.jpg",
+    "localImage": "/products/catalog/3771-sp32-gbs.webp",
+    "specificationImage": "/products/specs/3771-sp32-gbs-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-09"
   }
 ]

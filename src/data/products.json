@@ -294,20 +294,21 @@
     "rawPrice": "$ 5.000,01",
     "category": "Herramientas manuales",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3217-dp06-gbs.webp",
+    "images": [
+      "/products/catalog/3217-dp06-gbs.webp",
+      "/products/specs/3217-dp06-gbs-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Alicate de corte oblicuo Energy DP06 de 6 pulgadas. Fabricado en acero #45, con mangos ergonómicos revestidos para un agarre firme. Indicado para trabajos con cables y para cortar distintos tipos de alambre. El contenido incluye un alicate de corte oblicuo de 6 pulgadas.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 13,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -373,20 +374,21 @@
     "rawPrice": "$ 39.999,97",
     "category": "Amoladoras",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3657-ag115-1-220-gbs.webp",
+    "images": [
+      "/products/catalog/3657-ag115-1-220-gbs.webp",
+      "/products/specs/3657-ag115-1-220-gbs-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Amoladora angular Energy Economy AG115/1/220 de 720 W para discos de 115 mm (4 1/2 pulgadas). Funciona con alimentación de 220 V, alcanza 11.000 rpm en vacío y pesa 1,85 kg. Posee aislación Clase II e incluye una amoladora angular.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 16,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -1790,20 +1792,21 @@
     "rawPrice": "$ 35.000,05",
     "category": "Hidrolavado y bombas",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/1779-p12-2-25-gbs.webp",
+    "images": [
+      "/products/catalog/1779-p12-2-25-gbs.webp",
+      "/products/specs/1779-p12-2-25-gbs-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Electrobomba periférica Energy P12/2/25 de 1/2 HP (0,37 kW), para alimentación 220 V y 50 Hz. Entrega hasta 28 L/min, con altura máxima de 16 m y succión máxima de 8 m. Posee conexiones de entrada y salida de 1 pulgada, aislación Clase I y pesa 3,45 kg. Recomendada para riego de jardines, transferencia de agua, piscinas y uso doméstico.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 70,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -3116,20 +3119,21 @@
     "rawPrice": "$ 14.500,04",
     "category": "Herramientas manuales",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3389-ct10-gbs.webp",
+    "images": [
+      "/products/catalog/3389-ct10-gbs.webp",
+      "/products/specs/3389-ct10-gbs-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Cúter Energy CT10 con cuerpo de aleación de zinc y hoja de acero al carbón. Utiliza hojas de 60 mm de largo y 19 mm de ancho, e incorpora funciones auto-lock y auto retráctil. Incluye dos hojas de corte adicionales guardadas en un compartimiento. Apto para papel, cartón, poliestireno expandido, plástico fino, vinilos, cintas, goma EVA, telas, alfombras y cueros.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 121,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -6838,21 +6842,22 @@
     "price": 244999.6,
     "rawPrice": "$ 244.999,60",
     "category": "Herramientas manuales",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "NEO NEXT",
+    "image": "/products/catalog/3535-li12650-20k2-4-gbs.webp",
+    "images": [
+      "/products/catalog/3535-li12650-20k2-4-gbs.webp",
+      "/products/specs/3535-li12650-20k2-4-gbs-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Llave de impacto recargable NEO Next LI12650/20K2-4 con motor brushless, encastre de 1/2 pulgada y tres niveles de torque: 350, 460 y 650 Nm. Alcanza un torque máximo de ruptura de 950 Nm, con velocidades de hasta 2600 rpm e impactos de hasta 2900 bpm. Tensión nominal de 18 V y máxima de 20 V. El kit incluye dos baterías de 4 Ah, cargador base de 4 A y maletín plástico.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 264,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -8456,20 +8461,21 @@
     "rawPrice": "$ 179.800,07",
     "category": "Hidrolavado y bombas",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3384-gwp2-1-gbs.webp",
+    "images": [
+      "/products/catalog/3384-gwp2-1-gbs.webp",
+      "/products/specs/3384-gwp2-1-gbs-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Motobomba a gasolina Energy GWP2/1 con motor de 196 cc y potencia máxima de 6,5 HP. Posee entrada y salida de 2 pulgadas (50 mm), caudal de hasta 40 m³/h, altura máxima de 30 m y succión máxima de 7 m. Cuenta con arranque por retroceso, tanque de 3,6 L y un peso de 23 kg.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 326,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -10908,21 +10914,22 @@
     "price": 14000.02,
     "rawPrice": "$ 14.000,02",
     "category": "Accesorios y consumibles",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "ENERGY",
+    "image": "/products/catalog/3770-sp25-gbs.webp",
+    "images": [
+      "/products/catalog/3770-sp25-gbs.webp",
+      "/products/specs/3770-sp25-gbs-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Set Energy SP25 de 25 puntas profesionales fabricadas en acero S2, presentado en maletín plástico. Incluye 6 puntas Phillips, 3 Pozidriv, 5 planas, 3 hexagonales, 7 Torx y un soporte universal magnético.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 420,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -10988,21 +10995,22 @@
     "price": 15000.02,
     "rawPrice": "$ 15.000,02",
     "category": "Accesorios y consumibles",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "ENERGY",
+    "image": "/products/catalog/3771-sp32-gbs.webp",
+    "images": [
+      "/products/catalog/3771-sp32-gbs.webp",
+      "/products/specs/3771-sp32-gbs-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Set Energy SP32 de 32 puntas profesionales de acero S2 con maletín plástico. Incluye 4 puntas Phillips, 4 Pozidriv, 4 planas, 4 hexagonales, 7 Torx, 7 Torx resistentes, un adaptador y un portapuntas quick release.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 423,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
