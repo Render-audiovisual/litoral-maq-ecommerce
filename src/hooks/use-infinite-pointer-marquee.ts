@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type {
+  DragEvent as ReactDragEvent,
   MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
 } from "react";
@@ -9,21 +10,20 @@ import type {
 type InfinitePointerMarqueeOptions = {
   itemCount: number;
   autoSpeed: number;
-  mouseMaxSpeed: number;
-  touchMaxSpeed: number;
+  maxFlingSpeed: number;
   paused?: boolean;
 };
 
 /**
- * Movimiento continuo para rieles duplicados: el mouse gobierna dirección y
- * velocidad en escritorio, mientras que el gesto táctil aporta velocidad e
- * inercia en móvil. El contenido debe estar duplicado exactamente una vez.
+ * Movimiento continuo para rieles duplicados: gira solo, y con mouse o dedo
+ * se agarra y se arrastra igual que en el celular. Al soltar conserva la
+ * velocidad del gesto y desacelera hasta volver al automático, sin frenar
+ * nunca. El contenido debe estar duplicado exactamente una vez.
  */
 export function useInfinitePointerMarquee({
   itemCount,
   autoSpeed,
-  mouseMaxSpeed,
-  touchMaxSpeed,
+  maxFlingSpeed,
   paused = false,
 }: InfinitePointerMarqueeOptions) {
   const railRef = useRef<HTMLDivElement>(null);
@@ -32,11 +32,9 @@ export function useInfinitePointerMarquee({
   // móviles redondean scrollLeft a enteros; si se lee y reescribe en cada
   // frame, un avance menor a 1 px se pierde y el automático queda detenido.
   const positionRef = useRef<number | null>(null);
-  const mouseVelocityRef = useRef(autoSpeed);
-  const mouseInsideRef = useRef(false);
-  const touchingRef = useRef(false);
+  const draggingRef = useRef(false);
   const draggedRef = useRef(false);
-  const touchRef = useRef({ pointerId: -1, lastX: 0, lastTime: 0 });
+  const pointerRef = useRef({ pointerId: -1, startX: 0, lastX: 0, lastTime: 0 });
   const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
@@ -49,10 +47,10 @@ export function useInfinitePointerMarquee({
       last = now;
       const rail = railRef.current;
 
-      if (rail && !touchingRef.current && !paused) {
-        const target = mouseInsideRef.current ? mouseVelocityRef.current : autoSpeed;
-        const response = mouseInsideRef.current ? 6 : 1.8;
-        velocityRef.current += (target - velocityRef.current) * Math.min(1, dt * response);
+      if (rail && !draggingRef.current && !paused) {
+        // Al soltar, la velocidad del gesto decae hasta el automático: cuanto
+        // más fuerte el envión, más tarda en volver, pero nunca se detiene.
+        velocityRef.current += (autoSpeed - velocityRef.current) * Math.min(1, dt * 1.8);
 
         const loopWidth = rail.scrollWidth / 2;
         if (loopWidth > 0) {
@@ -71,35 +69,17 @@ export function useInfinitePointerMarquee({
     return () => cancelAnimationFrame(raf);
   }, [autoSpeed, itemCount, paused]);
 
-  function updateMouseDirection(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.pointerType !== "mouse" || touchingRef.current) return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const normalized = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2));
-    const strength = Math.abs(normalized);
-    mouseVelocityRef.current = strength < 0.08
-      ? 0
-      : -Math.sign(normalized) * (18 + strength * (mouseMaxSpeed - 18));
-  }
-
-  function onPointerEnter(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.pointerType !== "mouse") return;
-    positionRef.current = event.currentTarget.scrollLeft;
-    mouseInsideRef.current = true;
-    updateMouseDirection(event);
-  }
-
-  function onPointerLeave(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "mouse") mouseInsideRef.current = false;
-  }
-
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "mouse" || (event.target as HTMLElement).closest("video")) return;
-    touchingRef.current = true;
+    // Los controles del video se usan con el mismo puntero que el arrastre.
+    if ((event.target as HTMLElement).closest("video")) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    draggingRef.current = true;
     draggedRef.current = false;
     velocityRef.current = 0;
     positionRef.current = railRef.current?.scrollLeft ?? 0;
-    touchRef.current = {
+    pointerRef.current = {
       pointerId: event.pointerId,
+      startX: event.clientX,
       lastX: event.clientX,
       lastTime: performance.now(),
     };
@@ -112,15 +92,16 @@ export function useInfinitePointerMarquee({
   }
 
   function onPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
-    updateMouseDirection(event);
-    if (!touchingRef.current || touchRef.current.pointerId !== event.pointerId) return;
+    if (!draggingRef.current || pointerRef.current.pointerId !== event.pointerId) return;
 
     const rail = railRef.current;
     if (!rail) return;
     const now = performance.now();
-    const dx = event.clientX - touchRef.current.lastX;
-    const elapsed = Math.max(16, now - touchRef.current.lastTime);
-    if (Math.abs(dx) > 2) draggedRef.current = true;
+    const dx = event.clientX - pointerRef.current.lastX;
+    const elapsed = Math.max(16, now - pointerRef.current.lastTime);
+    // Contra el punto inicial, no contra el frame previo: un arrastre lento
+    // avanza de a 1 px por evento y aun así es un arrastre, no un clic.
+    if (Math.abs(event.clientX - pointerRef.current.startX) > 4) draggedRef.current = true;
 
     const loopWidth = rail.scrollWidth / 2;
     let next = (positionRef.current ?? rail.scrollLeft) - dx;
@@ -131,16 +112,16 @@ export function useInfinitePointerMarquee({
     positionRef.current = next;
     rail.scrollLeft = next;
     velocityRef.current = Math.max(
-      -touchMaxSpeed,
-      Math.min(touchMaxSpeed, -(dx / (elapsed / 1000))),
+      -maxFlingSpeed,
+      Math.min(maxFlingSpeed, -(dx / (elapsed / 1000))),
     );
-    touchRef.current.lastX = event.clientX;
-    touchRef.current.lastTime = now;
+    pointerRef.current.lastX = event.clientX;
+    pointerRef.current.lastTime = now;
   }
 
-  function endTouch(event: ReactPointerEvent<HTMLDivElement>) {
-    if (!touchingRef.current || touchRef.current.pointerId !== event.pointerId) return;
-    touchingRef.current = false;
+  function endDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!draggingRef.current || pointerRef.current.pointerId !== event.pointerId) return;
+    draggingRef.current = false;
     setDragging(false);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
@@ -158,14 +139,15 @@ export function useInfinitePointerMarquee({
     railRef,
     dragging,
     handlers: {
-      onPointerEnter,
-      onPointerLeave,
       onPointerDown,
       onPointerMove,
-      onPointerUp: endTouch,
-      onPointerCancel: endTouch,
-      onLostPointerCapture: endTouch,
+      onPointerUp: endDrag,
+      onPointerCancel: endDrag,
+      onLostPointerCapture: endDrag,
       onClickCapture,
+      // Sin esto el navegador arranca su propio arrastre nativo de la imagen
+      // o del enlace y el gesto del mouse se corta a mitad de camino.
+      onDragStart: (event: ReactDragEvent<HTMLDivElement>) => event.preventDefault(),
     },
   };
 }

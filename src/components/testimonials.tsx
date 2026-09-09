@@ -35,8 +35,7 @@ const TESTIMONIALS: Testimonial[] = [
 const TRACK_ITEMS = [...TESTIMONIALS, ...TESTIMONIALS];
 
 const AUTO_SCROLL_SPEED = 42; // px por segundo
-const MOUSE_MAX_SPEED = 280;
-const TOUCH_MAX_SPEED = 1650;
+const MAX_FLING_SPEED = 1650;
 
 function TestimonialCard({
   item,
@@ -78,8 +77,7 @@ export function TestimonialsSection() {
   const { railRef, dragging, handlers } = useInfinitePointerMarquee({
     itemCount: TESTIMONIALS.length,
     autoSpeed: AUTO_SCROLL_SPEED,
-    mouseMaxSpeed: MOUSE_MAX_SPEED,
-    touchMaxSpeed: TOUCH_MAX_SPEED,
+    maxFlingSpeed: MAX_FLING_SPEED,
     paused: playingCount > 0,
   });
 
