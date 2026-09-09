@@ -95,6 +95,7 @@ const STAR_PRODUCTS = [
 
 const HERO_AUTO_SPEED = 0.18;
 const HERO_MAX_FLING_SPEED = 2.8;
+const HERO_INERTIA_RESPONSE = 1.5; // ~0,5 s más de envión que el ajuste anterior
 
 type PromoSlide = (typeof PROMO_SLIDES)[number];
 
@@ -128,7 +129,7 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
       if (!draggingRef.current) {
         // Al soltar, el envión del gesto decae hasta el automático: nunca
         // frena, sólo deja de correr.
-        velocityRef.current += (HERO_AUTO_SPEED - velocityRef.current) * Math.min(1, dt * 1.8);
+        velocityRef.current += (HERO_AUTO_SPEED - velocityRef.current) * Math.min(1, dt * HERO_INERTIA_RESPONSE);
         positionRef.current = (positionRef.current + velocityRef.current * dt + slides.length) % slides.length;
       }
 

@@ -27,7 +27,7 @@ test("el carrusel del hero se arrastra con el mouse y conserva el envión", asyn
   expect(await cardX()).toBeGreaterThan(draggedTo + 5);
 
   // El envión se agota solo y vuelve al automático, que va al otro lado.
-  await page.waitForTimeout(1800);
+  await page.waitForTimeout(2300);
   const settled = await cardX();
   await page.waitForTimeout(450);
   expect(await cardX()).toBeLessThan(settled - 3);
