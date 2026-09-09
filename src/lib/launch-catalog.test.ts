@@ -52,12 +52,18 @@ describe("catálogo inicial", () => {
     expect(stars.every((item) => item?.active && item.image && item.description)).toBe(true);
   });
 
-  it("oculta los dos rotomartillos que tenían fichas cruzadas de amoladoras", () => {
+  it("mantiene oculto el modelo dudoso y conserva la ficha exacta verificada por GBS", () => {
     const seed = productsSeed as Product[];
-    for (const id of ["3657", "3379"]) {
-      const item = seed.find((product) => product.id === id);
-      expect(item).toMatchObject({ active: false, image: null, description: null });
-    }
+    const verified = seed.find((product) => product.id === "3657");
+    expect(verified).toMatchObject({
+      active: false,
+      brand: "ENERGY",
+      image: "/products/catalog/3657-ag115-1-220-gbs.webp",
+    });
+    expect(verified?.description).toContain("AG115/1/220");
+
+    const unresolved = seed.find((product) => product.id === "3379");
+    expect(unresolved).toMatchObject({ active: false, image: null, description: null });
   });
 
   it("publica únicamente fichas activas con imagen y descripción verificadas", () => {
