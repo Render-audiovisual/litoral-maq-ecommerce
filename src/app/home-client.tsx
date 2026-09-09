@@ -94,8 +94,7 @@ const STAR_PRODUCTS = [
 ] as const;
 
 const HERO_AUTO_SPEED = 0.18;
-const HERO_MOUSE_MAX_SPEED = 0.82;
-const HERO_TOUCH_MAX_SPEED = 2.8;
+const HERO_MAX_FLING_SPEED = 2.8;
 
 type PromoSlide = (typeof PROMO_SLIDES)[number];
 
@@ -111,12 +110,11 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
   const cardRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const positionRef = useRef(0);
   const velocityRef = useRef(HERO_AUTO_SPEED);
-  const mouseVelocityRef = useRef(HERO_AUTO_SPEED);
-  const mouseInsideRef = useRef(false);
-  const touchingRef = useRef(false);
+  const draggingRef = useRef(false);
   const draggedRef = useRef(false);
-  const touchRef = useRef({ pointerId: -1, x: 0, lastX: 0, lastTime: 0, position: 0 });
+  const pointerRef = useRef({ pointerId: -1, x: 0, lastX: 0, lastTime: 0, position: 0 });
   const [activeIndex, setActiveIndex] = useState(0);
+  const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
     let raf = 0;
@@ -127,10 +125,10 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
 
-      if (!touchingRef.current) {
-        const target = mouseInsideRef.current ? mouseVelocityRef.current : HERO_AUTO_SPEED;
-        const response = mouseInsideRef.current ? 5.5 : 1.8;
-        velocityRef.current += (target - velocityRef.current) * Math.min(1, dt * response);
+      if (!draggingRef.current) {
+        // Al soltar, el envión del gesto decae hasta el automático: nunca
+        // frena, sólo deja de correr.
+        velocityRef.current += (HERO_AUTO_SPEED - velocityRef.current) * Math.min(1, dt * 1.8);
         positionRef.current = (positionRef.current + velocityRef.current * dt + slides.length) % slides.length;
       }
 
@@ -161,22 +159,13 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
     return () => cancelAnimationFrame(raf);
   }, [slides.length]);
 
-  function updateMouseDirection(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType !== "mouse" || touchingRef.current) return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const normalized = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2));
-    const strength = Math.abs(normalized);
-    mouseVelocityRef.current = strength < 0.08
-      ? 0
-      : -Math.sign(normalized) * (0.12 + strength * HERO_MOUSE_MAX_SPEED);
-  }
-
-  function startTouch(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "mouse") return;
-    touchingRef.current = true;
+  function startDrag(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    draggingRef.current = true;
     draggedRef.current = false;
     velocityRef.current = 0;
-    touchRef.current = {
+    setDragging(true);
+    pointerRef.current = {
       pointerId: event.pointerId,
       x: event.clientX,
       lastX: event.clientX,
@@ -191,26 +180,27 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
     }
   }
 
-  function moveTouch(event: React.PointerEvent<HTMLDivElement>) {
-    if (!touchingRef.current || touchRef.current.pointerId !== event.pointerId) return;
+  function moveDrag(event: React.PointerEvent<HTMLDivElement>) {
+    if (!draggingRef.current || pointerRef.current.pointerId !== event.pointerId) return;
     const width = Math.max(210, Math.min(340, event.currentTarget.clientWidth * 0.68));
-    const dx = event.clientX - touchRef.current.x;
+    const dx = event.clientX - pointerRef.current.x;
     const now = performance.now();
-    const segmentDx = event.clientX - touchRef.current.lastX;
-    const elapsed = Math.max(16, now - touchRef.current.lastTime);
+    const segmentDx = event.clientX - pointerRef.current.lastX;
+    const elapsed = Math.max(16, now - pointerRef.current.lastTime);
     if (Math.abs(dx) > 6) draggedRef.current = true;
-    positionRef.current = (touchRef.current.position - dx / width + slides.length) % slides.length;
+    positionRef.current = (pointerRef.current.position - dx / width + slides.length) % slides.length;
     velocityRef.current = Math.max(
-      -HERO_TOUCH_MAX_SPEED,
-      Math.min(HERO_TOUCH_MAX_SPEED, -(segmentDx / width) / (elapsed / 1000)),
+      -HERO_MAX_FLING_SPEED,
+      Math.min(HERO_MAX_FLING_SPEED, -(segmentDx / width) / (elapsed / 1000)),
     );
-    touchRef.current.lastX = event.clientX;
-    touchRef.current.lastTime = now;
+    pointerRef.current.lastX = event.clientX;
+    pointerRef.current.lastTime = now;
   }
 
-  function endTouch(event: React.PointerEvent<HTMLDivElement>) {
-    if (!touchingRef.current || touchRef.current.pointerId !== event.pointerId) return;
-    touchingRef.current = false;
+  function endDrag(event: React.PointerEvent<HTMLDivElement>) {
+    if (!draggingRef.current || pointerRef.current.pointerId !== event.pointerId) return;
+    draggingRef.current = false;
+    setDragging(false);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
@@ -221,24 +211,17 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
   return (
     <div
       ref={sliderRef}
-      className="hero-promo-slider"
+      className={`hero-promo-slider${dragging ? " is-dragging" : ""}`}
       aria-label="Promociones destacadas"
       aria-roledescription="carrusel"
-      onPointerEnter={(event) => {
-        if (event.pointerType !== "mouse") return;
-        mouseInsideRef.current = true;
-        updateMouseDirection(event);
-      }}
-      onPointerLeave={(event) => {
-        if (event.pointerType === "mouse") mouseInsideRef.current = false;
-      }}
-      onPointerMove={(event) => {
-        updateMouseDirection(event);
-        moveTouch(event);
-      }}
-      onPointerDown={startTouch}
-      onPointerUp={endTouch}
-      onPointerCancel={endTouch}
+      onPointerMove={moveDrag}
+      onPointerDown={startDrag}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onLostPointerCapture={endDrag}
+      // Sin esto el navegador arranca su propio arrastre nativo del enlace y
+      // el gesto del mouse se corta a mitad de camino.
+      onDragStart={(event) => event.preventDefault()}
       onClickCapture={(event) => {
         if (!draggedRef.current) return;
         event.preventDefault();
@@ -329,8 +312,7 @@ function CategoryWinnerCard({
 }
 
 const CATEGORY_AUTO_SCROLL_SPEED = 38;
-const CATEGORY_MOUSE_MAX_SPEED = 260;
-const CATEGORY_TOUCH_MAX_SPEED = 1500;
+const CATEGORY_MAX_FLING_SPEED = 1500;
 
 type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
 
@@ -339,8 +321,7 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
   const { railRef, dragging, handlers } = useInfinitePointerMarquee({
     itemCount: categories.length,
     autoSpeed: CATEGORY_AUTO_SCROLL_SPEED,
-    mouseMaxSpeed: CATEGORY_MOUSE_MAX_SPEED,
-    touchMaxSpeed: CATEGORY_TOUCH_MAX_SPEED,
+    maxFlingSpeed: CATEGORY_MAX_FLING_SPEED,
   });
 
   return (

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("el carrusel del hero sigue el mouse en ambas direcciones", async ({ page }) => {
+test("el carrusel del hero se arrastra con el mouse y conserva el envión", async ({ page }) => {
   await page.goto("/");
   const slider = page.locator(".hero-promo-slider");
   const firstCard = slider.locator(".hero-promo-card").first();
@@ -10,23 +10,27 @@ test("el carrusel del hero sigue el mouse en ambas direcciones", async ({ page }
   if (!sliderBox) throw new Error("No se pudo medir el carrusel");
   const cardX = async () => (await firstCard.boundingBox())?.x ?? 0;
 
-  await page.mouse.move(
-    sliderBox.x + sliderBox.width * 0.9,
-    sliderBox.y + sliderBox.height * 0.5,
-  );
-  await page.waitForTimeout(850);
-  const rightStart = await cardX();
-  await page.waitForTimeout(450);
-  expect(await cardX()).toBeGreaterThan(rightStart + 5);
+  const y = sliderBox.y + sliderBox.height * 0.5;
+  // Hacia la derecha: el automático corre las tarjetas a la izquierda, así que
+  // todo movimiento a la derecha viene del gesto y no del giro de fondo.
+  await page.mouse.move(sliderBox.x + sliderBox.width * 0.25, y);
+  await page.mouse.down();
+  const grabbedAt = await cardX();
+  for (const step of [30, 60, 100, 145, 195]) {
+    await page.mouse.move(sliderBox.x + sliderBox.width * 0.25 + step, y);
+  }
+  const draggedTo = await cardX();
+  expect(draggedTo).toBeGreaterThan(grabbedAt + 60);
 
-  await page.mouse.move(
-    sliderBox.x + sliderBox.width * 0.1,
-    sliderBox.y + sliderBox.height * 0.5,
-  );
-  await page.waitForTimeout(950);
-  const leftStart = await cardX();
+  await page.mouse.up();
+  await page.waitForTimeout(140);
+  expect(await cardX()).toBeGreaterThan(draggedTo + 5);
+
+  // El envión se agota solo y vuelve al automático, que va al otro lado.
+  await page.waitForTimeout(1800);
+  const settled = await cardX();
   await page.waitForTimeout(450);
-  expect(await cardX()).toBeLessThan(leftStart - 5);
+  expect(await cardX()).toBeLessThan(settled - 3);
 });
 
 test("el carrusel táctil conserva inercia y vuelve al movimiento automático", async ({ page }) => {
