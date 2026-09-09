@@ -28,7 +28,7 @@ for (const carousel of [
     expect(await rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(start + 8);
   });
 
-  test(`el carrusel de ${carousel.name} sigue el mouse en ambas direcciones`, async ({ page }) => {
+  test(`el carrusel de ${carousel.name} se arrastra con el mouse y conserva el envión`, async ({ page }) => {
     await page.goto("/");
     const rail = page.locator(carousel.selector);
     await expect(rail).toBeVisible();
@@ -48,17 +48,28 @@ for (const carousel of [
       return delta;
     };
 
-    await page.mouse.move(box.x + box.width * 0.9, box.y + box.height * 0.5);
-    await page.waitForTimeout(650);
-    const rightStart = await scrollLeft();
-    await page.waitForTimeout(350);
-    expect(circularDelta(rightStart, await scrollLeft())).toBeLessThan(-5);
+    const y = box.y + Math.min(box.height * 0.5, 160);
+    // Arrastre hacia la derecha: es la dirección contraria a la del
+    // automático, así que cualquier avance negativo sólo puede venir del gesto.
+    await page.mouse.move(box.x + box.width * 0.25, y);
+    await page.mouse.down();
+    const grabbedAt = await scrollLeft();
+    for (const step of [40, 80, 120, 170, 220]) {
+      await page.mouse.move(box.x + box.width * 0.25 + step, y);
+    }
+    const draggedTo = await scrollLeft();
+    expect(circularDelta(grabbedAt, draggedTo)).toBeLessThan(-150);
 
-    await page.mouse.move(box.x + box.width * 0.1, box.y + box.height * 0.5);
-    await page.waitForTimeout(750);
-    const leftStart = await scrollLeft();
-    await page.waitForTimeout(350);
-    expect(circularDelta(leftStart, await scrollLeft())).toBeGreaterThan(5);
+    await page.mouse.up();
+    await page.waitForTimeout(120);
+    expect(circularDelta(draggedTo, await scrollLeft())).toBeLessThan(-10);
+
+    // El envión se agota y vuelve solo al automático, que va al otro lado.
+    // Un envión al tope tarda ~2,5 s en revertirse: esperamos con margen.
+    await page.waitForTimeout(3200);
+    const settled = await scrollLeft();
+    await page.waitForTimeout(400);
+    expect(circularDelta(settled, await scrollLeft())).toBeGreaterThan(5);
   });
 
   test(`el carrusel táctil de ${carousel.name} conserva la inercia`, async ({ page }) => {
