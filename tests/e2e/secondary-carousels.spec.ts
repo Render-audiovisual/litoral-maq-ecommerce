@@ -65,7 +65,7 @@ for (const carousel of [
     expect(circularDelta(draggedTo, await scrollLeft())).toBeLessThan(-10);
 
     // El envión se agota y vuelve solo al automático, que va al otro lado.
-    // Un envión al tope tarda ~2,5 s en revertirse: esperamos con margen.
+    // Un envión al tope tarda ~3 s en revertirse: esperamos con margen.
     await page.waitForTimeout(3200);
     const settled = await scrollLeft();
     await page.waitForTimeout(400);

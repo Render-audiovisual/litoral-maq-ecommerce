@@ -14,6 +14,8 @@ type InfinitePointerMarqueeOptions = {
   paused?: boolean;
 };
 
+const INERTIA_RESPONSE = 1.5; // extiende ~0,5 s el envión antes de volver al automático
+
 /**
  * Movimiento continuo para rieles duplicados: gira solo, y con mouse o dedo
  * se agarra y se arrastra igual que en el celular. Al soltar conserva la
@@ -50,7 +52,7 @@ export function useInfinitePointerMarquee({
       if (rail && !draggingRef.current && !paused) {
         // Al soltar, la velocidad del gesto decae hasta el automático: cuanto
         // más fuerte el envión, más tarda en volver, pero nunca se detiene.
-        velocityRef.current += (autoSpeed - velocityRef.current) * Math.min(1, dt * 1.8);
+        velocityRef.current += (autoSpeed - velocityRef.current) * Math.min(1, dt * INERTIA_RESPONSE);
 
         const loopWidth = rail.scrollWidth / 2;
         if (loopWidth > 0) {
