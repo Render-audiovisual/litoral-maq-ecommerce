@@ -66,6 +66,20 @@ test.describe("layout móvil", () => {
     ).toBeGreaterThanOrEqual(16);
   });
 
+  test("los campos no activan zoom tampoco con el celular apaisado", async ({ page }) => {
+    await page.setViewportSize({ width: 667, height: 375 });
+    await page.goto("/productos");
+    await expect(page.locator(".filters")).toBeVisible();
+
+    const editableFontSizes = await page
+      .locator('input:not([type="checkbox"]):not([type="radio"]), select, textarea')
+      .evaluateAll((elements) =>
+        elements.map((element) => Number.parseFloat(getComputedStyle(element).fontSize)),
+      );
+    expect(editableFontSizes.length).toBeGreaterThan(0);
+    expect(editableFontSizes.every((size) => size >= 16)).toBe(true);
+  });
+
   test("la cabecera y el hero mantienen una jerarquía compacta", async ({ page }) => {
     await page.goto("/");
 

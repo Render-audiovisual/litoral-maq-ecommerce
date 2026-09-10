@@ -26,3 +26,28 @@ test("el inicio lleva de las categorías más vendidas al catálogo filtrado", a
   await expect(page.locator(".catalog-toolbar")).toContainText(/\d+ productos encontrados/);
   expect(await page.locator(".product-card").count()).toBeGreaterThan(5);
 });
+
+test("un clic normal no se captura como arrastre y abre la categoría", async ({ page }) => {
+  await page.goto("/");
+
+  const rail = page.locator(".category-marquee");
+  const link = page.locator('#categorias-mas-vendidas a[href="/productos?familia=taladros"]').first();
+  await link.dispatchEvent("pointerdown", {
+    pointerId: 17,
+    pointerType: "mouse",
+    button: 0,
+    clientX: 100,
+    clientY: 100,
+  });
+  expect(await rail.evaluate((element) => element.hasPointerCapture(17))).toBe(false);
+  await link.dispatchEvent("pointerup", {
+    pointerId: 17,
+    pointerType: "mouse",
+    button: 0,
+    clientX: 100,
+    clientY: 100,
+  });
+  await link.dispatchEvent("click");
+
+  await expect(page).toHaveURL(/\/productos\?familia=taladros$/);
+});
