@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FocusEvent, FormEvent, KeyboardEvent, useEffect, useMemo, useState } from "react";
+import { FocusEvent, FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/store/store";
 import { isPermanentCustomerSession, isValidCustomerSession } from "@/lib/auth";
 import { selectOwnOrders } from "@/lib/orders";
@@ -28,6 +28,7 @@ export function Header() {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(-1);
   const [mobileSearch, setMobileSearch] = useState(false);
+  const choosingSuggestion = useRef(false);
   // Una sesión de invitado (anónima) NO es una cuenta: mostrar su nombre
   // significaba mostrar una cadena vacía al lado del ícono de usuario.
   const account = isPermanentCustomerSession(customerSession) ? customerSession : null;
@@ -101,6 +102,10 @@ export function Header() {
   // El cartel sólo se cierra si el foco se fue de la barra entera: pasar del
   // input a una sugerencia no lo tiene que hacer desaparecer.
   function handleSearchBlur(event: FocusEvent<HTMLFormElement>) {
+    // Safari móvil puede informar relatedTarget=null al tocar un enlace. En
+    // ese caso no desmontamos el cartel durante pointerdown: el click del
+    // enlace debe alcanzar a navegar y luego lo cierra normalmente.
+    if (choosingSuggestion.current) return;
     if (!event.currentTarget.contains(event.relatedTarget)) closeSuggestions();
   }
 
@@ -159,7 +164,12 @@ export function Header() {
             </svg>
           </button>
           {showSuggestions && (
-            <div className="search-suggestions">
+            <div
+              className="search-suggestions"
+              onPointerDownCapture={() => { choosingSuggestion.current = true; }}
+              onPointerUpCapture={() => { choosingSuggestion.current = false; }}
+              onPointerCancel={() => { choosingSuggestion.current = false; }}
+            >
               {suggestions.length === 0 ? (
                 <p className="search-suggestions-empty">
                   No encontramos «{query.trim()}». Probá con menos palabras o mirá el{" "}

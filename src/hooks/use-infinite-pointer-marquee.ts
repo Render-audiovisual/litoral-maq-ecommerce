@@ -15,6 +15,9 @@ type InfinitePointerMarqueeOptions = {
 };
 
 const INERTIA_RESPONSE = 1.5; // extiende ~0,5 s el envión antes de volver al automático
+// Un mouse o trackpad se mueve algunos píxeles aun durante un clic normal.
+// Recién cancelamos la navegación cuando el gesto fue claramente un arrastre.
+const DRAG_CLICK_THRESHOLD = 10;
 
 /**
  * Movimiento continuo para rieles duplicados: gira solo, y con mouse o dedo
@@ -86,11 +89,6 @@ export function useInfinitePointerMarquee({
       lastTime: performance.now(),
     };
     setDragging(true);
-    try {
-      event.currentTarget.setPointerCapture(event.pointerId);
-    } catch {
-      // Algunos navegadores cancelan el puntero antes de permitir capturarlo.
-    }
   }
 
   function onPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
@@ -103,7 +101,17 @@ export function useInfinitePointerMarquee({
     const elapsed = Math.max(16, now - pointerRef.current.lastTime);
     // Contra el punto inicial, no contra el frame previo: un arrastre lento
     // avanza de a 1 px por evento y aun así es un arrastre, no un clic.
-    if (Math.abs(event.clientX - pointerRef.current.startX) > 4) draggedRef.current = true;
+    if (Math.abs(event.clientX - pointerRef.current.startX) > DRAG_CLICK_THRESHOLD) {
+      draggedRef.current = true;
+      if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+        try {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        } catch {
+          // Si el navegador canceló el puntero, el carril conserva lo ya
+          // desplazado y vuelve al movimiento automático al finalizar.
+        }
+      }
+    }
 
     const loopWidth = rail.scrollWidth / 2;
     let next = (positionRef.current ?? rail.scrollLeft) - dx;

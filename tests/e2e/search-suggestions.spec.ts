@@ -60,3 +60,21 @@ test('en móvil muestra cuatro opciones compactas y tolera un error de tipeo', a
   await expect(options.first()).toContainText(/taladro/i);
   await expect(page.locator('.suggestion-code').first()).toBeHidden();
 });
+
+test('en móvil tocar una sugerencia navega aunque el input pierda el foco', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  const search = page.getByRole('combobox', { name: 'Buscar en el catálogo' });
+  await search.fill('taladro');
+  const suggestion = page.getByRole('listbox', { name: 'Sugerencias' }).getByRole('link').first();
+  const href = await suggestion.getAttribute('href');
+
+  await suggestion.dispatchEvent('pointerdown', { pointerType: 'touch', pointerId: 7 });
+  await search.evaluate((element) => (element as HTMLInputElement).blur());
+  await expect(suggestion).toBeVisible();
+  await suggestion.dispatchEvent('pointerup', { pointerType: 'touch', pointerId: 7 });
+  await suggestion.click();
+
+  await expect(page).toHaveURL(new RegExp(`${href!.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
+});

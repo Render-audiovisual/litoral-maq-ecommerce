@@ -173,12 +173,6 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
       lastTime: performance.now(),
       position: positionRef.current,
     };
-    try {
-      event.currentTarget.setPointerCapture(event.pointerId);
-    } catch {
-      // El navegador puede cancelar el puntero antes de capturarlo; el gesto
-      // sigue funcionando mientras los eventos continúen sobre el carrusel.
-    }
   }
 
   function moveDrag(event: React.PointerEvent<HTMLDivElement>) {
@@ -188,7 +182,17 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
     const now = performance.now();
     const segmentDx = event.clientX - pointerRef.current.lastX;
     const elapsed = Math.max(16, now - pointerRef.current.lastTime);
-    if (Math.abs(dx) > 6) draggedRef.current = true;
+    if (Math.abs(dx) > 10) {
+      draggedRef.current = true;
+      if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+        try {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        } catch {
+          // El gesto conserva lo recorrido aunque el navegador cancele el
+          // puntero antes de que podamos capturarlo.
+        }
+      }
+    }
     positionRef.current = (pointerRef.current.position - dx / width + slides.length) % slides.length;
     velocityRef.current = Math.max(
       -HERO_MAX_FLING_SPEED,
