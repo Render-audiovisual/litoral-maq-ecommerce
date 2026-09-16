@@ -294,16 +294,16 @@
     "rawPrice": "$ 5.000,01",
     "category": "Herramientas manuales",
     "brand": "ENERGY",
-    "image": "/products/catalog/3217-dp06-gbs.webp",
+    "image": "/products/catalog/3217-dp06.webp",
     "images": [
-      "/products/catalog/3217-dp06-gbs.webp",
-      "/products/specs/3217-dp06-gbs-ficha.webp"
+      "/products/catalog/3217-dp06.webp",
+      "/products/catalog/3217-dp06-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": "Alicate de corte oblicuo Energy DP06 de 6 pulgadas. Fabricado en acero #45, con mangos ergonómicos revestidos para un agarre firme. Indicado para trabajos con cables y para cortar distintos tipos de alambre. El contenido incluye un alicate de corte oblicuo de 6 pulgadas.",
+    "description": "Alicate de corte oblicuo 6\" ENERGY DP06.\n\nDatos técnicos:\n• Medida: 6\"\n• Material: Acero #45\n\nContenido: 1 alicate de corte oblicuo de 6\".",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 13,
@@ -374,16 +374,16 @@
     "rawPrice": "$ 39.999,97",
     "category": "Amoladoras",
     "brand": "ENERGY",
-    "image": "/products/catalog/3657-ag115-1-220-gbs.webp",
+    "image": "/products/catalog/3657-ag115-1-220.webp",
     "images": [
-      "/products/catalog/3657-ag115-1-220-gbs.webp",
-      "/products/specs/3657-ag115-1-220-gbs-ficha.webp"
+      "/products/catalog/3657-ag115-1-220.webp",
+      "/products/catalog/3657-ag115-1-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": "Amoladora angular Energy Economy AG115/1/220 de 720 W para discos de 115 mm (4 1/2 pulgadas). Funciona con alimentación de 220 V, alcanza 11.000 rpm en vacío y pesa 1,85 kg. Posee aislación Clase II e incluye una amoladora angular.",
+    "description": "Amoladora angular ENERGY AG115/1/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 720W\n• Velocidad en vacío: 11000/min\n• Capacidad de disco: 115mm - 4 1/2\"\n• Peso: 1,85kg (4lb)\n\nContenido: 1 amoladora angular.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 16,
@@ -1792,16 +1792,16 @@
     "rawPrice": "$ 35.000,05",
     "category": "Hidrolavado y bombas",
     "brand": "ENERGY",
-    "image": "/products/catalog/1779-p12-2-25-gbs.webp",
+    "image": "/products/catalog/1779-p12-2-25.webp",
     "images": [
-      "/products/catalog/1779-p12-2-25-gbs.webp",
-      "/products/specs/1779-p12-2-25-gbs-ficha.webp"
+      "/products/catalog/1779-p12-2-25.webp",
+      "/products/catalog/1779-p12-2-25-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": "Electrobomba periférica Energy P12/2/25 de 1/2 HP (0,37 kW), para alimentación 220 V y 50 Hz. Entrega hasta 28 L/min, con altura máxima de 16 m y succión máxima de 8 m. Posee conexiones de entrada y salida de 1 pulgada, aislación Clase I y pesa 3,45 kg. Recomendada para riego de jardines, transferencia de agua, piscinas y uso doméstico.",
+    "description": "Electrobomba periférica ENERGY P12/2/25.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz\n• Potencia: 1/2HP - 0,37kW\n• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min\n• Diámetro de entrada y salida: 1\" x 1\"\n• Altura máx. del manómetro: 16m - 52,5ft\n• Succión máxima: 8m - 26,25ft\n• Caudal máximo: 28L/min - 1,94CFM\n• Temperatura máx. del ambiente: 40°C\n• Temperatura máx. del agua: 60°C\n• Tipo de aislación: Clase I\n• Peso: 3,45kg - 7,7lb\n\nContenido: 1 bomba periférica.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 70,
@@ -1844,21 +1844,22 @@
     "price": 268000.18,
     "rawPrice": "$ 268.000,18",
     "category": "Hidrolavado y bombas",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "GLADIATOR",
+    "image": "/products/catalog/3393-bpp858-1-25.webp",
+    "images": [
+      "/products/catalog/3393-bpp858-1-25.webp",
+      "/products/catalog/3393-bpp858-1-25-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Bomba sumergible de pozo profundo GLADIATOR BPP858/1/25.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz\n• Potencia: 1HP - 0,75kW\n• Cable plano: 1,5mm² x 4\n• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min\n• Largo de cable: 1,5m\n• Caudal: 2 - 4m³/h\n• Rango de altura: 28 - 52m\n• Profundidad máxima: 58m\n• Longitud del estator: ø 92 x 110mm\n• Caño de descarga: 1 1/4\"\n• Eje recto: 45# + 304#\n• Cantidad de etapas: 8\n• Tipo de aislación: Clase I\n• Peso: 13,8kg - 30,42lb\n\nContenido: 1 bomba sumergible de pozo profundo, 1 cable de 1,5 m.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 72,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -2416,21 +2417,22 @@
     "price": 350000.35,
     "rawPrice": "$ 350.000,35",
     "category": "Compresores y neumática",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "GLADIATOR",
+    "image": "/products/catalog/3684-cesa8100-25v.webp",
+    "images": [
+      "/products/catalog/3684-cesa8100-25v.webp",
+      "/products/catalog/3684-cesa8100-25v-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Compresor vertical directo sin aceite GLADIATOR CESA8100/25V.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz\n• Potencia: 3HP / 1100W x 2\n• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min\n• Caudal: 334L/min\n• Capacidad de tanque: 100L\n• Presión: 8bar - 115PSI\n• Cilindro: 57,8mm x 2\n• Estator: 110 x 58 x 140P\n• Nivel de ruido: 73db\n• Aislación: Clase I\n• Peso: 50kg - 110,23lb\n\nContenido: 1 compresor directo vertical sin aceite.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 94,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -5464,20 +5466,21 @@
     "rawPrice": "$ 84.999,82",
     "category": "Hidrolavado y bombas",
     "brand": "FOREST & GARDEN",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3670-h6130m-1-220.webp",
+    "images": [
+      "/products/catalog/3670-h6130m-1-220.webp",
+      "/products/catalog/3670-h6130m-1-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Hidrolavadora eléctrica FOREST & GARDEN H6130M/1/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 1800W - 2,41HP\n• Presión máxima: 160bar - 2321PSI\n• Flujo de trabajo: 4,7 ± 0,2 L/min\n• Caudal: 5L/min\n• Unidades de limpieza: 800UL\n• Manguera: 5 metros\n• Tipo de aislación: Clase II\n• Cable: 5m\n• Peso: 6,4kg - 14,11lb\n\nContenido: 1 hidrolavadora eléctrica, 1 manguera de 5 m, 1 lanza, 1 conector de manguera, 1 dosificador de detergente.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 211,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -8699,21 +8702,22 @@
     "price": 114999.56,
     "rawPrice": "$ 114.999,56",
     "category": "Construcción",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "GLADIATOR",
+    "image": "/products/catalog/3714-nl1045-3.webp",
+    "images": [
+      "/products/catalog/3714-nl1045-3.webp",
+      "/products/catalog/3714-nl1045-3-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Nivel láser autonivelante GLADIATOR NL1045/3.\n\nDatos técnicos:\n• Distancia de trabajo: 45m\n• Voltaje: 3,7V\n• Longitud de onda: 520nm\n• Precisión del haz: ±3mm - 10m\n• Ángulo: Horizontal y vertical 360°\n• Protección: IP54\n• Batería: 4000mAh\n• Clase de láser: Clase 2\n• Peso: 445g - 0,98lb\n\nContenido: 1 nivel láser autonivelante, 1 estuche, 1 soporte magnético PV9, 1 placa de destino, 1 cable USB tipo C.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 335,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -10496,20 +10500,21 @@
     "rawPrice": "$ 78.000,00",
     "category": "Herramientas manuales",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3892-rh26-5-220k.webp",
+    "images": [
+      "/products/catalog/3892-rh26-5-220k.webp",
+      "/products/catalog/3892-rh26-5-220k-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Rotomartillo ENERGY RH26/5/220K.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 1100W - 1,5HP\n• Energía de impacto: 3 joules\n• Impactos por minuto: 0-5200bpm\n• Velocidad en vacío: 0-1050/min\n• Perforación en concreto: 26mm - 1 3/16\"\n• Perforación en madera: 30mm - 1 37/64\"\n• Perforación en acero: 13mm - 1/2\"\n• Encastre: SDS Plus\n• Tipo de aislación: Clase II\n• Peso: 3,2kg (7lb)\n\nContenido: 1 rotomartillo, 1 mango auxiliar, 1 cincel de punta, 1 cincel plano, 3 brocas (8/10/12mm), 1 juego de carbones, 1 atrapa polvo, 1 pomo de grasa, 1 llave de ajuste, maletín.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 404,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -10915,16 +10920,16 @@
     "rawPrice": "$ 14.000,02",
     "category": "Accesorios y consumibles",
     "brand": "ENERGY",
-    "image": "/products/catalog/3770-sp25-gbs.webp",
+    "image": "/products/catalog/3770-sp25.webp",
     "images": [
-      "/products/catalog/3770-sp25-gbs.webp",
-      "/products/specs/3770-sp25-gbs-ficha.webp"
+      "/products/catalog/3770-sp25.webp",
+      "/products/catalog/3770-sp25-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": "Set Energy SP25 de 25 puntas profesionales fabricadas en acero S2, presentado en maletín plástico. Incluye 6 puntas Phillips, 3 Pozidriv, 5 planas, 3 hexagonales, 7 Torx y un soporte universal magnético.",
+    "description": "Set de puntas de 25 piezas ENERGY SP25.\n\nDatos técnicos:\n• Material: Acero S2\n• Phillips (PH): x6\n• Pozidriv (PZ): x3\n• Recto (SL): x5\n• Hexagonal (H): x3\n• Torx (T): x7\n• Soporte universal magnético: x1\n\nContenido: Set de 25 piezas material S2, maletín plástico.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 420,
@@ -11676,20 +11681,21 @@
     "rawPrice": "$ 264.999,25",
     "category": "Otros",
     "brand": "NEO",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3728-sid1010-3-220.webp",
+    "images": [
+      "/products/catalog/3728-sid1010-3-220.webp",
+      "/products/catalog/3728-sid1010-3-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Sierra ingletadora NEO SID1010/3/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 2200W\n• Velocidad en vacío: 5300rpm\n• Diámetro de hoja: 255mm - 10\"\n• Tamaño de base: 48 x 33 cm\n• Capacidad de corte 0° x 90°: 70 x 305mm\n• Capacidad de corte 0° x 45°: 70 x 200mm\n• Capacidad de corte 45° x 90°: 43 x 305mm\n• Capacidad de corte 45° x 45°: 43 x 200mm\n• Aislación: Clase II\n\nContenido: 1 sierra ingletadora, 1 llave allen, 1 bolsa para polvo, 1 abrazadera de trabajo, 1 par de escobillas de carbón.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 449,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },

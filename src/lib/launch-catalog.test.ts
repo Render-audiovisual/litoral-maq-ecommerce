@@ -52,18 +52,19 @@ describe("catálogo inicial", () => {
     expect(stars.every((item) => item?.active && item.image && item.description)).toBe(true);
   });
 
-  it("mantiene oculto el modelo dudoso y conserva la ficha exacta verificada por GBS", () => {
+  it("deja sin ficha los productos cuya imagen no pudo verificarse contra el catálogo del fabricante", () => {
     const seed = productsSeed as Product[];
-    const verified = seed.find((product) => product.id === "3657");
-    expect(verified).toMatchObject({
-      active: false,
-      brand: "ENERGY",
-      image: "/products/catalog/3657-ag115-1-220-gbs.webp",
-    });
-    expect(verified?.description).toContain("AG115/1/220");
+    const item = seed.find((product) => product.id === "3379");
+    expect(item).toMatchObject({ active: false, image: null, description: null });
+  });
 
-    const unresolved = seed.find((product) => product.id === "3379");
-    expect(unresolved).toMatchObject({ active: false, image: null, description: null });
+  it("repone la ficha de 3657 con la del catálogo oficial de GBS, que sí coincide con el modelo del Sheet", () => {
+    const seed = productsSeed as Product[];
+    const item = seed.find((product) => product.id === "3657");
+    expect(item?.name).toContain("AG115/1/220");
+    expect(item?.description).toContain("AG115/1/220");
+    expect(item?.image).toBe("/products/catalog/3657-ag115-1-220.webp");
+    expect(item?.active).toBe(false);
   });
 
   it("publica únicamente fichas activas con imagen y descripción verificadas", () => {

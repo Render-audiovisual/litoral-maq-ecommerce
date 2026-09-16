@@ -18,10 +18,25 @@ values
   ('3402', 'alambre-x-5-kg-0-9-mm-am0509-9-3402', '3402', 'ALAMBRE X 5 KG 0.9 MM AM0509/9', 31999.98, '$ 31.999,98', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 10, '{"image","stock","description"}'),
   ('3401', 'alambre-x-5kg-0-80-mm-am0508-9-3401', '3401', 'ALAMBRE X 5KG 0.80 MM AM0508/9', 31999.98, '$ 31.999,98', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 11, '{"image","stock","description"}'),
   ('3184', 'alargador-mag-60-mm-p-encastre-1-4-3184', '3184', 'ALARGADOR MAG 60 MM P/ ENCASTRE 1/4', 5000.01, '$ 5.000,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 12, '{"image","stock","description"}'),
-  ('3217', 'alicate-energy-6-dp06-3217', '3217', 'ALICATE ENERGY 6" - DP06', 5000.01, '$ 5.000,01', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 13, '{"image","stock","description"}'),
+  ('3217', 'alicate-energy-6-dp06-3217', '3217', 'ALICATE ENERGY 6" - DP06', 5000.01, '$ 5.000,01', 'Herramientas manuales', 'ENERGY', '/products/catalog/3217-dp06.webp', '{"/products/catalog/3217-dp06.webp","/products/catalog/3217-dp06-ficha.webp"}', 0, 5, 3, false, false, 'Alicate de corte oblicuo 6" ENERGY DP06.
+
+Datos técnicos:
+• Medida: 6"
+• Material: Acero #45
+
+Contenido: 1 alicate de corte oblicuo de 6".', '{}', 'google-sheet', 13, '{"stock"}'),
   ('3578', 'alicate-obra-6-po6-3578', '3578', 'ALICATE OBRA 6" - PO6', 10000, '$ 10.000,00', 'Herramientas manuales', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 14, '{"image","stock","description"}'),
   ('3266', 'amoladora-115-mm-600w-energy-ag15-3-220-3266', '3266', 'AMOLADORA 115 MM 600w ENERGY AG15/3/220', 39980.09, '$ 39.980,09', 'Amoladoras', 'ENERGY', '/products/AMOLADORA ANGULAR.png', '{"/products/AMOLADORA ANGULAR.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 15, '{"stock","description"}'),
-  ('3657', 'amoladora-115-mm-720w-energy-ag115-1-220-3657', '3657', 'AMOLADORA 115 MM 720W ENERGY - AG115/1/220', 39999.97, '$ 39.999,97', 'Amoladoras', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 16, '{"image","stock","description"}'),
+  ('3657', 'amoladora-115-mm-720w-energy-ag115-1-220-3657', '3657', 'AMOLADORA 115 MM 720W ENERGY - AG115/1/220', 39999.97, '$ 39.999,97', 'Amoladoras', 'ENERGY', '/products/catalog/3657-ag115-1-220.webp', '{"/products/catalog/3657-ag115-1-220.webp","/products/catalog/3657-ag115-1-220-ficha.webp"}', 0, 5, 3, false, false, 'Amoladora angular ENERGY AG115/1/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 720W
+• Velocidad en vacío: 11000/min
+• Capacidad de disco: 115mm - 4 1/2"
+• Peso: 1,85kg (4lb)
+
+Contenido: 1 amoladora angular.', '{}', 'google-sheet', 16, '{"stock"}'),
   ('3883', 'amoladora-115-mm-850w-aa615-5-220k-3883', '3883', 'AMOLADORA 115 MM 850W - AA615/5/220K', 56870, '$ 56.870,00', 'Amoladoras', 'Sin marca informada', '/products/AMOLADORA ANGULAR.png', '{"/products/AMOLADORA ANGULAR.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 17, '{"stock","description"}'),
   ('3604', 'amoladora-115mm-1100w-neo-aa10115-220p-3604', '3604', 'AMOLADORA 115MM 1100W NEO - AA10115/220P', 100000.29, '$ 100.000,29', 'Amoladoras', 'NEO', '/products/catalog/3604-aa10115-220p.webp', '{"/products/catalog/3604-aa10115-220p.webp"}', 0, 5, 3, true, true, 'Amoladora Angular Neo 1100w 115mm AA10115/220P. Capacidad: 115mm - 4 1/2". Potencia: 1100W. Velocidad en Vacio: 4000-11000/min. Calidad Industrial. Aislacion: Clase II. Peso:2,2Kg. Disco Premiun. DP10115. Medida: 115x1,2x22,2mm. Medidas de Pulgadas: 4 1/2 x 3/64x 7/8. Velocidad Maxima: 13300. Grano: #45. Velocidad: 80m/s. Contiene. 1 Mango lateral. 1 Llave de Ajuste para disco. 1 Jugo de Carbones. 1 Disco Premiun.', '{}', 'google-sheet', 18, '{"stock"}'),
   ('3603', 'amoladora-115mm-1100w-neo-aa10115-220-3603', '3603', 'AMOLADORA 115MM 1100W NEO AA10115/220', 94999.88, '$ 94.999,88', 'Amoladoras', 'NEO', '/products/AMOLADORA ANGULAR.png', '{"/products/AMOLADORA ANGULAR.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 19, '{"stock","description"}'),
@@ -75,9 +90,42 @@ values
   ('3182', 'boca-llave-magnetica-5-16-x-65-mm-rerar-3182', '3182', 'BOCA LLAVE MAGNETICA 5/16 X 65 MM "RERAR"', 1999.99, '$ 1.999,99', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 67, '{"image","stock","description"}'),
   ('3591', 'bomba-centrifuga-autocebante-1hp-bpa610-25-3591', '3591', 'BOMBA CENTRIFUGA AUTOCEBANTE 1HP - BPA610/25', 109999.92, '$ 109.999,92', 'Hidrolavado y bombas', 'GLADIATOR', '/products/catalog/3591-bpa610-25.webp', '{"/products/catalog/3591-bpa610-25.webp"}', 0, 5, 3, true, false, 'Bomba Centrífuga Autocebante Gladiator Master 1 HP BPA610/25. Voltaje-frecuencia: 220v ~ 50hz. Potencia: 1hp (750w). Diámetro de entrada y salida: 1" x 1". Altura manométrica máx.: 20m. Velocidad en vacío: n₀=2850/min. Temperatura ambiente máx.: 40&deg;c. Temperatura de agua máx.: 90&deg;c. Succión máxima: 8m. Caudal máximo: 90l/min. Tipo de aislación: clase i. índice de protección: ip44. Peso: 11kg.', '{}', 'google-sheet', 68, '{"stock"}'),
   ('3590', 'bomba-elevadora-de-presion-3en1-evp818-43-1-3590', '3590', 'BOMBA ELEVADORA DE PRESION 3EN1 - EVP818/43-1', 64900.27, '$ 64.900,27', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 69, '{"image","stock","description"}'),
-  ('1779', 'bomba-periferica-1-2-hp-energy-p12-2-25-1779', '1779', 'BOMBA PERIFERICA 1/2 HP ENERGY - P12/2/25', 35000.05, '$ 35.000,05', 'Hidrolavado y bombas', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 70, '{"image","stock","description"}'),
+  ('1779', 'bomba-periferica-1-2-hp-energy-p12-2-25-1779', '1779', 'BOMBA PERIFERICA 1/2 HP ENERGY - P12/2/25', 35000.05, '$ 35.000,05', 'Hidrolavado y bombas', 'ENERGY', '/products/catalog/1779-p12-2-25.webp', '{"/products/catalog/1779-p12-2-25.webp","/products/catalog/1779-p12-2-25-ficha.webp"}', 0, 5, 3, false, false, 'Electrobomba periférica ENERGY P12/2/25.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz
+• Potencia: 1/2HP - 0,37kW
+• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min
+• Diámetro de entrada y salida: 1" x 1"
+• Altura máx. del manómetro: 16m - 52,5ft
+• Succión máxima: 8m - 26,25ft
+• Caudal máximo: 28L/min - 1,94CFM
+• Temperatura máx. del ambiente: 40°C
+• Temperatura máx. del agua: 60°C
+• Tipo de aislación: Clase I
+• Peso: 3,45kg - 7,7lb
+
+Contenido: 1 bomba periférica.', '{}', 'google-sheet', 70, '{"stock"}'),
   ('3517', 'bomba-sumergible-de-drenaje-3-4hp-bs935-3517', '3517', 'BOMBA SUMERGIBLE DE DRENAJE 3/4HP BS935', 110000.16, '$ 110.000,16', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 71, '{"image","stock","description"}'),
-  ('3393', 'bomba-sumergible-pozo-profundo-1-hp-bpp858-1-25-3393', '3393', 'BOMBA SUMERGIBLE POZO PROFUNDO 1 HP BPP858/1/25', 268000.18, '$ 268.000,18', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 72, '{"image","stock","description"}'),
+  ('3393', 'bomba-sumergible-pozo-profundo-1-hp-bpp858-1-25-3393', '3393', 'BOMBA SUMERGIBLE POZO PROFUNDO 1 HP BPP858/1/25', 268000.18, '$ 268.000,18', 'Hidrolavado y bombas', 'GLADIATOR', '/products/catalog/3393-bpp858-1-25.webp', '{"/products/catalog/3393-bpp858-1-25.webp","/products/catalog/3393-bpp858-1-25-ficha.webp"}', 0, 5, 3, false, false, 'Bomba sumergible de pozo profundo GLADIATOR BPP858/1/25.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz
+• Potencia: 1HP - 0,75kW
+• Cable plano: 1,5mm² x 4
+• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min
+• Largo de cable: 1,5m
+• Caudal: 2 - 4m³/h
+• Rango de altura: 28 - 52m
+• Profundidad máxima: 58m
+• Longitud del estator: ø 92 x 110mm
+• Caño de descarga: 1 1/4"
+• Eje recto: 45# + 304#
+• Cantidad de etapas: 8
+• Tipo de aislación: Clase I
+• Peso: 13,8kg - 30,42lb
+
+Contenido: 1 bomba sumergible de pozo profundo, 1 cable de 1,5 m.', '{}', 'google-sheet', 72, '{"stock"}'),
   ('3394', 'bomba-sumergible-pozo-profundo-1-5-hp-bpp886-1-25-3394', '3394', 'BOMBA SUMERGIBLE POZO PROFUNDO 1,5 HP BPP886/1/25', 290000.63, '$ 290.000,63', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 73, '{"image","stock","description"}'),
   ('3395', 'bomba-sumergible-pozo-profundo-2-hp-bpp8115-1-25-3395', '3395', 'BOMBA SUMERGIBLE POZO PROFUNDO 2 HP BPP8115/1/25', 345000.14, '$ 345.000,14', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 74, '{"image","stock","description"}'),
   ('3495', 'bomba-trasvasadora-de-liquidos-pvc-3495', '3495', 'BOMBA TRASVASADORA DE LIQUIDOS PVC', 2500, '$ 2.500,00', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 75, '{"image","stock","description"}'),
@@ -99,7 +147,22 @@ values
   ('3304', 'cinta-metrica-premium-5-mts-x-25-mm-3304', '3304', 'CINTA METRICA PREMIUM 5 MTS X 25 MM', 8000, '$ 8.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 91, '{"image","stock","description"}'),
   ('3305', 'cinta-metrica-premium-7-5-mts-x-25-mm-3305', '3305', 'CINTA METRICA PREMIUM 7,5 MTS X 25 MM', 11338.98, '$ 11.338,98', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 92, '{"image","stock","description"}'),
   ('1478', 'cola-vinilica-x-1-kg-1478', '1478', 'COLA VINILICA X 1 KG', 5000, '$ 5.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 93, '{"image","stock","description"}'),
-  ('3684', 'compresor-100-lts-sin-aceite-3hp-cesa8100-25v-3684', '3684', 'COMPRESOR 100 LTS SIN ACEITE 3HP - CESA8100/25V', 350000.35, '$ 350.000,35', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 94, '{"image","stock","description"}'),
+  ('3684', 'compresor-100-lts-sin-aceite-3hp-cesa8100-25v-3684', '3684', 'COMPRESOR 100 LTS SIN ACEITE 3HP - CESA8100/25V', 350000.35, '$ 350.000,35', 'Compresores y neumática', 'GLADIATOR', '/products/catalog/3684-cesa8100-25v.webp', '{"/products/catalog/3684-cesa8100-25v.webp","/products/catalog/3684-cesa8100-25v-ficha.webp"}', 0, 5, 3, false, false, 'Compresor vertical directo sin aceite GLADIATOR CESA8100/25V.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz
+• Potencia: 3HP / 1100W x 2
+• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min
+• Caudal: 334L/min
+• Capacidad de tanque: 100L
+• Presión: 8bar - 115PSI
+• Cilindro: 57,8mm x 2
+• Estator: 110 x 58 x 140P
+• Nivel de ruido: 73db
+• Aislación: Clase I
+• Peso: 50kg - 110,23lb
+
+Contenido: 1 compresor directo vertical sin aceite.', '{}', 'google-sheet', 94, '{"stock"}'),
   ('3685', 'compresor-160-lts-sin-aceite-8hp-cesa8160-25-3685', '3685', 'COMPRESOR 160 LTS SIN ACEITE 8HP - CESA8160/25', 769998.59, '$ 769.998,59', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 95, '{"image","stock","description"}'),
   ('3480', 'compresor-24-lts-s-aceite-1-5-hp-cesa824-25-3480', '3480', 'COMPRESOR 24 LTS S/ ACEITE 1,5 HP CESA824/25', 149800.34, '$ 149.800,34', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 96, '{"image","stock","description"}'),
   ('3481', 'compresor-40-lts-s-aceite-1-5-hp-cesa840-251-5-3481', '3481', 'COMPRESOR 40 LTS S/ ACEITE 1,5 HP CESA840/251,5', 169799.52, '$ 169.799,52', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 97, '{"image","stock","description"}'),
@@ -126,7 +189,7 @@ values
   ('3385', 'cutter-57-mm-energy-ct5-3385', '3385', 'CUTTER 57 MM ENERGY CT5', 2500, '$ 2.500,00', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 118, '{"image","stock","description"}'),
   ('3387', 'cutter-58-mm-energy-ct7-3387', '3387', 'CUTTER 58 MM ENERGY CT7', 3499.99, '$ 3.499,99', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 119, '{"image","stock","description"}'),
   ('3388', 'cutter-70-mm-energy-ct9-3388', '3388', 'CUTTER 70 MM ENERGY CT9', 9800.02, '$ 9.800,02', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 120, '{"image","stock","description"}'),
-  ('3389', 'cutter-74-mm-energy-ct10-3389', '3389', 'CUTTER 74 MM ENERGY CT10', 14500.04, '$ 14.500,04', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 121, '{"image","stock","description"}'),
+  ('3389', 'cutter-74-mm-energy-ct10-3389', '3389', 'CUTTER 74 MM ENERGY CT10', 14500.04, '$ 14.500,04', 'Herramientas manuales', 'ENERGY', '/products/catalog/3389-ct10-gbs.webp', '{"/products/catalog/3389-ct10-gbs.webp","/products/specs/3389-ct10-gbs-ficha.webp"}', 0, 5, 3, false, false, 'Cúter Energy CT10 con cuerpo de aleación de zinc y hoja de acero al carbón. Utiliza hojas de 60 mm de largo y 19 mm de ancho, e incorpora funciones auto-lock y auto retráctil. Incluye dos hojas de corte adicionales guardadas en un compartimiento. Apto para papel, cartón, poliestireno expandido, plástico fino, vinilos, cintas, goma EVA, telas, alfombras y cueros.', '{}', 'google-sheet', 121, '{"stock"}'),
   ('3502', 'desmalezadora-4-en-1-52cc-energy-bc524-1-3502', '3502', 'DESMALEZADORA 4 EN 1 52CC ENERGY BC524-1', 340000.97, '$ 340.000,97', 'Jardín', 'ENERGY', '/products/DESMALEZADORA.png', '{"/products/DESMALEZADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 122, '{"stock","description"}'),
   ('2484', 'desmalezadora-52-cc-energy-2484', '2484', 'DESMALEZADORA 52 CC ENERGY', 120000.42, '$ 120.000,42', 'Jardín', 'ENERGY', '/products/DESMALEZADORA.png', '{"/products/DESMALEZADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 123, '{"stock","description"}'),
   ('3901', 'desmalezadora-52cc-dg852-1-3901', '3901', 'DESMALEZADORA 52CC - DG852/1', 110000, '$ 110.000,00', 'Jardín', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 124, '{"image","stock","description"}'),
@@ -216,7 +279,21 @@ values
   ('3174', 'hidrolavadora-1200w-90-bar-hl7000-220m-gladiator-3174', '3174', 'HIDROLAVADORA 1200W 90 BAR HL7000/220M GLADIATOR', 90000, '$ 90.000,00', 'Hidrolavado y bombas', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 208, '{"image","stock","description"}'),
   ('3665', 'hidrolavadora-1300w-90-bar-h4090-220-forest-3665', '3665', 'HIDROLAVADORA 1300W 90 BAR - H4090/220 FOREST', 74999.73, '$ 74.999,73', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3665-h4090-220.webp', '{"/products/catalog/3665-h4090-220.webp"}', 0, 5, 3, false, false, 'Hidrolavadora Eléctrica 1300w Forest Garden H4090/220. VOLTAJE - FRECUENCIA: 220V ~ 50-60Hz POTENCIA: 1300W - 1,74HP PRESIóN DE TRABAJO: 55bar - 798PSI PRESIóN NOMINAL: 60bar - 870PSI PRESIóN MáXIMA: 90bar - 1305PSI FLUJO DE TRABAJO: 4,5L/min CAUDAL: 5L/min UNIDADES DE LIMPIEZA: 450UL LARGO DE CABLE: 5 Metros MANGUERA DE ALTA PRESIóN: 3 Metros TIPO DE AISLACIóN: CLASE II CABLE: 5m PESO: 4,2 (9lb). CONTIENE. 1 Hidrolavadora eléctrica. 1 Manguera de alta presión. 1 Lanza. 1 Lanza de Extensión.', '{}', 'google-sheet', 209, '{"stock"}'),
   ('3666', 'hidrolavadora-1400w-110-bar-h4110m-220-forest-3666', '3666', 'HIDROLAVADORA 1400W 110 BAR - H4110M/220 FOREST', 80000.09, '$ 80.000,09', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3666-h4110m-220.webp', '{"/products/catalog/3666-h4110m-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 210, '{"stock","description"}'),
-  ('3670', 'hidrolavadora-1800w-160-bar-h6130m-1-220-forest-3670', '3670', 'HIDROLAVADORA 1800W 160 BAR - H6130M/1/220 FOREST', 84999.82, '$ 84.999,82', 'Hidrolavado y bombas', 'FOREST & GARDEN', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 211, '{"image","stock","description"}'),
+  ('3670', 'hidrolavadora-1800w-160-bar-h6130m-1-220-forest-3670', '3670', 'HIDROLAVADORA 1800W 160 BAR - H6130M/1/220 FOREST', 84999.82, '$ 84.999,82', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3670-h6130m-1-220.webp', '{"/products/catalog/3670-h6130m-1-220.webp","/products/catalog/3670-h6130m-1-220-ficha.webp"}', 0, 5, 3, false, false, 'Hidrolavadora eléctrica FOREST & GARDEN H6130M/1/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1800W - 2,41HP
+• Presión máxima: 160bar - 2321PSI
+• Flujo de trabajo: 4,7 ± 0,2 L/min
+• Caudal: 5L/min
+• Unidades de limpieza: 800UL
+• Manguera: 5 metros
+• Tipo de aislación: Clase II
+• Cable: 5m
+• Peso: 6,4kg - 14,11lb
+
+Contenido: 1 hidrolavadora eléctrica, 1 manguera de 5 m, 1 lanza, 1 conector de manguera, 1 dosificador de detergente.', '{}', 'google-sheet', 211, '{"stock"}'),
   ('3668', 'hidrolavadora-2000w-140-bar-h9140rm-220-forest-3668', '3668', 'HIDROLAVADORA 2000W 140 BAR - H9140RM/220 FOREST', 150000.14, '$ 150.000,14', 'Hidrolavado y bombas', 'FOREST & GARDEN', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 212, '{"stock","description","image"}'),
   ('3667', 'hidrolavadora-2200w-160-bar-h7160rm-220-forest-3667', '3667', 'HIDROLAVADORA 2200W 160 BAR - H7160RM/220 FOREST', 130000.36, '$ 130.000,36', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3667-h7160rm-220.webp', '{"/products/catalog/3667-h7160rm-220.webp"}', 0, 5, 3, false, false, 'Hidrolavadora Eléctrica 2200w Forest Garden H7160RM/220. VOLTAJE-FRECUENCIA: 220V ~ 50-60Hz. POTENCIA: 2200W PRESIóN MáXIMA: 160bar CAUDAL: 5,6L/min FLUJO DE TRABAJO: 5,2 &plusmn; 0,4 L/min UNIDADES DE LIMPIEZA: 896UL LARGO DE CABLE: 5m TIPO DE AISLACIóN: CLASE II PESO: 9,4kg (20,72lb). CONTENIDO. 1 Hidrolavadora eléctrica. 1 Pistola de gatillo. 1 Lanza. 1 Boquilla ajustable. 1 Adaptador de entrada. 1 Manguera de presión. 1 Pin de limpieza. 1 Dosificador de detergente.', '{}', 'google-sheet', 213, '{"stock"}'),
   ('3669', 'hidrolavadora-2500w-170-bar-h10170m-220-forest-3669', '3669', 'HIDROLAVADORA 2500W 170 BAR - H10170M/220 FOREST', 250000.55, '$ 250.000,55', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3669-h10170m-220.webp', '{"/products/catalog/3669-h10170m-220.webp"}', 0, 5, 3, true, false, 'Hidrolavadora Eléctrica 2500w Forest Garden H10170M/220. VOLTAJE-FRECUENCIA: 220V ~ 50-60Hz POTENCIA: 2500W PRESIóN: 110bar PRESIóN MáXIMA: 170bar CAUDAL: 6,7L/min UNIDADES DE LIMPIEZA: 1241 íNDICE DE PROTECCIóN: IPX5 ALIMENTACIóN MíNIMA: 10,95L/min LARGO DE CABLE: 5m TIPO DE AISLACIóN: CLASE I PESO: 17,8kg (39,24lb). CONTENIDO. 1 Hidrolavadora eléctrica. 1 Lanza metálica. 1 Manguera de 5m. 1 Dispenser de Jabón. 1 Conector para manguera. 1 Dosificador de detergente.', '{}', 'google-sheet', 214, '{"stock"}'),
@@ -269,7 +346,7 @@ values
   ('3733', 'llave-de-impacto-20v-420-n-m-neo-li1042-20c1-3733', '3733', 'LLAVE DE IMPACTO 20V 420 N/M NEO - LI1042/20C1', 114999.85, '$ 114.999,85', 'Herramientas manuales', 'NEO', '/products/catalog/3733-li1042-20c1.webp', '{"/products/catalog/3733-li1042-20c1.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 261, '{"stock","description"}'),
   ('3504', 'llave-de-impacto-20v-500n-m-li1050-20c1-3504', '3504', 'LLAVE DE IMPACTO 20V 500N/M LI1050/20C1', 130000.04, '$ 130.000,04', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 262, '{"image","stock","description"}'),
   ('3732', 'llave-de-impacto-20v-650-n-m-neo-li1065-20c1-3732', '3732', 'LLAVE DE IMPACTO 20V 650 N/M NEO -LI1065/20C1', 178000.7, '$ 178.000,70', 'Herramientas manuales', 'NEO', '/products/catalog/3732-li1065-20c1.webp', '{"/products/catalog/3732-li1065-20c1.webp"}', 0, 5, 3, true, false, 'Llave de impacto Neo LI1065/20C1 de 20 V y 650 N·m.', '{}', 'google-sheet', 263, '{"stock"}'),
-  ('3535', 'llave-de-impacto-20v-650n-m-li12650-20k2-4-3535', '3535', 'LLAVE DE IMPACTO 20V 650N/M LI12650/20K2-4', 244999.6, '$ 244.999,60', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 264, '{"image","stock","description"}'),
+  ('3535', 'llave-de-impacto-20v-650n-m-li12650-20k2-4-3535', '3535', 'LLAVE DE IMPACTO 20V 650N/M LI12650/20K2-4', 244999.6, '$ 244.999,60', 'Herramientas manuales', 'NEO NEXT', '/products/catalog/3535-li12650-20k2-4-gbs.webp', '{"/products/catalog/3535-li12650-20k2-4-gbs.webp","/products/specs/3535-li12650-20k2-4-gbs-ficha.webp"}', 0, 5, 3, false, false, 'Llave de impacto recargable NEO Next LI12650/20K2-4 con motor brushless, encastre de 1/2 pulgada y tres niveles de torque: 350, 460 y 650 Nm. Alcanza un torque máximo de ruptura de 950 Nm, con velocidades de hasta 2600 rpm e impactos de hasta 2900 bpm. Tensión nominal de 18 V y máxima de 20 V. El kit incluye dos baterías de 4 Ah, cargador base de 4 A y maletín plástico.', '{}', 'google-sheet', 264, '{"stock"}'),
   ('3616', 'llave-de-impacto-20v-650nm-li12650-20c1-4-3616', '3616', 'LLAVE DE IMPACTO 20V 650NM LI12650/20C1-4', 186000.29, '$ 186.000,29', 'Herramientas manuales', 'NEO', '/products/catalog/3616-li12650-20c1-4.webp', '{"/products/catalog/3616-li12650-20c1-4.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 265, '{"stock","description"}'),
   ('3539', 'llave-de-impacto-800w-gladiator-li1012-220-3539', '3539', 'LLAVE DE IMPACTO 800W GLADIATOR - LI1012/220', 94999.96, '$ 94.999,96', 'Herramientas manuales', 'GLADIATOR', '/products/catalog/3539-li1012-220.webp', '{"/products/catalog/3539-li1012-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 266, '{"stock","description"}'),
   ('2279', 'llave-torx-x-9-piezas-mediana-2279', '2279', 'LLAVE TORX X 9 PIEZAS MEDIANA', 7999.99, '$ 7.999,99', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 267, '{"image","stock","description"}'),
@@ -331,7 +408,7 @@ values
   ('3538', 'mezclador-de-pintura-1500w-gladiator-mx900-220-3538', '3538', 'MEZCLADOR DE PINTURA 1500W GLADIATOR MX900/220', 137999.5, '$ 137.999,50', 'Construcción', 'GLADIATOR', '/products/catalog/3538-mx900-220.webp', '{"/products/catalog/3538-mx900-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 323, '{"stock","description"}'),
   ('3890', 'mezclador-de-pintura-18v-2-vel-mx818-18c1-3890', '3890', 'MEZCLADOR DE PINTURA 18V 2 VEL - MX818/18C1', 139799.79, '$ 139.799,79', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 324, '{"image","stock","description"}'),
   ('3246', 'mini-motosierra-electrosierra-inalambrica-garden-3246', '3246', 'MINI MOTOSIERRA - ELECTROSIERRA INALAMBRICA GARDEN', 64999.76, '$ 64.999,76', 'Jardín', 'Sin marca informada', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, true, false, 'Mini motosierra inalámbrica Garden para tareas de corte y mantenimiento exterior.', '{}', 'google-sheet', 325, '{"stock"}'),
-  ('3384', 'motobomba-a-gasolina-6-5hp-energy-gwp2-1-3384', '3384', 'MOTOBOMBA A GASOLINA 6,5HP ENERGY GWP2/1', 179800.07, '$ 179.800,07', 'Hidrolavado y bombas', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 326, '{"image","stock","description"}'),
+  ('3384', 'motobomba-a-gasolina-6-5hp-energy-gwp2-1-3384', '3384', 'MOTOBOMBA A GASOLINA 6,5HP ENERGY GWP2/1', 179800.07, '$ 179.800,07', 'Hidrolavado y bombas', 'ENERGY', '/products/catalog/3384-gwp2-1-gbs.webp', '{"/products/catalog/3384-gwp2-1-gbs.webp","/products/specs/3384-gwp2-1-gbs-ficha.webp"}', 0, 5, 3, false, false, 'Motobomba a gasolina Energy GWP2/1 con motor de 196 cc y potencia máxima de 6,5 HP. Posee entrada y salida de 2 pulgadas (50 mm), caudal de hasta 40 m³/h, altura máxima de 30 m y succión máxima de 7 m. Cuenta con arranque por retroceso, tanque de 3,6 L y un peso de 23 kg.', '{}', 'google-sheet', 326, '{"stock"}'),
   ('3383', 'motobomba-a-gasolina-7hp-energy-gwp3-3383', '3383', 'MOTOBOMBA A GASOLINA 7HP ENERGY GWP3', 185000.54, '$ 185.000,54', 'Hidrolavado y bombas', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 327, '{"image","stock","description"}'),
   ('3758', 'motosierra-25cc-espada-8-forest-mo925-8-3758', '3758', 'MOTOSIERRA 25CC ESPADA 8" FOREST - MO925/8', 145000.31, '$ 145.000,31', 'Jardín', 'FOREST & GARDEN', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 328, '{"stock","description"}'),
   ('3506', 'motosierra-460-mm-45-cc-knock-out-kom345-3506', '3506', 'MOTOSIERRA 460 MM 45 CC KNOCK OUT KOM345', 69999.8, '$ 69.999,80', 'Jardín', 'KNOCK OUT', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, true, false, 'Motosierra Knock Out KOM345 de 45 cc y corte de 460 mm.', '{}', 'google-sheet', 329, '{"stock"}'),
@@ -340,7 +417,20 @@ values
   ('3763', 'mototool-135w-c-accesorios-gladiator-mt600-220k-3763', '3763', 'MOTOTOOL 135W C ACCESORIOS GLADIATOR - MT600/220K', 60000, '$ 60.000,00', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 332, '{"image","stock","description"}'),
   ('1875', 'nivel-de-mano-aluminio-20-50-cm-1875', '1875', 'NIVEL DE MANO ALUMINIO 20" 50 CM', 8500, '$ 8.500,00', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 333, '{"image","stock","description"}'),
   ('3708', 'nivel-laser-autonivelante-30-mt-nlp830-3708', '3708', 'NIVEL LASER AUTONIVELANTE 30 MT - NLP830', 75900.22, '$ 75.900,22', 'Construcción', 'GLADIATOR', '/products/catalog/3708-nlp830.webp', '{"/products/catalog/3708-nlp830.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 334, '{"stock","description"}'),
-  ('3714', 'nivel-laser-autonivelante-45-mt-nl1045-3-3714', '3714', 'NIVEL LASER AUTONIVELANTE 45 MT - NL1045/3', 114999.56, '$ 114.999,56', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 335, '{"image","stock","description"}'),
+  ('3714', 'nivel-laser-autonivelante-45-mt-nl1045-3-3714', '3714', 'NIVEL LASER AUTONIVELANTE 45 MT - NL1045/3', 114999.56, '$ 114.999,56', 'Construcción', 'GLADIATOR', '/products/catalog/3714-nl1045-3.webp', '{"/products/catalog/3714-nl1045-3.webp","/products/catalog/3714-nl1045-3-ficha.webp"}', 0, 5, 3, false, false, 'Nivel láser autonivelante GLADIATOR NL1045/3.
+
+Datos técnicos:
+• Distancia de trabajo: 45m
+• Voltaje: 3,7V
+• Longitud de onda: 520nm
+• Precisión del haz: ±3mm - 10m
+• Ángulo: Horizontal y vertical 360°
+• Protección: IP54
+• Batería: 4000mAh
+• Clase de láser: Clase 2
+• Peso: 445g - 0,98lb
+
+Contenido: 1 nivel láser autonivelante, 1 estuche, 1 soporte magnético PV9, 1 placa de destino, 1 cable USB tipo C.', '{}', 'google-sheet', 335, '{"stock"}'),
   ('3314', 'pala-ancha-madera-obra-pac300-3314', '3314', 'PALA ANCHA MADERA OBRA PAC300', 14499.95, '$ 14.499,95', 'Otros', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 336, '{"image","stock","description"}'),
   ('3316', 'pala-ancha-metalica-obra-pac800-3316', '3316', 'PALA ANCHA METALICA OBRA PAC800', 21999.92, '$ 21.999,92', 'Otros', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 337, '{"image","stock","description"}'),
   ('3313', 'pala-punta-madera-obra-ppc300-3313', '3313', 'PALA PUNTA MADERA OBRA PPC300', 14499.95, '$ 14.499,95', 'Accesorios y consumibles', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 338, '{"image","stock","description"}'),
@@ -409,7 +499,22 @@ values
   ('3189', 'punta-phillips-en-set-con-mosqueton-x-10-u-50-mm-3189', '3189', 'PUNTA PHILLIPS EN SET CON MOSQUETON X 10 U 50 MM', 11999.99, '$ 11.999,99', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 401, '{"image","stock","description"}'),
   ('3296', 'reflector-led-cob10w-portatil-usb-lle1090-3296', '3296', 'REFLECTOR LED COB10W PORTATIL USB- LLE1090', 33000.03, '$ 33.000,03', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 402, '{"image","stock","description"}'),
   ('1765', 'remachadora-9-5-lord-1765', '1765', 'REMACHADORA 9,5 LORD', 11999.98, '$ 11.999,98', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 403, '{"image","stock","description"}'),
-  ('3892', 'rotomartillo-26-mm-1100w-energy-rh26-5-220k-3892', '3892', 'ROTOMARTILLO 26 MM 1100W ENERGY - RH26/5/220K', 78000, '$ 78.000,00', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 404, '{"image","stock","description"}'),
+  ('3892', 'rotomartillo-26-mm-1100w-energy-rh26-5-220k-3892', '3892', 'ROTOMARTILLO 26 MM 1100W ENERGY - RH26/5/220K', 78000, '$ 78.000,00', 'Herramientas manuales', 'ENERGY', '/products/catalog/3892-rh26-5-220k.webp', '{"/products/catalog/3892-rh26-5-220k.webp","/products/catalog/3892-rh26-5-220k-ficha.webp"}', 0, 5, 3, false, false, 'Rotomartillo ENERGY RH26/5/220K.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1100W - 1,5HP
+• Energía de impacto: 3 joules
+• Impactos por minuto: 0-5200bpm
+• Velocidad en vacío: 0-1050/min
+• Perforación en concreto: 26mm - 1 3/16"
+• Perforación en madera: 30mm - 1 37/64"
+• Perforación en acero: 13mm - 1/2"
+• Encastre: SDS Plus
+• Tipo de aislación: Clase II
+• Peso: 3,2kg (7lb)
+
+Contenido: 1 rotomartillo, 1 mango auxiliar, 1 cincel de punta, 1 cincel plano, 3 brocas (8/10/12mm), 1 juego de carbones, 1 atrapa polvo, 1 pomo de grasa, 1 llave de ajuste, maletín.', '{}', 'google-sheet', 404, '{"stock"}'),
   ('3764', 'rotomartillo-26mm-1050w-2-8j-gladia-rm826-1-220k-3764', '3764', 'ROTOMARTILLO 26MM 1050W 2,8J GLADIA - RM826/1/220K', 134999.59, '$ 134.999,59', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 405, '{"image","stock","description"}'),
   ('3501', 'rotomartillo-26mm-900w-energy-rh26-3-220-3501', '3501', 'ROTOMARTILLO 26MM 900W ENERGY - RH26/3/220', 69500.15, '$ 69.500,15', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 406, '{"image","stock","description"}'),
   ('3765', 'rotomartillo-32mm-1300w-6j-gladiator-rm1032-220k-3765', '3765', 'ROTOMARTILLO 32MM 1300W 6J GLADIATOR - RM1032/220K', 175000.18, '$ 175.000,18', 'Herramientas manuales', 'GLADIATOR', '/products/catalog/3765-rm1032-220k.webp', '{"/products/catalog/3765-rm1032-220k.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 407, '{"stock","description"}'),
@@ -425,10 +530,21 @@ values
   ('3850', 'set-de-llaves-combinadas-6-piezas-02986-3850', '3850', 'SET DE LLAVES COMBINADAS 6 PIEZAS - 02986', 15999.98, '$ 15.999,98', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 417, '{"image","stock","description"}'),
   ('3774', 'set-de-puntas-10-piezas-spp1010-3774', '3774', 'SET DE PUNTAS 10 PIEZAS - SPP1010', 8000.01, '$ 8.000,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 418, '{"image","stock","description"}'),
   ('3773', 'set-de-puntas-19-piezas-spp1019-3773', '3773', 'SET DE PUNTAS 19 PIEZAS - SPP1019', 19500.06, '$ 19.500,06', 'Accesorios y consumibles', 'NEO', '/products/catalog/3773-spp1019.webp', '{"/products/catalog/3773-spp1019.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 419, '{"stock","description"}'),
-  ('3770', 'set-de-puntas-25-piezas-sp25-3770', '3770', 'SET DE PUNTAS 25 PIEZAS - SP25', 14000.02, '$ 14.000,02', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 420, '{"image","stock","description"}'),
+  ('3770', 'set-de-puntas-25-piezas-sp25-3770', '3770', 'SET DE PUNTAS 25 PIEZAS - SP25', 14000.02, '$ 14.000,02', 'Accesorios y consumibles', 'ENERGY', '/products/catalog/3770-sp25.webp', '{"/products/catalog/3770-sp25.webp","/products/catalog/3770-sp25-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 25 piezas ENERGY SP25.
+
+Datos técnicos:
+• Material: Acero S2
+• Phillips (PH): x6
+• Pozidriv (PZ): x3
+• Recto (SL): x5
+• Hexagonal (H): x3
+• Torx (T): x7
+• Soporte universal magnético: x1
+
+Contenido: Set de 25 piezas material S2, maletín plástico.', '{}', 'google-sheet', 420, '{"stock"}'),
   ('3775', 'set-de-puntas-25-piezas-spp1025-3775', '3775', 'SET DE PUNTAS 25 PIEZAS - SPP1025', 14800.03, '$ 14.800,03', 'Accesorios y consumibles', 'NEO', '/products/catalog/3775-spp1025.webp', '{"/products/catalog/3775-spp1025.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 421, '{"stock","description"}'),
   ('3569', 'set-de-puntas-25-puntas-spp825-3569', '3569', 'SET DE PUNTAS 25 PUNTAS - SPP825', 14800.02, '$ 14.800,02', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3569-spp825.webp', '{"/products/catalog/3569-spp825.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 422, '{"stock","description"}'),
-  ('3771', 'set-de-puntas-32-piezas-sp32-3771', '3771', 'SET DE PUNTAS 32 PIEZAS - SP32', 15000.02, '$ 15.000,02', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 423, '{"image","stock","description"}'),
+  ('3771', 'set-de-puntas-32-piezas-sp32-3771', '3771', 'SET DE PUNTAS 32 PIEZAS - SP32', 15000.02, '$ 15.000,02', 'Accesorios y consumibles', 'ENERGY', '/products/catalog/3771-sp32-gbs.webp', '{"/products/catalog/3771-sp32-gbs.webp","/products/specs/3771-sp32-gbs-ficha.webp"}', 0, 5, 3, false, false, 'Set Energy SP32 de 32 puntas profesionales de acero S2 con maletín plástico. Incluye 4 puntas Phillips, 4 Pozidriv, 4 planas, 4 hexagonales, 7 Torx, 7 Torx resistentes, un adaptador y un portapuntas quick release.', '{}', 'google-sheet', 423, '{"stock"}'),
   ('3570', 'set-de-puntas-32-puntas-spp832-3570', '3570', 'SET DE PUNTAS 32 PUNTAS - SPP832', 17999.96, '$ 17.999,96', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 424, '{"image","stock","description"}'),
   ('3573', 'set-de-puntas-alto-impacto-10p-de-50-mm-spp810-3573', '3573', 'SET DE PUNTAS ALTO IMPACTO 10P DE 50 MM - SPP810', 7000.02, '$ 7.000,02', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 425, '{"image","stock","description"}'),
   ('3772', 'set-de-puntas-dobles-prof-spd1010-3772', '3772', 'SET DE PUNTAS DOBLES PROF - SPD1010', 7000.01, '$ 7.000,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 426, '{"image","stock","description"}'),
@@ -454,7 +570,21 @@ values
   ('497', 'sierra-copa-bimetal-chica-sin-par-497', '497', 'SIERRA COPA BIMETAL CHICA SIN PAR', 6000, '$ 6.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 446, '{"image","stock","description"}'),
   ('1844', 'sierra-copa-x-6-piezas-1844', '1844', 'SIERRA COPA X 6 PIEZAS', 6500.01, '$ 6.500,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 447, '{"image","stock","description"}'),
   ('3461', 'sierra-de-mesa-250mm-2000w-gladiator-sm710-5-220-3461', '3461', 'SIERRA DE MESA 250MM 2000W GLADIATOR SM710/5/220', 349999.46, '$ 349.999,46', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 448, '{"image","stock","description"}'),
-  ('3728', 'sierra-ingletadora-2200w-10-neo-sid1010-3-220-3728', '3728', 'SIERRA INGLETADORA 2200W 10" NEO - SID1010/3/220', 264999.25, '$ 264.999,25', 'Otros', 'NEO', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 449, '{"image","stock","description"}'),
+  ('3728', 'sierra-ingletadora-2200w-10-neo-sid1010-3-220-3728', '3728', 'SIERRA INGLETADORA 2200W 10" NEO - SID1010/3/220', 264999.25, '$ 264.999,25', 'Otros', 'NEO', '/products/catalog/3728-sid1010-3-220.webp', '{"/products/catalog/3728-sid1010-3-220.webp","/products/catalog/3728-sid1010-3-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra ingletadora NEO SID1010/3/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 2200W
+• Velocidad en vacío: 5300rpm
+• Diámetro de hoja: 255mm - 10"
+• Tamaño de base: 48 x 33 cm
+• Capacidad de corte 0° x 90°: 70 x 305mm
+• Capacidad de corte 0° x 45°: 70 x 200mm
+• Capacidad de corte 45° x 90°: 43 x 305mm
+• Capacidad de corte 45° x 45°: 43 x 200mm
+• Aislación: Clase II
+
+Contenido: 1 sierra ingletadora, 1 llave allen, 1 bolsa para polvo, 1 abrazadera de trabajo, 1 par de escobillas de carbón.', '{}', 'google-sheet', 449, '{"stock"}'),
   ('3729', 'sierra-ingletadora-2200w-12-neo-sid1012-2-220-3729', '3729', 'SIERRA INGLETADORA 2200W 12" NEO - SID1012/2/220', 349999.66, '$ 349.999,66', 'Otros', 'NEO', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 450, '{"image","stock","description"}'),
   ('3537', 'sierra-ingletadora-1800w-10-glad-si710-3-220-3537', '3537', 'SIERRA INGLETADORA 1800W 10" GLAD. SI710/3/220', 164999.48, '$ 164.999,48', 'Otros', 'GLADIATOR', '/products/catalog/3537-si710-3-220.webp', '{"/products/catalog/3537-si710-3-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 451, '{"stock","description"}'),
   ('3492', 'sierra-sable-18v-100-mm-ss810-18c1-3492', '3492', 'SIERRA SABLE 18V 100 MM SS810/18C1', 134999.6, '$ 134.999,60', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 452, '{"image","stock","description"}'),
