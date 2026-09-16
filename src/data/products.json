@@ -1061,20 +1061,21 @@
     "rawPrice": "$ 90.000,08",
     "category": "Otros",
     "brand": "GLADIATOR",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3238-a830-1-220.webp",
+    "images": [
+      "/products/catalog/3238-a830-1-220.webp",
+      "/products/catalog/3238-a830-1-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Aspiradora seco-húmedo y soplador GLADIATOR A830/1/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 1200W\n• Potencia de succión: ≥ 150W\n• Capacidad: 30L\n• Caudal de aire: ≥ 1,6 ± 0,15 m³/min\n• Caudal de aire soplado: ≥ 1,5m³/min\n• Presión de trabajo: 17 ± 2kPa\n• Nivel de ruido: 96dB\n• Índice de protección: IPX4\n• Tipo de aislación: Clase II\n• Peso: 5,85kg - 12,9lb\n\nContenido: 1 aspiradora seco-húmedo, 1 manguera, 2 tubos plásticos, 1 filtro de bolsa de esponja y tela, 1 cepillo seco-húmedo, 1 boquilla 2 en 1 y 1 esponja.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 42,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -1978,21 +1979,22 @@
     "price": 85000.03,
     "rawPrice": "$ 85.000,03",
     "category": "Jardín",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "FOREST & GARDEN",
+    "image": "/products/catalog/3519-be612-220.webp",
+    "images": [
+      "/products/catalog/3519-be612-220.webp",
+      "/products/catalog/3519-be612-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Bordeadora eléctrica FOREST & GARDEN BE612/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 550W\n• Velocidad en vacío: 9600rpm\n• Diámetro de nylon: 1,4mm\n• Capacidad de nylon: 300mm\n• Tipo de aislación: Clase II\n• Peso: 2,72kg\n\nContenido: 1 bordeadora eléctrica.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 77,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -4230,21 +4232,22 @@
     "price": 19799.98,
     "rawPrice": "$ 19.799,98",
     "category": "Accesorios y consumibles",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "GLADIATOR",
+    "image": "/products/catalog/3567-dm8180.webp",
+    "images": [
+      "/products/catalog/3567-dm8180.webp",
+      "/products/catalog/3567-dm8180-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Disco premium diamantado multipropósito para madera GLADIATOR DM8180.\n\nDatos técnicos:\n• Medida: 180 x 1,8 x 22,2mm\n• Medida en pulgadas: 7\" x 5/64\" x 7/8\"\n• Velocidad máxima: 8500 RPM\n• Grano: #50\n• Velocidad: 80m/s\n• Materiales: Contrachapado, laminado, aglomerado y plástico\n• Uso: Amoladoras angulares, corte recto\n• Empaque: Blister (1 unidad)\n\nContenido: 1 disco diamantado para madera.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 163,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -6165,20 +6168,20 @@
     "rawPrice": "$ 39.799,90",
     "category": "Otros",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3382-bgp4.webp",
+    "images": [
+      "/products/catalog/3382-bgp4.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Lápiz adhesivo recargable ENERGY BGP4.\n\nDatos técnicos:\n• Voltaje: 4V\n• Tipo: Recargable",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 237,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -10267,21 +10270,21 @@
     "price": 45080.12,
     "rawPrice": "$ 45.080,12",
     "category": "Otros",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "FOREST & GARDEN",
+    "image": "/products/catalog/3312-pm618.webp",
+    "images": [
+      "/products/catalog/3312-pm618.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Pulverizador manual FOREST & GARDEN PM618.\n\nDatos técnicos:\n• Capacidad: 18L\n• Tipo: Manual, de mochila",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 394,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11378,21 +11381,21 @@
     "price": 75000,
     "rawPrice": "$ 75.000,00",
     "category": "Otros",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "GLADIATOR",
+    "image": "/products/catalog/3888-sk8080-18c1.webp",
+    "images": [
+      "/products/catalog/3888-sk8080-18c1.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Sierra caladora recargable GLADIATOR SK8080/18C1.\n\nDatos técnicos:\n• Voltaje: 18V\n• Tipo: Recargable a batería",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 436,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11431,20 +11434,21 @@
     "rawPrice": "$ 44.999,98",
     "category": "Otros",
     "brand": "GLADIATOR",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3216-sk455-1.webp",
+    "images": [
+      "/products/catalog/3216-sk455-1.webp",
+      "/products/catalog/3216-sk455-1-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Sierra caladora GLADIATOR SK455/1.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz\n• Potencia: 400W\n• Capacidad de corte en acero: 6mm\n• Capacidad de corte en madera: 55mm\n• Velocidad en vacío: 500 - 3000/min\n• Aislación: Clase II\n• Peso: 1,9kg\n\nContenido: 1 sierra caladora, 1 hoja de sierra para madera, 1 llave hexagonal y 1 adaptador para extracción de polvo.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 438,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11590,20 +11594,20 @@
     "rawPrice": "$ 85.000,28",
     "category": "Otros",
     "brand": "GLADIATOR",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3326-sc507-220.webp",
+    "images": [
+      "/products/catalog/3326-sc507-220.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Sierra circular GLADIATOR SC507/220.\n\nDatos técnicos:\n• Diámetro de hoja: 185mm\n• Potencia: 1400W",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 444,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11695,20 +11699,21 @@
     "rawPrice": "$ 349.999,46",
     "category": "Otros",
     "brand": "GLADIATOR",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3461-sm710-5-220.webp",
+    "images": [
+      "/products/catalog/3461-sm710-5-220.webp",
+      "/products/catalog/3461-sm710-5-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Sierra de mesa GLADIATOR SM710/5/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 2000W\n• Altura máxima de corte: 0°: 85mm - 3\" · 45°: 65mm - 2,5\"\n• Velocidad en vacío: 5000/min\n• Hoja de corte: 255mm x 16mm x 2,8mm - 10\" (24 dientes)\n• Rango de corte: 0° - 45°\n• Acople de manguera de polvo: 35,5mm - 1,39\"\n• Altura: 829mm - 32,59\"\n• Tamaño de mesa: 563mm x 583mm x 28mm\n• Tamaño de extensión de mesa: 583mm x 165mm (2 unidades)\n• Capacidad máxima de corte: 497mm izquierda - 396mm derecha\n• Tipo de aislación: Clase II\n• Peso: 22,3kg - 49,16lb\n\nContenido: 1 sierra de mesa, 1 hoja de carburo, 1 varilla de empuje, 1 protector de hoja, 1 guía de corte al hilo, 1 cuchillo divisor, 2 llaves de hoja, 1 calibre de inglete, 1 soporte y 2 mesas de extensión.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 448,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11905,21 +11910,22 @@
     "price": 59999.96,
     "rawPrice": "$ 59.999,96",
     "category": "Otros",
-    "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "brand": "ENERGY",
+    "image": "/products/catalog/3478-i100-220.webp",
+    "images": [
+      "/products/catalog/3478-i100-220.webp",
+      "/products/catalog/3478-i100-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter de electrodo ENERGY I100/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 5,1kVA\n• Capacidad de electrodo: 1,5 - 2,5mm\n• Rango de amperaje: 20 - 100A\n• Voltaje en vacío: 56V\n• Aislación: Clase I\n• Peso: 2,5kg - 5,5lb\n\nContenido: 1 soldadora inverter de electrodo, 1 pinza porta electrodo y 1 pinza de masa.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 456,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11932,20 +11938,21 @@
     "rawPrice": "$ 54.999,79",
     "category": "Otros",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3641-i140-5-220.webp",
+    "images": [
+      "/products/catalog/3641-i140-5-220.webp",
+      "/products/catalog/3641-i140-5-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter de electrodo ENERGY I140/5/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 5,1kVA\n• Rango de amperaje: 20 - 140A\n• Voltaje en vacío: 56V\n• Capacidad de electrodo: 2,5 - 3,2mm\n• Aislación: Clase I\n• Peso: 3,5kg - 7,7lb\n\nContenido: 1 soldadora inverter de electrodo, 1 pinza porta electrodo y 1 pinza de masa.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 457,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -13497,20 +13504,21 @@
     "rawPrice": "$ 58.000,00",
     "category": "Otros",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3237-vc18-1-220.webp",
+    "images": [
+      "/products/catalog/3237-vc18-1-220.webp",
+      "/products/catalog/3237-vc18-1-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Aspiradora seco-húmedo y soplador ENERGY VC18/1/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 950W\n• Presión de trabajo: ≥ 17 ± 2kPa\n• Máximo caudal de aire: 1,6 ± 0,15 CBM/min\n• Caudal de salida: ≥ 1,5m³/min\n• Nivel de ruido: ≥ 96dB\n• Capacidad de tanque: 18L\n• Índice de protección: IPX4\n• Aislación: Clase II\n• Peso: 4,57kg - 10,07lb\n\nContenido: 1 aspiradora seco-húmedo y soplador, 1 cepillo, 1 boquilla amplia, 1 esponja, 1 bolsa de tela, 2 tubos plásticos y 1 manguera flexible.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 38,
     "incomplete": [
-      "image",
       "stock",
-      "description",
       "sheet-absent"
     ],
     "purchaseLimit": 3
