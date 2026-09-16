@@ -465,13 +465,52 @@ Datos técnicos:
 • Empaque: Blister (1 unidad)
 
 Contenido: 1 disco diamantado continuo.', '{}', 'google-sheet', 165, '{"stock"}'),
-  ('3664', 'electrodo-2-mm-x-1-kg-energy-er200-4-1b-3664', '3664', 'ELECTRODO 2 MM X 1 KG ENERGY - ER200/4-1B', 4999.99, '$ 4.999,99', 'Soldadura', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 166, '{"image","stock","description"}'),
-  ('3109', 'electrodo-2-mm-x-5-kg-energy-3109', '3109', 'ELECTRODO 2 MM X 5 KG ENERGY', 19999.96, '$ 19.999,96', 'Soldadura', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 167, '{"image","stock","description"}'),
+  ('3664', 'electrodo-2-mm-x-1-kg-energy-er200-4-1b-3664', '3664', 'ELECTRODO 2 MM X 1 KG ENERGY - ER200/4-1B', 4999.99, '$ 4.999,99', 'Soldadura', 'ENERGY', '/products/catalog/3664-er200-4-1b.webp', '{"/products/catalog/3664-er200-4-1b.webp","/products/catalog/3664-er200-4-1b-ficha.webp"}', 0, 5, 3, false, false, 'Electrodos revestidos E6013 ENERGY ER200/4-1B.
+
+Datos técnicos:
+• Tipo: E 6013 revestido
+• Medida: 2,0mm x 300mm
+• Medida en pulgadas: 5/64" x 11,8"
+• Presentación: Caja de 5kg fraccionada en bolsas de 1kg
+• Uso: Máquinas de soldar - posiciones plano, horizontal, vertical y sobrecabeza
+
+Contenido: Electrodos revestidos E6013 de 2,0mm.', '{}', 'google-sheet', 166, '{"stock"}'),
+  ('3109', 'electrodo-2-mm-x-5-kg-energy-3109', '3109', 'ELECTRODO 2 MM X 5 KG ENERGY', 19999.96, '$ 19.999,96', 'Soldadura', 'ENERGY', '/products/catalog/3109-er200-3.webp', '{"/products/catalog/3109-er200-3.webp","/products/catalog/3109-er200-3-ficha.webp"}', 0, 5, 3, false, false, 'Electrodos revestidos E6013 ENERGY ER200/3.
+
+Datos técnicos:
+• Tipo: E 6013 revestido
+• Medida: 2,0mm x 300mm
+• Medida en pulgadas: 5/64" x 11,8"
+• Presentación: Caja de 5kg
+• Uso: Máquinas de soldar - posiciones plano, horizontal, vertical y sobrecabeza
+
+Contenido: Electrodos revestidos E6013 de 2,0mm, caja de 5kg.', '{}', 'google-sheet', 167, '{"stock"}'),
   ('3686', 'electrodo-2-5-mm-x-1-kg-3686', '3686', 'ELECTRODO 2,5 MM X 1 KG', 6000.01, '$ 6.000,01', 'Soldadura', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 168, '{"image","stock","description"}'),
   ('3598', 'electrodo-2-5mm-x-5-kg-neo-er10250-4-3598', '3598', 'ELECTRODO 2,5MM X 5 KG NEO - ER10250/4', 25000.02, '$ 25.000,02', 'Soldadura', 'NEO', '/products/catalog/3598-er10250-4.webp', '{"/products/catalog/3598-er10250-4.webp"}', 0, 5, 3, true, false, '5Kg de Electrodo Revestido E 6013 NEO 2,5mm ER10250/4. Calidad Industrial. De ser afectado por la humedad, secar a 150&deg; durante 1 hora. 2,5mm x 350mm - 3/32" x 14". Caja de 5kg.', '{}', 'google-sheet', 169, '{"stock"}'),
-  ('1739', 'electrodo-3-25-mm-x-5-kg-energy-1739', '1739', 'ELECTRODO 3,25 MM X 5 KG ENERGY', 20999.94, '$ 20.999,94', 'Soldadura', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 170, '{"image","stock","description"}'),
+  ('1739', 'electrodo-3-25-mm-x-5-kg-energy-1739', '1739', 'ELECTRODO 3,25 MM X 5 KG ENERGY', 20999.94, '$ 20.999,94', 'Soldadura', 'ENERGY', '/products/catalog/1739-er320-3.webp', '{"/products/catalog/1739-er320-3.webp","/products/catalog/1739-er320-3-ficha.webp"}', 0, 5, 3, false, false, 'Electrodos revestidos E6013 ENERGY ER320/3.
+
+Datos técnicos:
+• Tipo: E 6013 revestido
+• Medida: 3,2mm x 350mm
+• Medida en pulgadas: 1 17/64" x 14"
+• Presentación: Caja de 5kg
+• Uso: Máquinas de soldar - posiciones plano, horizontal, vertical y sobrecabeza
+
+Contenido: Electrodos revestidos E6013 de 3,2mm, caja de 5kg.', '{}', 'google-sheet', 170, '{"stock"}'),
   ('2734', 'electrodo-esab-ok-2-mm-x-kg-2734', '2734', 'ELECTRODO ESAB OK 2 MM X KG', 5000.01, '$ 5.000,01', 'Soldadura', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 171, '{"image","stock","description"}'),
-  ('3767', 'electrosierra-16-1850w-forest-el-616-4-220f-3767', '3767', 'ELECTROSIERRA 16" 1850W FOREST - EL/616/4/220F', 115000.14, '$ 115.000,14', 'Otros', 'FOREST & GARDEN', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 172, '{"image","stock","description"}'),
+  ('3767', 'electrosierra-16-1850w-forest-el-616-4-220f-3767', '3767', 'ELECTROSIERRA 16" 1850W FOREST - EL/616/4/220F', 115000.14, '$ 115.000,14', 'Otros', 'FOREST & GARDEN', '/products/catalog/3767-el-616-4-220f.webp', '{"/products/catalog/3767-el-616-4-220f.webp","/products/catalog/3767-el-616-4-220f-ficha.webp"}', 0, 5, 3, false, false, 'Electrosierra FOREST & GARDEN EL/616/4/220F.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1850W
+• Largo de barra: 406mm - 16"
+• Capacidad máxima de corte: 395mm - 15 9/16"
+• Velocidad de cadena: 15m/s
+• Extras: Auto lubricación, tensor de cadena sin herramientas y freno doble de seguridad
+• Aislación: Clase II
+• Peso: 11kg - 24,2lb
+
+Contenido: 1 electrosierra.', '{}', 'google-sheet', 172, '{"stock"}'),
   ('3757', 'electrosierra-20v-forest-12-espada-e912-20c1-3757', '3757', 'ELECTROSIERRA 20V FOREST 12" ESPADA - E912/20C1', 174999.88, '$ 174.999,88', 'Otros', 'FOREST & GARDEN', '/promos/electrosierra-forest-20v.jpg', '{"/promos/electrosierra-forest-20v.jpg"}', 0, 5, 3, true, false, 'Electrosierra Forest & Garden E912/20C1 de 20 V con espada de 12 pulgadas.', '{}', 'google-sheet', 173, '{"stock"}'),
   ('3876', 'engrampadora-manual-14-mm-tmk19478-3876', '3876', 'ENGRAMPADORA MANUAL 14 MM - TMK19478', 13800.02, '$ 13.800,02', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 174, '{"image","stock","description"}'),
   ('3307', 'escalera-aluminio-3-niveles-3307', '3307', 'ESCALERA ALUMINIO 3 NIVELES', 115000.44, '$ 115.000,44', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 175, '{"image","stock","description"}'),
@@ -554,7 +593,17 @@ Datos técnicos:
 • Otros: 1 junta universal, 1 mango giratorio de 150mm, 1 adaptador hexagonal de 30mm, 4 llaves hexagonales 1.27/1.5/2/2.5mm
 
 Contenido: 46 piezas, 1 maletín plástico.', '{}', 'google-sheet', 228, '{"stock"}'),
-  ('3336', 'juego-de-tubos-3-8-x-12-jt1012-3-8-3336', '3336', 'JUEGO DE TUBOS 3/8" X 12 - JT1012 3/8', 35000.11, '$ 35.000,11', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 229, '{"stock","image","description"}'),
+  ('3336', 'juego-de-tubos-3-8-x-12-jt1012-3-8-3336', '3336', 'JUEGO DE TUBOS 3/8" X 12 - JT1012 3/8', 35000.11, '$ 35.000,11', 'Otros', 'GLADIATOR', '/products/catalog/3336-jt1012-3-8.webp', '{"/products/catalog/3336-jt1012-3-8.webp","/products/catalog/3336-jt1012-3-8-ficha.webp"}', 0, 5, 3, false, false, 'Juego de tubos de 12 piezas de 3/8" GLADIATOR JT1012 3/8.
+
+Datos técnicos:
+• Cantidad de piezas: 12
+• Material: CRV - Cromo vanadio
+• Encastre: 3/8"
+• Tubos: 10 tubos: 10/11/12/13/14/15/17/19/22/24mm
+• Trinquete: 72 dientes
+• Barra de extensión: 100mm
+
+Contenido: 10 tubos, 1 barra de extensión de 100mm, 1 trinquete de 72 dientes.', '{}', 'google-sheet', 229, '{"stock"}'),
   ('3855', 'kit-compresor-gardex-3-piezas-34650-3855', '3855', 'KIT COMPRESOR GARDEX 3 PIEZAS - 34650', 32500.01, '$ 32.500,01', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 230, '{"image","stock","description"}'),
   ('3854', 'kit-compresor-gardex-5-piezas-34651-3854', '3854', 'KIT COMPRESOR GARDEX 5 PIEZAS - 34651', 58500.16, '$ 58.500,16', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 231, '{"image","stock","description"}'),
   ('3589', 'kit-recargable-12v-neo-tp1210ai1014-12-3589', '3589', 'KIT RECARGABLE 12V NEO - TP1210AI1014/12', 120000, '$ 120.000,00', 'Otros', 'NEO', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 232, '{"image","stock","description"}'),
@@ -748,7 +797,22 @@ Datos técnicos:
 • Peso: 23kg - 50,70lb
 
 Contenido: 1 motobomba a gasolina.', '{}', 'google-sheet', 326, '{"stock"}'),
-  ('3383', 'motobomba-a-gasolina-7hp-energy-gwp3-3383', '3383', 'MOTOBOMBA A GASOLINA 7HP ENERGY GWP3', 185000.54, '$ 185.000,54', 'Hidrolavado y bombas', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 327, '{"image","stock","description"}'),
+  ('3383', 'motobomba-a-gasolina-7hp-energy-gwp3-3383', '3383', 'MOTOBOMBA A GASOLINA 7HP ENERGY GWP3', 185000.54, '$ 185.000,54', 'Hidrolavado y bombas', 'ENERGY', '/products/catalog/3383-gwp3.webp', '{"/products/catalog/3383-gwp3.webp","/products/catalog/3383-gwp3-ficha.webp"}', 0, 5, 3, false, false, 'Motobomba a gasolina ENERGY GWP3.
+
+Datos técnicos:
+• Cilindrada: 196cc
+• Diámetro de entrada/salida: 76mm - 3"
+• Caudal: 70m³/h
+• Altura máxima: 27m
+• Succión máxima: 7m
+• Potencia máxima de motor: 6,5HP
+• Velocidad en vacío: 0-1500/min
+• Consumo de combustible: 313g/kW.h
+• Sistema de arranque: Retroceso
+• Capacidad de tanque: 3,6L
+• Peso: 24kg - 52,91lb
+
+Contenido: 1 motobomba a gasolina.', '{}', 'google-sheet', 327, '{"stock"}'),
   ('3758', 'motosierra-25cc-espada-8-forest-mo925-8-3758', '3758', 'MOTOSIERRA 25CC ESPADA 8" FOREST - MO925/8', 145000.31, '$ 145.000,31', 'Jardín', 'FOREST & GARDEN', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 328, '{"stock","description"}'),
   ('3506', 'motosierra-460-mm-45-cc-knock-out-kom345-3506', '3506', 'MOTOSIERRA 460 MM 45 CC KNOCK OUT KOM345', 69999.8, '$ 69.999,80', 'Jardín', 'KNOCK OUT', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, true, false, 'Motosierra Knock Out KOM345 de 45 cc y corte de 460 mm.', '{}', 'google-sheet', 329, '{"stock"}'),
   ('3659', 'motosierra-58-cc-energy-cs58-3659', '3659', 'MOTOSIERRA 58 CC ENERGY - CS58', 118000, '$ 118.000,00', 'Jardín', 'ENERGY', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 330, '{"stock","description"}'),
@@ -1025,8 +1089,31 @@ Contenido: 1 set de puntas de 37 piezas material CRV, 1 maletín plástico.', '{
   ('3888', 'sierra-caladora-18v-sk8080-18c1-3888', '3888', 'SIERRA CALADORA 18V - SK8080/18C1', 75000, '$ 75.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 436, '{"image","stock","description"}'),
   ('3885', 'sierra-caladora-20v-sk11100-20c1-3885', '3885', 'SIERRA CALADORA 20V - SK11100/20C1', 165000.3, '$ 165.000,30', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 437, '{"image","stock","description"}'),
   ('3216', 'sierra-caladora-400w-55-mm-gladiator-sk455-1-3216', '3216', 'SIERRA CALADORA 400W 55 MM GLADIATOR SK455/1', 44999.98, '$ 44.999,98', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 438, '{"image","stock","description"}'),
-  ('3335', 'sierra-caladora-450w-55-mm-energy-js55-220-3335', '3335', 'SIERRA CALADORA 450W 55 MM ENERGY JS55/220', 40000.16, '$ 40.000,16', 'Otros', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 439, '{"image","stock","description"}'),
-  ('3760', 'sierra-caladora-600w-gladiator-sk670-2-220-3760', '3760', 'SIERRA CALADORA 600W GLADIATOR - SK670/2/220', 84999.97, '$ 84.999,97', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 440, '{"image","stock","description"}'),
+  ('3335', 'sierra-caladora-450w-55-mm-energy-js55-220-3335', '3335', 'SIERRA CALADORA 450W 55 MM ENERGY JS55/220', 40000.16, '$ 40.000,16', 'Otros', 'ENERGY', '/products/catalog/3335-js55-220.webp', '{"/products/catalog/3335-js55-220.webp","/products/catalog/3335-js55-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra caladora ENERGY JS55/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 450W - 0,5HP
+• Velocidad en vacío: 0-3000/min
+• Capacidad de corte en madera: 55mm - 2 1/4"
+• Capacidad de corte en acero: 6mm - 1/4"
+• Tipo de aislación: Clase II
+• Peso: 1,4kg - 3,09lb
+
+Contenido: 1 sierra caladora, 1 hoja para madera, 1 llave hexagonal.', '{}', 'google-sheet', 439, '{"stock"}'),
+  ('3760', 'sierra-caladora-600w-gladiator-sk670-2-220-3760', '3760', 'SIERRA CALADORA 600W GLADIATOR - SK670/2/220', 84999.97, '$ 84.999,97', 'Otros', 'GLADIATOR', '/products/catalog/3760-sk670-2-220.webp', '{"/products/catalog/3760-sk670-2-220.webp","/products/catalog/3760-sk670-2-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra caladora GLADIATOR SK670/2/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 600W
+• Velocidad en vacío: 0-3000/min
+• Capacidad de corte en madera: 65mm
+• Longitud del recorrido: 20mm
+• Material de base: Metal
+• Extras: Velocidad regulable, soplador de polvo, mandril rápido y luz LED
+• Tipo de aislación: Clase II
+
+Contenido: 1 sierra caladora, 1 hoja para madera, 1 tubo de aspirado, 1 llave hexagonal.', '{}', 'google-sheet', 440, '{"stock"}'),
   ('3762', 'sierra-caladora-800w-sk9100-220-3762', '3762', 'SIERRA CALADORA 800W - SK9100/220', 109999.89, '$ 109.999,89', 'Otros', 'GLADIATOR', '/products/catalog/3762-sk9100-220.webp', '{"/products/catalog/3762-sk9100-220.webp","/products/catalog/3762-sk9100-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra caladora GLADIATOR SK9100/220.
 
 Datos técnicos:
