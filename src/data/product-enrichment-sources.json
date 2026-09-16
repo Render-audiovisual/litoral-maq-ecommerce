@@ -36,13 +36,14 @@
   {
     "productId": "3215",
     "model": "HG600/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.kitmaq.com/productos/pistola-de-calor-2000w-hg600-220-energy/",
-    "imageSourceUrl": "https://dcdn-us.mitiendanube.com/stores/007/734/059/products/hg600-220_fondo-ca1ddd9f23505e0bbd17833602074689-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: HG600 ENERGY Photo.jpg",
     "localImage": "/products/catalog/3215-hg600-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.kitmaq.com; se reemplazo por la del fabricante."
   },
   {
     "productId": "3217",
@@ -59,24 +60,26 @@
   {
     "productId": "3236",
     "model": "A960/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/aspiradora-gladiator-1200w-60-litros-seco-humedo-a960-220-1lqlb/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/a960-220-_01-8293b24ef185dfe84917831781463810-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: A 960 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3236-a960-220.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3311",
     "model": "IMET140/2/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-140a-energy-easy-torch-imet140-2-220-71wxa/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-86-e064ffb001228c5bc917722864917086-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: IMET140-2 ENERGY photo.jpg",
     "localImage": "/products/catalog/3311-imet140-2-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3336",
@@ -104,15 +107,16 @@
   {
     "productId": "3370",
     "model": "EP10",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://energyherramientas.com/catalogo (CATALOGO - ENERGY_b.pdf, pag. 15) + https://rspshopmaquinas.com.ar/productos/cepillo-electrico-energy-ep10-650w-82mm-garlopa-manual-hbzv3/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/002/110/845/products/d_nq_np_636132-mla74651984884_022024-f-49ee9199a58dd7534217786921473100-480-0.webp",
+    "imageSourceUrl": "Drive GBS: EP10 ENERGY photo.jpg",
     "localImage": "/products/catalog/3370-ep10.webp",
     "descriptionImported": true,
     "conflictsSkipped": [
       "Peso: catálogo oficial indica 2,42kg, el distribuidor RSP indica 2,87kg - no se cargó peso en la descripción por esta discrepancia; se usaron solo los campos donde ambas fuentes coinciden (potencia, ancho y profundidad de cepillado) mas velocidad (solo confirmada por catálogo oficial)."
     ],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de energyherramientas.com; se reemplazo por la del fabricante."
   },
   {
     "productId": "3378",
@@ -197,13 +201,14 @@
   {
     "productId": "3408",
     "model": "CPA1020G",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/cortadora-de-cesped-gladiator-autopropulsada-5hp-cpa1020g-1esko/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/cortadora-de-cesped-gladiator-autopropulsada-5hp-cpa1020g-3dfb0bf3fc9734f38917694659693082-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: CPA 1020 G GLA PRO photo.jpg",
     "localImage": "/products/catalog/3408-cpa1020g.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3409",
@@ -276,13 +281,14 @@
   {
     "productId": "3518",
     "model": "CP638/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/cortadora-de-cesped-electrica-gladiator-1700w-38cm-cp638-220-fksz7/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/cortadora-de-cesped-electrica-gladiator-1700w-38cm-cp638220-b3de2e2fc95e91c97317696324529047-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: CP 638 GLA photo.jpg",
     "localImage": "/products/catalog/3518-cp638-220.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3533",
@@ -387,24 +393,26 @@
   {
     "productId": "3543",
     "model": "VC22/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.kitmaq.com/productos/aspiradora-22l-1400w-3en1-vc22-220-energy/",
-    "imageSourceUrl": "https://dcdn-us.mitiendanube.com/stores/007/734/059/products/vc22-220_1_fondo-7dda4ed2281eec474917833607028130-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: VC22 ENERGY photo.jpg",
     "localImage": "/products/catalog/3543-vc22-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.kitmaq.com; se reemplazo por la del fabricante."
   },
   {
     "productId": "3544",
     "model": "VC35/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.kitmaq.com/productos/aspiradora-industrial-35l-1400w-seco-humedo-soplador-vc35-220-energy/",
-    "imageSourceUrl": "https://dcdn-us.mitiendanube.com/stores/007/734/059/products/copia-de-fondo-de-producto-tiendanube-fe4d1d4b232e0f5b4e17844188177713-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: VC35 ENERGY Photo.jpg",
     "localImage": "/products/catalog/3544-vc35-220.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.kitmaq.com; se reemplazo por la del fabricante."
   },
   {
     "productId": "3545",
@@ -420,35 +428,38 @@
   {
     "productId": "3569",
     "model": "SPP825",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://rspshopmaquinas.com.ar/productos/set-de-puntas-profesionales-25-piezas-gladiator-pro-spp825-yvege/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/002/110/845/products/d_nq_np_789620-mla100063226779_122025-f-8140f315557f411d1317840411577760-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: SPP 825 GLA PRO Photo.jpg",
     "localImage": "/products/catalog/3569-spp825.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3574",
     "model": "BCO803K",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://rspshopmaquinas.com.ar/productos/set-mechas-escalonadas-de-ranura-recta-gladiator-bco803k-11yub/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/002/110/845/products/d_nq_np_958936-mla114156166525_072026-f-e2f1e05d141df44a0117840411727292-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: BCO 803k GLA PRO Photo.jpg",
     "localImage": "/products/catalog/3574-bco803k.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3575",
     "model": "AR8/15",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://rspshopmaquinas.com.ar/productos/set-de-15-puntas-para-router-mango-de-1-4-pulgadas-gladiator-ar8-15/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/002/110/845/products/copia-de-productos-rsp-shop-2-cfd1004165ae2752d617877601903242-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: AR 8-15 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3575-ar8-15.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3577",
@@ -695,35 +706,38 @@
   {
     "productId": "3649",
     "model": "JT10221/2",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-22-piezas-gladiator-1-2-jt10221-2-im4x9/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/230ba522-4c78-48bb-8a00-4aa6db444551-a5e7d4923ae094170e17788597011790-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: JT 1022 1-2 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3649-jt10221-2.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3650",
     "model": "JT10321/2",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-32-piezas-gladiator-1-2-jt10321-2-x4493/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/4c6ed7eb-f417-4491-a691-4e979ce10256-aa6e68b6f9a248a61617788604878465-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: JT 1032 1-2 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3650-jt10321-2.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3651",
     "model": "JT1073",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-gladiator-73-piezas-jt1073-1tqgt/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/image_7fe2686e-4f0b54317734fa74f117788602283982-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: JT 1073 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3651-jt1073.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3652",
@@ -739,46 +753,50 @@
   {
     "productId": "3653",
     "model": "JTI1014",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-impacto-gladiator-14-piezas-1-2-jti1014-1cs0k/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/23b8976d-e2dc-470b-bc61-d679ce680249-cfd19210a74201b47f17788587990970-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: JTI 1014 GLADIATOR PRO Photo.jpg",
     "localImage": "/products/catalog/3653-jti1014.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3654",
     "model": "JTI1013",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-impacto-gladiator-13-piezas-1-2-jti1013-1qt5j/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/5b6fa936-53fa-4fd4-be2e-fda46f7281d7-b0964a0eb714f0ea6a17788581373597-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: JTI 1013 GLADIATOR PRO Photo.jpg",
     "localImage": "/products/catalog/3654-jti1013.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3655",
     "model": "JT10110",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-110-piezas-gladiator-jt10110-1dqs8/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/8b3f9e61-a126-4a6f-bbd6-7700621647f4-fbda6109cc3e4f6e9317788571069666-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: JT 10110 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3655-jt10110.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3656",
     "model": "JT10171",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-gladiator-171-piezas-jt10171-h9zli/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-23-a87b702d016d68b54317788633964707-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: JT 10171 GLA PRO.jpg",
     "localImage": "/products/catalog/3656-jt10171.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3657",
@@ -795,13 +813,14 @@
   {
     "productId": "3658",
     "model": "AA623/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/amoladora-angular-gladiator-230mm-2100w-5-discos-aa623-220-1jy55/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/aa623-220-_01-b983388862115dfcd217834314053697-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: AA 623 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3658-aa623-220.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3665",
@@ -817,24 +836,26 @@
   {
     "productId": "3666",
     "model": "H4110M/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.kitmaq.com/productos/hidrolavadora-alta-presion-1400w-100-bar-h4110m-220-forest-garden/",
-    "imageSourceUrl": "https://dcdn-us.mitiendanube.com/stores/007/734/059/products/copia-de-fondo-de-producto-tiendanube-954ae5fc6e940e870f17844071227618-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: H 4110M F&G Photo.jpg",
     "localImage": "/products/catalog/3666-h4110m-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.kitmaq.com; se reemplazo por la del fabricante."
   },
   {
     "productId": "3667",
     "model": "H7160RM/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/hidrolavadora-electrica-2200w-forest-garden-h7160rm-220-1o2ih/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-39-a80f0a07e9f307a74017799821555498-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: H 7160RM F&G Photo.jpg",
     "localImage": "/products/catalog/3667-h7160rm-220.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3668",
@@ -887,13 +908,14 @@
   {
     "productId": "3708",
     "model": "NLP830",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/nivel-laser-autonivelante-con-punto-plomo-gladiator-30m-nlp830-8yua7/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/whatsapp-image-2026-05-29-at-11-35-51-2-4b5c4473ff91b61eec17800750786118-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: NLP 830 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3708-nlp830.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3709",
@@ -909,13 +931,14 @@
   {
     "productId": "3710",
     "model": "SC807/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/sierra-circular-gladiator-1600w-185mm-sc807-220-qfou6/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/sc807-220-_01-88e2a031da7a8afdb517817925442596-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: SC 807-2-20 GLA PRO photo.jpg",
     "localImage": "/products/catalog/3710-sc807-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3712",
@@ -1010,13 +1033,14 @@
   {
     "productId": "3755",
     "model": "LR605",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/lijadora-roto-orbital-gladiator-125mm-300w-lr605-b73tg/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/lijadora-roto-orbital-gladiator-125mm-300w-lr605-da8ae1d7dbbe8c9f8a17696987108634-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: LR 605 GLA photo.jpg",
     "localImage": "/products/catalog/3755-lr605.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3759",
@@ -1111,24 +1135,26 @@
   {
     "productId": "3780",
     "model": "IMET150/1/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-150a-imet150-1-220-1cdyk/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-87-f92199584bf6b4126517722877846272-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: IMET150-1 ENERGY photo.jpg",
     "localImage": "/products/catalog/3780-imet150-1-220.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3781",
     "model": "IMET200/2/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-next-200a-mig-gasless-tig-lift-mma-imet200-2-220-nsur7/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/imet220-7589a2067c177665fb17844756659005-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: IMET200-2 ENERGY photo.jpg",
     "localImage": "/products/catalog/3781-imet200-2-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3782",
@@ -1144,57 +1170,62 @@
   {
     "productId": "3785",
     "model": "IMET140X/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-140a-easy-torch-mig-gasless-tig-lift-mma-imet140x-220-wgzax/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/imet140x220-_01-e6905c9ef20bcf389b17730765366780-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: SOLDADORAS / IMET140X ENERGY NEXT photo.jpg",
     "localImage": "/products/catalog/3785-imet140x-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3786",
     "model": "IMET150X/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-next-150a-mig-gasless-tig-lift-mma-imet150x-220-4tl3a/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/imet150x220-_01-6c1987217a913e542d17730803616427-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: SOLDADORAS / IMET150X ENERGY NEXT photo.jpg",
     "localImage": "/products/catalog/3786-imet150x-220.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3787",
     "model": "IMET150X/1/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-150a-mig-gasless-tig-lift-mma-imet150x-1-220-1vbzc/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/imet150x1220-_01-3e9669a9342bf84ad017730806274043-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: SOLDADORAS / IMET150X-1 ENERGY NEXT photo.jpg",
     "localImage": "/products/catalog/3787-imet150x-1-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3788",
     "model": "IMET200X/220",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-next-200a-mig-gasless-tig-lift-mma-imet200x-220-3bkcx/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/imet200x-0517682958d8d9ae5a17844748709938-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: SOLDADORAS / IMET200X-220 ENERGY NEXT photo.jpg",
     "localImage": "/products/catalog/3788-imet200x-220.webp",
     "descriptionImported": false,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3878",
     "model": "DG752",
-    "match": "exact_model",
+    "match": "foto_oficial_drive",
     "productSourceUrl": "https://rspshopmaquinas.com.ar/productos/dg752-1/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/002/110/845/products/04_fondo_blanco-4acf1d387ed017722317866678247950-1024-1024.webp",
+    "imageSourceUrl": "Drive GBS: DG 752 GLA  photo.jpg",
     "localImage": "/products/catalog/3878-dg752.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-16",
+    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante."
   },
   {
     "productId": "3880",
