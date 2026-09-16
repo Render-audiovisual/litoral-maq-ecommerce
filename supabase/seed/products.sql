@@ -62,7 +62,22 @@ Contenido: 1 amoladora angular.', '{}', 'google-sheet', 16, '{"stock"}'),
   ('488', 'asiento-de-inodoro-beige-488', '488', 'ASIENTO DE INODORO BEIGE', 12000.03, '$ 12.000,03', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 39, '{"image","stock","description"}'),
   ('2818', 'asiento-de-inodoro-negro-2818', '2818', 'ASIENTO DE INODORO NEGRO', 12000.03, '$ 12.000,03', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 40, '{"image","stock","description"}'),
   ('3500', 'aspiradora-10-lts-energy-vc10-2-220-3500', '3500', 'ASPIRADORA 10 LTS ENERGY VC10/2/220', 58000, '$ 58.000,00', 'Otros', 'ENERGY', '/products/catalog/3500-vc10-2-220.webp', '{"/products/catalog/3500-vc10-2-220.webp"}', 0, 5, 3, true, false, 'Aspiradora Energy 950w 10 Litros Seco Húmedo y Soplador VC10/2/220. Funciones: Aspiradora seco – húmedo – sopladora (3 en 1). Voltaje / Frecuencia: 220V ~ 50-60 Hz. Potencia: 950W. Presión de trabajo: &ge; 15 &plusmn; 20kPa. Máx. caudal de aire: 1.3 &plusmn; 0.15 CBM/min. Caudal de soplado: &ge; 0.7 m&sup3;/min. Máxima potencia de succión: &ge; 135 W. Nivel de ruido: &ge; 93 dB. Capacidad del tanque: 10 Litros. índice de protección: IPX4. Tipo de aislamiento: Clase II. Peso: 4.1kg.', '{}', 'google-sheet', 41, '{"stock"}'),
-  ('3238', 'aspiradora-30-lt-gladiator-a830-1-220-3238', '3238', 'ASPIRADORA 30 LT GLADIATOR A830/1/220', 90000.08, '$ 90.000,08', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 42, '{"image","stock","description"}'),
+  ('3238', 'aspiradora-30-lt-gladiator-a830-1-220-3238', '3238', 'ASPIRADORA 30 LT GLADIATOR A830/1/220', 90000.08, '$ 90.000,08', 'Otros', 'GLADIATOR', '/products/catalog/3238-a830-1-220.webp', '{"/products/catalog/3238-a830-1-220.webp","/products/catalog/3238-a830-1-220-ficha.webp"}', 0, 5, 3, false, false, 'Aspiradora seco-húmedo y soplador GLADIATOR A830/1/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1200W
+• Potencia de succión: ≥ 150W
+• Capacidad: 30L
+• Caudal de aire: ≥ 1,6 ± 0,15 m³/min
+• Caudal de aire soplado: ≥ 1,5m³/min
+• Presión de trabajo: 17 ± 2kPa
+• Nivel de ruido: 96dB
+• Índice de protección: IPX4
+• Tipo de aislación: Clase II
+• Peso: 5,85kg - 12,9lb
+
+Contenido: 1 aspiradora seco-húmedo, 1 manguera, 2 tubos plásticos, 1 filtro de bolsa de esponja y tela, 1 cepillo seco-húmedo, 1 boquilla 2 en 1 y 1 esponja.', '{}', 'google-sheet', 42, '{"stock"}'),
   ('3544', 'aspiradora-35-l-energy-1400w-vc35-220-3544', '3544', 'ASPIRADORA 35 L ENERGY 1400W - VC35/220', 94999.84, '$ 94.999,84', 'Otros', 'ENERGY', '/products/catalog/3544-vc35-220.webp', '{"/products/catalog/3544-vc35-220.webp"}', 0, 5, 3, true, false, 'La Aspiradora Industrial Energy VC35/220 es una máquina 3 en 1 de 35 litros y 1400 W: aspira en seco, levanta líquidos y también sopla. Su tacho de acero inoxidable soporta el uso rudo del taller, la obra o el garaje, y las ruedas giratorias 360° la hacen fácil de mover. El filtro HEPA retiene el polvo fino y la potencia de 1400 W no deja nada atrás: aserrín, agua, escombro, hojas. Ideal para talleres mecánicos, carpinterías, después de una obra o para la limpieza pesada del hogar. Viene con manguera, tubos de extensión y boquillas para llegar a cada rincón.', '{}', 'google-sheet', 43, '{"stock"}'),
   ('3236', 'aspiradora-60-lt-1200w-gladiator-a960-220-3236', '3236', 'ASPIRADORA 60 LT 1200W GLADIATOR A960/220', 219999.24, '$ 219.999,24', 'Otros', 'GLADIATOR', '/products/catalog/3236-a960-220.webp', '{"/products/catalog/3236-a960-220.webp"}', 0, 5, 3, true, false, 'Aspiradora Gladiator 1200w 60 Litros Seco Húmedo A960/220. Voltaje – frecuencia: 220V-50-60Hz. Potencia: 1200W. Potencia máxima: 1400W. Presión de vacío: 15-16kpa. Capacidad: 60L. Diámetro de Accesorios: 40mm-11/2&rdquo. índice e protección: IP24. Aislación: CLASE 2. Peso: 11kg-24lb. Contiene. 1 Boquilla plana. 1 Boquilla circular. 1 Cepillo humedo-seco. 1 Filtro HEPA. 1 Manguera de 1.5m. 2 Extensiones de plasticos.', '{}', 'google-sheet', 44, '{"stock"}'),
   ('3545', 'aspiradora-70-lt-2400w-gladiator-a1170-220-3545', '3545', 'ASPIRADORA 70 LT 2400W GLADIATOR - A1170/220', 250000.52, '$ 250.000,52', 'Otros', 'GLADIATOR', '/products/catalog/3545-a1170-220.webp', '{"/products/catalog/3545-a1170-220.webp"}', 0, 5, 3, true, false, 'La Aspiradora Industrial Gladiator A1170/220 es una máquina de trabajo pesado: 70 litros de capacidad y 2400 W de potencia para obra, industria y talleres grandes. Aspira en seco y en húmedo, así que resuelve desde escombro y aserrín hasta derrames de líquido, sin cambiar de equipo. Su gran capacidad reduce las paradas para vaciar el tacho, clave cuando el trabajo es continuo. Pensada para quien necesita una aspiradora que no se quede corta.', '{}', 'google-sheet', 45, '{"stock"}'),
@@ -180,7 +195,18 @@ Datos técnicos:
 Contenido: 1 bomba sumergible de pozo profundo, 1 cable de 1,5 m.', '{}', 'google-sheet', 74, '{"stock"}'),
   ('3495', 'bomba-trasvasadora-de-liquidos-pvc-3495', '3495', 'BOMBA TRASVASADORA DE LIQUIDOS PVC', 2500, '$ 2.500,00', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 75, '{"image","stock","description"}'),
   ('3404', 'bordeadora-20v-b9300-20c1-3404', '3404', 'BORDEADORA 20V B9300/20C1', 200000.61, '$ 200.000,61', 'Jardín', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 76, '{"image","stock","description"}'),
-  ('3519', 'bordeadora-300mm-550w-be612-220-3519', '3519', 'BORDEADORA 300MM 550W BE612/220', 85000.03, '$ 85.000,03', 'Jardín', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 77, '{"image","stock","description"}'),
+  ('3519', 'bordeadora-300mm-550w-be612-220-3519', '3519', 'BORDEADORA 300MM 550W BE612/220', 85000.03, '$ 85.000,03', 'Jardín', 'FOREST & GARDEN', '/products/catalog/3519-be612-220.webp', '{"/products/catalog/3519-be612-220.webp","/products/catalog/3519-be612-220-ficha.webp"}', 0, 5, 3, false, false, 'Bordeadora eléctrica FOREST & GARDEN BE612/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 550W
+• Velocidad en vacío: 9600rpm
+• Diámetro de nylon: 1,4mm
+• Capacidad de nylon: 300mm
+• Tipo de aislación: Clase II
+• Peso: 2,72kg
+
+Contenido: 1 bordeadora eléctrica.', '{}', 'google-sheet', 77, '{"stock"}'),
   ('3520', 'bordeadora-350mm-1000w-be714-220-3520', '3520', 'BORDEADORA 350MM 1000W BE714/220', 109999.65, '$ 109.999,65', 'Jardín', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 78, '{"image","stock","description"}'),
   ('3260', 'caja-de-herramienta-con-division-3260', '3260', 'CAJA DE HERRAMIENTA CON DIVISION', 10000, '$ 10.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 79, '{"image","stock","description"}'),
   ('142', 'caja-octogonal-de-chapa-chica-aluminizada-142', '142', 'CAJA OCTOGONAL DE CHAPA CHICA ALUMINIZADA', 400, '$ 400,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 80, '{"image","stock","description"}'),
@@ -441,7 +467,19 @@ Datos técnicos:
 • Empaque: Blister (1 unidad)
 
 Contenido: 1 disco diamantado para madera.', '{}', 'google-sheet', 162, '{"stock"}'),
-  ('3567', 'disco-para-madera-180-mm-7-dm8180-3567', '3567', 'DISCO PARA MADERA 180 MM 7" - DM8180', 19799.98, '$ 19.799,98', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 163, '{"image","stock","description"}'),
+  ('3567', 'disco-para-madera-180-mm-7-dm8180-3567', '3567', 'DISCO PARA MADERA 180 MM 7" - DM8180', 19799.98, '$ 19.799,98', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3567-dm8180.webp', '{"/products/catalog/3567-dm8180.webp","/products/catalog/3567-dm8180-ficha.webp"}', 0, 5, 3, false, false, 'Disco premium diamantado multipropósito para madera GLADIATOR DM8180.
+
+Datos técnicos:
+• Medida: 180 x 1,8 x 22,2mm
+• Medida en pulgadas: 7" x 5/64" x 7/8"
+• Velocidad máxima: 8500 RPM
+• Grano: #50
+• Velocidad: 80m/s
+• Materiales: Contrachapado, laminado, aglomerado y plástico
+• Uso: Amoladoras angulares, corte recto
+• Empaque: Blister (1 unidad)
+
+Contenido: 1 disco diamantado para madera.', '{}', 'google-sheet', 163, '{"stock"}'),
   ('3473', 'disco-para-porcelanato-115-x-22-2-mm-dep10115-3473', '3473', 'DISCO PARA PORCELANATO 115 X 22,2 MM DEP10115', 9999.98, '$ 9.999,98', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3473-dep10115.webp', '{"/products/catalog/3473-dep10115.webp","/products/catalog/3473-dep10115-ficha.webp"}', 0, 5, 3, false, false, 'Disco premium diamantado continuo para porcelanato GLADIATOR DEP10115.
 
 Datos técnicos:
@@ -611,7 +649,11 @@ Contenido: 10 tubos, 1 barra de extensión de 100mm, 1 trinquete de 72 dientes.'
   ('3378', 'kit-taladro-y-amoladora-energy-20v-pa20c1-3378', '3378', 'KIT TALADRO Y AMOLADORA ENERGY 20V PA20C1', 108000, '$ 108.000,00', 'Amoladoras', 'ENERGY', '/products/catalog/3378-pa20c1.webp', '{"/products/catalog/3378-pa20c1.webp"}', 0, 5, 3, true, false, 'Kit Taladro Percutor 13mm + Amoladora 115mm a Batería Energy 20v PA20C1. Amoladora 115mm 20V. Velocidad en vacío: 8500rpm. Disco: 115mm. Tensión máxima: 20V. Carga: 90 minutos. Arranque progresivo. Motor con carbones. Peso: 2Kg. Taladro percutor 20V 13mm. Mandril: 13mm. Velocidad: 0-400 – 0-1500rpm. 2 velocidades. Tensión máxima: 20V. Torque máximo: 32Nm. Incluye: 1 batería 3Ah y cargador.', '{}', 'google-sheet', 234, '{"stock"}'),
   ('633', 'lampara-gota-led-3w-luz-fria-633', '633', 'LAMPARA GOTA LED 3W LUZ FRIA', 800, '$ 800,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 235, '{"image","stock","description"}'),
   ('2373', 'lampara-led-hi-power-100w-luxom-2373', '2373', 'LAMPARA LED HI POWER 100W LUXOM', 13999.95, '$ 13.999,95', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 236, '{"image","stock","description"}'),
-  ('3382', 'lapiz-adhesivo-recargable-4v-energy-bgp4-3382', '3382', 'LAPIZ ADHESIVO RECARGABLE 4V ENERGY BGP4', 39799.9, '$ 39.799,90', 'Otros', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 237, '{"image","stock","description"}'),
+  ('3382', 'lapiz-adhesivo-recargable-4v-energy-bgp4-3382', '3382', 'LAPIZ ADHESIVO RECARGABLE 4V ENERGY BGP4', 39799.9, '$ 39.799,90', 'Otros', 'ENERGY', '/products/catalog/3382-bgp4.webp', '{"/products/catalog/3382-bgp4.webp"}', 0, 5, 3, false, false, 'Lápiz adhesivo recargable ENERGY BGP4.
+
+Datos técnicos:
+• Voltaje: 4V
+• Tipo: Recargable', '{}', 'google-sheet', 237, '{"stock"}'),
   ('2435', 'lapiz-corta-vidrio-tipo-jobo-2435', '2435', 'LAPIZ CORTA VIDRIO TIPO JOBO', 2000.01, '$ 2.000,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 238, '{"image","stock","description"}'),
   ('2806', 'latex-color-x-4-lts-verde-safari-m-y-m-2806', '2806', 'LATEX COLOR X 4 LTS VERDE SAFARI M Y M', 15000.01, '$ 15.000,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 239, '{"image","stock","description"}'),
   ('3540', 'lijadora-de-banda-1150w-neo-lb976-1-220-3540', '3540', 'LIJADORA DE BANDA 1150W NEO - LB976/1/220', 99999.72, '$ 99.999,72', 'Accesorios y consumibles', 'NEO', '/products/catalog/3540-lb976-1-220.webp', '{"/products/catalog/3540-lb976-1-220.webp"}', 0, 5, 3, true, false, 'Lijadora de Banda NEO 1150w 76x533mm LB976/1/220. Potencia: 1150W. Tamaño de banda: 76 x 533 mm. Velocidad en vacío: n₀ = 120-380/min. Voltaje/Frecuencia: Compatible con 220V (50-60Hz) y 120V (60Hz). Largo de cable: 1.8m. Aislación: Clase II. Peso: 2,80 kg.', '{}', 'google-sheet', 240, '{"stock"}'),
@@ -892,7 +934,11 @@ Contenido: 1 nivel láser autonivelante, 1 estuche, 1 soporte magnético PV9, 1 
   ('3156', 'precinto-negro-500-mm-x-100-3156', '3156', 'PRECINTO NEGRO 500 MM X 100', 4139.83, '$ 4.139,83', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 391, '{"image","stock","description"}'),
   ('3839', 'prensa-esquinero-angulo-90-tmk19212-3839', '3839', 'PRENSA ESQUINERO ANGULO 90° - TMK19212', 4500.01, '$ 4.500,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 392, '{"image","stock","description"}'),
   ('2172', 'protector-de-oidos-2172', '2172', 'PROTECTOR DE OIDOS', 65.02, '$ 65,02', 'Seguridad', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 393, '{"image","stock","description"}'),
-  ('3312', 'pulverizador-man-18l-pm618-3312', '3312', 'PULVERIZADOR MAN. 18L PM618', 45080.12, '$ 45.080,12', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 394, '{"image","stock","description"}'),
+  ('3312', 'pulverizador-man-18l-pm618-3312', '3312', 'PULVERIZADOR MAN. 18L PM618', 45080.12, '$ 45.080,12', 'Otros', 'FOREST & GARDEN', '/products/catalog/3312-pm618.webp', '{"/products/catalog/3312-pm618.webp"}', 0, 5, 3, false, false, 'Pulverizador manual FOREST & GARDEN PM618.
+
+Datos técnicos:
+• Capacidad: 18L
+• Tipo: Manual, de mochila', '{}', 'google-sheet', 394, '{"stock"}'),
   ('3637', 'pulverizador-man-2l-acqualife-3637', '3637', 'PULVERIZADOR MAN. 2L ACQUALIFE', 8000, '$ 8.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 395, '{"image","stock","description"}'),
   ('3638', 'pulverizador-man-5l-acqualife-3638', '3638', 'PULVERIZADOR MAN. 5L ACQUALIFE', 17999.99, '$ 17.999,99', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 396, '{"image","stock","description"}'),
   ('3185', 'punta-ph2-25-mm-x10-u-rerar-3185', '3185', 'PUNTA PH2 25 MM X10 U "RERAR"', 4000, '$ 4.000,00', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 397, '{"image","stock","description"}'),
@@ -1086,9 +1132,24 @@ Contenido: 1 set de puntas de 37 piezas material CRV, 1 maletín plástico.', '{
   ('3843', 'set-destornilladores-x-2-piezas-100-mm-tmk20253-3843', '3843', 'SET DESTORNILLADORES X 2 PIEZAS 100 MM - TMK20253', 4500.01, '$ 4.500,01', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 433, '{"image","stock","description"}'),
   ('3842', 'set-mecha-pared-widea-corta-5-piezas-tmk19935-3842', '3842', 'SET MECHA PARED WIDEA CORTA 5 PIEZAS -TMK19935', 5000.01, '$ 5.000,01', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 434, '{"image","stock","description"}'),
   ('3841', 'set-mechas-pared-widea-larga-8-10-12-x-30-cm-3841', '3841', 'SET MECHAS PARED WIDEA LARGA 8-10-12 X 30 CM', 8000.02, '$ 8.000,02', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 435, '{"image","stock","description"}'),
-  ('3888', 'sierra-caladora-18v-sk8080-18c1-3888', '3888', 'SIERRA CALADORA 18V - SK8080/18C1', 75000, '$ 75.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 436, '{"image","stock","description"}'),
+  ('3888', 'sierra-caladora-18v-sk8080-18c1-3888', '3888', 'SIERRA CALADORA 18V - SK8080/18C1', 75000, '$ 75.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3888-sk8080-18c1.webp', '{"/products/catalog/3888-sk8080-18c1.webp"}', 0, 5, 3, false, false, 'Sierra caladora recargable GLADIATOR SK8080/18C1.
+
+Datos técnicos:
+• Voltaje: 18V
+• Tipo: Recargable a batería', '{}', 'google-sheet', 436, '{"stock"}'),
   ('3885', 'sierra-caladora-20v-sk11100-20c1-3885', '3885', 'SIERRA CALADORA 20V - SK11100/20C1', 165000.3, '$ 165.000,30', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 437, '{"image","stock","description"}'),
-  ('3216', 'sierra-caladora-400w-55-mm-gladiator-sk455-1-3216', '3216', 'SIERRA CALADORA 400W 55 MM GLADIATOR SK455/1', 44999.98, '$ 44.999,98', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 438, '{"image","stock","description"}'),
+  ('3216', 'sierra-caladora-400w-55-mm-gladiator-sk455-1-3216', '3216', 'SIERRA CALADORA 400W 55 MM GLADIATOR SK455/1', 44999.98, '$ 44.999,98', 'Otros', 'GLADIATOR', '/products/catalog/3216-sk455-1.webp', '{"/products/catalog/3216-sk455-1.webp","/products/catalog/3216-sk455-1-ficha.webp"}', 0, 5, 3, false, false, 'Sierra caladora GLADIATOR SK455/1.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz
+• Potencia: 400W
+• Capacidad de corte en acero: 6mm
+• Capacidad de corte en madera: 55mm
+• Velocidad en vacío: 500 - 3000/min
+• Aislación: Clase II
+• Peso: 1,9kg
+
+Contenido: 1 sierra caladora, 1 hoja de sierra para madera, 1 llave hexagonal y 1 adaptador para extracción de polvo.', '{}', 'google-sheet', 438, '{"stock"}'),
   ('3335', 'sierra-caladora-450w-55-mm-energy-js55-220-3335', '3335', 'SIERRA CALADORA 450W 55 MM ENERGY JS55/220', 40000.16, '$ 40.000,16', 'Otros', 'ENERGY', '/products/catalog/3335-js55-220.webp', '{"/products/catalog/3335-js55-220.webp","/products/catalog/3335-js55-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra caladora ENERGY JS55/220.
 
 Datos técnicos:
@@ -1130,11 +1191,32 @@ Datos técnicos:
 Contenido: 1 sierra caladora, 1 hoja de sierra para madera, 1 tubo para polvo, 1 guía.', '{}', 'google-sheet', 441, '{"stock"}'),
   ('3761', 'sierra-caladora-800w-gladiator-sk860-1-3761', '3761', 'SIERRA CALADORA 800W GLADIATOR - SK860/1', 99800.04, '$ 99.800,04', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 442, '{"image","stock","description"}'),
   ('3889', 'sierra-circular-18v-sc807-18c1-3889', '3889', 'SIERRA CIRCULAR 18V - SC807/18C1', 127999.95, '$ 127.999,95', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 443, '{"image","stock","description"}'),
-  ('3326', 'sierra-circular-185-mm-1400-w-gladiator-sc507-220-3326', '3326', 'SIERRA CIRCULAR 185 MM 1400 W GLADIATOR SC507/220', 85000.28, '$ 85.000,28', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 444, '{"image","stock","description"}'),
+  ('3326', 'sierra-circular-185-mm-1400-w-gladiator-sc507-220-3326', '3326', 'SIERRA CIRCULAR 185 MM 1400 W GLADIATOR SC507/220', 85000.28, '$ 85.000,28', 'Otros', 'GLADIATOR', '/products/catalog/3326-sc507-220.webp', '{"/products/catalog/3326-sc507-220.webp"}', 0, 5, 3, false, false, 'Sierra circular GLADIATOR SC507/220.
+
+Datos técnicos:
+• Diámetro de hoja: 185mm
+• Potencia: 1400W', '{}', 'google-sheet', 444, '{"stock"}'),
   ('3710', 'sierra-circular-185-mm-1600w-gladiator-sc807-220-3710', '3710', 'SIERRA CIRCULAR 185 MM 1600W GLADIATOR - SC807/220', 95000, '$ 95.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3710-sc807-220.webp', '{"/products/catalog/3710-sc807-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 445, '{"stock","description"}'),
   ('497', 'sierra-copa-bimetal-chica-sin-par-497', '497', 'SIERRA COPA BIMETAL CHICA SIN PAR', 6000, '$ 6.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 446, '{"image","stock","description"}'),
   ('1844', 'sierra-copa-x-6-piezas-1844', '1844', 'SIERRA COPA X 6 PIEZAS', 6500.01, '$ 6.500,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 447, '{"image","stock","description"}'),
-  ('3461', 'sierra-de-mesa-250mm-2000w-gladiator-sm710-5-220-3461', '3461', 'SIERRA DE MESA 250MM 2000W GLADIATOR SM710/5/220', 349999.46, '$ 349.999,46', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 448, '{"image","stock","description"}'),
+  ('3461', 'sierra-de-mesa-250mm-2000w-gladiator-sm710-5-220-3461', '3461', 'SIERRA DE MESA 250MM 2000W GLADIATOR SM710/5/220', 349999.46, '$ 349.999,46', 'Otros', 'GLADIATOR', '/products/catalog/3461-sm710-5-220.webp', '{"/products/catalog/3461-sm710-5-220.webp","/products/catalog/3461-sm710-5-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra de mesa GLADIATOR SM710/5/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 2000W
+• Altura máxima de corte: 0°: 85mm - 3" · 45°: 65mm - 2,5"
+• Velocidad en vacío: 5000/min
+• Hoja de corte: 255mm x 16mm x 2,8mm - 10" (24 dientes)
+• Rango de corte: 0° - 45°
+• Acople de manguera de polvo: 35,5mm - 1,39"
+• Altura: 829mm - 32,59"
+• Tamaño de mesa: 563mm x 583mm x 28mm
+• Tamaño de extensión de mesa: 583mm x 165mm (2 unidades)
+• Capacidad máxima de corte: 497mm izquierda - 396mm derecha
+• Tipo de aislación: Clase II
+• Peso: 22,3kg - 49,16lb
+
+Contenido: 1 sierra de mesa, 1 hoja de carburo, 1 varilla de empuje, 1 protector de hoja, 1 guía de corte al hilo, 1 cuchillo divisor, 2 llaves de hoja, 1 calibre de inglete, 1 soporte y 2 mesas de extensión.', '{}', 'google-sheet', 448, '{"stock"}'),
   ('3728', 'sierra-ingletadora-2200w-10-neo-sid1010-3-220-3728', '3728', 'SIERRA INGLETADORA 2200W 10" NEO - SID1010/3/220', 264999.25, '$ 264.999,25', 'Otros', 'NEO', '/products/catalog/3728-sid1010-3-220.webp', '{"/products/catalog/3728-sid1010-3-220.webp","/products/catalog/3728-sid1010-3-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra ingletadora NEO SID1010/3/220.
 
 Datos técnicos:
@@ -1173,8 +1255,30 @@ Contenido: 1 sierra ingletadora, 1 llave inglesa, 1 bolsa para polvo, 1 abrazade
   ('3882', 'sierra-sable-20v-ss1150-20c1-3882', '3882', 'SIERRA SABLE 20V - SS1150/20C1', 143000.01, '$ 143.000,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 453, '{"image","stock","description"}'),
   ('3330', 'silicona-en-cartucho-negra-x-280-ml-3330', '3330', 'SILICONA EN CARTUCHO NEGRA X 280 ML', 4250, '$ 4.250,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 454, '{"image","stock","description"}'),
   ('3245', 'soga-elastica-con-ganchos-en-blister-3245', '3245', 'SOGA ELASTICA CON GANCHOS EN BLISTER', 3000, '$ 3.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 455, '{"image","stock","description"}'),
-  ('3478', 'sold-100-amp-i100-220-sin-stock-3478', '3478', 'SOLD 100 AMP I100/220 (SIN STOCK)', 59999.96, '$ 59.999,96', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 456, '{"image","stock","description"}'),
-  ('3641', 'sold-energy-140-amp-i140-5-220-sin-stock-3641', '3641', 'SOLD ENERGY 140 AMP - I140/5/220 (SIN STOCK)', 54999.79, '$ 54.999,79', 'Otros', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 457, '{"image","stock","description"}'),
+  ('3478', 'sold-100-amp-i100-220-sin-stock-3478', '3478', 'SOLD 100 AMP I100/220 (SIN STOCK)', 59999.96, '$ 59.999,96', 'Otros', 'ENERGY', '/products/catalog/3478-i100-220.webp', '{"/products/catalog/3478-i100-220.webp","/products/catalog/3478-i100-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter de electrodo ENERGY I100/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 5,1kVA
+• Capacidad de electrodo: 1,5 - 2,5mm
+• Rango de amperaje: 20 - 100A
+• Voltaje en vacío: 56V
+• Aislación: Clase I
+• Peso: 2,5kg - 5,5lb
+
+Contenido: 1 soldadora inverter de electrodo, 1 pinza porta electrodo y 1 pinza de masa.', '{}', 'google-sheet', 456, '{"stock"}'),
+  ('3641', 'sold-energy-140-amp-i140-5-220-sin-stock-3641', '3641', 'SOLD ENERGY 140 AMP - I140/5/220 (SIN STOCK)', 54999.79, '$ 54.999,79', 'Otros', 'ENERGY', '/products/catalog/3641-i140-5-220.webp', '{"/products/catalog/3641-i140-5-220.webp","/products/catalog/3641-i140-5-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter de electrodo ENERGY I140/5/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 5,1kVA
+• Rango de amperaje: 20 - 140A
+• Voltaje en vacío: 56V
+• Capacidad de electrodo: 2,5 - 3,2mm
+• Aislación: Clase I
+• Peso: 3,5kg - 7,7lb
+
+Contenido: 1 soldadora inverter de electrodo, 1 pinza porta electrodo y 1 pinza de masa.', '{}', 'google-sheet', 457, '{"stock"}'),
   ('3884', 'soldadora-170-amp-combinada-itep8170-220-3884', '3884', 'SOLDADORA 170 AMP COMBINADA - ITEP8170/220', 339998.69, '$ 339.998,69', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 458, '{"stock","description"}'),
   ('3886', 'soldadora-200-amp-ie-6200-7-220-3886', '3886', 'SOLDADORA 200 AMP - IE 6200/7/220', 107999.58, '$ 107.999,58', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 459, '{"stock","description"}'),
   ('3711', 'soldadora-200-amp-3en1-black-and-w-bwimet200-220-3711', '3711', 'SOLDADORA 200 AMP 3EN1 BLACK AND W. BWIMET200/220', 195000.22, '$ 195.000,22', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 460, '{"stock","description"}'),
@@ -1233,7 +1337,21 @@ Contenido: 1 sierra ingletadora, 1 llave inglesa, 1 bolsa para polvo, 1 abrazade
   ('2633', 'envio-2633', '2633', 'ENVIO', 10000, '$ 10.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 169, '{"image","stock","description","sheet-absent"}'),
   ('3640', 'rotomartillo-24mm-energy-rh24-1-220k-3640', '3640', 'ROTOMARTILLO 24MM ENERGY - RH24/1/220K', 64999.86, '$ 64.999,86', 'Herramientas manuales', 'ENERGY', '/products/catalog/3640-rh24-1-220k.webp', '{"/products/catalog/3640-rh24-1-220k.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 378, '{"stock","description","sheet-absent"}'),
   ('3705', 'set-parrillero-3705', '3705', 'SET PARRILLERO', 18000, '$ 18.000,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 408, '{"image","stock","description","sheet-absent"}'),
-  ('3237', 'aspiradora-18-lt-energy-vc18-1-220-3237', '3237', 'ASPIRADORA 18 LT ENERGY VC18/1/220', 58000, '$ 58.000,00', 'Otros', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 38, '{"image","stock","description","sheet-absent"}'),
+  ('3237', 'aspiradora-18-lt-energy-vc18-1-220-3237', '3237', 'ASPIRADORA 18 LT ENERGY VC18/1/220', 58000, '$ 58.000,00', 'Otros', 'ENERGY', '/products/catalog/3237-vc18-1-220.webp', '{"/products/catalog/3237-vc18-1-220.webp","/products/catalog/3237-vc18-1-220-ficha.webp"}', 0, 5, 3, false, false, 'Aspiradora seco-húmedo y soplador ENERGY VC18/1/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 950W
+• Presión de trabajo: ≥ 17 ± 2kPa
+• Máximo caudal de aire: 1,6 ± 0,15 CBM/min
+• Caudal de salida: ≥ 1,5m³/min
+• Nivel de ruido: ≥ 96dB
+• Capacidad de tanque: 18L
+• Índice de protección: IPX4
+• Aislación: Clase II
+• Peso: 4,57kg - 10,07lb
+
+Contenido: 1 aspiradora seco-húmedo y soplador, 1 cepillo, 1 boquilla amplia, 1 esponja, 1 bolsa de tela, 2 tubos plásticos y 1 manguera flexible.', '{}', 'google-sheet', 38, '{"stock","sheet-absent"}'),
   ('3543', 'aspiradora-22l-energy-vc22-220-3543', '3543', 'ASPIRADORA 22L ENERGY - VC22/220', 60000, '$ 60.000,00', 'Otros', 'ENERGY', '/products/catalog/3543-vc22-220.webp', '{"/products/catalog/3543-vc22-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 39, '{"stock","description","sheet-absent"}'),
   ('3505', 'compresor-energy-24-lts-c24-25-3505', '3505', 'COMPRESOR ENERGY 24 LTS C24/25', 138000, '$ 138.000,00', 'Compresores y neumática', 'ENERGY', '/products/catalog/3505-c24-25.webp', '{"/products/catalog/3505-c24-25.webp"}', 0, 5, 3, false, false, 'Compresor de aire Energy C24/25. Potencia: 1100W (1,5 HP). Capacidad del tanque: 24 L. Presión máxima: 8 bar (115 PSI). Caudal: 169 L/min. Velocidad: 2850 rpm (50Hz) / 3400 rpm (60Hz). Peso: 19,5 kg.', '{}', 'google-sheet', 98, '{"stock","sheet-absent"}'),
   ('3551', 'soldadora-120-amp-energy-i120-2-220-3551', '3551', 'SOLDADORA 120 AMP ENERGY - I120/2/220', 62999.77, '$ 62.999,77', 'Soldadura', 'ENERGY', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 441, '{"stock","description","sheet-absent"}'),
