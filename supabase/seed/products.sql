@@ -89,7 +89,21 @@ Contenido: 1 amoladora angular.', '{}', 'google-sheet', 16, '{"stock"}'),
   ('3183', 'boca-llave-magnetica-3-8-x-65-mm-rerar-3183', '3183', 'BOCA LLAVE MAGNETICA 3/8 X 65 MM "RERAR"', 2500, '$ 2.500,00', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 66, '{"image","stock","description"}'),
   ('3182', 'boca-llave-magnetica-5-16-x-65-mm-rerar-3182', '3182', 'BOCA LLAVE MAGNETICA 5/16 X 65 MM "RERAR"', 1999.99, '$ 1.999,99', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 67, '{"image","stock","description"}'),
   ('3591', 'bomba-centrifuga-autocebante-1hp-bpa610-25-3591', '3591', 'BOMBA CENTRIFUGA AUTOCEBANTE 1HP - BPA610/25', 109999.92, '$ 109.999,92', 'Hidrolavado y bombas', 'GLADIATOR', '/products/catalog/3591-bpa610-25.webp', '{"/products/catalog/3591-bpa610-25.webp"}', 0, 5, 3, true, false, 'Bomba Centrífuga Autocebante Gladiator Master 1 HP BPA610/25. Voltaje-frecuencia: 220v ~ 50hz. Potencia: 1hp (750w). Diámetro de entrada y salida: 1" x 1". Altura manométrica máx.: 20m. Velocidad en vacío: n₀=2850/min. Temperatura ambiente máx.: 40&deg;c. Temperatura de agua máx.: 90&deg;c. Succión máxima: 8m. Caudal máximo: 90l/min. Tipo de aislación: clase i. índice de protección: ip44. Peso: 11kg.', '{}', 'google-sheet', 68, '{"stock"}'),
-  ('3590', 'bomba-elevadora-de-presion-3en1-evp818-43-1-3590', '3590', 'BOMBA ELEVADORA DE PRESION 3EN1 - EVP818/43-1', 64900.27, '$ 64.900,27', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 69, '{"image","stock","description"}'),
+  ('3590', 'bomba-elevadora-de-presion-3en1-evp818-43-1-3590', '3590', 'BOMBA ELEVADORA DE PRESION 3EN1 - EVP818/43-1', 64900.27, '$ 64.900,27', 'Hidrolavado y bombas', 'GLADIATOR', '/products/catalog/3590-evp818-43-1.webp', '{"/products/catalog/3590-evp818-43-1.webp","/products/catalog/3590-evp818-43-1-ficha.webp"}', 0, 5, 3, false, false, 'Elevadora de presión 3 en 1 GLADIATOR EVP818/43-1.
+
+Datos técnicos:
+• Voltaje-frecuencia: Input: 100V - 240V ~ 50-60Hz · Output: 24V - 4A
+• Potencia: Nivel 1: 50W · Nivel 2: 65W · Nivel 3: 80W
+• Diámetro de entrada/salida: 3/4" x 3/4"
+• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min
+• Máxima altura manométrica: Nivel 1: 12m · Nivel 2: 15m · Nivel 3: 20m
+• Flujo máximo: Nivel 1: 25L/min · Nivel 2: 28L/min · Nivel 3: 32L/min
+• Máxima temperatura ambiente: 40°C
+• Máxima temperatura del agua: 0° - 90°C
+• Clase de aislación: IP65
+• Peso: 1,7kg - 3,75lb
+
+Contenido: 1 elevador de presión 3 en 1, 1 adaptador AC/DC, 4 conectores.', '{}', 'google-sheet', 69, '{"stock"}'),
   ('1779', 'bomba-periferica-1-2-hp-energy-p12-2-25-1779', '1779', 'BOMBA PERIFERICA 1/2 HP ENERGY - P12/2/25', 35000.05, '$ 35.000,05', 'Hidrolavado y bombas', 'ENERGY', '/products/catalog/1779-p12-2-25.webp', '{"/products/catalog/1779-p12-2-25.webp","/products/catalog/1779-p12-2-25-ficha.webp"}', 0, 5, 3, false, false, 'Electrobomba periférica ENERGY P12/2/25.
 
 Datos técnicos:
@@ -126,8 +140,44 @@ Datos técnicos:
 • Peso: 13,8kg - 30,42lb
 
 Contenido: 1 bomba sumergible de pozo profundo, 1 cable de 1,5 m.', '{}', 'google-sheet', 72, '{"stock"}'),
-  ('3394', 'bomba-sumergible-pozo-profundo-1-5-hp-bpp886-1-25-3394', '3394', 'BOMBA SUMERGIBLE POZO PROFUNDO 1,5 HP BPP886/1/25', 290000.63, '$ 290.000,63', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 73, '{"image","stock","description"}'),
-  ('3395', 'bomba-sumergible-pozo-profundo-2-hp-bpp8115-1-25-3395', '3395', 'BOMBA SUMERGIBLE POZO PROFUNDO 2 HP BPP8115/1/25', 345000.14, '$ 345.000,14', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 74, '{"image","stock","description"}'),
+  ('3394', 'bomba-sumergible-pozo-profundo-1-5-hp-bpp886-1-25-3394', '3394', 'BOMBA SUMERGIBLE POZO PROFUNDO 1,5 HP BPP886/1/25', 290000.63, '$ 290.000,63', 'Hidrolavado y bombas', 'GLADIATOR', '/products/catalog/3394-bpp886-1-25.webp', '{"/products/catalog/3394-bpp886-1-25.webp","/products/catalog/3394-bpp886-1-25-ficha.webp"}', 0, 5, 3, false, false, 'Bomba sumergible de pozo profundo GLADIATOR BPP886/1/25.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz
+• Potencia: 1 1/2HP - 1,12kW
+• Cable plano: 2,5mm² x 4
+• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min
+• Largo de cable: 1,5m
+• Caudal: 2 - 4m³/h
+• Rango de altura: 43 - 78m
+• Profundidad máxima: 86m
+• Longitud del estator: ø 92 x 150mm
+• Caño de descarga: 1 1/4"
+• Eje recto: 45# + 304#
+• Cantidad de etapas: 12
+• Tipo de aislación: Clase I
+• Peso: 15,5kg - 34,17lb
+
+Contenido: 1 bomba sumergible de pozo profundo, 1 cable de 1,5 m.', '{}', 'google-sheet', 73, '{"stock"}'),
+  ('3395', 'bomba-sumergible-pozo-profundo-2-hp-bpp8115-1-25-3395', '3395', 'BOMBA SUMERGIBLE POZO PROFUNDO 2 HP BPP8115/1/25', 345000.14, '$ 345.000,14', 'Hidrolavado y bombas', 'GLADIATOR', '/products/catalog/3395-bpp8115-1-25.webp', '{"/products/catalog/3395-bpp8115-1-25.webp","/products/catalog/3395-bpp8115-1-25-ficha.webp"}', 0, 5, 3, false, false, 'Bomba sumergible de pozo profundo GLADIATOR BPP8115/1/25.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz
+• Potencia: 2HP - 1,49kW
+• Cable plano: 4mm² x 4
+• Velocidad en vacío: 50Hz: 2850/min · 60Hz: 3450/min
+• Largo de cable: 1,5m
+• Caudal: 2 - 4m³/h
+• Rango de altura: 58 - 101m
+• Profundidad máxima: 115m
+• Longitud del estator: ø 92 x 200mm
+• Caño de descarga: 1 1/4"
+• Eje recto: 45# + 304#
+• Cantidad de etapas: 16
+• Tipo de aislación: Clase I
+• Peso: 18,5kg - 40,79lb
+
+Contenido: 1 bomba sumergible de pozo profundo, 1 cable de 1,5 m.', '{}', 'google-sheet', 74, '{"stock"}'),
   ('3495', 'bomba-trasvasadora-de-liquidos-pvc-3495', '3495', 'BOMBA TRASVASADORA DE LIQUIDOS PVC', 2500, '$ 2.500,00', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 75, '{"image","stock","description"}'),
   ('3404', 'bordeadora-20v-b9300-20c1-3404', '3404', 'BORDEADORA 20V B9300/20C1', 200000.61, '$ 200.000,61', 'Jardín', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 76, '{"image","stock","description"}'),
   ('3519', 'bordeadora-300mm-550w-be612-220-3519', '3519', 'BORDEADORA 300MM 550W BE612/220', 85000.03, '$ 85.000,03', 'Jardín', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 77, '{"image","stock","description"}'),
@@ -163,12 +213,91 @@ Datos técnicos:
 • Peso: 50kg - 110,23lb
 
 Contenido: 1 compresor directo vertical sin aceite.', '{}', 'google-sheet', 94, '{"stock"}'),
-  ('3685', 'compresor-160-lts-sin-aceite-8hp-cesa8160-25-3685', '3685', 'COMPRESOR 160 LTS SIN ACEITE 8HP - CESA8160/25', 769998.59, '$ 769.998,59', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 95, '{"image","stock","description"}'),
-  ('3480', 'compresor-24-lts-s-aceite-1-5-hp-cesa824-25-3480', '3480', 'COMPRESOR 24 LTS S/ ACEITE 1,5 HP CESA824/25', 149800.34, '$ 149.800,34', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 96, '{"image","stock","description"}'),
+  ('3685', 'compresor-160-lts-sin-aceite-8hp-cesa8160-25-3685', '3685', 'COMPRESOR 160 LTS SIN ACEITE 8HP - CESA8160/25', 769998.59, '$ 769.998,59', 'Compresores y neumática', 'GLADIATOR', '/products/catalog/3685-cesa8160-25.webp', '{"/products/catalog/3685-cesa8160-25.webp","/products/catalog/3685-cesa8160-25-ficha.webp"}', 0, 5, 3, false, false, 'Compresor directo sin aceite GLADIATOR CESA8160/25.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 8HP / 6000W
+• Velocidad en vacío: 2850/min
+• Caudal: 1016L/min
+• Capacidad de tanque: 160L
+• Presión: 8bar - 115PSI
+• Cilindro: 63,7mm x 8
+• Estator: 118 x 62 x 160P x 4
+• Nivel de ruido: 78db
+• Aislación: Clase I
+• Peso: 75kg - 165,35lb
+• Tiempo de llenado de tanque: 2 minutos, 40 segundos
+
+Contenido: 1 compresor directo sin aceite.', '{}', 'google-sheet', 95, '{"stock"}'),
+  ('3480', 'compresor-24-lts-s-aceite-1-5-hp-cesa824-25-3480', '3480', 'COMPRESOR 24 LTS S/ ACEITE 1,5 HP CESA824/25', 149800.34, '$ 149.800,34', 'Compresores y neumática', 'GLADIATOR', '/products/catalog/3480-cesa824-25.webp', '{"/products/catalog/3480-cesa824-25.webp","/products/catalog/3480-cesa824-25-ficha.webp"}', 0, 5, 3, false, false, 'Compresor directo sin aceite GLADIATOR CESA824/25.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 60Hz
+• Potencia: 1,5HP / 1100W
+• Velocidad en vacío: 2850/min
+• Caudal: 167L/min
+• Capacidad de tanque: 24L
+• Presión: 8bar - 115PSI
+• Cilindro: 57,8mm x 2
+• Estator: 110 x 58 x 140P
+• Nivel de ruido: 73db
+• Peso: 18kg - 39,68lb
+• Tiempo de llenado de tanque: 1 minuto, 40 segundos
+
+Contenido: 1 compresor directo sin aceite.', '{}', 'google-sheet', 96, '{"stock"}'),
   ('3481', 'compresor-40-lts-s-aceite-1-5-hp-cesa840-251-5-3481', '3481', 'COMPRESOR 40 LTS S/ ACEITE 1,5 HP CESA840/251,5', 169799.52, '$ 169.799,52', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 97, '{"image","stock","description"}'),
-  ('3482', 'compresor-40-lts-s-aceite-2-hp-cesa840-252-3482', '3482', 'COMPRESOR 40 LTS S/ ACEITE 2 HP CESA840/252', 189900.44, '$ 189.900,44', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 98, '{"image","stock","description"}'),
-  ('3483', 'compresor-50-lts-s-aceite-4-hp-cesa850-25-3483', '3483', 'COMPRESOR 50 LTS S/ ACEITE 4 HP CESA850/25', 298000, '$ 298.000,00', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 99, '{"image","stock","description"}'),
-  ('3479', 'compresor-9-lts-s-aceite-1-hp-cesa809-25-3479', '3479', 'COMPRESOR 9 LTS S/ ACEITE 1 HP CESA809/25', 125000.29, '$ 125.000,29', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 100, '{"image","stock","description"}'),
+  ('3482', 'compresor-40-lts-s-aceite-2-hp-cesa840-252-3482', '3482', 'COMPRESOR 40 LTS S/ ACEITE 2 HP CESA840/252', 189900.44, '$ 189.900,44', 'Compresores y neumática', 'GLADIATOR', '/products/catalog/3482-cesa840-252.webp', '{"/products/catalog/3482-cesa840-252.webp","/products/catalog/3482-cesa840-252-ficha.webp"}', 0, 5, 3, false, false, 'Compresor directo sin aceite GLADIATOR CESA840/252.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz
+• Potencia: 2HP / 1500W
+• Velocidad en vacío: 2850/min
+• Caudal: 264L/min
+• Capacidad de tanque: 40L
+• Presión: 8bar - 115PSI
+• Cilindro: 57,8mm x 2
+• Estator: 110 x 58 x 140P
+• Nivel de ruido: 78db
+• Aislación: Clase I
+• Peso: 24kg - 52,9lb
+• Tiempo de llenado de tanque: 2 minutos, 10 segundos
+
+Contenido: 1 compresor directo sin aceite.', '{}', 'google-sheet', 98, '{"stock"}'),
+  ('3483', 'compresor-50-lts-s-aceite-4-hp-cesa850-25-3483', '3483', 'COMPRESOR 50 LTS S/ ACEITE 4 HP CESA850/25', 298000, '$ 298.000,00', 'Compresores y neumática', 'GLADIATOR', '/products/catalog/3483-cesa850-25.webp', '{"/products/catalog/3483-cesa850-25.webp","/products/catalog/3483-cesa850-25-ficha.webp"}', 0, 5, 3, false, false, 'Compresor directo sin aceite GLADIATOR CESA850/25.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50Hz / 220V ~ 60Hz
+• Potencia: 4HP / 3000W
+• Velocidad en vacío: 2850/min
+• Caudal: 508L/min
+• Capacidad de tanque: 50L
+• Presión: 8bar - 115PSI
+• Cilindro: 63,7mm x 4
+• Estator: 118 x 62 x 160P x 2
+• Nivel de ruido: 78db
+• Aislación: Clase I
+• Peso: 44kg - 97lb
+• Tiempo de llenado de tanque: 1 minuto, 20 segundos
+
+Contenido: 1 compresor directo sin aceite.', '{}', 'google-sheet', 99, '{"stock"}'),
+  ('3479', 'compresor-9-lts-s-aceite-1-hp-cesa809-25-3479', '3479', 'COMPRESOR 9 LTS S/ ACEITE 1 HP CESA809/25', 125000.29, '$ 125.000,29', 'Compresores y neumática', 'GLADIATOR', '/products/catalog/3479-cesa809-25.webp', '{"/products/catalog/3479-cesa809-25.webp","/products/catalog/3479-cesa809-25-ficha.webp"}', 0, 5, 3, false, false, 'Compresor directo sin aceite GLADIATOR CESA809/25.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1,5HP / 1100W
+• Velocidad en vacío: 2850/min
+• Caudal: 167L/min
+• Capacidad de tanque: 9L
+• Presión: 8bar - 115PSI
+• Cilindro: 57,8mm x 2
+• Estator: 110 x 58 x 140P
+• Nivel de ruido: 73db
+• Aislación: Clase I
+• Peso: 15kg - 33,069lb
+• Tiempo de llenado de tanque: 39 segundos
+
+Contenido: 1 compresor directo sin aceite.', '{}', 'google-sheet', 100, '{"stock"}'),
   ('3499', 'compresor-inflador-linterna-2ah-bwir150-3499', '3499', 'COMPRESOR INFLADOR LINTERNA 2AH BWIR150', 40000.08, '$ 40.000,08', 'Compresores y neumática', 'BLACK & WHITE', '/products/catalog/3499-bwir150.webp', '{"/products/catalog/3499-bwir150.webp"}', 0, 5, 3, true, false, 'Compresor Inflador Black & White Con Linterna Recargable 2Ah BWIR150. Marca: Black & White. Voltaje: 12VDC - 7,5A. Presión máxima: 150 psi / 10.3 bar - 1000kpa. Largo de Manguera: 20cm. Temperatura de trabajo: -20C - +60C. Bateria: 2Ah. Peso: 560g- 1,23Ib. Contiene. 1 Compresor inflador con linterna recargable. 1 Adaptador de valvula de neumático. 1 Adaptador para pelota. 1 Adaptador para colchón inflable.', '{}', 'google-sheet', 101, '{"stock"}'),
   ('1276', 'contador-de-billetes-1276', '1276', 'CONTADOR DE BILLETES', 74999.97, '$ 74.999,97', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 102, '{"image","stock","description"}'),
   ('3348', 'cort-cesped-1600w-gladiator-cp536-220-3348', '3348', 'CORT. CESPED 1600W GLADIATOR - CP536/220', 199799.3, '$ 199.799,30', 'Otros', 'GLADIATOR', '/promos/cortacesped-gladiator-1600w.jpg', '{"/promos/cortacesped-gladiator-1600w.jpg"}', 0, 5, 3, true, false, 'Cortacésped eléctrico Gladiator CP536/220 de 1600 W para mantenimiento de jardines.', '{}', 'google-sheet', 103, '{"stock"}'),
@@ -178,7 +307,23 @@ Contenido: 1 compresor directo vertical sin aceite.', '{}', 'google-sheet', 94, 
   ('3409', 'cort-cesped-5-hp-550mm-cpa1022g-3409', '3409', 'CORT. CESPED 5 HP 550MM CPA1022G', 824703.05, '$ 824.703,05', 'Otros', 'GLADIATOR', '/products/catalog/3409-cpa1022g.webp', '{"/products/catalog/3409-cpa1022g.webp"}', 0, 5, 3, true, false, 'Cortadora de Césped Gladiator Autopropulsada 5HP 55cm CPA1022G. Potencia: 5hp. Capacidad de corte:550mm (22&rdquo;). Capacidad de bolsa Recolectora:65L. Regulación de Altura: 6 Posiciones Monocomando. Posición 1: 25mm. Posición 2: 35mm. Posición 3: 45mm. Posición 4: 55mm. Posición 5: 65mm. Posición 6 : 75mm. Tamaño de ruedas. Delanteras : 200mm (8&rdquo;). Traseras: 300mm (12&rdquo;). Peso:35 KG.', '{}', 'google-sheet', 107, '{"stock"}'),
   ('3408', 'cort-cesped-5hp-457mm-cpa1020g-3408', '3408', 'CORT. CESPED 5HP 457MM CPA1020G', 564999.16, '$ 564.999,16', 'Otros', 'GLADIATOR', '/products/catalog/3408-cpa1020g.webp', '{"/products/catalog/3408-cpa1020g.webp"}', 0, 5, 3, true, false, 'Cortadora de Césped Gladiator Autopropulsada 5HP 46cm CPA1020G. Potencia: 5hp. Capacidad de corte: 457mm. Capacidad de Combustible: 0,8L. Capacidad de bolsa Recolectora: 50L. Regulación de Altura: 7 posiciones monocomando (25-70mm). Motor: 4 Tiempos. 1-Recolección. 2-Descarga trasera. 3-Triturado. 4-Descarga lateral. Chasis metálico de 18&rdquo; con cuchilla recta. Tamaño de ruedas. Delanteras: 175 (7&rdquo;). Traseras: (10&rdquo;). Peso: 28kg.', '{}', 'google-sheet', 108, '{"stock"}'),
   ('3405', 'cortacerco-20v-ccr922-20c1-3405', '3405', 'CORTACERCO 20V CCR922/20C1', 229999.8, '$ 229.999,80', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 109, '{"image","stock","description"}'),
-  ('3407', 'cortadora-de-cesped-a-bat-20v-cpr975-20c1-3407', '3407', 'CORTADORA DE CESPED A BAT 20V CPR975/20C1', 419998.13, '$ 419.998,13', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 110, '{"image","stock","description"}'),
+  ('3407', 'cortadora-de-cesped-a-bat-20v-cpr975-20c1-3407', '3407', 'CORTADORA DE CESPED A BAT 20V CPR975/20C1', 419998.13, '$ 419.998,13', 'Construcción', 'FOREST & GARDEN', '/products/catalog/3407-cpr975-20c1.webp', '{"/products/catalog/3407-cpr975-20c1.webp","/products/catalog/3407-cpr975-20c1-ficha.webp"}', 0, 5, 3, false, false, 'Cortadora de césped recargable FOREST & GARDEN CPR975/20C1.
+
+Datos técnicos:
+• Voltaje: 20V
+• Velocidad en vacío: 3200r/min
+• Largo máx. de corte: 330mm - 12"
+• Altura de corte: 5 niveles (25-75mm)
+• Volumen de caja de césped: 30L
+• Rueda frontal/trasera: 5,5" / 6,6"
+• Tensión nominal: 18V
+• Tensión máxima: 20V
+• Capacidad de batería: 4Ah
+• Cargador base: 4A
+• Tiempo de carga: 60 minutos
+• Peso: 13kg - 28,66lb
+
+Contenido: 1 cortadora de césped recargable, 1 batería de 20V - 4Ah, 1 cargador base de 4A.', '{}', 'google-sheet', 110, '{"stock"}'),
   ('3406', 'cortadora-de-cesped-a-bat-40v-cpr1075-40c1-3406', '3406', 'CORTADORA DE CESPED A BAT 40V CPR1075/40C1', 795799.75, '$ 795.799,75', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 111, '{"image","stock","description"}'),
   ('3411', 'cortadora-de-cesped-gladiator-18v-cargador-bat-3411', '3411', 'CORTADORA DE CESPED GLADIATOR 18V CARGADOR + BAT', 367999.24, '$ 367.999,24', 'Construcción', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 112, '{"image","stock","description"}'),
   ('3606', 'cortadora-de-concreto-3-5kw-74cc-cc1074-3606', '3606', 'CORTADORA DE CONCRETO 3.5KW 74CC - CC1074', 620001.8, '$ 620.001,80', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 113, '{"image","stock","description"}'),
@@ -186,10 +331,52 @@ Contenido: 1 compresor directo vertical sin aceite.', '{}', 'google-sheet', 94, 
   ('3672', 'cortadora-plasma-40-amp-ip807-15-220-3672', '3672', 'CORTADORA PLASMA 40 AMP - IP807/15/220', 439998.23, '$ 439.998,23', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 115, '{"image","stock","description"}'),
   ('3673', 'cortadora-plasma-40-amp-ipc807-220-3673', '3673', 'CORTADORA PLASMA 40 AMP - IPC807/220', 820003.03, '$ 820.003,03', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 116, '{"image","stock","description"}'),
   ('3380', 'cortadora-sensitiva-energy-355mm-2200w-cos14-2-220-3380', '3380', 'CORTADORA SENSITIVA ENERGY 355MM 2200W COS14/2/220', 143174.79, '$ 143.174,79', 'Construcción', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 117, '{"image","stock","description"}'),
-  ('3385', 'cutter-57-mm-energy-ct5-3385', '3385', 'CUTTER 57 MM ENERGY CT5', 2500, '$ 2.500,00', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 118, '{"image","stock","description"}'),
-  ('3387', 'cutter-58-mm-energy-ct7-3387', '3387', 'CUTTER 58 MM ENERGY CT7', 3499.99, '$ 3.499,99', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 119, '{"image","stock","description"}'),
-  ('3388', 'cutter-70-mm-energy-ct9-3388', '3388', 'CUTTER 70 MM ENERGY CT9', 9800.02, '$ 9.800,02', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 120, '{"image","stock","description"}'),
-  ('3389', 'cutter-74-mm-energy-ct10-3389', '3389', 'CUTTER 74 MM ENERGY CT10', 14500.04, '$ 14.500,04', 'Herramientas manuales', 'ENERGY', '/products/catalog/3389-ct10-gbs.webp', '{"/products/catalog/3389-ct10-gbs.webp","/products/specs/3389-ct10-gbs-ficha.webp"}', 0, 5, 3, false, false, 'Cúter Energy CT10 con cuerpo de aleación de zinc y hoja de acero al carbón. Utiliza hojas de 60 mm de largo y 19 mm de ancho, e incorpora funciones auto-lock y auto retráctil. Incluye dos hojas de corte adicionales guardadas en un compartimiento. Apto para papel, cartón, poliestireno expandido, plástico fino, vinilos, cintas, goma EVA, telas, alfombras y cueros.', '{}', 'google-sheet', 121, '{"stock"}'),
+  ('3385', 'cutter-57-mm-energy-ct5-3385', '3385', 'CUTTER 57 MM ENERGY CT5', 2500, '$ 2.500,00', 'Herramientas manuales', 'ENERGY', '/products/catalog/3385-ct5.webp', '{"/products/catalog/3385-ct5.webp","/products/catalog/3385-ct5-ficha.webp"}', 0, 5, 3, false, false, 'Cutter ENERGY CT5.
+
+Datos técnicos:
+• Largo de hoja: 100mm
+• Ancho de hoja: 18mm
+• Peso del cutter: 62,9g - 1,39lb
+• Peso de la hoja: 6,5g - 0,14lb
+• Material: Acero al carbón
+
+Contenido: 1 cutter.', '{}', 'google-sheet', 118, '{"stock"}'),
+  ('3387', 'cutter-58-mm-energy-ct7-3387', '3387', 'CUTTER 58 MM ENERGY CT7', 3499.99, '$ 3.499,99', 'Herramientas manuales', 'ENERGY', '/products/catalog/3387-ct7.webp', '{"/products/catalog/3387-ct7.webp","/products/catalog/3387-ct7-ficha.webp"}', 0, 5, 3, false, false, 'Cutter ENERGY CT7.
+
+Datos técnicos:
+• Largo de hoja: 100mm
+• Ancho de hoja: 18mm
+• Peso del cutter: 76,9g - 1,69lb
+• Peso de la hoja: 6,5g - 0,14lb
+• Material: Acero al carbón
+
+Contenido: 1 cutter.', '{}', 'google-sheet', 119, '{"stock"}'),
+  ('3388', 'cutter-70-mm-energy-ct9-3388', '3388', 'CUTTER 70 MM ENERGY CT9', 9800.02, '$ 9.800,02', 'Herramientas manuales', 'ENERGY', '/products/catalog/3388-ct9.webp', '{"/products/catalog/3388-ct9.webp","/products/catalog/3388-ct9-ficha.webp"}', 0, 5, 3, false, false, 'Cutter ENERGY CT9.
+
+Datos técnicos:
+• Largo de hoja: 61mm
+• Ancho de hoja: 19mm
+• Peso del cutter: 138,4g - 0,30lb
+• Peso de la hoja: 3,7g - 0,008lb
+• Material: Acero al carbón
+• Cuerpo: Aleación de aluminio
+• Funciones: Auto-lock
+• Hojas adicionales: Incluye 2 hojas de corte en compartimiento
+
+Contenido: 1 cutter.', '{}', 'google-sheet', 120, '{"stock"}'),
+  ('3389', 'cutter-74-mm-energy-ct10-3389', '3389', 'CUTTER 74 MM ENERGY CT10', 14500.04, '$ 14.500,04', 'Herramientas manuales', 'ENERGY', '/products/catalog/3389-ct10.webp', '{"/products/catalog/3389-ct10.webp","/products/catalog/3389-ct10-ficha.webp"}', 0, 5, 3, false, false, 'Cutter ENERGY CT10.
+
+Datos técnicos:
+• Largo de hoja: 60mm
+• Ancho de hoja: 19mm
+• Peso del cutter: 206,8g - 0,45lb
+• Peso de la hoja: 3,7g - 0,008lb
+• Material: Acero al carbón
+• Cuerpo: Aleación de zinc
+• Funciones: Auto-lock y auto retráctil
+• Hojas adicionales: Incluye 2 hojas de corte en compartimiento
+
+Contenido: 1 cutter.', '{}', 'google-sheet', 121, '{"stock"}'),
   ('3502', 'desmalezadora-4-en-1-52cc-energy-bc524-1-3502', '3502', 'DESMALEZADORA 4 EN 1 52CC ENERGY BC524-1', 340000.97, '$ 340.000,97', 'Jardín', 'ENERGY', '/products/DESMALEZADORA.png', '{"/products/DESMALEZADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 122, '{"stock","description"}'),
   ('2484', 'desmalezadora-52-cc-energy-2484', '2484', 'DESMALEZADORA 52 CC ENERGY', 120000.42, '$ 120.000,42', 'Jardín', 'ENERGY', '/products/DESMALEZADORA.png', '{"/products/DESMALEZADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 123, '{"stock","description"}'),
   ('3901', 'desmalezadora-52cc-dg852-1-3901', '3901', 'DESMALEZADORA 52CC - DG852/1', 110000, '$ 110.000,00', 'Jardín', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 124, '{"image","stock","description"}'),
@@ -229,11 +416,55 @@ Contenido: 1 compresor directo vertical sin aceite.', '{}', 'google-sheet', 94, 
   ('3564', 'disco-flap-oxido-de-zicornio-180-mm-grano-60-7-3564', '3564', 'DISCO FLAP OXIDO DE ZICORNIO 180 MM GRANO 60 7"', 3499.99, '$ 3.499,99', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 158, '{"image","stock","description"}'),
   ('3565', 'disco-flap-oxido-de-zicornio-180-mm-grano-80-7-3565', '3565', 'DISCO FLAP OXIDO DE ZICORNIO 180 MM GRANO 80 7"', 3499.99, '$ 3.499,99', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 159, '{"image","stock","description"}'),
   ('3068', 'disco-multiuso-gladiator-3068', '3068', 'DISCO MULTIUSO GLADIATOR', 8500.01, '$ 8.500,01', 'Accesorios y consumibles', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 160, '{"image","stock","description"}'),
-  ('3568', 'disco-para-granito-115x22-2mm-deg10115-3568', '3568', 'DISCO PARA GRANITO 115X22,2MM - DEG10115', 8500.01, '$ 8.500,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 161, '{"image","stock","description"}'),
-  ('369', 'disco-para-madera-115-mm-dm8115-369', '369', 'DISCO PARA MADERA 115 MM DM8115', 9500.01, '$ 9.500,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 162, '{"image","stock","description"}'),
+  ('3568', 'disco-para-granito-115x22-2mm-deg10115-3568', '3568', 'DISCO PARA GRANITO 115X22,2MM - DEG10115', 8500.01, '$ 8.500,01', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3568-deg10115.webp', '{"/products/catalog/3568-deg10115.webp","/products/catalog/3568-deg10115-ficha.webp"}', 0, 5, 3, false, false, 'Disco premium diamantado continuo para granito GLADIATOR DEG10115.
+
+Datos técnicos:
+• Medida: 115 x 1,4 x 22,2mm
+• Medida en pulgadas: 4 1/2" x 3/64" x 7/8"
+• Velocidad máxima: 13200 RPM
+• Buje: 7/8"
+• Material de corte: Granito y porcelanato
+• Uso: Amoladoras angulares, corte recto
+• Empaque: Blister (1 unidad)
+
+Contenido: 1 disco diamantado continuo.', '{}', 'google-sheet', 161, '{"stock"}'),
+  ('369', 'disco-para-madera-115-mm-dm8115-369', '369', 'DISCO PARA MADERA 115 MM DM8115', 9500.01, '$ 9.500,01', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/369-dm8115.webp', '{"/products/catalog/369-dm8115.webp","/products/catalog/369-dm8115-ficha.webp"}', 0, 5, 3, false, false, 'Disco premium diamantado multipropósito para madera GLADIATOR DM8115.
+
+Datos técnicos:
+• Medida: 115 x 1,2 x 22,2mm
+• Medida en pulgadas: 4 1/2" x 3/64" x 7/8"
+• Velocidad máxima: 13300 RPM
+• Grano: #50
+• Velocidad: 80m/s
+• Materiales: Contrachapado, laminado, aglomerado y plástico
+• Uso: Amoladoras angulares, corte recto
+• Empaque: Blister (1 unidad)
+
+Contenido: 1 disco diamantado para madera.', '{}', 'google-sheet', 162, '{"stock"}'),
   ('3567', 'disco-para-madera-180-mm-7-dm8180-3567', '3567', 'DISCO PARA MADERA 180 MM 7" - DM8180', 19799.98, '$ 19.799,98', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 163, '{"image","stock","description"}'),
-  ('3473', 'disco-para-porcelanato-115-x-22-2-mm-dep10115-3473', '3473', 'DISCO PARA PORCELANATO 115 X 22,2 MM DEP10115', 9999.98, '$ 9.999,98', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 164, '{"image","stock","description"}'),
-  ('3410', 'disco-para-vidrio-115-x-1-6-dcv8115-2-3410', '3410', 'DISCO PARA VIDRIO 115 X 1,6 - DCV8115/2', 9500.01, '$ 9.500,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 165, '{"image","stock","description"}'),
+  ('3473', 'disco-para-porcelanato-115-x-22-2-mm-dep10115-3473', '3473', 'DISCO PARA PORCELANATO 115 X 22,2 MM DEP10115', 9999.98, '$ 9.999,98', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3473-dep10115.webp', '{"/products/catalog/3473-dep10115.webp","/products/catalog/3473-dep10115-ficha.webp"}', 0, 5, 3, false, false, 'Disco premium diamantado continuo para porcelanato GLADIATOR DEP10115.
+
+Datos técnicos:
+• Medida: 115 x 1,4 x 22,2mm
+• Medida en pulgadas: 4 1/2" x 3/64" x 7/8"
+• Velocidad máxima: 13200 RPM
+• Buje: 7/8"
+• Material de corte: Porcelanato y granito
+• Uso: Amoladoras angulares, corte recto
+• Empaque: Blister (1 unidad)
+
+Contenido: 1 disco diamantado continuo.', '{}', 'google-sheet', 164, '{"stock"}'),
+  ('3410', 'disco-para-vidrio-115-x-1-6-dcv8115-2-3410', '3410', 'DISCO PARA VIDRIO 115 X 1,6 - DCV8115/2', 9500.01, '$ 9.500,01', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3410-dcv8115-2.webp', '{"/products/catalog/3410-dcv8115-2.webp","/products/catalog/3410-dcv8115-2-ficha.webp"}', 0, 5, 3, false, false, 'Disco premium diamantado continuo para vidrio GLADIATOR DCV8115/2.
+
+Datos técnicos:
+• Medida: 115 x 22,2mm
+• Medida en pulgadas: 4 1/2" x 7/8"
+• Velocidad máxima: 13300 RPM
+• Material de corte: Vidrio
+• Uso: Amoladoras angulares, corte recto
+• Empaque: Blister (1 unidad)
+
+Contenido: 1 disco diamantado continuo.', '{}', 'google-sheet', 165, '{"stock"}'),
   ('3664', 'electrodo-2-mm-x-1-kg-energy-er200-4-1b-3664', '3664', 'ELECTRODO 2 MM X 1 KG ENERGY - ER200/4-1B', 4999.99, '$ 4.999,99', 'Soldadura', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 166, '{"image","stock","description"}'),
   ('3109', 'electrodo-2-mm-x-5-kg-energy-3109', '3109', 'ELECTRODO 2 MM X 5 KG ENERGY', 19999.96, '$ 19.999,96', 'Soldadura', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 167, '{"image","stock","description"}'),
   ('3686', 'electrodo-2-5-mm-x-1-kg-3686', '3686', 'ELECTRODO 2,5 MM X 1 KG', 6000.01, '$ 6.000,01', 'Soldadura', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 168, '{"image","stock","description"}'),
@@ -310,7 +541,19 @@ Contenido: 1 hidrolavadora eléctrica, 1 manguera de 5 m, 1 lanza, 1 conector de
   ('3649', 'juego-de-tubos-1-2-x-22-jt10221-2-3649', '3649', 'JUEGO DE TUBOS 1/2" X 22 - JT10221/2', 50000, '$ 50.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3649-jt10221-2.webp', '{"/products/catalog/3649-jt10221-2.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 22 Piezas Gladiator 1/2" JT10221/2. Material: CRV. Cromo vanadio. 15 tubos: 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 / 19 / 22 / 24 / 30 / 32 mm. 2 tubos para bujías: 16 mm y 21 mm. 1 trinquete de 72 dientes. 2 barras de extensión: 125 mm y 250 mm. 1 pieza de adaptador de 3 vías. 1 pieza de junta universal.', '{}', 'google-sheet', 225, '{"stock"}'),
   ('3650', 'juego-de-tubos-1-2-x-32-jt10321-2-3650', '3650', 'JUEGO DE TUBOS 1/2" X 32 - JT10321/2', 77999.96, '$ 77.999,96', 'Otros', 'GLADIATOR', '/products/catalog/3650-jt10321-2.webp', '{"/products/catalog/3650-jt10321-2.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 32 Piezas Gladiator 1/2" JT10321/2. Material: CRV. Cromo vanadio. Contenido. 19 tubos: 8 / 9 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 / 19 / 21 / 22 / 24 / 27 / 30 / 32 mm. 6 tubos de 12 puntas: 10 / 12 / 14 / 15 / 17 / 19 mm. 1 trinquete de 72 dientes. 2 barras de extensión: 125 mm y 250 mm. 1 adaptador de 3 vías. 2 tubos para bujías: 16 mm y 21 mm. 1 junta universal.', '{}', 'google-sheet', 226, '{"stock"}'),
   ('3648', 'juego-de-tubos-1-4-x-46-en-pulgadas-jt10461-4p-3648', '3648', 'JUEGO DE TUBOS 1/4" X 46 EN PULGADAS - JT10461/4P', 36999.86, '$ 36.999,86', 'Otros', 'GLADIATOR', '/products/catalog/3648-jt10461-4p.webp', '{"/products/catalog/3648-jt10461-4p.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 46 Piezas Gladiator 1/4" Pulagadas JT10461/4P. Material: CRV. Cromo vanadio. Contenido. Conductor de 1/4 pulgadas. 13 tubos: 5/32&rdquo; / 3/16&rdquo; / 7/32&rdquo; / 1/4&rdquo; / 9/32&rdquo; / 5/16&rdquo; / 11/32&rdquo; / 3/8&rdquo; / 7/16&rdquo; / 15/32&rdquo; / 1/2&rdquo; / 9/16&rdquo; / 19/32&rdquo. 21 puntas. TX (Torx): 10 / 15 / 20 / 25 / 30 / 40. HEX (Hexagonal): 3 / 4 / 5 / 6 / 7 / 8. PH (Phillips): 1 / 2 / 3. PZ (Pozidrive): 1 / 2 / 3. FD (Ranurado): 4 / 5.5 / 7. 1 junta universal. 1 trinquete de 72 dientes. 1 barra deslizante de 4-1/2&rdquo. 1 barra de extensión flexible de 6&rdquo. 1 mango giratorio de 6&rdquo. 1 adaptador hexagonal de 1-1/8&rdquo. 2 barras de extensión de 2&rdquo; y 4&rdquo. 4 llaves hexagonales: 1/16&rdquo; / 5/64&rdquo; / 3/32&rdquo; / 1/8&rdquo.', '{}', 'google-sheet', 227, '{"stock"}'),
-  ('3474', 'juego-de-tubos-1-4-x-46-cv-jt10461-4-3474', '3474', 'JUEGO DE TUBOS 1/4" X 46 - CV JT10461/4', 39800, '$ 39.800,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 228, '{"image","stock","description"}'),
+  ('3474', 'juego-de-tubos-1-4-x-46-cv-jt10461-4-3474', '3474', 'JUEGO DE TUBOS 1/4" X 46 - CV JT10461/4', 39800, '$ 39.800,00', 'Otros', 'GLADIATOR', '/products/catalog/3474-jt10461-4.webp', '{"/products/catalog/3474-jt10461-4.webp","/products/catalog/3474-jt10461-4-ficha.webp"}', 0, 5, 3, false, false, 'Juego de tubos de 46 piezas de 1/4" GLADIATOR JT10461/4.
+
+Datos técnicos:
+• Cantidad de piezas: 46
+• Material: CRV - Cromo vanadio
+• Conductor: 1/4 pulgadas
+• Tubos: 13 tubos: 4/4.5/5/5.5/6/7/8/9/10/11/12/13/14mm
+• Puntas: 21 puntas: TX 10/15/20/25/30/40, HEX 3/4/5/6/7/8, PH 1/2/3, PZ 1/2/3, FD 4/5.5/7
+• Trinquete: 72 dientes
+• Barras: 1 barra deslizante de 115mm, 1 barra de extensión flexible de 150mm, 2 barras de extensión de 50 y 100mm
+• Otros: 1 junta universal, 1 mango giratorio de 150mm, 1 adaptador hexagonal de 30mm, 4 llaves hexagonales 1.27/1.5/2/2.5mm
+
+Contenido: 46 piezas, 1 maletín plástico.', '{}', 'google-sheet', 228, '{"stock"}'),
   ('3336', 'juego-de-tubos-3-8-x-12-jt1012-3-8-3336', '3336', 'JUEGO DE TUBOS 3/8" X 12 - JT1012 3/8', 35000.11, '$ 35.000,11', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 229, '{"stock","image","description"}'),
   ('3855', 'kit-compresor-gardex-3-piezas-34650-3855', '3855', 'KIT COMPRESOR GARDEX 3 PIEZAS - 34650', 32500.01, '$ 32.500,01', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 230, '{"image","stock","description"}'),
   ('3854', 'kit-compresor-gardex-5-piezas-34651-3854', '3854', 'KIT COMPRESOR GARDEX 5 PIEZAS - 34651', 58500.16, '$ 58.500,16', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 231, '{"image","stock","description"}'),
@@ -340,13 +583,41 @@ Contenido: 1 hidrolavadora eléctrica, 1 manguera de 5 m, 1 lanza, 1 conector de
   ('3533', 'llave-de-impacto-20v-1000n-m-li121000-20k1-8-3533', '3533', 'LLAVE DE IMPACTO 20V 1000N/M LI121000/20K1-8', 294000.78, '$ 294.000,78', 'Herramientas manuales', 'NEO NEXT', '/products/catalog/3533-li121000-20k1-8.webp', '{"/products/catalog/3533-li121000-20k1-8.webp"}', 0, 5, 3, true, false, 'Llave de Impacto NEO Next a Batería 20v 8Ah 1/2" 1000Nm LI121000/20K1-8. Velocidad en vacío. 0 - 1900r/min. 0 - 2500r/min. 0 - 2900r/min. Impacto por minutos. 0 - 1900bpm. 0 - 2500bpm. 0 - 2900bpm. Encastre: 1/2". Torque. 600N/m. 770N/m. 1000N/m. Torque máximo desajuste. 1100N/m. Tensión Nominal: 18V. Tensión Máxima: 20V. PESO: 3,44kg (7,58lb). Incluye. 1 Llave de impacto recargable. 1 Mango Auxiliar. 1 Baterías de 20V - 8Ah. 1 Cargador base de 8A. 1 Maletín plástico.', '{}', 'google-sheet', 255, '{"stock"}'),
   ('3618', 'llave-de-impacto-20v-1000nm-li121000-20c1-4-3618', '3618', 'LLAVE DE IMPACTO 20V 1000NM LI121000/20C1-4', 229999.96, '$ 229.999,96', 'Herramientas manuales', 'NEO NEXT', '/products/catalog/3618-li121000-20c1-4.webp', '{"/products/catalog/3618-li121000-20c1-4.webp"}', 0, 5, 3, true, false, 'Llave de Impacto NEO Next a Batería 20v 4Ah 1/2" 1000Nm LI121000/20C1-4. Velocidad en vacío. 0 - 1900r/min. 0 - 2500r/min. 0 - 2900r/min. Impacto por minutos. 0 - 1900bpm. 0 - 2500bpm. 0 - 2900bpm. Encastre: 1/2". Torque. 600N/m. 770N/m. 1000N/m. Torque máximo desajuste. 1100N/m. Tensión Nominal: 18V. Tensión Máxima: 20V. PESO: 2,8kg. Incluye. 1 Llave de impacto recargable. 1 Baterías de 20V - 4Ah. 1 Cargador base de 4A.', '{}', 'google-sheet', 256, '{"stock"}'),
   ('3619', 'llave-de-impacto-20v-1000nm-li121000-20k2-4-3619', '3619', 'LLAVE DE IMPACTO 20V 1000NM LI121000/20K2-4', 294000.11, '$ 294.000,11', 'Herramientas manuales', 'NEO NEXT', '/products/catalog/3619-li121000-20k2-4.webp', '{"/products/catalog/3619-li121000-20k2-4.webp"}', 0, 5, 3, true, false, 'Llave de Impacto NEO Next 2 Baterías 20v 4Ah 1/2" 1000Nm LI121000/20K2-4. Velocidad en vacío. 0 - 1900r/min. 0 - 2500r/min. 0 - 2900r/min. Impacto por minutos. 0 - 1900bpm. 0 - 2500bpm. 0 - 2900bpm. Encastre: 1/2". Torque. 600N/m. 770N/m. 1000N/m. Torque máximo desajuste. 1100N/m. Tensión Nominal: 18V. Tensión Máxima: 20V. PESO: 3,3kg. Incluye. 1 Llave de impacto recargable. 2 Baterías de 20V - 4Ah. 1 Cargador base de 4A. 1 Maletín plástico.', '{}', 'google-sheet', 257, '{"stock"}'),
-  ('3620', 'llave-de-impacto-20v-1600nm-li121600-20c14-3620', '3620', 'LLAVE DE IMPACTO 20V 1600NM LI121600/20C14', 335000.38, '$ 335.000,38', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 258, '{"image","stock","description"}'),
+  ('3620', 'llave-de-impacto-20v-1600nm-li121600-20c14-3620', '3620', 'LLAVE DE IMPACTO 20V 1600NM LI121600/20C14', 335000.38, '$ 335.000,38', 'Herramientas manuales', 'NEO NEXT', '/products/catalog/3620-li121600-20c14.webp', '{"/products/catalog/3620-li121600-20c14.webp","/products/catalog/3620-li121600-20c14-ficha.webp"}', 0, 5, 3, false, false, 'Llave de impacto recargable Brigada 20V NEO NEXT LI121600/20C14.
+
+Datos técnicos:
+• Velocidad en vacío: 0-900 / 0-1200 / 0-1700 r/min
+• Impactos por minuto: 0-1400 / 0-1900 / 0-2200 bpm
+• Encastre: 3/4"
+• Torque: 800 / 1100 / 1600 N/m
+• Torque máx. (breakaway): 2000N/m
+• Tensión nominal: 18V
+• Tensión máxima: 20V
+• Cargador base: 4A
+• Batería: 20V - 4Ah
+• Peso: 4,3kg - 9,48lb
+
+Contenido: 1 llave de impacto recargable, 1 mango auxiliar, 1 batería de 20V - 4Ah, 1 cargador base de 4A.', '{}', 'google-sheet', 258, '{"stock"}'),
   ('3622', 'llave-de-impacto-20v-1600nm-li121600-20k18-3622', '3622', 'LLAVE DE IMPACTO 20V 1600NM LI121600/20K18', 398998.71, '$ 398.998,71', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 259, '{"image","stock","description"}'),
   ('3536', 'llave-de-impacto-20v-1600nm-li121600-20k24-3536', '3536', 'LLAVE DE IMPACTO 20V 1600NM LI121600/20K24', 390000.34, '$ 390.000,34', 'Herramientas manuales', 'NEO NEXT', '/products/catalog/3536-li121600-20k24.webp', '{"/products/catalog/3536-li121600-20k24.webp"}', 0, 5, 3, true, false, 'Llave de Impacto NEO Next 2 Baterías 20v 3/4" 1600Nm LI121600/20K2-4. Velocidad en vacío. 0 - 900r/min. 0 - 1200r/min. 0 - 1700r/min. Impactos por minuto. 0-1400bpm. 0-1800bpm. 0-2200bpm. Encastre: 3/4". Torque. 800N/m. 1100N/m. 1600N/m. Torque máx. (breakaway): 2000N/m. Tensión nominal: 18v. Tensión máxima: 20v. Peso: 4,8kg. INCLUYE. 1 Llave de impacto recargable. 1 Mango Auxiliar. 2 Baterías de 20V - 4Ah. 1 Cargador base de 4A. 1 Maletín plástico.', '{}', 'google-sheet', 260, '{"stock"}'),
   ('3733', 'llave-de-impacto-20v-420-n-m-neo-li1042-20c1-3733', '3733', 'LLAVE DE IMPACTO 20V 420 N/M NEO - LI1042/20C1', 114999.85, '$ 114.999,85', 'Herramientas manuales', 'NEO', '/products/catalog/3733-li1042-20c1.webp', '{"/products/catalog/3733-li1042-20c1.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 261, '{"stock","description"}'),
   ('3504', 'llave-de-impacto-20v-500n-m-li1050-20c1-3504', '3504', 'LLAVE DE IMPACTO 20V 500N/M LI1050/20C1', 130000.04, '$ 130.000,04', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 262, '{"image","stock","description"}'),
   ('3732', 'llave-de-impacto-20v-650-n-m-neo-li1065-20c1-3732', '3732', 'LLAVE DE IMPACTO 20V 650 N/M NEO -LI1065/20C1', 178000.7, '$ 178.000,70', 'Herramientas manuales', 'NEO', '/products/catalog/3732-li1065-20c1.webp', '{"/products/catalog/3732-li1065-20c1.webp"}', 0, 5, 3, true, false, 'Llave de impacto Neo LI1065/20C1 de 20 V y 650 N·m.', '{}', 'google-sheet', 263, '{"stock"}'),
-  ('3535', 'llave-de-impacto-20v-650n-m-li12650-20k2-4-3535', '3535', 'LLAVE DE IMPACTO 20V 650N/M LI12650/20K2-4', 244999.6, '$ 244.999,60', 'Herramientas manuales', 'NEO NEXT', '/products/catalog/3535-li12650-20k2-4-gbs.webp', '{"/products/catalog/3535-li12650-20k2-4-gbs.webp","/products/specs/3535-li12650-20k2-4-gbs-ficha.webp"}', 0, 5, 3, false, false, 'Llave de impacto recargable NEO Next LI12650/20K2-4 con motor brushless, encastre de 1/2 pulgada y tres niveles de torque: 350, 460 y 650 Nm. Alcanza un torque máximo de ruptura de 950 Nm, con velocidades de hasta 2600 rpm e impactos de hasta 2900 bpm. Tensión nominal de 18 V y máxima de 20 V. El kit incluye dos baterías de 4 Ah, cargador base de 4 A y maletín plástico.', '{}', 'google-sheet', 264, '{"stock"}'),
+  ('3535', 'llave-de-impacto-20v-650n-m-li12650-20k2-4-3535', '3535', 'LLAVE DE IMPACTO 20V 650N/M LI12650/20K2-4', 244999.6, '$ 244.999,60', 'Herramientas manuales', 'NEO NEXT', '/products/catalog/3535-li12650-20k2-4.webp', '{"/products/catalog/3535-li12650-20k2-4.webp","/products/catalog/3535-li12650-20k2-4-ficha.webp"}', 0, 5, 3, false, false, 'Llave de impacto recargable Brigada 20V NEO NEXT LI12650/20K2-4.
+
+Datos técnicos:
+• Velocidad en vacío: 0-1500 / 0-2000 / 0-2600 r/min
+• Impactos por minuto: 0-2200 / 0-2600 / 0-2900 bpm
+• Encastre: 1/2"
+• Torque: 350 / 460 / 650 N/m
+• Torque máx. (breakaway): 950N/m
+• Tensión nominal: 18V
+• Tensión máxima: 20V
+• Cargador base: 4A
+• Batería: 20V - 4Ah
+• Peso: 2,9kg - 6,39lb
+
+Contenido: 1 llave de impacto recargable, 2 baterías de 20V - 4Ah, 1 cargador base de 4A, 1 maletín plástico.', '{}', 'google-sheet', 264, '{"stock"}'),
   ('3616', 'llave-de-impacto-20v-650nm-li12650-20c1-4-3616', '3616', 'LLAVE DE IMPACTO 20V 650NM LI12650/20C1-4', 186000.29, '$ 186.000,29', 'Herramientas manuales', 'NEO', '/products/catalog/3616-li12650-20c1-4.webp', '{"/products/catalog/3616-li12650-20c1-4.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 265, '{"stock","description"}'),
   ('3539', 'llave-de-impacto-800w-gladiator-li1012-220-3539', '3539', 'LLAVE DE IMPACTO 800W GLADIATOR - LI1012/220', 94999.96, '$ 94.999,96', 'Herramientas manuales', 'GLADIATOR', '/products/catalog/3539-li1012-220.webp', '{"/products/catalog/3539-li1012-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 266, '{"stock","description"}'),
   ('2279', 'llave-torx-x-9-piezas-mediana-2279', '2279', 'LLAVE TORX X 9 PIEZAS MEDIANA', 7999.99, '$ 7.999,99', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 267, '{"image","stock","description"}'),
@@ -368,9 +639,32 @@ Contenido: 1 hidrolavadora eléctrica, 1 manguera de 5 m, 1 lanza, 1 conector de
   ('3845', 'manguera-para-compresor-x-10-mts-tmk20340-3845', '3845', 'MANGUERA PARA COMPRESOR X 10 MTS - TMK20340', 15000.03, '$ 15.000,03', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 283, '{"image","stock","description"}'),
   ('3844', 'manguera-para-compresor-x-5-mts-tmk20339-3844', '3844', 'MANGUERA PARA COMPRESOR X 5 MTS - TMK20339', 10000.02, '$ 10.000,02', 'Compresores y neumática', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 284, '{"image","stock","description"}'),
   ('3769', 'martillo-demoledor-15j-1050w-gladiat-md815-1-220k-3769', '3769', 'MARTILLO DEMOLEDOR 15J 1050W GLADIAT -MD815/1/220K', 185000.47, '$ 185.000,47', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 285, '{"image","stock","description"}'),
-  ('3895', 'martillo-demoledor-18j-energy-md618-220k-3895', '3895', 'MARTILLO DEMOLEDOR 18J ENERGY -MD618/220K', 130000, '$ 130.000,00', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 286, '{"image","stock","description"}'),
+  ('3895', 'martillo-demoledor-18j-energy-md618-220k-3895', '3895', 'MARTILLO DEMOLEDOR 18J ENERGY -MD618/220K', 130000, '$ 130.000,00', 'Herramientas manuales', 'ENERGY', '/products/catalog/3895-md618-220k.webp', '{"/products/catalog/3895-md618-220k.webp","/products/catalog/3895-md618-220k-ficha.webp"}', 0, 5, 3, false, false, 'Martillo demoledor ENERGY -MD618/220K.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1200W - 1,61HP
+• Energía de impacto: 18 joules
+• Impactos por minuto: 0-3600bpm
+• Encastre: SDS MAX
+• Sistema: Anti-vibración
+• Tipo de aislación: Clase II
+• Peso: 5,6kg - 12,35lb
+
+Contenido: 1 martillo demoledor, 1 cable de 2 metros, 1 enchufe VDE, 1 mango auxiliar, 1 cincel de punta MAX (18 x 320mm), 1 cincel plano MAX (18 x 320mm), 1 juego de carbones, 1 pomo de grasa, 1 llave de ajuste.', '{}', 'google-sheet', 286, '{"stock"}'),
   ('3768', 'martillo-demoledor-50j-1500w-gladiator-md850k-3768', '3768', 'MARTILLO DEMOLEDOR 50J 1500W GLADIATOR - MD850K', 345000, '$ 345.000,00', 'Herramientas manuales', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 287, '{"image","stock","description"}'),
-  ('3896', 'martillo-demoledor-55j-energy-md655-220k-3896', '3896', 'MARTILLO DEMOLEDOR 55J ENERGY - MD655/220K', 220000, '$ 220.000,00', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 288, '{"image","stock","description"}'),
+  ('3896', 'martillo-demoledor-55j-energy-md655-220k-3896', '3896', 'MARTILLO DEMOLEDOR 55J ENERGY - MD655/220K', 220000, '$ 220.000,00', 'Herramientas manuales', 'ENERGY', '/products/catalog/3896-md655-220k.webp', '{"/products/catalog/3896-md655-220k.webp","/products/catalog/3896-md655-220k-ficha.webp"}', 0, 5, 3, false, false, 'Martillo demoledor ENERGY MD655/220K.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1700W - 2,28HP
+• Energía de impacto: 55 joules
+• Impactos por minuto: 0-1900bpm
+• Encastre: SDS HEX
+• Tipo de aislación: Clase II
+• Peso: 14kg - 30,86lb
+
+Contenido: 1 martillo demoledor, 1 cable de 3 metros con enchufe VDE, 1 mango auxiliar, 1 cincel de punta HEX (30 x 410mm), 1 cincel plano HEX (30 x 410mm), 1 juego de carbones, 1 tubo de grasa, 1 maletín plástico.', '{}', 'google-sheet', 288, '{"stock"}'),
   ('3585', 'martillo-galponero-obra-27-ma27-3585', '3585', 'MARTILLO GALPONERO OBRA 27" - MA27', 9000, '$ 9.000,00', 'Herramientas manuales', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 289, '{"image","stock","description"}'),
   ('3366', 'martillo-galponero-obra-29-ma29-3366', '3366', 'MARTILLO GALPONERO OBRA 29" MA29', 10000, '$ 10.000,00', 'Herramientas manuales', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 290, '{"image","stock","description"}'),
   ('3365', 'martillo-galponero-obra-ma8-3365', '3365', 'MARTILLO GALPONERO OBRA MA8', 6800, '$ 6.800,00', 'Herramientas manuales', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 291, '{"image","stock","description"}'),
@@ -393,8 +687,38 @@ Contenido: 1 hidrolavadora eléctrica, 1 manguera de 5 m, 1 lanza, 1 conector de
   ('3814', 'mecha-rompe-troncos-32-x-90-mm-3814', '3814', 'MECHA ROMPE TRONCOS 32 X 90 MM', 13500, '$ 13.500,00', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 308, '{"image","stock","description"}'),
   ('3815', 'mecha-rompe-troncos-45-x-100-mm-3815', '3815', 'MECHA ROMPE TRONCOS 45 X 100 MM', 22000, '$ 22.000,00', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 309, '{"image","stock","description"}'),
   ('2350', 'mechas-para-madera-x-5-piezas-2350', '2350', 'MECHAS PARA MADERA X 5 PIEZAS', 5000, '$ 5.000,00', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 310, '{"image","stock","description"}'),
-  ('3647', 'medidor-laser-100-mts-mdl8100-1-3647', '3647', 'MEDIDOR LASER 100 MTS -MDL8100/1', 67999.77, '$ 67.999,77', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 311, '{"image","stock","description"}'),
-  ('3646', 'medidor-laser-50-mts-mdl850-1-3646', '3646', 'MEDIDOR LASER 50 MTS -MDL850/1', 50000.03, '$ 50.000,03', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 312, '{"image","stock","description"}'),
+  ('3647', 'medidor-laser-100-mts-mdl8100-1-3647', '3647', 'MEDIDOR LASER 100 MTS -MDL8100/1', 67999.77, '$ 67.999,77', 'Otros', 'GLADIATOR', '/products/catalog/3647-mdl8100-1.webp', '{"/products/catalog/3647-mdl8100-1.webp","/products/catalog/3647-mdl8100-1-ficha.webp"}', 0, 5, 3, false, false, 'Medidor de distancia láser GLADIATOR -MDL8100/1.
+
+Datos técnicos:
+• Rango de trabajo: 100m
+• Precisión en la medición: +/-2mm
+• Longitud de onda: 650nm (rojo)
+• Apagado automático: 150 segundos
+• Temperatura: 0° - 40°C
+• Batería: Pilas tipo AAA 1,5V (x2)
+• Medida del medidor: 112 x 50 x 25mm
+• Medida de ángulo: 90°
+• Clase de láser: Clase 2
+• Funciones: Distancia, área, volumen, medición continua, silencio, pitágoras y 99 historiales
+• Peso: 121g - 0,27lb
+
+Contenido: 1 medidor de distancia láser, 1 cinta de seguridad, 1 estuche.', '{}', 'google-sheet', 311, '{"stock"}'),
+  ('3646', 'medidor-laser-50-mts-mdl850-1-3646', '3646', 'MEDIDOR LASER 50 MTS -MDL850/1', 50000.03, '$ 50.000,03', 'Otros', 'GLADIATOR', '/products/catalog/3646-mdl850-1.webp', '{"/products/catalog/3646-mdl850-1.webp","/products/catalog/3646-mdl850-1-ficha.webp"}', 0, 5, 3, false, false, 'Medidor de distancia láser GLADIATOR -MDL850/1.
+
+Datos técnicos:
+• Rango de trabajo: 50m
+• Precisión en la medición: +/-2mm
+• Longitud de onda: 650nm (rojo)
+• Apagado automático: 150 segundos
+• Temperatura: 0° - 40°C
+• Batería: Pilas tipo AAA 1,5V (x2)
+• Medida del medidor: 112 x 50 x 25mm
+• Medida de ángulo: 90°
+• Clase de láser: Clase 2
+• Funciones: Distancia, área, volumen, medición continua, silencio, pitágoras y 99 historiales
+• Peso: 121g - 0,27lb
+
+Contenido: 1 medidor de distancia láser, 1 cinta de seguridad, 1 estuche.', '{}', 'google-sheet', 312, '{"stock"}'),
   ('549', 'membrana-autoadhesiva-10-cm-x-10-mts-549', '549', 'MEMBRANA AUTOADHESIVA 10 CM X 10 MTS', 12960.03, '$ 12.960,03', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 313, '{"image","stock","description"}'),
   ('550', 'membrana-autoadhesiva-15-cm-x-10-mts-550', '550', 'MEMBRANA AUTOADHESIVA 15 CM X 10 MTS', 18499.95, '$ 18.499,95', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 314, '{"image","stock","description"}'),
   ('551', 'membrana-autoadhesiva-25-cm-x-10-mts-551', '551', 'MEMBRANA AUTOADHESIVA 25 CM X 10 MTS', 30000.07, '$ 30.000,07', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 315, '{"image","stock","description"}'),
@@ -408,7 +732,22 @@ Contenido: 1 hidrolavadora eléctrica, 1 manguera de 5 m, 1 lanza, 1 conector de
   ('3538', 'mezclador-de-pintura-1500w-gladiator-mx900-220-3538', '3538', 'MEZCLADOR DE PINTURA 1500W GLADIATOR MX900/220', 137999.5, '$ 137.999,50', 'Construcción', 'GLADIATOR', '/products/catalog/3538-mx900-220.webp', '{"/products/catalog/3538-mx900-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 323, '{"stock","description"}'),
   ('3890', 'mezclador-de-pintura-18v-2-vel-mx818-18c1-3890', '3890', 'MEZCLADOR DE PINTURA 18V 2 VEL - MX818/18C1', 139799.79, '$ 139.799,79', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 324, '{"image","stock","description"}'),
   ('3246', 'mini-motosierra-electrosierra-inalambrica-garden-3246', '3246', 'MINI MOTOSIERRA - ELECTROSIERRA INALAMBRICA GARDEN', 64999.76, '$ 64.999,76', 'Jardín', 'Sin marca informada', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, true, false, 'Mini motosierra inalámbrica Garden para tareas de corte y mantenimiento exterior.', '{}', 'google-sheet', 325, '{"stock"}'),
-  ('3384', 'motobomba-a-gasolina-6-5hp-energy-gwp2-1-3384', '3384', 'MOTOBOMBA A GASOLINA 6,5HP ENERGY GWP2/1', 179800.07, '$ 179.800,07', 'Hidrolavado y bombas', 'ENERGY', '/products/catalog/3384-gwp2-1-gbs.webp', '{"/products/catalog/3384-gwp2-1-gbs.webp","/products/specs/3384-gwp2-1-gbs-ficha.webp"}', 0, 5, 3, false, false, 'Motobomba a gasolina Energy GWP2/1 con motor de 196 cc y potencia máxima de 6,5 HP. Posee entrada y salida de 2 pulgadas (50 mm), caudal de hasta 40 m³/h, altura máxima de 30 m y succión máxima de 7 m. Cuenta con arranque por retroceso, tanque de 3,6 L y un peso de 23 kg.', '{}', 'google-sheet', 326, '{"stock"}'),
+  ('3384', 'motobomba-a-gasolina-6-5hp-energy-gwp2-1-3384', '3384', 'MOTOBOMBA A GASOLINA 6,5HP ENERGY GWP2/1', 179800.07, '$ 179.800,07', 'Hidrolavado y bombas', 'ENERGY', '/products/catalog/3384-gwp2-1.webp', '{"/products/catalog/3384-gwp2-1.webp","/products/catalog/3384-gwp2-1-ficha.webp"}', 0, 5, 3, false, false, 'Motobomba a gasolina ENERGY GWP2/1.
+
+Datos técnicos:
+• Cilindrada: 196cc
+• Diámetro de entrada/salida: 50mm - 2"
+• Caudal: 40m³/h
+• Altura máxima: 30m
+• Succión máxima: 7m
+• Potencia máxima de motor: 6,5HP
+• Velocidad en vacío: 0-1500/min
+• Consumo de combustible: 313g/kW.h
+• Sistema de arranque: Retroceso
+• Capacidad de tanque: 3,6L
+• Peso: 23kg - 50,70lb
+
+Contenido: 1 motobomba a gasolina.', '{}', 'google-sheet', 326, '{"stock"}'),
   ('3383', 'motobomba-a-gasolina-7hp-energy-gwp3-3383', '3383', 'MOTOBOMBA A GASOLINA 7HP ENERGY GWP3', 185000.54, '$ 185.000,54', 'Hidrolavado y bombas', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 327, '{"image","stock","description"}'),
   ('3758', 'motosierra-25cc-espada-8-forest-mo925-8-3758', '3758', 'MOTOSIERRA 25CC ESPADA 8" FOREST - MO925/8', 145000.31, '$ 145.000,31', 'Jardín', 'FOREST & GARDEN', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 328, '{"stock","description"}'),
   ('3506', 'motosierra-460-mm-45-cc-knock-out-kom345-3506', '3506', 'MOTOSIERRA 460 MM 45 CC KNOCK OUT KOM345', 69999.8, '$ 69.999,80', 'Jardín', 'KNOCK OUT', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, true, false, 'Motosierra Knock Out KOM345 de 45 cc y corte de 460 mm.', '{}', 'google-sheet', 329, '{"stock"}'),
@@ -519,8 +858,36 @@ Contenido: 1 rotomartillo, 1 mango auxiliar, 1 cincel de punta, 1 cincel plano, 
   ('3501', 'rotomartillo-26mm-900w-energy-rh26-3-220-3501', '3501', 'ROTOMARTILLO 26MM 900W ENERGY - RH26/3/220', 69500.15, '$ 69.500,15', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 406, '{"image","stock","description"}'),
   ('3765', 'rotomartillo-32mm-1300w-6j-gladiator-rm1032-220k-3765', '3765', 'ROTOMARTILLO 32MM 1300W 6J GLADIATOR - RM1032/220K', 175000.18, '$ 175.000,18', 'Herramientas manuales', 'GLADIATOR', '/products/catalog/3765-rm1032-220k.webp', '{"/products/catalog/3765-rm1032-220k.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 407, '{"stock","description"}'),
   ('3766', 'rotomartillo-32mm-1500w-6j-gladiat-rm932m-25k-3766', '3766', 'ROTOMARTILLO 32MM 1500W 6J GLADIAT -RM932M/25K', 175000.18, '$ 175.000,18', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 408, '{"image","stock","description"}'),
-  ('3893', 'rotomartillo-32mm-1500w-energy-rh32-1-220k-3893', '3893', 'ROTOMARTILLO 32MM 1500W ENERGY - RH32/1/220K', 108000, '$ 108.000,00', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 409, '{"image","stock","description"}'),
-  ('3894', 'rotomartillo-40mm-1500w-energy-rh40-220k-3894', '3894', 'ROTOMARTILLO 40MM 1500W ENERGY - RH40/220K', 159800, '$ 159.800,00', 'Herramientas manuales', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 410, '{"image","stock","description"}'),
+  ('3893', 'rotomartillo-32mm-1500w-energy-rh32-1-220k-3893', '3893', 'ROTOMARTILLO 32MM 1500W ENERGY - RH32/1/220K', 108000, '$ 108.000,00', 'Herramientas manuales', 'ENERGY', '/products/catalog/3893-rh32-1-220k.webp', '{"/products/catalog/3893-rh32-1-220k.webp","/products/catalog/3893-rh32-1-220k-ficha.webp"}', 0, 5, 3, false, false, 'Rotomartillo ENERGY RH32/1/220K.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1500W - 2HP
+• Energía de impacto: 6 joules
+• Impactos por minuto: 0-4350bpm
+• Velocidad en vacío: 0-880/min
+• Perforación en concreto: 32mm - 1 17/64"
+• Perforación en madera: 42mm - 1 21/32"
+• Perforación en acero: 13mm - 1/2"
+• Encastre: SDS Plus
+• Tipo de aislación: Clase II
+• Peso: 5kg - 11lb
+
+Contenido: 1 rotomartillo, 1 cable de 2 metros, 1 enchufe VDE, 1 mango auxiliar, 1 cincel de punta (14 x 250mm), 1 cincel plano (14 x 250mm), 3 brocas (8/10/12mm), 1 juego de carbones, 1 atrapa polvo, 1 pomo de grasa, 1 llave de ajuste.', '{}', 'google-sheet', 409, '{"stock"}'),
+  ('3894', 'rotomartillo-40mm-1500w-energy-rh40-220k-3894', '3894', 'ROTOMARTILLO 40MM 1500W ENERGY - RH40/220K', 159800, '$ 159.800,00', 'Herramientas manuales', 'ENERGY', '/products/catalog/3894-rh40-220k.webp', '{"/products/catalog/3894-rh40-220k.webp","/products/catalog/3894-rh40-220k-ficha.webp"}', 0, 5, 3, false, false, 'Rotomartillo ENERGY RH40/220K.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1500W - 2HP
+• Energía de impacto: 8 joules
+• Impactos por minuto: 0-4200bpm
+• Velocidad en vacío: 0-620/min
+• Perforación en concreto: 40mm - 1 37/64"
+• Encastre: SDS MAX
+• Tipo de aislación: Clase II
+• Peso: 7kg - 15,5lb
+
+Contenido: 1 rotomartillo, 1 cable de 2 metros, 1 enchufe VDE, 1 mango auxiliar, 1 cincel de punta SDS (22 x 320mm), 1 cincel plano SDS (22 x 320mm), 1 juego de carbones, 1 pomo de grasa, 1 llave de ajuste.', '{}', 'google-sheet', 410, '{"stock"}'),
   ('3821', 'rotomartillo-42-mm-1600w-rm942-25k-3821', '3821', 'ROTOMARTILLO 42 MM 1600W - RM942/25K', 169999.87, '$ 169.999,87', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 411, '{"image","stock","description"}'),
   ('3753', 'router-1200w-energy-rr14-220-3753', '3753', 'ROUTER 1200W ENERGY - RR14/220', 135000.16, '$ 135.000,16', 'Otros', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 412, '{"image","stock","description"}'),
   ('3197', 'set-cepillo-para-taladro-x-5-piezas-34066-3197', '3197', 'SET CEPILLO PARA TALADRO X 5 PIEZAS (34066)', 5899.98, '$ 5.899,98', 'Taladros y atornilladores', 'Sin marca informada', '/products/TALADRO ATORNILLADOR.png', '{"/products/TALADRO ATORNILLADOR.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 413, '{"stock","description"}'),
@@ -528,7 +895,16 @@ Contenido: 1 rotomartillo, 1 mango auxiliar, 1 cincel de punta, 1 cincel plano, 
   ('3874', 'set-de-llave-allem-9-piezas-larga-tmk19033-3874', '3874', 'SET DE LLAVE ALLEM 9 PIEZAS LARGA - TMK19033', 9499.98, '$ 9.499,98', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 415, '{"image","stock","description"}'),
   ('3875', 'set-de-llave-torx-9-piezas-larga-tmk19036-3875', '3875', 'SET DE LLAVE TORX 9 PIEZAS LARGA - TMK19036', 9499.98, '$ 9.499,98', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 416, '{"image","stock","description"}'),
   ('3850', 'set-de-llaves-combinadas-6-piezas-02986-3850', '3850', 'SET DE LLAVES COMBINADAS 6 PIEZAS - 02986', 15999.98, '$ 15.999,98', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 417, '{"image","stock","description"}'),
-  ('3774', 'set-de-puntas-10-piezas-spp1010-3774', '3774', 'SET DE PUNTAS 10 PIEZAS - SPP1010', 8000.01, '$ 8.000,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 418, '{"image","stock","description"}'),
+  ('3774', 'set-de-puntas-10-piezas-spp1010-3774', '3774', 'SET DE PUNTAS 10 PIEZAS - SPP1010', 8000.01, '$ 8.000,01', 'Accesorios y consumibles', 'NEO', '/products/catalog/3774-spp1010.webp', '{"/products/catalog/3774-spp1010.webp","/products/catalog/3774-spp1010-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 10 piezas de 50mm NEO SPP1010.
+
+Datos técnicos:
+• Cantidad de piezas: 10
+• Medida: 50mm
+• Material: S2 + alto impacto
+• Segmento: Industrial
+• Phillips (PH): x10
+
+Contenido: 1 set de puntas de 10 piezas de 50mm, material S2 + alto impacto.', '{}', 'google-sheet', 418, '{"stock"}'),
   ('3773', 'set-de-puntas-19-piezas-spp1019-3773', '3773', 'SET DE PUNTAS 19 PIEZAS - SPP1019', 19500.06, '$ 19.500,06', 'Accesorios y consumibles', 'NEO', '/products/catalog/3773-spp1019.webp', '{"/products/catalog/3773-spp1019.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 419, '{"stock","description"}'),
   ('3770', 'set-de-puntas-25-piezas-sp25-3770', '3770', 'SET DE PUNTAS 25 PIEZAS - SP25', 14000.02, '$ 14.000,02', 'Accesorios y consumibles', 'ENERGY', '/products/catalog/3770-sp25.webp', '{"/products/catalog/3770-sp25.webp","/products/catalog/3770-sp25-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 25 piezas ENERGY SP25.
 
@@ -544,16 +920,105 @@ Datos técnicos:
 Contenido: Set de 25 piezas material S2, maletín plástico.', '{}', 'google-sheet', 420, '{"stock"}'),
   ('3775', 'set-de-puntas-25-piezas-spp1025-3775', '3775', 'SET DE PUNTAS 25 PIEZAS - SPP1025', 14800.03, '$ 14.800,03', 'Accesorios y consumibles', 'NEO', '/products/catalog/3775-spp1025.webp', '{"/products/catalog/3775-spp1025.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 421, '{"stock","description"}'),
   ('3569', 'set-de-puntas-25-puntas-spp825-3569', '3569', 'SET DE PUNTAS 25 PUNTAS - SPP825', 14800.02, '$ 14.800,02', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3569-spp825.webp', '{"/products/catalog/3569-spp825.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 422, '{"stock","description"}'),
-  ('3771', 'set-de-puntas-32-piezas-sp32-3771', '3771', 'SET DE PUNTAS 32 PIEZAS - SP32', 15000.02, '$ 15.000,02', 'Accesorios y consumibles', 'ENERGY', '/products/catalog/3771-sp32-gbs.webp', '{"/products/catalog/3771-sp32-gbs.webp","/products/specs/3771-sp32-gbs-ficha.webp"}', 0, 5, 3, false, false, 'Set Energy SP32 de 32 puntas profesionales de acero S2 con maletín plástico. Incluye 4 puntas Phillips, 4 Pozidriv, 4 planas, 4 hexagonales, 7 Torx, 7 Torx resistentes, un adaptador y un portapuntas quick release.', '{}', 'google-sheet', 423, '{"stock"}'),
-  ('3570', 'set-de-puntas-32-puntas-spp832-3570', '3570', 'SET DE PUNTAS 32 PUNTAS - SPP832', 17999.96, '$ 17.999,96', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 424, '{"image","stock","description"}'),
-  ('3573', 'set-de-puntas-alto-impacto-10p-de-50-mm-spp810-3573', '3573', 'SET DE PUNTAS ALTO IMPACTO 10P DE 50 MM - SPP810', 7000.02, '$ 7.000,02', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 425, '{"image","stock","description"}'),
-  ('3772', 'set-de-puntas-dobles-prof-spd1010-3772', '3772', 'SET DE PUNTAS DOBLES PROF - SPD1010', 7000.01, '$ 7.000,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 426, '{"image","stock","description"}'),
-  ('3572', 'set-de-puntas-dobles-prof-spd810-3572', '3572', 'SET DE PUNTAS DOBLES PROF - SPD810', 7000.01, '$ 7.000,01', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 427, '{"image","stock","description"}'),
+  ('3771', 'set-de-puntas-32-piezas-sp32-3771', '3771', 'SET DE PUNTAS 32 PIEZAS - SP32', 15000.02, '$ 15.000,02', 'Accesorios y consumibles', 'ENERGY', '/products/catalog/3771-sp32.webp', '{"/products/catalog/3771-sp32.webp","/products/catalog/3771-sp32-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 32 piezas ENERGY SP32.
+
+Datos técnicos:
+• Cantidad de piezas: 32
+• Material: S2
+• Segmento: Profesional
+• Phillips (PH): x4
+• Pozidriv (PZ): x4
+• Recto (SL): x4
+• Hexagonal (H): x4
+• Torx (T): x7
+• Resistorx (TT): x7
+• Adaptador (AD): x1
+• Quick release: x1
+
+Contenido: 1 set de puntas de 32 piezas material S2, 1 maletín plástico.', '{}', 'google-sheet', 423, '{"stock"}'),
+  ('3570', 'set-de-puntas-32-puntas-spp832-3570', '3570', 'SET DE PUNTAS 32 PUNTAS - SPP832', 17999.96, '$ 17.999,96', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3570-spp832.webp', '{"/products/catalog/3570-spp832.webp","/products/catalog/3570-spp832-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 32 piezas GLADIATOR SPP832.
+
+Datos técnicos:
+• Cantidad de piezas: 32
+• Material: S2
+• Segmento: Profesional
+• Phillips (PH): x4
+• Pozidriv (PZ): x4
+• Recto (SL): x4
+• Hexagonal (H): x4
+• Torx (T): x7
+• Resistorx (TT): x7
+• Adaptador (AD): x1
+• Quick release: x1
+
+Contenido: 1 set de puntas de 32 piezas material S2, 1 maletín plástico.', '{}', 'google-sheet', 424, '{"stock"}'),
+  ('3573', 'set-de-puntas-alto-impacto-10p-de-50-mm-spp810-3573', '3573', 'SET DE PUNTAS ALTO IMPACTO 10P DE 50 MM - SPP810', 7000.02, '$ 7.000,02', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3573-spp810.webp', '{"/products/catalog/3573-spp810.webp","/products/catalog/3573-spp810-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 10 piezas de 50mm GLADIATOR SPP810.
+
+Datos técnicos:
+• Cantidad de piezas: 10
+• Medida: 50mm
+• Material: S2
+• Segmento: Profesional
+• Phillips (PH): x10
+
+Contenido: 1 set de puntas de 10 piezas material S2.', '{}', 'google-sheet', 425, '{"stock"}'),
+  ('3772', 'set-de-puntas-dobles-prof-spd1010-3772', '3772', 'SET DE PUNTAS DOBLES PROF - SPD1010', 7000.01, '$ 7.000,01', 'Accesorios y consumibles', 'NEO', '/products/catalog/3772-spd1010.webp', '{"/products/catalog/3772-spd1010.webp","/products/catalog/3772-spd1010-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas dobles de 10 piezas de 50mm NEO SPD1010.
+
+Datos técnicos:
+• Cantidad de piezas: 10
+• Medida: 50mm - 2"
+• Tipo: Doble cabeza
+• Material: S2
+• Segmento: Profesional
+• Phillips (PH): x10
+• Recto (SL): x10
+
+Contenido: 1 set de puntas de 10 piezas de 50mm, material S2.', '{}', 'google-sheet', 426, '{"stock"}'),
+  ('3572', 'set-de-puntas-dobles-prof-spd810-3572', '3572', 'SET DE PUNTAS DOBLES PROF - SPD810', 7000.01, '$ 7.000,01', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3572-spd810.webp', '{"/products/catalog/3572-spd810.webp","/products/catalog/3572-spd810-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas dobles de 10 piezas de 50mm GLADIATOR SPD810.
+
+Datos técnicos:
+• Cantidad de piezas: 10
+• Medida: 50mm
+• Tipo: Doble cabeza
+• Material: S2
+• Segmento: Profesional
+• Phillips (PH): x10
+• Recto (SL): x10
+
+Contenido: 1 set de puntas de 10 piezas material S2 - 50mm.', '{}', 'google-sheet', 427, '{"stock"}'),
   ('3776', 'set-de-puntas-para-router-ar10-15-3776', '3776', 'SET DE PUNTAS PARA ROUTER - AR10/15', 38499.96, '$ 38.499,96', 'Accesorios y consumibles', 'NEO', '/products/catalog/3776-ar10-15.webp', '{"/products/catalog/3776-ar10-15.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 428, '{"stock","description"}'),
   ('3575', 'set-de-puntas-para-router-ar8-15-3575', '3575', 'SET DE PUNTAS PARA ROUTER - AR8/15', 35000.07, '$ 35.000,07', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3575-ar8-15.webp', '{"/products/catalog/3575-ar8-15.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 429, '{"stock","description"}'),
   ('3777', 'set-de-puntas-para-router-ar11-15-3777', '3777', 'SET DE PUNTAS PARA ROUTER AR11/15', 38499.96, '$ 38.499,96', 'Accesorios y consumibles', 'NEO', '/products/catalog/3777-ar11-15.webp', '{"/products/catalog/3777-ar11-15.webp"}', 0, 5, 3, true, false, 'El Set de 15 Puntas para Router con Mango 1/2" Neo es la herramienta esencial para quienes buscan precisión y versatilidad en trabajos de carpintería y decoración. Este kit incluye diversas puntas diseñadas para cortes y acabados profesionales, facilitando proyectos con madera y materiales similares. Su mango de 1/2" garantiza un ajuste seguro y estable en tu router, brindando mayor control y seguridad durante el uso. Ideal para usuarios profesionales y aficionados que desean resultados de alta calidad. &iexcl;Optimiza tu taller con este completo set Neo!.', '{}', 'google-sheet', 430, '{"stock"}'),
-  ('3778', 'set-de-puntas-y-brocas-37-piezas-spb1237-3778', '3778', 'SET DE PUNTAS Y BROCAS 37 PIEZAS - SPB1237', 30000.06, '$ 30.000,06', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 431, '{"image","stock","description"}'),
-  ('3571', 'set-de-puntas-y-brocas-37p-helicoideales-spb837k-3571', '3571', 'SET DE PUNTAS Y BROCAS 37P HELICOIDEALES - SPB837K', 17000, '$ 17.000,00', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 432, '{"image","stock","description"}'),
+  ('3778', 'set-de-puntas-y-brocas-37-piezas-spb1237-3778', '3778', 'SET DE PUNTAS Y BROCAS 37 PIEZAS - SPB1237', 30000.06, '$ 30.000,06', 'Accesorios y consumibles', 'NEO NEXT', '/products/catalog/3778-spb1237.webp', '{"/products/catalog/3778-spb1237.webp","/products/catalog/3778-spb1237-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas y brocas de 37 piezas NEO NEXT SPB1237.
+
+Datos técnicos:
+• Cantidad de piezas: 37
+• Brocas helicoidales: 12 (M2): 1.5/2/2.5/3/3.2/3.5/4/4.5/4.8/5/5.5/6mm
+• Puntas: 24 puntas de 25mm (S2 + alto impacto)
+• Recto (SL): 4/4.5/5.5/6/6.5/7mm
+• Phillips (PH): 1/2/3
+• Pozidriv (PZ): 1/2/3
+• Torx (T): 10/15/20/25/27/30/40
+• Hexagonal (H): 3/4/5/5.5/6
+• Material de brocas: M2 - segmento profesional
+• Material de puntas: S2 + alto impacto - segmento industrial
+
+Contenido: 1 set de puntas y brocas de 37 piezas, 1 maletín plástico.', '{}', 'google-sheet', 431, '{"stock"}'),
+  ('3571', 'set-de-puntas-y-brocas-37p-helicoideales-spb837k-3571', '3571', 'SET DE PUNTAS Y BROCAS 37P HELICOIDEALES - SPB837K', 17000, '$ 17.000,00', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3571-spb837k.webp', '{"/products/catalog/3571-spb837k.webp","/products/catalog/3571-spb837k-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas y brocas de 37 piezas GLADIATOR SPB837K.
+
+Datos técnicos:
+• Cantidad de piezas: 37
+• Brocas helicoidales: 12 con revestimiento de titanio: 1.5/2/2.5/3/3.2/3.5/4/4.5/4.8/5/5.5/6mm
+• Puntas: 24 puntas de 25mm
+• Recto (SL): 4/4.5/5.5/6/6.5/7mm
+• Phillips (PH): 1/2/3
+• Pozidriv (PZ): 1/2/3
+• Torx (T): 10/15/20/25/27/30/40
+• Hexagonal (H): 3/4/5/5.5/6
+• Material de puntas: CRV - segmento hogar
+• Material de brocas: HSS 4241 - segmento hogar
+
+Contenido: 1 set de puntas de 37 piezas material CRV, 1 maletín plástico.', '{}', 'google-sheet', 432, '{"stock"}'),
   ('3843', 'set-destornilladores-x-2-piezas-100-mm-tmk20253-3843', '3843', 'SET DESTORNILLADORES X 2 PIEZAS 100 MM - TMK20253', 4500.01, '$ 4.500,01', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 433, '{"image","stock","description"}'),
   ('3842', 'set-mecha-pared-widea-corta-5-piezas-tmk19935-3842', '3842', 'SET MECHA PARED WIDEA CORTA 5 PIEZAS -TMK19935', 5000.01, '$ 5.000,01', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 434, '{"image","stock","description"}'),
   ('3841', 'set-mechas-pared-widea-larga-8-10-12-x-30-cm-3841', '3841', 'SET MECHAS PARED WIDEA LARGA 8-10-12 X 30 CM', 8000.02, '$ 8.000,02', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 435, '{"image","stock","description"}'),
@@ -562,7 +1027,20 @@ Contenido: Set de 25 piezas material S2, maletín plástico.', '{}', 'google-she
   ('3216', 'sierra-caladora-400w-55-mm-gladiator-sk455-1-3216', '3216', 'SIERRA CALADORA 400W 55 MM GLADIATOR SK455/1', 44999.98, '$ 44.999,98', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 438, '{"image","stock","description"}'),
   ('3335', 'sierra-caladora-450w-55-mm-energy-js55-220-3335', '3335', 'SIERRA CALADORA 450W 55 MM ENERGY JS55/220', 40000.16, '$ 40.000,16', 'Otros', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 439, '{"image","stock","description"}'),
   ('3760', 'sierra-caladora-600w-gladiator-sk670-2-220-3760', '3760', 'SIERRA CALADORA 600W GLADIATOR - SK670/2/220', 84999.97, '$ 84.999,97', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 440, '{"image","stock","description"}'),
-  ('3762', 'sierra-caladora-800w-sk9100-220-3762', '3762', 'SIERRA CALADORA 800W - SK9100/220', 109999.89, '$ 109.999,89', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 441, '{"image","stock","description"}'),
+  ('3762', 'sierra-caladora-800w-sk9100-220-3762', '3762', 'SIERRA CALADORA 800W - SK9100/220', 109999.89, '$ 109.999,89', 'Otros', 'GLADIATOR', '/products/catalog/3762-sk9100-220.webp', '{"/products/catalog/3762-sk9100-220.webp","/products/catalog/3762-sk9100-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra caladora GLADIATOR SK9100/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia de entrada: 800W
+• Velocidad en vacío: 800-3000rpm
+• Bisel: 0-45°
+• Capacidad de corte en madera: 100mm - 4"
+• Capacidad de corte en acero: 10mm - 3/8"
+• Material de base: Metal
+• Aislación: Clase II
+• Peso: 2,4kg - 5,29lb
+
+Contenido: 1 sierra caladora, 1 hoja de sierra para madera, 1 tubo para polvo, 1 guía.', '{}', 'google-sheet', 441, '{"stock"}'),
   ('3761', 'sierra-caladora-800w-gladiator-sk860-1-3761', '3761', 'SIERRA CALADORA 800W GLADIATOR - SK860/1', 99800.04, '$ 99.800,04', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 442, '{"image","stock","description"}'),
   ('3889', 'sierra-circular-18v-sc807-18c1-3889', '3889', 'SIERRA CIRCULAR 18V - SC807/18C1', 127999.95, '$ 127.999,95', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 443, '{"image","stock","description"}'),
   ('3326', 'sierra-circular-185-mm-1400-w-gladiator-sc507-220-3326', '3326', 'SIERRA CIRCULAR 185 MM 1400 W GLADIATOR SC507/220', 85000.28, '$ 85.000,28', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 444, '{"image","stock","description"}'),
@@ -585,7 +1063,24 @@ Datos técnicos:
 • Aislación: Clase II
 
 Contenido: 1 sierra ingletadora, 1 llave allen, 1 bolsa para polvo, 1 abrazadera de trabajo, 1 par de escobillas de carbón.', '{}', 'google-sheet', 449, '{"stock"}'),
-  ('3729', 'sierra-ingletadora-2200w-12-neo-sid1012-2-220-3729', '3729', 'SIERRA INGLETADORA 2200W 12" NEO - SID1012/2/220', 349999.66, '$ 349.999,66', 'Otros', 'NEO', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 450, '{"image","stock","description"}'),
+  ('3729', 'sierra-ingletadora-2200w-12-neo-sid1012-2-220-3729', '3729', 'SIERRA INGLETADORA 2200W 12" NEO - SID1012/2/220', 349999.66, '$ 349.999,66', 'Otros', 'NEO', '/products/catalog/3729-sid1012-2-220.webp', '{"/products/catalog/3729-sid1012-2-220.webp","/products/catalog/3729-sid1012-2-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra ingletadora NEO SID1012/2/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 2200W
+• Velocidad en vacío: 4500rpm
+• Diámetro de hoja: 305mm - 12"
+• Capacidad de corte 0° x 90°: 340 x 120mm
+• Capacidad de corte 0° x 45° izquierda: 340 x 48mm
+• Capacidad de corte 0° x 45° derecha: 340 x 40mm
+• Capacidad de corte 45° x 90°: 235 x 102mm
+• Capacidad de corte 45° x 45° izquierda: 235 x 48mm
+• Capacidad de corte 45° x 45° derecha: 235 x 40mm
+• Aislación: Clase II
+• Extras: Doble bisel, sistema deslizante y guía láser
+• Peso: 20kg - 44,09lb
+
+Contenido: 1 sierra ingletadora, 1 llave inglesa, 1 bolsa para polvo, 1 abrazadera de trabajo, 1 hoja de sierra de 40 dientes.', '{}', 'google-sheet', 450, '{"stock"}'),
   ('3537', 'sierra-ingletadora-1800w-10-glad-si710-3-220-3537', '3537', 'SIERRA INGLETADORA 1800W 10" GLAD. SI710/3/220', 164999.48, '$ 164.999,48', 'Otros', 'GLADIATOR', '/products/catalog/3537-si710-3-220.webp', '{"/products/catalog/3537-si710-3-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 451, '{"stock","description"}'),
   ('3492', 'sierra-sable-18v-100-mm-ss810-18c1-3492', '3492', 'SIERRA SABLE 18V 100 MM SS810/18C1', 134999.6, '$ 134.999,60', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 452, '{"image","stock","description"}'),
   ('3882', 'sierra-sable-20v-ss1150-20c1-3882', '3882', 'SIERRA SABLE 20V - SS1150/20C1', 143000.01, '$ 143.000,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 453, '{"image","stock","description"}'),
