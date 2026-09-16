@@ -1062,5 +1062,125 @@
       "Peso: catálogo oficial indica 19,5kg, el distribuidor RSP indica 18kg - se usó el valor del catálogo oficial (fuente de mayor jerarquía) en la descripción."
     ],
     "verifiedAt": "2026-08-27"
+  },
+  {
+    "productId": "1779",
+    "model": "P12/2/25",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_87",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_087.jpg",
+    "localImage": "/products/catalog/1779-p12-2-25.webp",
+    "localSpecSheet": "/products/catalog/1779-p12-2-25-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3217",
+    "model": "DP06",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_244",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_244.jpg",
+    "localImage": "/products/catalog/3217-dp06.webp",
+    "localSpecSheet": "/products/catalog/3217-dp06-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3393",
+    "model": "BPP858/1/25",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_127",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_127.jpg",
+    "localImage": "/products/catalog/3393-bpp858-1-25.webp",
+    "localSpecSheet": "/products/catalog/3393-bpp858-1-25-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3657",
+    "model": "AG115/1/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_31",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_031.jpg",
+    "localImage": "/products/catalog/3657-ag115-1-220.webp",
+    "localSpecSheet": "/products/catalog/3657-ag115-1-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3670",
+    "model": "H6130M/1/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/FOREST_AND_GARDEN_130",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ForestAndGardenFullCat_Page_130.jpg",
+    "localImage": "/products/catalog/3670-h6130m-1-220.webp",
+    "localSpecSheet": "/products/catalog/3670-h6130m-1-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3684",
+    "model": "CESA8100/25V",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_252",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_252.jpg",
+    "localImage": "/products/catalog/3684-cesa8100-25v.webp",
+    "localSpecSheet": "/products/catalog/3684-cesa8100-25v-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3714",
+    "model": "NL1045/3",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_151",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_151.jpg",
+    "localImage": "/products/catalog/3714-nl1045-3.webp",
+    "localSpecSheet": "/products/catalog/3714-nl1045-3-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3728",
+    "model": "SID1010/3/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/NEO_130",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/NEO_-_Catalogo_interactivo_2026_Page_130.jpg",
+    "localImage": "/products/catalog/3728-sid1010-3-220.webp",
+    "localSpecSheet": "/products/catalog/3728-sid1010-3-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3770",
+    "model": "SP25",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_277",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_277.jpg",
+    "localImage": "/products/catalog/3770-sp25.webp",
+    "localSpecSheet": "/products/catalog/3770-sp25-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
+  },
+  {
+    "productId": "3892",
+    "model": "RH26/5/220K",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_63",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_063.jpg",
+    "localImage": "/products/catalog/3892-rh26-5-220k.webp",
+    "localSpecSheet": "/products/catalog/3892-rh26-5-220k-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-15"
   }
 ]

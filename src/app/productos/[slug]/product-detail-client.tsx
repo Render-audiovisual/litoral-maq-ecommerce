@@ -15,6 +15,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
   const { products, addToCart } = useStore();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
   const product = products.find((item) => item.slug === slug);
   if (!product || !product.active) {
     return (
@@ -27,6 +28,11 @@ export function ProductDetailClient({ slug }: { slug: string }) {
       </main>
     );
   }
+  const gallery = product.images.length
+    ? product.images
+    : product.image
+      ? [product.image]
+      : [];
   const availability = getProductAvailability(product);
   const purchaseLimit = getPurchaseLimit(product);
   const availabilityText =
@@ -42,19 +48,37 @@ export function ProductDetailClient({ slug }: { slug: string }) {
         / <span>{product.name}</span>
       </div>
       <section className="product-detail">
-        <div className="detail-image">
-          {product.image ? (
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              sizes="50vw"
-              priority
-            />
-          ) : (
-            <div className="product-placeholder large">
-              <span>LM</span>
-              <small>Imagen pendiente de carga</small>
+        <div className="detail-gallery">
+          <div className="detail-image">
+            {gallery.length ? (
+              <Image
+                src={gallery[Math.min(activeImage, gallery.length - 1)]}
+                alt={product.name}
+                fill
+                sizes="50vw"
+                priority
+              />
+            ) : (
+              <div className="product-placeholder large">
+                <span>LM</span>
+                <small>Imagen pendiente de carga</small>
+              </div>
+            )}
+          </div>
+          {gallery.length > 1 && (
+            <div className="detail-thumbs">
+              {gallery.map((src, index) => (
+                <button
+                  key={src}
+                  type="button"
+                  className={index === activeImage ? "active" : undefined}
+                  aria-label={`Ver imagen ${index + 1} de ${product.name}`}
+                  aria-pressed={index === activeImage}
+                  onClick={() => setActiveImage(index)}
+                >
+                  <Image src={src} alt="" fill sizes="120px" />
+                </button>
+              ))}
             </div>
           )}
         </div>
