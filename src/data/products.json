@@ -4311,20 +4311,21 @@
     "rawPrice": "$ 4.999,99",
     "category": "Soldadura",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3664-er200-4-1b.webp",
+    "images": [
+      "/products/catalog/3664-er200-4-1b.webp",
+      "/products/catalog/3664-er200-4-1b-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Electrodos revestidos E6013 ENERGY ER200/4-1B.\n\nDatos técnicos:\n• Tipo: E 6013 revestido\n• Medida: 2,0mm x 300mm\n• Medida en pulgadas: 5/64\" x 11,8\"\n• Presentación: Caja de 5kg fraccionada en bolsas de 1kg\n• Uso: Máquinas de soldar - posiciones plano, horizontal, vertical y sobrecabeza\n\nContenido: Electrodos revestidos E6013 de 2,0mm.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 166,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -4337,20 +4338,21 @@
     "rawPrice": "$ 19.999,96",
     "category": "Soldadura",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3109-er200-3.webp",
+    "images": [
+      "/products/catalog/3109-er200-3.webp",
+      "/products/catalog/3109-er200-3-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Electrodos revestidos E6013 ENERGY ER200/3.\n\nDatos técnicos:\n• Tipo: E 6013 revestido\n• Medida: 2,0mm x 300mm\n• Medida en pulgadas: 5/64\" x 11,8\"\n• Presentación: Caja de 5kg\n• Uso: Máquinas de soldar - posiciones plano, horizontal, vertical y sobrecabeza\n\nContenido: Electrodos revestidos E6013 de 2,0mm, caja de 5kg.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 167,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -4415,20 +4417,21 @@
     "rawPrice": "$ 20.999,94",
     "category": "Soldadura",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/1739-er320-3.webp",
+    "images": [
+      "/products/catalog/1739-er320-3.webp",
+      "/products/catalog/1739-er320-3-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Electrodos revestidos E6013 ENERGY ER320/3.\n\nDatos técnicos:\n• Tipo: E 6013 revestido\n• Medida: 3,2mm x 350mm\n• Medida en pulgadas: 1 17/64\" x 14\"\n• Presentación: Caja de 5kg\n• Uso: Máquinas de soldar - posiciones plano, horizontal, vertical y sobrecabeza\n\nContenido: Electrodos revestidos E6013 de 3,2mm, caja de 5kg.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 170,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -4467,20 +4470,21 @@
     "rawPrice": "$ 115.000,14",
     "category": "Otros",
     "brand": "FOREST & GARDEN",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3767-el-616-4-220f.webp",
+    "images": [
+      "/products/catalog/3767-el-616-4-220f.webp",
+      "/products/catalog/3767-el-616-4-220f-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Electrosierra FOREST & GARDEN EL/616/4/220F.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 1850W\n• Largo de barra: 406mm - 16\"\n• Capacidad máxima de corte: 395mm - 15 9/16\"\n• Velocidad de cadena: 15m/s\n• Extras: Auto lubricación, tensor de cadena sin herramientas y freno doble de seguridad\n• Aislación: Clase II\n• Peso: 11kg - 24,2lb\n\nContenido: 1 electrosierra.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 172,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -5952,20 +5956,21 @@
     "rawPrice": "$ 35.000,11",
     "category": "Otros",
     "brand": "GLADIATOR",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3336-jt1012-3-8.webp",
+    "images": [
+      "/products/catalog/3336-jt1012-3-8.webp",
+      "/products/catalog/3336-jt1012-3-8-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Juego de tubos de 12 piezas de 3/8\" GLADIATOR JT1012 3/8.\n\nDatos técnicos:\n• Cantidad de piezas: 12\n• Material: CRV - Cromo vanadio\n• Encastre: 3/8\"\n• Tubos: 10 tubos: 10/11/12/13/14/15/17/19/22/24mm\n• Trinquete: 72 dientes\n• Barra de extensión: 100mm\n\nContenido: 10 tubos, 1 barra de extensión de 100mm, 1 trinquete de 72 dientes.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 229,
     "incomplete": [
-      "stock",
-      "image",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -8513,20 +8518,21 @@
     "rawPrice": "$ 185.000,54",
     "category": "Hidrolavado y bombas",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3383-gwp3.webp",
+    "images": [
+      "/products/catalog/3383-gwp3.webp",
+      "/products/catalog/3383-gwp3-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Motobomba a gasolina ENERGY GWP3.\n\nDatos técnicos:\n• Cilindrada: 196cc\n• Diámetro de entrada/salida: 76mm - 3\"\n• Caudal: 70m³/h\n• Altura máxima: 27m\n• Succión máxima: 7m\n• Potencia máxima de motor: 6,5HP\n• Velocidad en vacío: 0-1500/min\n• Consumo de combustible: 313g/kW.h\n• Sistema de arranque: Retroceso\n• Capacidad de tanque: 3,6L\n• Peso: 24kg - 52,91lb\n\nContenido: 1 motobomba a gasolina.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 327,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11451,20 +11457,21 @@
     "rawPrice": "$ 40.000,16",
     "category": "Otros",
     "brand": "ENERGY",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3335-js55-220.webp",
+    "images": [
+      "/products/catalog/3335-js55-220.webp",
+      "/products/catalog/3335-js55-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Sierra caladora ENERGY JS55/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 450W - 0,5HP\n• Velocidad en vacío: 0-3000/min\n• Capacidad de corte en madera: 55mm - 2 1/4\"\n• Capacidad de corte en acero: 6mm - 1/4\"\n• Tipo de aislación: Clase II\n• Peso: 1,4kg - 3,09lb\n\nContenido: 1 sierra caladora, 1 hoja para madera, 1 llave hexagonal.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 439,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11477,20 +11484,21 @@
     "rawPrice": "$ 84.999,97",
     "category": "Otros",
     "brand": "GLADIATOR",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3760-sk670-2-220.webp",
+    "images": [
+      "/products/catalog/3760-sk670-2-220.webp",
+      "/products/catalog/3760-sk670-2-220-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Sierra caladora GLADIATOR SK670/2/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 600W\n• Velocidad en vacío: 0-3000/min\n• Capacidad de corte en madera: 65mm\n• Longitud del recorrido: 20mm\n• Material de base: Metal\n• Extras: Velocidad regulable, soplador de polvo, mandril rápido y luz LED\n• Tipo de aislación: Clase II\n\nContenido: 1 sierra caladora, 1 hoja para madera, 1 tubo de aspirado, 1 llave hexagonal.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 440,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },

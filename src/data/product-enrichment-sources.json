@@ -80,16 +80,15 @@
   },
   {
     "productId": "3336",
-    "model": "JT1012",
-    "match": "conflict",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/juego-de-tubos-gladiator-jt1012-1eb6t/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-25-761447b78d1554e28b17788634660303-1024-1024.webp",
-    "localImage": null,
-    "descriptionImported": false,
-    "conflictsSkipped": [
-      "La foto fuente corresponde al juego JT1012 de 1/2 pulgada; la ficha local es JT1012 3/8. Se ocultó hasta confirmar el modelo exacto y conseguir su imagen correcta."
-    ],
-    "verifiedAt": "2026-08-27"
+    "model": "JT1012 3/8",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_378",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_378.jpg",
+    "localImage": "/products/catalog/3336-jt1012-3-8.webp",
+    "localSpecSheet": "/products/catalog/3336-jt1012-3-8-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-16"
   },
   {
     "productId": "3337",
@@ -1671,6 +1670,92 @@
     "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_067.jpg",
     "localImage": "/products/catalog/3896-md655-220k.webp",
     "localSpecSheet": "/products/catalog/3896-md655-220k-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-16"
+  },
+  {
+    "productId": "1739",
+    "model": "ER320/3",
+    "match": "identificado_por_medida",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_270",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1777905853_ENERGY_-_Catalogo_interactivo_20262.jpg",
+    "localImage": "/products/catalog/1739-er320-3.webp",
+    "localSpecSheet": "/products/catalog/1739-er320-3-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "nota": "El Sheet no trae código; se identificó por medida (3,25 mm ≈ 3,2 mm) y peso de caja (5 kg) en la tabla de la ficha",
+    "verifiedAt": "2026-09-16"
+  },
+  {
+    "productId": "3109",
+    "model": "ER200/3",
+    "match": "identificado_por_medida",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_270",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1777905853_ENERGY_-_Catalogo_interactivo_20262.jpg",
+    "localImage": "/products/catalog/3109-er200-3.webp",
+    "localSpecSheet": "/products/catalog/3109-er200-3-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "nota": "El Sheet no trae código; se identificó por medida (2 mm) y peso de caja (5 kg) en la tabla de la ficha",
+    "verifiedAt": "2026-09-16"
+  },
+  {
+    "productId": "3335",
+    "model": "JS55/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_46",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_046.jpg",
+    "localImage": "/products/catalog/3335-js55-220.webp",
+    "localSpecSheet": "/products/catalog/3335-js55-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-16"
+  },
+  {
+    "productId": "3383",
+    "model": "GWP3",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_228",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_228.jpg",
+    "localImage": "/products/catalog/3383-gwp3.webp",
+    "localSpecSheet": "/products/catalog/3383-gwp3-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-16"
+  },
+  {
+    "productId": "3664",
+    "model": "ER200/4-1B",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_270",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1777905853_ENERGY_-_Catalogo_interactivo_20262.jpg",
+    "localImage": "/products/catalog/3664-er200-4-1b.webp",
+    "localSpecSheet": "/products/catalog/3664-er200-4-1b-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-16"
+  },
+  {
+    "productId": "3760",
+    "model": "SK670/2/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_64",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_064.jpg",
+    "localImage": "/products/catalog/3760-sk670-2-220.webp",
+    "localSpecSheet": "/products/catalog/3760-sk670-2-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-16"
+  },
+  {
+    "productId": "3767",
+    "model": "EL/616/4/220F",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/FOREST_AND_GARDEN_37",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ForestAndGardenFullCat_Page_037.jpg",
+    "localImage": "/products/catalog/3767-el-616-4-220f.webp",
+    "localSpecSheet": "/products/catalog/3767-el-616-4-220f-ficha.webp",
     "descriptionImported": true,
     "conflictsSkipped": [],
     "verifiedAt": "2026-09-16"
