@@ -31,7 +31,7 @@ describe("confirmación de pedido por WhatsApp", () => {
     } as Order;
     const text = new URL(getOrderWhatsAppUrl(order, order.id)).searchParams.get("text") || "";
     expect(text).toContain("👋 ¡Hola! Soy *Juan Pérez*.");
-    expect(text).toContain("🚚 *Entrega:* Vía Cargo · San Juan 1234 · Resistencia · Chaco");
+    expect(text).toContain("🚚 *Entrega:* Elegí el envío por Vía Cargo · San Juan 1234 · Resistencia · Chaco");
     expect(text).toContain("ℹ️ El costo del envío se coordina y abona por separado.");
     expect(text).toContain("Quedo a la espera del costo del envío.");
   });

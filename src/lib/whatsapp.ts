@@ -54,7 +54,7 @@ export function getOrderWhatsAppUrl(order: Order | undefined, orderId: string) {
   const entrega = order.deliveryMethod === "retiro"
     ? "Retiro en el local de Sáenz 1587"
     : coordinar
-      ? `${order.shippingCarrier || "Empresa a coordinar"}${destino ? ` · ${destino}` : ""}`
+      ? `Elegí el envío por ${order.shippingCarrier || "la empresa a coordinar"}${destino ? ` · ${destino}` : ""}`
       : `${order.shippingCarrier || "Correo"} · ${formatCurrency(order.shipping)}${destino ? ` · ${destino}` : ""}`;
   const cierre = !pagado
     ? "Quiero confirmar que les llegó el pago."
