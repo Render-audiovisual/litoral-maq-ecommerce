@@ -75,6 +75,10 @@ export function useInfinitePointerMarquee({
   }, [autoSpeed, itemCount, paused]);
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    // En pantallas táctiles dejamos que el navegador gestione el scroll
+    // horizontal nativo. Capturar el puntero acá compite con el scroll de la
+    // página y puede hacer que el carrusel se corte o se "trague" el gesto.
+    if (event.pointerType === "touch") return;
     // Los controles del video se usan con el mismo puntero que el arrastre.
     if ((event.target as HTMLElement).closest("video")) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
@@ -92,6 +96,7 @@ export function useInfinitePointerMarquee({
   }
 
   function onPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType === "touch") return;
     if (!draggingRef.current || pointerRef.current.pointerId !== event.pointerId) return;
 
     const rail = railRef.current;
@@ -145,6 +150,23 @@ export function useInfinitePointerMarquee({
     draggedRef.current = false;
   }
 
+  function onTouchStart() {
+    draggingRef.current = true;
+    velocityRef.current = 0;
+    positionRef.current = railRef.current?.scrollLeft ?? 0;
+  }
+
+  function onTouchEnd() {
+    positionRef.current = railRef.current?.scrollLeft ?? 0;
+    draggingRef.current = false;
+  }
+
+  function onScroll() {
+    if (draggingRef.current && railRef.current) {
+      positionRef.current = railRef.current.scrollLeft;
+    }
+  }
+
   return {
     railRef,
     dragging,
@@ -154,6 +176,10 @@ export function useInfinitePointerMarquee({
       onPointerUp: endDrag,
       onPointerCancel: endDrag,
       onLostPointerCapture: endDrag,
+      onTouchStart,
+      onTouchEnd,
+      onTouchCancel: onTouchEnd,
+      onScroll,
       onClickCapture,
       // Sin esto el navegador arranca su propio arrastre nativo de la imagen
       // o del enlace y el gesto del mouse se corta a mitad de camino.

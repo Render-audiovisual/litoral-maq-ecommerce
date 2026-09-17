@@ -46,10 +46,12 @@ describe("catálogo inicial", () => {
 
   it("mantiene cuatro productos estrella activos con imagen y ficha verificadas", () => {
     const seed = productsSeed as Product[];
-    const starIds = ["3604", "3381", "3881", "3658"];
+    const starIds = ["3381", "3506", "3499", "3542"];
     const stars = starIds.map((id) => seed.find((item) => item.id === id));
     expect(stars.every(Boolean)).toBe(true);
     expect(stars.every((item) => item?.active && item.image && item.description)).toBe(true);
+    expect(stars.every((item) => item?.price && item.price < 100_000)).toBe(true);
+    expect(new Set(stars.map((item) => item?.category)).size).toBe(4);
   });
 
   it("deja sin ficha los productos cuya imagen no pudo verificarse contra el catálogo del fabricante", () => {
