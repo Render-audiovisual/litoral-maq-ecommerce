@@ -136,6 +136,10 @@ export type Database = {
             | "cancelled"
             | "refunded"
             | "charged_back";
+          payment_installments: number | null;
+          payment_installment_amount: number | null;
+          payment_method_id: string | null;
+          payment_type_id: string | null;
           phone: string | null;
           postal_code: string | null;
           province: string | null;
@@ -194,6 +198,10 @@ export type Database = {
             | "cancelled"
             | "refunded"
             | "charged_back";
+          payment_installments?: number | null;
+          payment_installment_amount?: number | null;
+          payment_method_id?: string | null;
+          payment_type_id?: string | null;
           phone?: string | null;
           postal_code?: string | null;
           province?: string | null;

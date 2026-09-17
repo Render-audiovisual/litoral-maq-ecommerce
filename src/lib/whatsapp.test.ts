@@ -6,12 +6,15 @@ describe("confirmación de pedido por WhatsApp", () => {
   it("arma un mensaje comercial con pedido, productos, total y entrega", () => {
     const order = {
       id: "LM-123", lines: [{ productId: "p1", productName: "Taladro", quantity: 2 }],
-      total: 50000, deliveryMethod: "retiro",
+      total: 50000, deliveryMethod: "retiro", paymentStatus: "approved",
+      paymentInstallments: 3, paymentInstallmentAmount: 16666.67,
+      paymentMethodId: "master",
     } as Order;
     const url = new URL(getOrderWhatsAppUrl(order, order.id));
     expect(url.hostname).toBe("wa.me");
     expect(url.pathname).toBe("/5493794215065");
     expect(url.searchParams.get("text")).toMatch(/LM-123.*2× Taladro.*50\.000.*Sáenz 1587/i);
+    expect(url.searchParams.get("text")).toMatch(/Mastercard: 3 cuotas de \$\s?16\.666,67/i);
   });
 
   it("ofrece un mensaje mínimo si el pedido todavía no cargó", () => {

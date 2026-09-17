@@ -97,6 +97,10 @@ export type Order = {
   createdAt: string;
   paymentReference: string;
   paymentStatus?: PaymentStatus;
+  paymentInstallments?: number;
+  paymentInstallmentAmount?: number;
+  paymentMethodId?: string;
+  paymentTypeId?: string;
   phone?: string;
   postalCode?: string;
   province?: string;

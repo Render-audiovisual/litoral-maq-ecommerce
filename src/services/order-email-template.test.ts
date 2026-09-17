@@ -21,6 +21,10 @@ const order = (deliveryMethod: "envio" | "retiro"): OrderRecord => ({
   address: deliveryMethod === "envio" ? "Corrientes 123" : null,
   status: "preparando",
   payment_status: "approved",
+  payment_installments: 3,
+  payment_installment_amount: 6666.67,
+  payment_method_id: "visa",
+  payment_type_id: "credit_card",
   shipping_tracking_number: null,
   shipping_carrier: null,
 });
@@ -35,9 +39,13 @@ describe("correo posterior al pago", () => {
 
     expect(email.subject).toBe("Pago confirmado · Pedido LM-12345678");
     expect(email.html).toContain("Pago acreditado por Mercado Pago.");
+    expect(email.html).toContain("Visa · 3 cuotas de $\u00a06.666,67");
     expect(email.html).toContain("vamos a evaluar el correo disponible");
     expect(email.html).not.toContain("Sujeto a la confirmación operativa");
     expect(email.html).toContain("https://litoralmaq.com/cuenta/pedidos");
+    expect(email.html).toContain("Hablar con Litoral Maq por WhatsApp");
+    expect(email.html).toContain("wa.me/5493794215065");
+    expect(email.html).toContain("3%20cuotas%20de%20%24%C2%A06.666%2C67");
   });
 
   it("para retiro avisa que se confirmará cuando el pedido esté listo", () => {
@@ -103,5 +111,6 @@ describe("correo posterior al pago", () => {
     );
 
     expect(email.html).toContain("https://admin.litoralmaq.com/admin/pedidos");
+    expect(email.html).not.toContain("Hablar con Litoral Maq por WhatsApp");
   });
 });
