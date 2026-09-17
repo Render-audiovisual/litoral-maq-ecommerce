@@ -49,6 +49,15 @@ Deno.serve(async (request) => {
   }
   const db = serviceClient();
   try {
+    // Kill switch del checkout público. Estaba desplegado en producción pero no
+    // en el repo: cualquier deploy desde el repo lo borraba y encendía el cobro.
+    // Se apaga o prende con la variable MP_CHECKOUT_ENABLED, sin redeploy.
+    if (Deno.env.get("MP_CHECKOUT_ENABLED") !== "true") {
+      throw new HttpError(
+        503,
+        "Mercado Pago está pausado temporalmente mientras actualizamos el stock.",
+      );
+    }
     const user = await requireUser(request, db);
     const body = asRecord(await request.json());
     const orderId = String(body.orderId || "").trim();

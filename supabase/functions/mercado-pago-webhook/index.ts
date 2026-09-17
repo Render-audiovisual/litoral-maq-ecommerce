@@ -41,17 +41,31 @@ Deno.serve(async (request) => {
 
     const xSignature = request.headers.get("x-signature") || "";
     const xRequestId = request.headers.get("x-request-id") || "";
+    // Reconciliación interna: permite reprocesar un pago desde el backend con la
+    // service role, sin firma de Mercado Pago. Estaba desplegada en producción
+    // pero no en el repo; un deploy desde el repo la borraba.
+    const authorization = request.headers.get("authorization") || "";
+    const internalServiceRole = request.headers.get("x-internal-service-role") ||
+      "";
+    const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+    const internalReconciliation = serviceRole.length > 0 &&
+      (authorization === `Bearer ${serviceRole}` ||
+        internalServiceRole === serviceRole);
     const secret = Deno.env.get("MP_WEBHOOK_SECRET") || "";
-    const valid = await verifyMercadoPagoSignature({
-      xSignature,
-      xRequestId,
-      dataId: paymentId,
-      secret,
-    });
-    if (!valid) return new Response("unauthorized", { status: 401 });
+    if (!internalReconciliation) {
+      const valid = await verifyMercadoPagoSignature({
+        xSignature,
+        xRequestId,
+        dataId: paymentId,
+        secret,
+      });
+      if (!valid) return new Response("unauthorized", { status: 401 });
+    }
 
     const action = String(body.action || "payment.updated");
-    eventKey = `${xRequestId}:${action}:${paymentId}`;
+    eventKey = internalReconciliation
+      ? `internal-reconciliation:${action}:${paymentId}`
+      : `${xRequestId}:${action}:${paymentId}`;
     const { data: previous } = await db.from("payment_events").select(
       "processed_at",
     ).eq("provider", "mercadopago").eq("event_key", eventKey).maybeSingle();
