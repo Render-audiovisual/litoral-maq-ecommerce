@@ -18,6 +18,10 @@ export type OrderRecord = {
   address: string | null;
   status: string;
   payment_status: string;
+  payment_installments?: number | null;
+  payment_installment_amount?: number | null;
+  payment_method_id?: string | null;
+  payment_type_id?: string | null;
   shipping_tracking_number: string | null;
   shipping_carrier: string | null;
 };
@@ -71,6 +75,53 @@ function paymentApprovedIntro(order: OrderRecord) {
   return order.delivery_method === "retiro"
     ? "El pago fue acreditado correctamente. Te avisaremos cuando el pedido esté listo para retirar en Sáenz 1587."
     : "El pago fue acreditado correctamente. Ahora vamos a evaluar el correo disponible para tu destino y te confirmaremos el despacho.";
+}
+
+function paymentMethodLabel(methodId: string | null | undefined) {
+  const labels: Record<string, string> = {
+    visa: "Visa",
+    master: "Mastercard",
+    amex: "American Express",
+    naranja: "Naranja X",
+    cabal: "Cabal",
+    debvisa: "Visa Débito",
+    debmaster: "Mastercard Débito",
+    account_money: "Dinero disponible en Mercado Pago",
+  };
+  const value = String(methodId || "").trim().toLowerCase();
+  return labels[value] || (value ? value.replace(/_/g, " ") : "Mercado Pago");
+}
+
+function paymentSummary(order: OrderRecord) {
+  if (order.payment_status !== "approved") return "";
+  const installments = Number(order.payment_installments);
+  const amount = Number(order.payment_installment_amount);
+  const method = paymentMethodLabel(order.payment_method_id);
+  const detail = Number.isInteger(installments) && installments > 1
+    ? `${installments} cuotas${Number.isFinite(amount) && amount > 0 ? ` de ${money(amount)}` : ""}`
+    : "1 pago";
+  return `<tr><td colspan="2" style="padding:0 14px 14px;color:#475467;font-size:13px"><strong>Pago:</strong> ${escapeHtml(method)} · ${escapeHtml(detail)}</td></tr>`;
+}
+
+function whatsappUrl(order: OrderRecord) {
+  const number = "5493794215065";
+  const products = (Array.isArray(order.lines) ? order.lines : []).map((line) =>
+    `${Number(line.quantity) || 0}× ${line.productName || line.productCode || line.productId || "Producto"}`
+  ).join(", ");
+  const installments = Number(order.payment_installments);
+  const amount = Number(order.payment_installment_amount);
+  const payment = order.payment_status === "approved"
+    ? ` Pago confirmado con ${paymentMethodLabel(order.payment_method_id)}: ${
+      Number.isInteger(installments) && installments > 1
+        ? `${installments} cuotas${Number.isFinite(amount) && amount > 0 ? ` de ${money(amount)}` : ""}`
+        : "1 pago"
+    }.`
+    : "";
+  const delivery = order.delivery_method === "retiro"
+    ? "retiro en Sáenz 1587"
+    : "envío a coordinar";
+  const message = `Hola, consulto por el pedido ${order.id}. Productos: ${products}. Total: ${money(order.total)}. Elegí ${delivery}.${payment}`;
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
 function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
@@ -149,6 +200,9 @@ export function renderOrderEmail(
   const buttonUrl = eventType === "team_new_order"
     ? `${publicUrl.replace(/\/$/, "")}/admin/pedidos`
     : `${publicUrl.replace(/\/$/, "")}/cuenta/pedidos`;
+  const customerWhatsAppButton = eventType === "team_new_order"
+    ? ""
+    : `<div style="text-align:center;margin-top:12px"><a href="${escapeHtml(whatsappUrl(order))}" style="display:inline-block;background:#1fa855;color:#fff;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:9px">Hablar con Litoral Maq por WhatsApp</a></div>`;
   const totalNote = eventType === "customer_payment_approved"
     ? "Pago acreditado por Mercado Pago."
     : "Sujeto a la confirmación operativa indicada en el pedido.";
@@ -166,10 +220,10 @@ export function renderOrderEmail(
         money(order.total)
       }</td></tr><tr><td colspan="2" style="padding:0 14px 14px;color:#475467;font-size:13px"><strong>Entrega:</strong> ${
         escapeHtml(destination)
-      }</td></tr></table><div style="text-align:center;margin-top:26px"><a href="${
+      }</td></tr>${paymentSummary(order)}</table><div style="text-align:center;margin-top:26px"><a href="${
         escapeHtml(buttonUrl)
       }" style="display:inline-block;background:#f58220;color:#fff;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:9px">${
         copy.action || "Ver mi pedido"
-      }</a></div><p style="color:#667085;font-size:12px;line-height:1.5;margin:26px 0 0">Este correo fue generado automáticamente por Litoral Maq. No incluye datos de tarjeta ni solicita claves.</p></td></tr></table></td></tr></table></body></html>`,
+      }</a></div>${customerWhatsAppButton}<p style="color:#667085;font-size:12px;line-height:1.5;margin:26px 0 0">Este correo fue generado automáticamente por Litoral Maq. No incluye datos de tarjeta ni solicita claves.</p></td></tr></table></td></tr></table></body></html>`,
   };
 }

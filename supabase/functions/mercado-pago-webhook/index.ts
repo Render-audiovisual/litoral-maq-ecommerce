@@ -118,11 +118,28 @@ Deno.serve(async (request) => {
     const liveMode = typeof payment.live_mode === "boolean"
       ? payment.live_mode
       : null;
+    const installmentsValue = Number(payment.installments);
+    const installments = Number.isInteger(installmentsValue) &&
+        installmentsValue >= 1 && installmentsValue <= 24
+      ? installmentsValue
+      : null;
+    const transactionDetails = asRecord(payment.transaction_details);
+    const installmentAmountValue = Number(transactionDetails.installment_amount);
+    const installmentAmount = Number.isFinite(installmentAmountValue) &&
+        installmentAmountValue >= 0
+      ? installmentAmountValue
+      : null;
+    const paymentMethodId = String(payment.payment_method_id || "").slice(0, 80) || null;
+    const paymentTypeId = String(payment.payment_type_id || "").slice(0, 80) || null;
     const now = new Date().toISOString();
     const { error: paymentError } = await db.from("payments").update({
       payment_id: paymentId,
       status,
       status_detail: String(payment.status_detail || "").slice(0, 120) || null,
+      installments,
+      installment_amount: installmentAmount,
+      payment_method_id: paymentMethodId,
+      payment_type_id: paymentTypeId,
       live_mode: liveMode,
       last_error: null,
       updated_at: now,
@@ -132,6 +149,10 @@ Deno.serve(async (request) => {
     const orderUpdate: Record<string, unknown> = {
       payment_status: status,
       payment_reference: paymentId,
+      payment_installments: installments,
+      payment_installment_amount: installmentAmount,
+      payment_method_id: paymentMethodId,
+      payment_type_id: paymentTypeId,
     };
     if (status === "approved") orderUpdate.status = "preparando";
     if (["refunded", "charged_back"].includes(status)) {
