@@ -69,10 +69,26 @@ export async function processPendingOrderNotifications(
             : "El pedido no tiene un email válido.",
         );
       }
+      // Miniaturas de los productos. La foto se guarda como ruta ("/products/…")
+      // y en un correo tiene que ir la URL completa para que se vea.
+      const productIds = (Array.isArray(order.lines) ? order.lines : [])
+        .map((line) => line.productId).filter((id): id is string => !!id);
+      const fotos: Record<string, string> = {};
+      if (productIds.length) {
+        const { data: productos } = await db.from("products")
+          .select("id,image").in("id", [...new Set(productIds)]);
+        for (const producto of (productos ?? []) as { id: string; image: string | null }[]) {
+          if (!producto.image) continue;
+          fotos[producto.id] = /^https?:\/\//.test(producto.image)
+            ? producto.image
+            : `${storeUrl.replace(/\/$/, "")}${producto.image}`;
+        }
+      }
       const email = renderOrderEmail(
         event.event_type as OrderEmailEvent,
         order,
         event.event_type === "team_new_order" ? adminUrl : storeUrl,
+        fotos,
       );
       const response = await fetch("https://api.resend.com/emails", {
         method: "POST",

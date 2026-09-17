@@ -3,7 +3,7 @@ import { formatCurrency } from "./utils";
 
 const WHATSAPP_NUMBER = "5493794215065";
 
-function paymentMethodLabel(methodId?: string) {
+export function paymentMethodLabel(methodId?: string) {
   const labels: Record<string, string> = {
     visa: "Visa",
     master: "Mastercard",

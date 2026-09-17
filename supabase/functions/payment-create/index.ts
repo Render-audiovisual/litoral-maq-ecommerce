@@ -57,7 +57,7 @@ Deno.serve(async (request) => {
     }
 
     const { data: order, error: orderError } = await db.from("orders").select(
-      "id,customer_id,email,lines,total,shipping,delivery_method,payment_status,shipping_quote_id,shipping_status",
+      "id,customer_id,customer_name,email,phone,street,street_number,postal_code,lines,total,shipping,delivery_method,payment_status,shipping_quote_id,shipping_status",
     ).eq("id", orderId).maybeSingle();
     if (orderError || !order) {
       throw new HttpError(404, "No encontramos el pedido.");
@@ -81,7 +81,7 @@ Deno.serve(async (request) => {
     ];
     const { data: products, error: productError } = await db.from("products")
       .select(
-        "id,code,name,price,stock,active,incomplete,source,purchase_limit",
+        "id,code,name,price,stock,active,incomplete,source,purchase_limit,image",
       ).in(
         "id",
         productIds,
@@ -211,6 +211,17 @@ Deno.serve(async (request) => {
       throw new HttpError(503, "No pudimos confirmar el total del pedido.");
     }
 
+    // La foto se guarda como ruta ("/products/..."): Mercado Pago necesita la
+    // URL completa para poder mostrarla en su pantalla de pago.
+    const storeUrl = (Deno.env.get("STORE_PUBLIC_URL") ||
+      "https://litoralmaq.com").replace(/\/$/, "");
+    const fotoDe = (productId: string) => {
+      const image = byId.get(productId)?.image;
+      if (typeof image !== "string" || !image) return undefined;
+      return /^https?:\/\//.test(image) ? image : `${storeUrl}${image}`;
+    };
+    const [nombre, ...apellido] = String(order.customer_name || "").trim()
+      .split(/\s+/);
     const preference = await new MercadoPagoClient().createPreference({
       orderId,
       payerEmail: order.email,
@@ -220,8 +231,18 @@ Deno.serve(async (request) => {
         description: line.productCode || undefined,
         quantity: line.quantity,
         unitPrice: line.unitPrice,
+        pictureUrl: fotoDe(line.productId),
       })),
       shippingAmount,
+      payer: {
+        email: order.email,
+        name: nombre || undefined,
+        surname: apellido.join(" ") || undefined,
+        phone: order.phone || undefined,
+        street: order.street || undefined,
+        streetNumber: order.street_number || undefined,
+        postalCode: order.postal_code || undefined,
+      },
     });
     const { error: paymentUpdateError } = await db.from("payments").update({
       preference_id: preference.id,
