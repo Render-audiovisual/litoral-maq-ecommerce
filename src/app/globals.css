@@ -347,8 +347,14 @@ textarea { min-height: 100px; resize: vertical; }
 .shipping-quote b { color: var(--orange); white-space: nowrap; }
 .manual-shipping-message { margin-top: 16px; padding: 14px 15px; display: flex; flex-direction: column; gap: 4px; border: 1px solid #ecd0ae; background: #fff8ef; color: #7b4a20; }
 .manual-shipping-message span { font-size: 12px; line-height: 1.45; }
-.carrier-preference { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: #7b4a20; }
-.carrier-preference select { min-height: 42px; padding: 8px 10px; border: 1px solid #ecd0ae; background: #fff; color: var(--navy); font-size: 14px; }
+.carrier-preference { margin: 10px 0 0; padding: 0; border: 0; }
+.carrier-preference legend { margin-bottom: 8px; font-size: 13px; font-weight: 700; }
+.carrier-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.carrier-option { min-height: 42px; padding: 9px 10px; display: flex; align-items: center; gap: 7px; border: 1px solid #ecd0ae; border-radius: 7px; background: #fff; cursor: pointer; }
+.carrier-option:has(input:checked) { border-color: var(--orange); box-shadow: 0 0 0 1px var(--orange); }
+.carrier-option input { margin: 0; accent-color: var(--orange); }
+.carrier-option span { color: var(--navy); font-size: 12px; font-weight: 700; }
+@media (max-width: 520px) { .carrier-options { grid-template-columns: 1fr; } }
 .delivery-options input { min-height: 0; accent-color: var(--orange); }
 .success-message, .error-message { margin-top: 16px; padding: 13px 15px; border-radius: 4px; }
 .success-message { color: #126d40; background: #eaf8f1; border: 1px solid #b9e2ce; }

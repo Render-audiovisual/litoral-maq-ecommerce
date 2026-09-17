@@ -631,21 +631,24 @@ export default function CheckoutPage() {
                     ? "Pagás ahora los productos. El costo del envío se coordina y abona aparte: después del pago, Litoral Maq te contacta para acordar la logística y el despacho."
                     : `${manualReason} El equipo te confirmará costo y plazo.`}
                 </span>
-                <label className="carrier-preference">
-                  ¿Con qué logística preferís recibirlo?
-                  <select
-                    value={preferredCarrier}
-                    onChange={(event) => setPreferredCarrier(event.target.value)}
-                    required
-                  >
-                    <option value="">Elegí una opción</option>
+                <fieldset className="carrier-preference">
+                  <legend>¿Con qué logística preferís recibirlo?</legend>
+                  <div className="carrier-options">
                     {SHIPPING_CARRIER_OPTIONS.map((carrier) => (
-                      <option key={carrier} value={carrier}>
-                        {carrier}
-                      </option>
+                      <label key={carrier} className="carrier-option">
+                        <input
+                          type="radio"
+                          name="preferred-carrier"
+                          value={carrier}
+                          checked={preferredCarrier === carrier}
+                          onChange={(event) => setPreferredCarrier(event.target.value)}
+                          required
+                        />
+                        <span>{carrier}</span>
+                      </label>
                     ))}
-                  </select>
-                </label>
+                  </div>
+                </fieldset>
               </div>
             )}
             {shipping !== null && !manualReason && (
