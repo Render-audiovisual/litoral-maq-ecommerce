@@ -3166,19 +3166,19 @@
     "brand": "ENERGY",
     "image": "/products/DESMALEZADORA.png",
     "images": [
-      "/products/DESMALEZADORA.png"
+      "/products/DESMALEZADORA.png",
+      "/products/catalog/3502-bc524-1-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Desmalezadora a gasolina 4 en 1 ENERGY BC524-1.\n\nDatos técnicos:\n• Cilindrada: 52cc\n• Potencia: 1,94HP (1,45kW)\n• Velocidad en vacío: 7500/min\n• Capacidad de tanque: 1200ml\n• Sierra: 25cm - 10\"\n• Cortacerco: 40cm - 16\"\n• Tanza: 3m\n• Peso: 14,6kg (32lb)\n\nContenido: 1 desmalezadora a gasolina 4 en 1, 1 extensión de cortacerco, 1 extensión de sierra a cadena, 1 extensión de desmalezadora, 1 cabezal para bordeadora, 1 carretel de nylon, 1 hoja de corte 3T, 1 correa y 1 botella de aceite.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 122,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -5467,19 +5467,19 @@
     "brand": "FOREST & GARDEN",
     "image": "/products/catalog/3666-h4110m-220.webp",
     "images": [
-      "/products/catalog/3666-h4110m-220.webp"
+      "/products/catalog/3666-h4110m-220.webp",
+      "/products/catalog/3666-h4110m-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Hidrolavadora eléctrica FOREST & GARDEN H4110M/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 1400W\n• Presión máxima: 110bar\n• Presión nominal: 75 ± 5bar\n• Caudal: 5,1L/min\n• Flujo de trabajo: 4,8 ± 0,2 L/min\n• Unidades de limpieza: 561UL\n• Largo de cable: 5m\n• Tipo de aislación: Clase II\n• Peso: 6,1kg (13,23lb)\n\nContenido: 1 hidrolavadora eléctrica, 1 pistola de gatillo, 1 lanza, 1 boquilla ajustable, 1 adaptador de entrada, 1 manguera de presión de 5 m, 1 pin de limpieza y 1 dosificador de detergente.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 210,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -6942,19 +6942,19 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3539-li1012-220.webp",
     "images": [
-      "/products/catalog/3539-li1012-220.webp"
+      "/products/catalog/3539-li1012-220.webp",
+      "/products/catalog/3539-li1012-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Llave de impacto GLADIATOR LI1012/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 800W\n• Torque máximo: 500N/m\n• Tipo de aislación: Clase II\n• Peso: 2,6kg - 5,73lb\n\nContenido: 1 llave de impacto.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 266,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -7778,19 +7778,19 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3574-bco803k.webp",
     "images": [
-      "/products/catalog/3574-bco803k.webp"
+      "/products/catalog/3574-bco803k.webp",
+      "/products/catalog/3574-bco803k-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Set de 3 brocas escalonadas de ranura recta GLADIATOR BCO803K.\n\nDatos técnicos:\n• Cantidad de piezas: 3\n• Material: HSS 4241\n• Segmento: Hogar\n• Broca 1: 4-12mm (5/32\" - 15/32\")\n• Broca 2: 4-20mm (5/32\" - 25/32\")\n• Broca 3: 4-32mm (5/32\" - 1 1/4\")\n• Tipo: Ranura recta - perfora distintos diámetros en un solo paso\n\nContenido: 3 brocas escalonadas de ranura recta y 1 maletín de madera.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 298,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -8431,19 +8431,19 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3538-mx900-220.webp",
     "images": [
-      "/products/catalog/3538-mx900-220.webp"
+      "/products/catalog/3538-mx900-220.webp",
+      "/products/catalog/3538-mx900-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Mezcladora de pintura GLADIATOR MX900/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 1500W\n• Velocidad en vacío: Velocidad 1: 200-500rpm · Velocidad 2: 400-800rpm\n• Largo de paleta: 600mm - 24\"\n• Diámetro de paleta: 120mm - 4 23/32\"\n• Mezclador: M14\n• Tipo de aislación: Clase II\n• Peso: 5kg - 11,02lb\n\nContenido: 1 mezclador de pintura.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 323,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -8723,19 +8723,19 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3708-nlp830.webp",
     "images": [
-      "/products/catalog/3708-nlp830.webp"
+      "/products/catalog/3708-nlp830.webp",
+      "/products/catalog/3708-nlp830-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Nivel láser autonivelante con punto plomo GLADIATOR NLP830.\n\nDatos técnicos:\n• Distancia de trabajo: 30m\n• Funciones: Luz cruz (horizontal y vertical) y 2 puntos plomo\n• Tipo de láser: 520nm OSRAM\n• Precisión horizontal/vertical: ±3mm - 10m\n• Precisión de puntos: ±3mm - 10m\n• Rango de autonivelado: 4° ± 1°\n• Rosca de trípode: 1/4\" y 5/8\"\n• Medida de ángulo: 360° - 130°\n• Índice de protección: IP54\n• Batería: 2 pilas AA (no incluidas)\n• Clase de láser: Clase 2\n• Peso: 320g - 0,71lb\n\nContenido: 1 nivel láser autonivelante con punto plomo, 1 estuche, 1 placa de destino verde, 1 base de rotación 360° y 1 soporte magnético en L.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 334,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -10943,19 +10943,19 @@
     "brand": "NEO",
     "image": "/products/catalog/3773-spp1019.webp",
     "images": [
-      "/products/catalog/3773-spp1019.webp"
+      "/products/catalog/3773-spp1019.webp",
+      "/products/catalog/3773-spp1019-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Set de puntas de 19 piezas NEO SPP1019.\n\nDatos técnicos:\n• Cantidad de piezas: 19\n• Material: S2 + alto impacto\n• Segmento: Industrial\n• Phillips (PH) 25mm: x3\n• Phillips (PH) 50mm: x2\n• Pozidriv (PZ) 25mm: x3\n• Pozidriv (PZ) 50mm: x1\n• Recto (SL) 25mm: x2\n• Recto (SL) 50mm: x1\n• Torx (T) 25mm: x4\n• Torx (T) 50mm: x2\n• Quick changer: x1\n\nContenido: 1 set de puntas de 19 piezas y 1 maletín plástico.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 419,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -10997,19 +10997,19 @@
     "brand": "NEO",
     "image": "/products/catalog/3775-spp1025.webp",
     "images": [
-      "/products/catalog/3775-spp1025.webp"
+      "/products/catalog/3775-spp1025.webp",
+      "/products/catalog/3775-spp1025-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Set de puntas de 25 piezas NEO SPP1025.\n\nDatos técnicos:\n• Cantidad de piezas: 25\n• Material: S2 + alto impacto\n• Segmento: Industrial\n• Phillips (PH): x6\n• Pozidriv (PZ): x3\n• Recto (SL): x5\n• Hexagonal (H): x3\n• Torx (T): x7\n• Soporte universal magnético: x1\n\nContenido: 1 set de puntas de 25 piezas material S2 + alto impacto y 1 maletín plástico.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 421,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11024,19 +11024,19 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3569-spp825.webp",
     "images": [
-      "/products/catalog/3569-spp825.webp"
+      "/products/catalog/3569-spp825.webp",
+      "/products/catalog/3569-spp825-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Set de puntas de 25 piezas GLADIATOR SPP825.\n\nDatos técnicos:\n• Cantidad de piezas: 25\n• Material: S2\n• Segmento: Profesional\n• Phillips (PH): x6\n• Pozidriv (PZ): x3\n• Recto (SL): x5\n• Hexagonal (H): x3\n• Torx (T): x7\n• Soporte universal magnético: x1\n\nContenido: 1 set de puntas de 25 piezas material S2 y 1 maletín plástico.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 422,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11186,19 +11186,19 @@
     "brand": "NEO",
     "image": "/products/catalog/3776-ar10-15.webp",
     "images": [
-      "/products/catalog/3776-ar10-15.webp"
+      "/products/catalog/3776-ar10-15.webp",
+      "/products/catalog/3776-ar10-15-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Kit de 15 puntas para router NEO AR10/15.\n\nDatos técnicos:\n• Cantidad de piezas: 15\n• Uso: Ranuradoras y routers\n• Estuche: De madera\n\nContenido: 15 puntas para router y 1 estuche de madera.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 428,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11213,19 +11213,19 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3575-ar8-15.webp",
     "images": [
-      "/products/catalog/3575-ar8-15.webp"
+      "/products/catalog/3575-ar8-15.webp",
+      "/products/catalog/3575-ar8-15-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Kit de 15 puntas para router GLADIATOR AR8/15.\n\nDatos técnicos:\n• Cantidad de piezas: 15\n• Material: Carburo C3 con revestimiento antiadherente\n• Mango: 1/4 pulgada\n• Puntas: 5/32\" Roman ogee, 1/4\" y 1/2\" rebajado, 1/2\" y 5/8\" chaflán de 45°, 1/4\", 3/8\" y 1/2\" redondeo, 1/4\" y 1/2\" recorte al ras, 1/4\", 3/8\" y 1/2\" recta, 1/2\" mortajadora para bisagras y 1/2\" machihembrado\n• Tratamiento: Cuerpos y mangos tratados térmicamente\n\nContenido: 15 puntas para router y 1 estuche protector de madera.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 429,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -11797,19 +11797,19 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3537-si710-3-220.webp",
     "images": [
-      "/products/catalog/3537-si710-3-220.webp"
+      "/products/catalog/3537-si710-3-220.webp",
+      "/products/catalog/3537-si710-3-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Sierra ingletadora GLADIATOR SI710/3/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 1800W - 2,4HP\n• Velocidad en vacío: 6000rpm\n• Diámetro de hoja: 255mm - 10\"\n• Capacidad de corte 0° x 0°: 85 x 110mm - 3 11/32\" x 4 1/3\"\n• Capacidad de corte 0° x 45°: 85 x 80mm - 3 11/32\" x 3\"\n• Giro de la base: Hasta 45° a ambos lados\n• Tipo de aislación: Clase II\n• Peso: 9kg - 19,84lb\n\nContenido: 1 sierra ingletadora, 1 cuchilla de 40 dientes, 1 llave inglesa, 1 llave de ajuste, 1 bolsa recolectora de polvo y 1 juego de carbones.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 451,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -12063,19 +12063,19 @@
     "brand": "ENERGY",
     "image": "/products/catalog/3781-imet200-2-220.webp",
     "images": [
-      "/products/catalog/3781-imet200-2-220.webp"
+      "/products/catalog/3781-imet200-2-220.webp",
+      "/products/catalog/3781-imet200-2-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter MIG electrodo TIG ENERGY IMET200/2/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 30 - 200A\n• Amperaje: 200A\n• Voltaje en vacío: 57V\n• Capacidad del electrodo: 1,6 - 4,0mm\n• Capacidad del alambre: 1 y 5kg\n• Diámetro del alambre: 0,6 - 1,0mm\n• Potencia de entrada: 7kVA\n• Potencia de salida: 4,3kW\n• Tipo de soldadura: MIG gas/gasless - sólido, electrodo y TIG\n• Aislación: Clase I\n• Peso: 6,9kg (15,21lb)\n• Extras: Pantalla digital, VRD, hot start, arc force, IGBT, anti-stick y sinérgica\n\nContenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,8 m, 1 pinza porta electrodo con cable de 2,5 m, 1 torcha MIG gasless de 2,5 m (tipo 14AK) y 1 set de mangueras de 12x8mm de 2 m.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 461,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -12087,22 +12087,22 @@
     "price": 265000.57,
     "rawPrice": "$ 265.000,57",
     "category": "Soldadura",
-    "brand": "ENERGY",
+    "brand": "ENERGY NEXT",
     "image": "/products/catalog/3788-imet200x-220.webp",
     "images": [
-      "/products/catalog/3788-imet200x-220.webp"
+      "/products/catalog/3788-imet200x-220.webp",
+      "/products/catalog/3788-imet200x-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter MIG electrodo TIG ENERGY NEXT IMET200X/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 30 - 200A\n• Amperaje: 200A\n• Voltaje en vacío: 57V\n• Capacidad del electrodo: 1,6 - 4,0mm\n• Capacidad del alambre: 1 y 5kg\n• Diámetro del alambre: 0,6 - 1,0mm\n• Potencia de entrada: 7kVA\n• Potencia de salida: 4,3kW\n• Tipo de soldadura: MIG gas/gasless - sólido, electrodo y TIG\n• Aislación: Clase I\n• Peso: 6,9kg (15lb)\n• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick, sinérgica y alimentador de alambre de aluminio\n\nContenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,8 m, 1 pinza porta electrodo con cable de 2,5 m y 1 torcha MIG de 2,5 m (tipo 14AK).",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 462,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -12117,19 +12117,19 @@
     "brand": "ENERGY NEXT",
     "image": "/products/SOLDADORA.png",
     "images": [
-      "/products/SOLDADORA.png"
+      "/products/SOLDADORA.png",
+      "/products/catalog/3783-ie200x-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter de electrodo ENERGY NEXT IE200X/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 20 - 200A\n• Amperaje: 200A\n• Voltaje en vacío: 69V\n• Capacidad del electrodo: 1,6 - 4,0mm\n• Potencia de entrada: 8,2kVA\n• Potencia de salida: 5,1kW\n• Aislación: Clase I\n• Peso: 3,1kg (7lb)\n• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y función pulse\n\nContenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1,2 m y 1 pinza porta electrodo con cable de 1,8 m.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 463,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -12225,19 +12225,19 @@
     "brand": "ENERGY NEXT",
     "image": "/products/SOLDADORA.png",
     "images": [
-      "/products/SOLDADORA.png"
+      "/products/SOLDADORA.png",
+      "/products/catalog/3784-ie250x-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter de electrodo ENERGY NEXT IE250X/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 20 - 250A\n• Amperaje: 250A\n• Voltaje en vacío: 69V\n• Capacidad del electrodo: 1,6 - 5,0mm\n• Potencia de entrada: 10,8kVA\n• Potencia de salida: 6,8kW\n• Aislación: Clase I\n• Peso: 3,4kg (7,5lb)\n• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y función pulse\n\nContenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1,2 m y 1 pinza porta electrodo con cable de 1,8 m.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 467,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -12598,19 +12598,19 @@
     "brand": "ENERGY",
     "image": "/products/catalog/625-ddi10-2-12c1.webp",
     "images": [
-      "/products/catalog/625-ddi10-2-12c1.webp"
+      "/products/catalog/625-ddi10-2-12c1.webp",
+      "/products/catalog/625-ddi10-2-12c1-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Taladro atornillador percutor recargable ENERGY DDI10/2/12C1.\n\nDatos técnicos:\n• Velocidad en vacío: 0-400/min y 0-1400/min\n• Energía de impacto: 0-6000bpm y 0-22500bpm\n• Torque máximo: 32N/m\n• Posiciones de torque: 20 + 3\n• Capacidad: 10mm - 3/8\"\n• Tiempo de carga: 120 minutos\n• Tensión nominal: 10,8V\n• Tensión máxima: 12V\n• Batería: 12V - 1,5Ah\n• Cargador: 0,8A\n• Peso: 0,98kg - 2,16lb\n• Extras: Spindle lock, rubber finish, freno eléctrico e indicador de carga\n\nContenido: 1 taladro atornillador percutor recargable de 12V, 1 batería de 12V - 1,5Ah y 1 cargador de 0,8A.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 481,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
@@ -13549,19 +13549,19 @@
     "brand": "ENERGY",
     "image": "/products/catalog/3543-vc22-220.webp",
     "images": [
-      "/products/catalog/3543-vc22-220.webp"
+      "/products/catalog/3543-vc22-220.webp",
+      "/products/catalog/3543-vc22-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Aspiradora seco-húmedo y soplador ENERGY VC22/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Potencia: 1400W\n• Presión de trabajo: ≥ 15 ± 1,5KPa\n• Máximo caudal de aire: 1,5 ± 0,15 CBM/min\n• Caudal de soplido: ≥ 1,1 m³/min\n• Máxima potencia de succión: ≥ 115 ± 15W\n• Ruido: ≥ 93db\n• Capacidad de tanque: 22 litros\n• Índice de protección: IPX4\n• Aislación: Clase II\n• Peso: 4,1kg - 9,03lb\n\nContenido: 1 aspiradora seco-húmedo y soplador, 1 cepillo, 1 cepillo seco-húmedo, 2 tubos plásticos, 1 filtro HEPA, 1 filtro esponja, 1 filtro de tela y 1 manguera flexible.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 39,
     "incomplete": [
       "stock",
-      "description",
       "sheet-absent"
     ],
     "purchaseLimit": 3
@@ -13604,19 +13604,19 @@
     "brand": "ENERGY",
     "image": "/products/SOLDADORA.png",
     "images": [
-      "/products/SOLDADORA.png"
+      "/products/SOLDADORA.png",
+      "/products/catalog/3551-i120-2-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter de electrodo ENERGY I120/2/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 20 - 120A\n• Amperaje: 120A\n• Voltaje en vacío: 69V\n• Capacidad del electrodo: 1,6 - 3,2mm\n• Potencia de entrada: 4,6kVA\n• Potencia de salida: 2,9kW\n• Aislación: Clase I\n• Peso: 2,2kg (4,85lb)\n• Extras: Pantalla digital, hot start, IGBT y anti-stick\n\nContenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1 m y 1 pinza porta electrodo con cable de 1 m.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 441,
     "incomplete": [
       "stock",
-      "description",
       "sheet-absent"
     ],
     "purchaseLimit": 3
@@ -13660,19 +13660,19 @@
     "brand": "ENERGY",
     "image": "/products/catalog/3311-imet140-2-220.webp",
     "images": [
-      "/products/catalog/3311-imet140-2-220.webp"
+      "/products/catalog/3311-imet140-2-220.webp",
+      "/products/catalog/3311-imet140-2-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter MIG electrodo TIG ENERGY IMET140/2/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 30 - 140A\n• Amperaje: 140A\n• Voltaje en vacío: 60V\n• Capacidad del electrodo: 1,6 - 3,2mm\n• Capacidad del alambre: 1kg\n• Diámetro del alambre: 0,8 - 1,0mm\n• Potencia de entrada: 4,8kVA\n• Potencia de salida: 3kW\n• Tipo de soldadura: MIG gasless, electrodo y TIG\n• Aislación: Clase I\n• Peso: 3,3kg (7,28lb)\n• Extras: Pantalla digital, VRD, hot start, arc force, IGBT, anti-stick y sinérgica\n\nContenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,2 m, 1 pinza porta electrodo con cable de 1,8 m y 1 torcha MIG gasless de 1,5 m (tipo 14AK).",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 443,
     "incomplete": [
       "stock",
-      "description",
       "sheet-absent"
     ],
     "purchaseLimit": 3
@@ -13688,19 +13688,19 @@
     "brand": "ENERGY NEXT",
     "image": "/products/catalog/3785-imet140x-220.webp",
     "images": [
-      "/products/catalog/3785-imet140x-220.webp"
+      "/products/catalog/3785-imet140x-220.webp",
+      "/products/catalog/3785-imet140x-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter MIG electrodo TIG ENERGY NEXT IMET140X/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 30 - 140A\n• Amperaje: 140A\n• Voltaje en vacío: 60V\n• Capacidad del electrodo: 1,6 - 3,2mm\n• Capacidad del alambre: 1kg\n• Diámetro del alambre: 0,8 - 1,0mm\n• Potencia de entrada: 5,5kVA\n• Potencia de salida: 3,6kW\n• Tipo de soldadura: MIG gasless, electrodo y TIG\n• Aislación: Clase I\n• Peso: 3,3kg (7,28lb)\n• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y sinérgica\n\nContenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,2 m, 1 pinza porta electrodo con cable de 1,8 m y 1 torcha MIG gasless de 2 m (tipo 14AK).",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 444,
     "incomplete": [
       "stock",
-      "description",
       "sheet-absent"
     ],
     "purchaseLimit": 3
@@ -13744,19 +13744,19 @@
     "brand": "ENERGY",
     "image": "/products/SOLDADORA.png",
     "images": [
-      "/products/SOLDADORA.png"
+      "/products/SOLDADORA.png",
+      "/products/catalog/3552-i140-6-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter de electrodo ENERGY I140/6/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 20 - 140A\n• Amperaje: 140A\n• Voltaje en vacío: 69V\n• Capacidad del electrodo: 1,6 - 3,2mm\n• Potencia de entrada: 5,7kVA\n• Potencia de salida: 3,6kW\n• Aislación: Clase I\n• Peso: 2,2kg (4,85lb)\n• Extras: Pantalla digital, hot start, IGBT y anti-stick\n\nContenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1,2 m y 1 pinza porta electrodo con cable de 1,8 m.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 446,
     "incomplete": [
       "stock",
-      "description",
       "sheet-absent"
     ],
     "purchaseLimit": 3
@@ -13772,19 +13772,19 @@
     "brand": "ENERGY NEXT",
     "image": "/products/catalog/3782-ie140x-220.webp",
     "images": [
-      "/products/catalog/3782-ie140x-220.webp"
+      "/products/catalog/3782-ie140x-220.webp",
+      "/products/catalog/3782-ie140x-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter de electrodo ENERGY NEXT IE140X/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 20 - 140A\n• Amperaje: 140A\n• Voltaje en vacío: 69V\n• Capacidad del electrodo: 1,6 - 3,2mm\n• Potencia de entrada: 5,7kVA\n• Potencia de salida: 3,6kW\n• Aislación: Clase I\n• Peso: 2,2kg (4,85lb)\n• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y función pulse\n\nContenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1,2 m y 1 pinza porta electrodo con cable de 1,8 m.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 447,
     "incomplete": [
       "stock",
-      "description",
       "sheet-absent"
     ],
     "purchaseLimit": 3
@@ -13884,19 +13884,19 @@
     "brand": "ENERGY NEXT",
     "image": "/products/catalog/3787-imet150x-1-220.webp",
     "images": [
-      "/products/catalog/3787-imet150x-1-220.webp"
+      "/products/catalog/3787-imet150x-1-220.webp",
+      "/products/catalog/3787-imet150x-1-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Soldadora inverter MIG electrodo TIG ENERGY NEXT IMET150X/1/220.\n\nDatos técnicos:\n• Voltaje-frecuencia: 220V ~ 50-60Hz\n• Rango de amperaje: 30 - 150A\n• Amperaje: 150A\n• Voltaje en vacío: 60V\n• Capacidad del electrodo: 1,6 - 3,2mm\n• Capacidad del alambre: 1 y 5kg\n• Diámetro del alambre: 0,8 - 1,0mm\n• Potencia de entrada: 6kVA\n• Potencia de salida: 4kW\n• Tipo de soldadura: MIG gasless, electrodo y TIG\n• Aislación: Clase I\n• Peso: 5,1kg (11,2lb)\n• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y sinérgica\n\nContenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,2 m, 1 pinza porta electrodo con cable de 1,8 m y 1 torcha MIG gasless de 2 m (tipo 14AK).",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 451,
     "incomplete": [
       "stock",
-      "description",
       "sheet-absent"
     ],
     "purchaseLimit": 3

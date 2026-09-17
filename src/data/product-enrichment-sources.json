@@ -14,12 +14,13 @@
     "productId": "625",
     "model": "DDI10/2/12C1",
     "match": "exact_model",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/taladro-atornillador-a-bateria-energy-10mm-12v-ddi10-2-12c1-1ne5y/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/taladro-atornillador-a-bateria-energy-10mm-12v-ddi10212c1-9b7402580f6101d1a617697033601227-1024-1024.webp",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_4ab",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1785525583_ENERGY_-_Catalogo_interactivo_20263.jpg",
     "localImage": "/products/catalog/625-ddi10-2-12c1.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-17",
+    "localSpecSheet": "/products/catalog/625-ddi10-2-12c1-ficha.webp"
   },
   {
     "productId": "1779",
@@ -72,14 +73,15 @@
   {
     "productId": "3311",
     "model": "IMET140/2/220",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-140a-energy-easy-torch-imet140-2-220-71wxa/",
-    "imageSourceUrl": "Drive GBS: IMET140-2 ENERGY photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_128",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_128.jpg",
     "localImage": "/products/catalog/3311-imet140-2-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3311-imet140-2-220-ficha.webp"
   },
   {
     "productId": "3336",
@@ -328,34 +330,37 @@
     "productId": "3537",
     "model": "SI710/3/220",
     "match": "exact_model",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/sierra-ingletadora-gladiator-1800w-255mm-si710-3-220-1nuca/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/si7103220-_01-bb47a511c8489c52eb17721940274389-1024-1024.webp",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_173",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_173.jpg",
     "localImage": "/products/catalog/3537-si710-3-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-17",
+    "localSpecSheet": "/products/catalog/3537-si710-3-220-ficha.webp"
   },
   {
     "productId": "3538",
     "model": "MX900/220",
     "match": "exact_model",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/mezclador-de-pintura-gladiator-pro-1500w-mx900-220-1hevf/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/mezclador-de-pintura-gladiator-pro-1500w-mx900220-70076a1a3991ef8ab417721975700489-1024-1024.webp",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_318",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_318.jpg",
     "localImage": "/products/catalog/3538-mx900-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-17",
+    "localSpecSheet": "/products/catalog/3538-mx900-220-ficha.webp"
   },
   {
     "productId": "3539",
     "model": "LI1012/220",
     "match": "exact_model",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/llave-de-impacto-electrica-gladiator-500nm-1-2-li1012-220-1vhct/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/wxy2003-96-bc61186771bc7542e317722982884752-1024-1024.webp",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_316",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_316.jpg",
     "localImage": "/products/catalog/3539-li1012-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-17",
+    "localSpecSheet": "/products/catalog/3539-li1012-220-ficha.webp"
   },
   {
     "productId": "3540",
@@ -395,14 +400,15 @@
   {
     "productId": "3543",
     "model": "VC22/220",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://www.kitmaq.com/productos/aspiradora-22l-1400w-3en1-vc22-220-energy/",
-    "imageSourceUrl": "Drive GBS: VC22 ENERGY photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_182",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_182.jpg",
     "localImage": "/products/catalog/3543-vc22-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de www.kitmaq.com; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de www.kitmaq.com; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3543-vc22-220-ficha.webp"
   },
   {
     "productId": "3544",
@@ -433,38 +439,41 @@
   {
     "productId": "3569",
     "model": "SPP825",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://rspshopmaquinas.com.ar/productos/set-de-puntas-profesionales-25-piezas-gladiator-pro-spp825-yvege/",
-    "imageSourceUrl": "Drive GBS: SPP 825 GLA PRO Photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_439",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_439.jpg",
     "localImage": "/products/catalog/3569-spp825.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3569-spp825-ficha.webp"
   },
   {
     "productId": "3574",
     "model": "BCO803K",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://rspshopmaquinas.com.ar/productos/set-mechas-escalonadas-de-ranura-recta-gladiator-bco803k-11yub/",
-    "imageSourceUrl": "Drive GBS: BCO 803k GLA PRO Photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_443",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_443.jpg",
     "localImage": "/products/catalog/3574-bco803k.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3574-bco803k-ficha.webp"
   },
   {
     "productId": "3575",
     "model": "AR8/15",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://rspshopmaquinas.com.ar/productos/set-de-15-puntas-para-router-mango-de-1-4-pulgadas-gladiator-ar8-15/",
-    "imageSourceUrl": "Drive GBS: AR 8-15 GLA PRO photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_453a",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1776707860_GLADIATOR_PRO_-_Catalogo_interactivo_2026450.jpg",
     "localImage": "/products/catalog/3575-ar8-15.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de rspshopmaquinas.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3575-ar8-15-ficha.webp"
   },
   {
     "productId": "3577",
@@ -853,14 +862,15 @@
   {
     "productId": "3666",
     "model": "H4110M/220",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://www.kitmaq.com/productos/hidrolavadora-alta-presion-1400w-100-bar-h4110m-220-forest-garden/",
-    "imageSourceUrl": "Drive GBS: H 4110M F&G Photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/FOREST_AND_GARDEN_129",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ForestAndGardenFullCat_Page_129.jpg",
     "localImage": "/products/catalog/3666-h4110m-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de www.kitmaq.com; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de www.kitmaq.com; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3666-h4110m-220-ficha.webp"
   },
   {
     "productId": "3667",
@@ -928,14 +938,15 @@
   {
     "productId": "3708",
     "model": "NLP830",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/nivel-laser-autonivelante-con-punto-plomo-gladiator-30m-nlp830-8yua7/",
-    "imageSourceUrl": "Drive GBS: NLP 830 GLA PRO photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/GADIATOR_PRO_149",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/GLADIATOR_PRO-Catalogo_interactivo_2026_Page_149.jpg",
     "localImage": "/products/catalog/3708-nlp830.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3708-nlp830-ficha.webp"
   },
   {
     "productId": "3709",
@@ -1112,34 +1123,37 @@
     "productId": "3773",
     "model": "SPP1019",
     "match": "exact_model",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/set-de-puntas-neo-de-19pzs-spp1019-mm4pb/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/spp1019-_01-42e1ca60c567e0662917785162078449-1024-1024.webp",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/NEO_288",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/NEO_-_Catalogo_interactivo_2026_Page_288.jpg",
     "localImage": "/products/catalog/3773-spp1019.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-17",
+    "localSpecSheet": "/products/catalog/3773-spp1019-ficha.webp"
   },
   {
     "productId": "3775",
     "model": "SPP1025",
     "match": "exact_model",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/set-de-puntas-neo-de-25pzs-spp1025-1ljl7/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/set1212-ecb5741acd159b696617770401824657-1024-1024.webp",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/NEO_290",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/NEO_-_Catalogo_interactivo_2026_Page_290.jpg",
     "localImage": "/products/catalog/3775-spp1025.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-17",
+    "localSpecSheet": "/products/catalog/3775-spp1025-ficha.webp"
   },
   {
     "productId": "3776",
     "model": "AR10/15",
     "match": "exact_model",
-    "productSourceUrl": "https://rspshopmaquinas.com.ar/productos/set-de-15-puntas-para-router-mango-de-1-4-pulgada-neo-ar10-15/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/002/110/845/products/copia-de-productos-rsp-shop-1-102e5aa4336025f5a917877601963954-1024-1024.webp",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/NEO_291",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/NEO_-_Catalogo_interactivo_2026_Page_291.jpg",
     "localImage": "/products/catalog/3776-ar10-15.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-17",
+    "localSpecSheet": "/products/catalog/3776-ar10-15-ficha.webp"
   },
   {
     "productId": "3777",
@@ -1170,37 +1184,40 @@
   {
     "productId": "3781",
     "model": "IMET200/2/220",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-next-200a-mig-gasless-tig-lift-mma-imet200-2-220-nsur7/",
-    "imageSourceUrl": "Drive GBS: IMET200-2 ENERGY photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_130",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_130.jpg",
     "localImage": "/products/catalog/3781-imet200-2-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3781-imet200-2-220-ficha.webp"
   },
   {
     "productId": "3782",
     "model": "IE140X/220",
     "match": "exact_model",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-mma-inverter-energy-140a-ie140x-220-njuoq/",
-    "imageSourceUrl": "https://acdn-us.mitiendanube.com/stores/001/044/185/products/ie140-61b3ae70551e92ab7a17844768891371-1024-1024.webp",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_143",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1782743275_ENERGY_-_Catalogo_interactivo_2026_145.jpg",
     "localImage": "/products/catalog/3782-ie140x-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-08-27"
+    "verifiedAt": "2026-09-17",
+    "localSpecSheet": "/products/catalog/3782-ie140x-220-ficha.webp"
   },
   {
     "productId": "3785",
     "model": "IMET140X/220",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-140a-easy-torch-mig-gasless-tig-lift-mma-imet140x-220-wgzax/",
-    "imageSourceUrl": "Drive GBS: SOLDADORAS / IMET140X ENERGY NEXT photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_147",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_147.jpg",
     "localImage": "/products/catalog/3785-imet140x-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3785-imet140x-220-ficha.webp"
   },
   {
     "productId": "3786",
@@ -1218,26 +1235,28 @@
   {
     "productId": "3787",
     "model": "IMET150X/1/220",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-150a-mig-gasless-tig-lift-mma-imet150x-1-220-1vbzc/",
-    "imageSourceUrl": "Drive GBS: SOLDADORAS / IMET150X-1 ENERGY NEXT photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_149",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_149.jpg",
     "localImage": "/products/catalog/3787-imet150x-1-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3787-imet150x-1-220-ficha.webp"
   },
   {
     "productId": "3788",
     "model": "IMET200X/220",
-    "match": "foto_oficial_drive",
-    "productSourceUrl": "https://www.loyevo.com.ar/productos/soldadora-energy-next-200a-mig-gasless-tig-lift-mma-imet200x-220-3bkcx/",
-    "imageSourceUrl": "Drive GBS: SOLDADORAS / IMET200X-220 ENERGY NEXT photo.jpg",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_150",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_150.jpg",
     "localImage": "/products/catalog/3788-imet200x-220.webp",
-    "descriptionImported": false,
+    "descriptionImported": true,
     "conflictsSkipped": [],
-    "verifiedAt": "2026-09-16",
-    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante."
+    "verifiedAt": "2026-09-17",
+    "nota": "La foto anterior venia de www.loyevo.com.ar; se reemplazo por la del fabricante.",
+    "localSpecSheet": "/products/catalog/3788-imet200x-220-ficha.webp"
   },
   {
     "productId": "3878",
@@ -1962,5 +1981,65 @@
     "conflictsSkipped": [],
     "nota": "GBS publica las fotos de este modelo pero no su manual ni su ficha; los datos salen del listado de Litoral Maq",
     "verifiedAt": "2026-09-16"
+  },
+  {
+    "productId": "3502",
+    "model": "BC524-1",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_221",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1785767062_ENERGY_-_Catalogo_interactivo_20264.jpg",
+    "localImage": "/products/DESMALEZADORA.png",
+    "localSpecSheet": "/products/catalog/3502-bc524-1-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-17"
+  },
+  {
+    "productId": "3551",
+    "model": "I120/2/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_125",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_125.jpg",
+    "localImage": "/products/SOLDADORA.png",
+    "localSpecSheet": "/products/catalog/3551-i120-2-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-17"
+  },
+  {
+    "productId": "3552",
+    "model": "I140/6/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_126",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/ENERGY_-_Catalogo_interactivo_2026_Page_126.jpg",
+    "localImage": "/products/SOLDADORA.png",
+    "localSpecSheet": "/products/catalog/3552-i140-6-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-17"
+  },
+  {
+    "productId": "3783",
+    "model": "IE200X/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_144",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1782743264_ENERGY_-_Catalogo_interactivo_2026_146.jpg",
+    "localImage": "/products/SOLDADORA.png",
+    "localSpecSheet": "/products/catalog/3783-ie200x-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-17"
+  },
+  {
+    "productId": "3784",
+    "model": "IE250X/220",
+    "match": "exact_model",
+    "productSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/ENERGY_145",
+    "imageSourceUrl": "https://gbs-corp.com/system/onlinecatalogs/catalogPageImages/1782743255_ENERGY_-_Catalogo_interactivo_2026_147.jpg",
+    "localImage": "/products/SOLDADORA.png",
+    "localSpecSheet": "/products/catalog/3784-ie250x-220-ficha.webp",
+    "descriptionImported": true,
+    "conflictsSkipped": [],
+    "verifiedAt": "2026-09-17"
   }
 ]
