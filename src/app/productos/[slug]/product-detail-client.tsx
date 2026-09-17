@@ -150,8 +150,8 @@ export function ProductDetailClient({ slug }: { slug: string }) {
           <div className="purchase-benefits">
             <div>
               <span>🚚</span>
-              <strong>Envíos</strong>
-              <small>Cotización después de confirmar stock</small>
+              <strong>Envíos a todo el país</strong>
+              <small>Por Vía Cargo, OCA o Andreani</small>
             </div>
             <div>
               <span>📍</span>
@@ -160,8 +160,8 @@ export function ProductDetailClient({ slug }: { slug: string }) {
             </div>
             <div>
               <span>✓</span>
-              <strong>Sin cobro previo</strong>
-              <small>Coordinamos el pago con vos</small>
+              <strong>Pago seguro</strong>
+              <small>Mercado Pago: cuotas o débito</small>
             </div>
           </div>
         </div>

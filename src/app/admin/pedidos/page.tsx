@@ -244,8 +244,7 @@ export default function AdminOrdersPage() {
           <span className="eyebrow orange">VENTAS</span>
           <h1>Pedidos</h1>
           <p>
-            Consultá cada solicitud y avanzá su preparación con confirmación
-            real de Supabase.
+            Consultá cada pedido y avanzá su preparación.
           </p>
         </div>
         <div className="heading-actions">

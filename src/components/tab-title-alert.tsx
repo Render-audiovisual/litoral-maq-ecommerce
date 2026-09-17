@@ -6,7 +6,7 @@ import { useStore } from "@/store/store";
 import { isAdminSurface } from "@/lib/site-surface";
 
 const LEAVING = "🚨 ¡No te vayas!";
-const CHECKOUT = "🛒 Enviá tu solicitud";
+const CHECKOUT = "🛒 Terminá tu compra";
 
 export function TabTitleAlert() {
   const pathname = usePathname();

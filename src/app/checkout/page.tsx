@@ -237,7 +237,7 @@ export default function CheckoutPage() {
       }
     }
     if (shipping === null) {
-      setError("Confirmá la forma de entrega antes de enviar la solicitud.");
+      setError("Confirmá la forma de entrega antes de continuar.");
       return;
     }
     if (method === "envio" && !manualReason && !selectedQuoteId) {
@@ -245,7 +245,7 @@ export default function CheckoutPage() {
       return;
     }
     if (method === "envio" && manualReason && !preferredCarrier) {
-      setError("Elegí con qué logística preferís recibir el envío.");
+      setError("Elegí con qué empresa querés el envío: Vía Cargo, OCA o Andreani.");
       return;
     }
     const quantityError = validateCartPurchaseLimits(cart, products);
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
         address,
         status: "pendiente",
         createdAt: new Date().toISOString(),
-        paymentReference: "Pago a coordinar",
+        paymentReference: "Pago pendiente",
         paymentStatus: "pending",
         postalCode: method === "envio" ? form.postalCode : undefined,
         province: method === "envio" ? form.province : undefined,
@@ -364,11 +364,11 @@ export default function CheckoutPage() {
   return (
     <main className="standard-page checkout-page">
       <div className="page-heading">
-        <span className="eyebrow orange">SOLICITUD DE COMPRA</span>
+        <span className="eyebrow orange">FINALIZAR COMPRA</span>
         <h1>Confirmá tu pedido</h1>
         <p>
-          Cotizamos la entrega con tus datos reales y confirmamos todo antes de
-          cobrar.
+          Completá tus datos, elegí cómo recibirlo y pagá seguro con Mercado
+          Pago.
         </p>
       </div>
       <form className="checkout-layout" onSubmit={submit}>
@@ -627,12 +627,12 @@ export default function CheckoutPage() {
               <div className="manual-shipping-message">
                 <strong>Envío a coordinar</strong>
                 <span>
-                  {paymentEnabled
-                    ? "Pagás ahora los productos. El costo del envío se coordina y abona aparte: después del pago, Litoral Maq te contacta para acordar la logística y el despacho."
-                    : `${manualReason} El equipo te confirmará costo y plazo.`}
+                  Pagás ahora los productos. Elegí con qué empresa querés
+                  recibirlo: después del pago te pasamos el costo del envío,
+                  que se abona aparte.
                 </span>
                 <fieldset className="carrier-preference">
-                  <legend>¿Con qué logística preferís recibirlo?</legend>
+                  <legend>¿Con qué empresa querés el envío?</legend>
                   <div className="carrier-options">
                     {SHIPPING_CARRIER_OPTIONS.map((carrier) => (
                       <label key={carrier} className="carrier-option">
@@ -667,26 +667,26 @@ export default function CheckoutPage() {
               <span>✓</span>
               <div>
                 <strong>
-                  {paymentEnabled ? "Mercado Pago" : "Primero confirmamos todo"}
+                  {paymentEnabled ? "Mercado Pago" : "Confirmación por WhatsApp"}
                 </strong>
                 <small>
                   {paymentEnabled
                     ? "Vas a pagar en el entorno seguro de Mercado Pago"
-                    : "Stock, entrega y total final"}
+                    : "Te confirmamos el pedido y el pago"}
                 </small>
               </div>
-              <b>{paymentEnabled ? "CHECKOUT PRO" : "SIN COBRO"}</b>
+              <b>{paymentEnabled ? "PAGO SEGURO" : "SIN COBRO"}</b>
             </div>
             <p className="helper">
               {paymentEnabled
-                ? "Pagás en Mercado Pago con tarjeta de crédito en cuotas, débito o dinero en cuenta. El pago se confirma con la notificación firmada de Mercado Pago."
+                ? "Pagás con tarjeta de crédito en cuotas, débito o dinero en cuenta de Mercado Pago. Apenas se acredita te llega la confirmación por correo."
                 : "La guía logística se crea únicamente cuando Litoral Maq confirma el pago. Enviar esta solicitud no genera cargos ni despachos."}
             </p>
           </section>
           {error && <div className="error-message">{error}</div>}
         </div>
         <aside className="order-summary sticky">
-          <h2>Tu solicitud</h2>
+          <h2>Tu pedido</h2>
           <div>
             <span>Productos</span>
             <strong>
@@ -705,7 +705,7 @@ export default function CheckoutPage() {
                 : method === "retiro"
                   ? "Gratis"
                   : manualReason
-                    ? "A coordinar"
+                    ? "A cotizar"
                     : formatCurrency(shipping)}
             </strong>
           </div>
@@ -734,8 +734,8 @@ export default function CheckoutPage() {
           <small>
             {paymentEnabled
               ? manualReason
-                ? "Pagás los productos en Mercado Pago. El envío se coordina y abona aparte."
-                : "El cobro se completa fuera de la tienda, en Mercado Pago."
+                ? "Pagás los productos en Mercado Pago. El envío se cotiza y abona aparte."
+                : "El pago se completa en Mercado Pago."
               : "No se realizará ningún cobro en este paso."}
           </small>
         </aside>
