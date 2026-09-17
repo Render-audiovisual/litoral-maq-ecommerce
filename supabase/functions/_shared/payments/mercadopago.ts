@@ -15,6 +15,23 @@ type PreferenceItem = {
   description?: string;
   quantity: number;
   unitPrice: number;
+  /** URL absoluta de la foto: Mercado Pago la muestra en la pantalla de pago. */
+  pictureUrl?: string;
+};
+
+/**
+ * Datos del comprador. Mercado Pago los usa para evaluar el riesgo de la
+ * operación: cuanto más completo va, menos rechazos y menos pedidos de
+ * verificación al cliente.
+ */
+type PreferencePayer = {
+  email: string;
+  name?: string;
+  surname?: string;
+  phone?: string;
+  street?: string;
+  streetNumber?: string;
+  postalCode?: string;
 };
 
 type PreferenceInput = {
@@ -22,6 +39,7 @@ type PreferenceInput = {
   payerEmail: string;
   items: PreferenceItem[];
   shippingAmount: number;
+  payer?: PreferencePayer;
 };
 
 type MercadoPagoConfig = {
@@ -31,6 +49,36 @@ type MercadoPagoConfig = {
   useSandbox: boolean;
   maxInstallments: number;
 };
+
+/**
+ * Arma el comprador para la preferencia. Mercado Pago pide el teléfono separado
+ * en código de área y número; si no lo podemos separar con confianza, mandamos
+ * el número entero antes que inventar un área equivocado.
+ */
+function buildPayer(input: PreferenceInput) {
+  const payer = input.payer;
+  if (!payer) return { email: input.payerEmail };
+  const digits = (payer.phone || "").replace(/\D/g, "");
+  const local = digits.startsWith("54") ? digits.slice(2) : digits;
+  const phone = local.length >= 10
+    ? { area_code: local.slice(0, local.length - 8), number: local.slice(-8) }
+    : local
+    ? { number: local }
+    : undefined;
+  return {
+    email: payer.email || input.payerEmail,
+    name: payer.name?.slice(0, 80) || undefined,
+    surname: payer.surname?.slice(0, 80) || undefined,
+    phone,
+    address: payer.street
+      ? {
+        street_name: payer.street.slice(0, 120),
+        street_number: payer.streetNumber?.slice(0, 20) || undefined,
+        zip_code: payer.postalCode?.slice(0, 20) || undefined,
+      }
+      : undefined,
+  };
+}
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object"
@@ -123,6 +171,10 @@ export class MercadoPagoClient {
       quantity: item.quantity,
       currency_id: "ARS",
       unit_price: Number(item.unitPrice.toFixed(2)),
+      // La foto aparece en la pantalla de pago: el cliente ve lo que compra
+      // mientras pone la tarjeta, no solo un nombre.
+      picture_url: item.pictureUrl,
+      category_id: "tools",
     }));
     if (input.shippingAmount > 0) {
       items.push({
@@ -132,6 +184,8 @@ export class MercadoPagoClient {
         quantity: 1,
         currency_id: "ARS",
         unit_price: Number(input.shippingAmount.toFixed(2)),
+        picture_url: undefined,
+        category_id: "services",
       });
     }
     const payload = asRecord(
@@ -142,7 +196,7 @@ export class MercadoPagoClient {
           headers: { "x-idempotency-key": `litoral-${input.orderId}` },
           body: JSON.stringify({
             items,
-            payer: { email: input.payerEmail },
+            payer: buildPayer(input),
             external_reference: input.orderId,
             back_urls: {
               success: `${this.config.storeUrl}/checkout/exito?pedido=${

@@ -33,9 +33,12 @@ describe("correo posterior al pago", () => {
       "https://litoralmaq.com",
     );
 
-    expect(email.subject).toBe("Pago confirmado · Pedido LM-12345678");
+    expect(email.subject).toBe(
+      "¡Gracias por tu compra! Pedido LM-12345678 confirmado",
+    );
     expect(email.html).toContain("Pago acreditado por Mercado Pago.");
-    expect(email.html).toContain("vamos a evaluar el correo disponible");
+    expect(email.html).toContain("Total pagado");
+    expect(email.html).toContain("coordinamos el envío a tu domicilio");
     expect(email.html).not.toContain("Sujeto a la confirmación operativa");
     expect(email.html).toContain("https://litoralmaq.com/cuenta/pedidos");
   });
@@ -47,7 +50,7 @@ describe("correo posterior al pago", () => {
       "https://litoralmaq.com/",
     );
 
-    expect(email.html).toContain("cuando el pedido esté listo para retirar");
+    expect(email.html).toContain("listo para retirar en Sáenz 1587");
   });
 
   it("para retiro usa el aviso listo para retirar y cierra como retirado", () => {
@@ -103,5 +106,57 @@ describe("correo posterior al pago", () => {
     );
 
     expect(email.html).toContain("https://admin.litoralmaq.com/admin/pedidos");
+  });
+});
+
+describe("detalle premium del correo de compra", () => {
+  const conPago = (): OrderRecord => ({
+    ...order("envio"),
+    total: 134_999,
+    shipping: 15_000,
+    payment: { installments: 3, installment_amount: 48_500, payment_type_id: "credit_card" },
+  });
+
+  it("muestra cómo pagó el cliente, con el importe de cuota del fabricante del pago", () => {
+    const email = renderOrderEmail("customer_payment_approved", conPago(), "https://litoralmaq.com");
+    expect(email.html).toContain("3 cuotas de");
+    expect(email.html).toContain("48.500");
+  });
+
+  it("abre el total: productos y envío por separado", () => {
+    const email = renderOrderEmail("customer_payment_approved", conPago(), "https://litoralmaq.com");
+    expect(email.html).toContain("Productos");
+    expect(email.html).toContain("Envío");
+    expect(email.html).toContain("119.999"); // 134.999 - 15.000 de envío
+  });
+
+  it("incluye la foto del producto cuando la hay, y no rompe cuando falta", () => {
+    const base = conPago();
+    const conFoto = renderOrderEmail("customer_payment_approved", base, "https://litoralmaq.com", {
+      "": "https://litoralmaq.com/products/catalog/x.webp",
+    });
+    expect(conFoto.html).not.toContain("<img src=\"https://litoralmaq.com/products/catalog/x.webp\"");
+    const conId = renderOrderEmail(
+      "customer_payment_approved",
+      { ...base, lines: [{ ...base.lines[0], productId: "p1" }] },
+      "https://litoralmaq.com",
+      { p1: "https://litoralmaq.com/products/catalog/x.webp" },
+    );
+    expect(conId.html).toContain("products/catalog/x.webp");
+    const sinFoto = renderOrderEmail("customer_payment_approved", base, "https://litoralmaq.com");
+    expect(sinFoto.html).not.toContain("<img");
+  });
+
+  it("dice qué sigue y cómo contactarlos", () => {
+    const email = renderOrderEmail("customer_payment_approved", conPago(), "https://litoralmaq.com");
+    expect(email.html).toContain("Qué sigue");
+    expect(email.html).toContain("wa.me/5493794215065");
+    expect(email.html).toContain("Sáenz 1587");
+  });
+
+  // El correo al equipo no lleva el bloque de contacto: ya saben dónde trabajan.
+  it("el aviso interno no incluye el bloque de contacto del cliente", () => {
+    const email = renderOrderEmail("team_new_order", conPago(), "https://admin.litoralmaq.com");
+    expect(email.html).not.toContain("¿Alguna duda con tu pedido?");
   });
 });
