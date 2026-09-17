@@ -18,6 +18,29 @@ export const ORDER_STATUS_LABELS: Record<Order["status"], string> = {
   cancelado: "Cancelado",
 };
 
+/**
+ * Logísticas que el cliente puede preferir cuando el envío no se cotiza en el
+ * momento. No es una reserva: Litoral Maq confirma con el cliente después del pago.
+ */
+export const SHIPPING_CARRIER_OPTIONS = [
+  "OCA",
+  "Andreani",
+  "Vía Cargo",
+  "Correo Argentino",
+  "Que Litoral Maq elija la mejor opción",
+] as const;
+
+/**
+ * Envío a coordinar: el cliente paga los productos y el envío se arregla aparte.
+ * Pasa cuando no hubo cotización automática (por ejemplo, otra provincia).
+ */
+export function isShippingToCoordinate(
+  order: Pick<Order, "deliveryMethod" | "shippingQuoteId" | "shippingStatus">,
+) {
+  return order.deliveryMethod === "envio" &&
+    (!order.shippingQuoteId || order.shippingStatus === "manual_quote");
+}
+
 /** Etiquetas del circuito operativo que ve el equipo en el panel. */
 export const ADMIN_ORDER_STATUS_LABELS: Record<Order["status"], string> = {
   pendiente: "Paso 0 · Pedido recibido",

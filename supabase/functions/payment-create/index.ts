@@ -146,15 +146,11 @@ Deno.serve(async (request) => {
     );
 
     let shippingAmount = 0;
-    if (order.delivery_method === "envio") {
-      if (
-        !order.shipping_quote_id || order.shipping_status === "manual_quote"
-      ) {
-        throw new HttpError(
-          409,
-          "El envío todavía necesita una cotización confirmada antes de pagar.",
-        );
-      }
+    // Envío a coordinar (sin cotización automática, por ejemplo a otra provincia):
+    // se cobran solo los productos y el envío se arregla aparte con el cliente.
+    const envioACoordinar = order.delivery_method === "envio" &&
+      (!order.shipping_quote_id || order.shipping_status === "manual_quote");
+    if (order.delivery_method === "envio" && !envioACoordinar) {
       const { data: quote, error: quoteError } = await db.from(
         "shipping_quotes",
       )

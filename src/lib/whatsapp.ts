@@ -1,4 +1,5 @@
 import type { Order } from "./types";
+import { isShippingToCoordinate } from "./order-details";
 import { formatCurrency } from "./utils";
 
 const WHATSAPP_NUMBER = "5493794215065";
@@ -39,15 +40,27 @@ export function getOrderWhatsAppUrl(order: Order | undefined, orderId: string) {
   const products = order.lines
     .map((line) => `${line.quantity}× ${line.productName || line.productCode || line.productId}`)
     .join(", ");
-  const delivery = order.deliveryMethod === "retiro"
-    ? "retiro en Sáenz 1587"
-    : order.shippingQuoteId
-      ? `envío por ${order.shippingCarrier || "correo"} (${formatCurrency(order.shipping)})`
-      : "envío a cotizar";
   const productTotal = Math.max(0, order.total - (order.shipping || 0));
+  const pagado = order.paymentStatus === "approved";
+  const coordinar = isShippingToCoordinate(order);
+  const delivery = order.deliveryMethod === "retiro"
+    ? "retiro en el local de Sáenz 1587"
+    : coordinar
+      ? `envío a coordinar${
+        order.shippingCarrier ? `, prefiero despacharlo con ${order.shippingCarrier}` : ""
+      }`
+      : `envío por ${order.shippingCarrier || "correo"} (${formatCurrency(order.shipping)})`;
+  // Lo que pide el cliente depende de cómo lo recibe: retirar o acordar el envío.
+  const cierre = !pagado
+    ? "Quiero confirmar disponibilidad y próximos pasos."
+    : order.deliveryMethod === "retiro"
+      ? "¿Me avisan cuándo puedo pasar a retirarlo?"
+      : coordinar
+        ? "Quiero coordinar la logística y el costo del envío."
+        : "Quedo atento al número de seguimiento.";
   return getWhatsAppUrl(
-    `Hola, envié la solicitud ${order.id} desde la web. ` +
+    `Hola, ${pagado ? "hice la compra" : "envié la solicitud"} ${order.id} desde la web. ` +
     `Productos: ${products}. Total de productos: ${formatCurrency(productTotal)}. ` +
-    `Elegí ${delivery}.${paymentSummary(order)} Quiero confirmar disponibilidad y próximos pasos.`,
+    `Elegí ${delivery}.${paymentSummary(order)} ${cierre}`,
   );
 }
