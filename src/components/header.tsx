@@ -99,6 +99,15 @@ export function Header() {
     }
   }
 
+  // En el celular el teclado se cierra DESPUÉS de levantar el dedo: el blur del
+  // input llega entre el pointerup y el click. Bajar la guardia en el pointerup
+  // desmontaba el cartel en ese hueco y el toque nunca alcanzaba al enlace, así
+  // que la ficha no abría. En escritorio no pasaba porque el blur llega antes,
+  // con el botón todavía apretado.
+  function soltarSugerencia() {
+    window.setTimeout(() => { choosingSuggestion.current = false; }, 500);
+  }
+
   // El cartel sólo se cierra si el foco se fue de la barra entera: pasar del
   // input a una sugerencia no lo tiene que hacer desaparecer.
   function handleSearchBlur(event: FocusEvent<HTMLFormElement>) {
@@ -167,8 +176,8 @@ export function Header() {
             <div
               className="search-suggestions"
               onPointerDownCapture={() => { choosingSuggestion.current = true; }}
-              onPointerUpCapture={() => { choosingSuggestion.current = false; }}
-              onPointerCancel={() => { choosingSuggestion.current = false; }}
+              onPointerUpCapture={soltarSugerencia}
+              onPointerCancel={soltarSugerencia}
             >
               {suggestions.length === 0 ? (
                 <p className="search-suggestions-empty">

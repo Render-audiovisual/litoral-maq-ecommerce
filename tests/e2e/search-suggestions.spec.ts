@@ -78,3 +78,37 @@ test('en móvil tocar una sugerencia navega aunque el input pierda el foco', asy
 
   await expect(page).toHaveURL(new RegExp(`${href!.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
 });
+
+test('en móvil el toque abre la ficha aunque el teclado se cierre justo después', async ({ page }) => {
+  // En el celular el teclado se cierra DESPUÉS de levantar el dedo: el blur del
+  // input llega entre el pointerup y el click. Si el cartel se desmonta ahí, el
+  // toque nunca alcanza al enlace y la ficha no abre. En escritorio no pasa
+  // porque el blur llega antes, mientras el dedo todavía está apoyado.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.getByRole('combobox', { name: 'Buscar en el catálogo' }).fill('amola');
+
+  const primera = page.getByRole('listbox', { name: 'Sugerencias' }).getByRole('option').first();
+  await expect(primera).toBeVisible();
+  const enlace = primera.getByRole('link');
+  const slug = new URL(await enlace.getAttribute('href') ?? '', 'http://x').searchParams.get('slug');
+
+  const sigueEnPantalla = await page.evaluate(async () => {
+    const link = document.querySelector('a.suggestion') as HTMLElement | null;
+    if (!link) return false;
+    const r = link.getBoundingClientRect();
+    const opciones = {
+      bubbles: true, cancelable: true, pointerType: 'touch',
+      clientX: r.x + r.width / 2, clientY: r.y + r.height / 2,
+    };
+    link.dispatchEvent(new PointerEvent('pointerdown', opciones));
+    link.dispatchEvent(new PointerEvent('pointerup', opciones));
+    document.getElementById('site-search')?.blur();
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    return document.body.contains(link);
+  });
+  expect(sigueEnPantalla).toBe(true);
+
+  await enlace.click();
+  await expect(page).toHaveURL(`/producto?slug=${slug}`);
+});
