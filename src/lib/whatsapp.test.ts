@@ -14,11 +14,12 @@ describe("confirmación de pedido por WhatsApp", () => {
     expect(url.hostname).toBe("wa.me");
     expect(url.pathname).toBe("/5493794215065");
     const text = url.searchParams.get("text") || "";
-    expect(text).toContain("Hice la compra LM-123");
-    expect(text).toContain("Productos: 2× Taladro.");
-    expect(text).toMatch(/Total pagado: \$\s?50\.000/);
-    expect(text).toContain("Elegí retiro en el local de Sáenz 1587.");
-    expect(text).toMatch(/Mastercard: 3 cuotas de \$\s?16\.666,67/i);
+    expect(text).toContain("🧾 *Pedido:* LM-123");
+    expect(text).toContain("🛒 *Productos:*\n• 2 × Taladro");
+    expect(text).toMatch(/💰 \*Total de productos:\* \$\s?50\.000/);
+    expect(text).toContain("🚚 *Entrega:* Retiro en el local de Sáenz 1587");
+    expect(text).toMatch(/Mastercard · 3 cuotas de \$\s?16\.666,67/i);
+    expect(text).toContain("¡Muchas gracias! 😊");
   });
 
   it("envío a cotizar llega con la empresa elegida y el destino", () => {
@@ -29,9 +30,9 @@ describe("confirmación de pedido por WhatsApp", () => {
       customerName: "Juan Pérez", address: "San Juan 1234 · Resistencia", province: "Chaco",
     } as Order;
     const text = new URL(getOrderWhatsAppUrl(order, order.id)).searchParams.get("text") || "";
-    expect(text).toContain("Hola, buenas. Soy Juan Pérez.");
-    expect(text).toContain("Hice la compra LM-124");
-    expect(text).toContain("Elegí el envío por Vía Cargo a San Juan 1234 · Resistencia · Chaco.");
+    expect(text).toContain("👋 ¡Hola! Soy *Juan Pérez*.");
+    expect(text).toContain("🚚 *Entrega:* Vía Cargo · San Juan 1234 · Resistencia · Chaco");
+    expect(text).toContain("ℹ️ El costo del envío se coordina y abona por separado.");
     expect(text).toContain("Quedo a la espera del costo del envío.");
   });
 

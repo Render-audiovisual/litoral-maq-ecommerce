@@ -20,13 +20,13 @@ export function paymentMethodLabel(methodId?: string) {
 }
 
 function paymentSummary(order: Order) {
-  if (order.paymentStatus !== "approved") return "";
+  if (order.paymentStatus !== "approved") return "Pago pendiente de confirmación";
   const installments = Number(order.paymentInstallments);
   const amount = Number(order.paymentInstallmentAmount);
   const detail = Number.isInteger(installments) && installments > 1
     ? `${installments} cuotas${Number.isFinite(amount) && amount > 0 ? ` de ${formatCurrency(amount)}` : ""}`
     : "1 pago";
-  return `Pago confirmado con ${paymentMethodLabel(order.paymentMethodId)}: ${detail}.`;
+  return `Pago confirmado con ${paymentMethodLabel(order.paymentMethodId)} · ${detail}`;
 }
 
 export function getWhatsAppUrl(message = "Hola, quiero consultar por los productos de Litoral Maq.") {
@@ -35,23 +35,27 @@ export function getWhatsAppUrl(message = "Hola, quiero consultar por los product
 
 export function getOrderWhatsAppUrl(order: Order | undefined, orderId: string) {
   if (!order) {
-    return getWhatsAppUrl(`Hola, buenas. Hice el pedido ${orderId} desde la web y quiero consultar por su estado.`);
+    return getWhatsAppUrl([
+      "👋 ¡Hola! Acabo de realizar una compra en la web de Litoral Maq.",
+      `🧾 *Pedido:* ${orderId}`,
+      "¿Me confirman si lo recibieron correctamente?",
+      "¡Muchas gracias! 😊",
+    ].join("\n\n"));
   }
   const products = order.lines
-    .map((line) => `${line.quantity}× ${line.productName || line.productCode || line.productId}`)
-    .join(", ");
+    .map((line) => `• ${line.quantity} × ${line.productName || line.productCode || line.productId}`)
+    .join("\n");
   const productTotal = Math.max(0, order.total - (order.shipping || 0));
   const pagado = order.paymentStatus === "approved";
   const coordinar = isShippingToCoordinate(order);
   const destino = [order.address, order.province].filter(Boolean).join(" · ");
-  const hacia = destino ? ` a ${destino}` : "";
   // El mensaje llega completo: Litoral Maq solo tiene que responder con el costo
   // del envío por la empresa elegida (o avisar cuándo retirar).
   const entrega = order.deliveryMethod === "retiro"
-    ? "Elegí retiro en el local de Sáenz 1587."
+    ? "Retiro en el local de Sáenz 1587"
     : coordinar
-      ? `Elegí el envío por ${order.shippingCarrier || "la empresa que me recomienden"}${hacia}.`
-      : `Elegí el envío por ${order.shippingCarrier || "correo"} (${formatCurrency(order.shipping)})${hacia}.`;
+      ? `${order.shippingCarrier || "Empresa a coordinar"}${destino ? ` · ${destino}` : ""}`
+      : `${order.shippingCarrier || "Correo"} · ${formatCurrency(order.shipping)}${destino ? ` · ${destino}` : ""}`;
   const cierre = !pagado
     ? "Quiero confirmar que les llegó el pago."
     : order.deliveryMethod === "retiro"
@@ -60,12 +64,14 @@ export function getOrderWhatsAppUrl(order: Order | undefined, orderId: string) {
         ? "Quedo a la espera del costo del envío."
         : "Quedo atento al número de seguimiento.";
   return getWhatsAppUrl([
-    `Hola, buenas.${order.customerName ? ` Soy ${order.customerName}.` : ""}`,
-    `${pagado ? "Hice la compra" : "Hice el pedido"} ${order.id} desde la web.`,
-    `Productos: ${products}.`,
-    `${pagado ? "Total pagado" : "Total"}${coordinar ? " (productos)" : ""}: ${formatCurrency(coordinar ? productTotal : order.total)}.`,
-    paymentSummary(order),
-    entrega,
+    `👋 ¡Hola!${order.customerName ? ` Soy *${order.customerName}*.` : ""}`,
+    "✅ Gracias por recibir mi compra. Les comparto el detalle:",
+    `🧾 *Pedido:* ${order.id}`,
+    `🛒 *Productos:*\n${products}`,
+    `💰 *Total de productos:* ${formatCurrency(coordinar ? productTotal : order.total)}`,
+    `💳 *Pago:* ${paymentSummary(order)}`,
+    `🚚 *Entrega:* ${entrega}${coordinar ? "\nℹ️ El costo del envío se coordina y abona por separado." : ""}`,
     cierre,
-  ].filter(Boolean).join("\n"));
+    "¡Muchas gracias! 😊",
+  ].join("\n\n"));
 }
