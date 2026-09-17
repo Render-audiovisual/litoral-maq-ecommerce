@@ -7,6 +7,7 @@ import { paymentMethodLabel } from "@/lib/whatsapp";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   adminOrderStatusLabel,
+  isShippingToCoordinate,
   ADMIN_ORDER_STATUS_LABELS,
   ORDER_STATUS_LABELS,
   orderStatusOptions,
@@ -38,7 +39,7 @@ function filterStatusOptions(current: Order["status"]) {
 
 function deliveryAmountLabel(order: Order) {
   if (order.deliveryMethod === "retiro") return "Gratis";
-  if (!order.shippingQuoteId) return "A cotizar";
+  if (isShippingToCoordinate(order)) return "a coordinar";
   return formatCurrency(order.shipping);
 }
 
@@ -376,11 +377,13 @@ export default function AdminOrdersPage() {
                       </small>
                     </td>
                     <td>
-                      {order.deliveryMethod === "envio"
-                        ? order.shippingCarrier || "Envío manual"
-                        : "Retiro"}
+                      {order.deliveryMethod === "retiro"
+                        ? "Retiro en local"
+                        : isShippingToCoordinate(order)
+                          ? `Envío a coordinar${order.shippingCarrier ? ` · ${order.shippingCarrier}` : ""}`
+                          : order.shippingCarrier || "Envío"}
                       <small>
-                        {order.shippingStatus || order.address || "Sáenz 1587"}
+                        {order.address || "Sáenz 1587"}
                       </small>
                     </td>
                     <td>

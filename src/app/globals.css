@@ -347,6 +347,8 @@ textarea { min-height: 100px; resize: vertical; }
 .shipping-quote b { color: var(--orange); white-space: nowrap; }
 .manual-shipping-message { margin-top: 16px; padding: 14px 15px; display: flex; flex-direction: column; gap: 4px; border: 1px solid #ecd0ae; background: #fff8ef; color: #7b4a20; }
 .manual-shipping-message span { font-size: 12px; line-height: 1.45; }
+.carrier-preference { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: #7b4a20; }
+.carrier-preference select { min-height: 42px; padding: 8px 10px; border: 1px solid #ecd0ae; background: #fff; color: var(--navy); font-size: 14px; }
 .delivery-options input { min-height: 0; accent-color: var(--orange); }
 .success-message, .error-message { margin-top: 16px; padding: 13px 15px; border-radius: 4px; }
 .success-message { color: #126d40; background: #eaf8f1; border: 1px solid #b9e2ce; }

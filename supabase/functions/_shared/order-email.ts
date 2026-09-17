@@ -24,7 +24,23 @@ export type OrderRecord = {
   payment_type_id?: string | null;
   shipping_tracking_number: string | null;
   shipping_carrier: string | null;
+  shipping_quote_id?: string | null;
+  shipping_status?: string | null;
 };
+
+/**
+ * Envío a coordinar: el cliente pagó los productos y el envío se arregla aparte
+ * (no hubo cotización automática, por ejemplo a otra provincia). Espejo de
+ * isShippingToCoordinate en src/lib/order-details.ts.
+ */
+function envioACoordinar(order: OrderRecord) {
+  return order.delivery_method === "envio" &&
+    (!order.shipping_quote_id || order.shipping_status === "manual_quote");
+}
+
+function preferenciaLogistica(order: OrderRecord) {
+  return order.shipping_carrier ? ` con ${escapeHtml(order.shipping_carrier)}` : "";
+}
 
 export type OrderEmailEvent =
   | "customer_order_received"
@@ -90,6 +106,8 @@ function subtotalRowsHtml(order: OrderRecord) {
       "Envío",
       order.delivery_method === "retiro"
         ? "Retiro sin cargo"
+        : envioACoordinar(order)
+        ? "A coordinar (se abona aparte)"
         : shipping > 0
         ? money(shipping)
         : "A coordinar",
@@ -104,6 +122,14 @@ function nextStepsHtml(eventType: OrderEmailEvent, order: OrderRecord) {
         "Preparamos tu pedido y lo dejamos embalado.",
         "Te avisamos por correo cuando esté listo para retirar.",
         "Lo retirás en Sáenz 1587 con tu número de pedido.",
+      ]
+      : envioACoordinar(order)
+      ? [
+        "Te contactamos por WhatsApp o correo para coordinar el envío.",
+        `Acordamos la logística${
+          order.shipping_carrier ? ` (preferiste ${order.shipping_carrier})` : ""
+        } y el costo del envío.`,
+        "Despachamos tu pedido y te enviamos el número de seguimiento.",
       ]
       : [
         "Preparamos tu pedido y lo embalamos.",
@@ -135,9 +161,15 @@ function localHtml() {
 function paymentApprovedIntro(order: OrderRecord) {
   const nombre = String(order.customer_name || "").trim().split(/\s+/)[0];
   const saludo = nombre ? `${escapeHtml(nombre)}, gracias` : "Gracias";
-  return order.delivery_method === "retiro"
-    ? `${saludo} por elegirnos. Tu pago ya fue acreditado y el pedido quedó confirmado. Ahora lo preparamos y te avisamos apenas esté listo para retirar en Sáenz 1587.`
-    : `${saludo} por elegirnos. Tu pago ya fue acreditado y el pedido quedó confirmado. Ahora lo preparamos y coordinamos el envío a tu domicilio.`;
+  if (order.delivery_method === "retiro") {
+    return `${saludo} por elegirnos. Tu pago ya fue acreditado y el pedido quedó confirmado para retirar en el local. Lo preparamos y te avisamos apenas puedas pasar por Sáenz 1587.`;
+  }
+  if (envioACoordinar(order)) {
+    return `${saludo} por elegirnos. Tu pago de los productos ya fue acreditado. El envío se coordina aparte: te vamos a contactar para acordar la logística${
+      preferenciaLogistica(order)
+    } y el costo del envío.`;
+  }
+  return `${saludo} por elegirnos. Tu pago ya fue acreditado y el pedido quedó confirmado. Lo preparamos y te enviamos el seguimiento cuando se despache.`;
 }
 
 function paymentMethodLabel(methodId: string | null | undefined) {
@@ -181,8 +213,12 @@ function whatsappUrl(order: OrderRecord) {
     }.`
     : "";
   const delivery = order.delivery_method === "retiro"
-    ? "retiro en Sáenz 1587"
-    : "envío a coordinar";
+    ? "retiro en el local de Sáenz 1587"
+    : envioACoordinar(order)
+    ? `envío a coordinar${
+      order.shipping_carrier ? `, prefiero despacharlo con ${order.shipping_carrier}` : ""
+    }`
+    : `envío por ${order.shipping_carrier || "correo"}`;
   const message = `Hola, consulto por el pedido ${order.id}. Productos: ${products}. Total: ${money(order.total)}. Elegí ${delivery}.${payment}`;
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
@@ -206,7 +242,11 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
     team_new_order: {
       subject: `Nuevo pedido ${order.id} · ${order.customer_name}`,
       title: "Entró un nuevo pedido",
-      intro: `${escapeHtml(order.customer_name)} envió una solicitud que necesita revisión operativa.`,
+      intro: envioACoordinar(order)
+        ? `${escapeHtml(order.customer_name)} hizo un pedido con envío a coordinar${
+          preferenciaLogistica(order)
+        }. Hay que contactarlo para acordar la logística y el costo del envío.`
+        : `${escapeHtml(order.customer_name)} envió una solicitud que necesita revisión operativa.`,
       action: "Abrir panel de pedidos",
     },
     customer_payment_approved: {
@@ -264,7 +304,11 @@ export function renderOrderEmail(
     ? "Total pagado"
     : "Total registrado";
   const destination = order.delivery_method === "retiro"
-    ? "Retiro en Sáenz 1587"
+    ? "Retiro en el local de Sáenz 1587"
+    : envioACoordinar(order)
+    ? `${order.address ? `${order.address} · ` : ""}Envío a coordinar${
+      order.shipping_carrier ? ` (preferencia: ${order.shipping_carrier})` : ""
+    }`
     : order.address || "Envío a coordinar";
   const buttonUrl = eventType === "team_new_order"
     ? `${publicUrl.replace(/\/$/, "")}/admin/pedidos`

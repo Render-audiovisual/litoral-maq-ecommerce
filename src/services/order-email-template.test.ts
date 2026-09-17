@@ -43,7 +43,8 @@ describe("correo posterior al pago", () => {
     expect(email.html).toContain("Total pagado");
     expect(email.html).toContain("Pago acreditado por Mercado Pago.");
     expect(email.html).toContain("Visa · 3 cuotas de $\u00a06.666,67");
-    expect(email.html).toContain("coordinamos el envío a tu domicilio");
+    expect(email.html).toContain("te vamos a contactar para acordar la logística");
+    expect(email.html).toContain("A coordinar (se abona aparte)");
     expect(email.html).not.toContain("Sujeto a la confirmación operativa");
     expect(email.html).toContain("https://litoralmaq.com/cuenta/pedidos");
     expect(email.html).toContain("Hablar con Litoral Maq por WhatsApp");
@@ -58,7 +59,31 @@ describe("correo posterior al pago", () => {
       "https://litoralmaq.com/",
     );
 
-    expect(email.html).toContain("listo para retirar en Sáenz 1587");
+    expect(email.html).toContain("confirmado para retirar en el local");
+    expect(email.html).toContain("Sáenz 1587");
+  });
+
+  it("envío a coordinar muestra la logística que prefirió el cliente", () => {
+    const email = renderOrderEmail(
+      "customer_payment_approved",
+      { ...order("envio"), shipping_carrier: "Andreani", shipping_status: "manual_quote" },
+      "https://litoralmaq.com",
+    );
+
+    expect(email.html).toContain("acordar la logística con Andreani");
+    expect(email.html).toContain("Envío a coordinar (preferencia: Andreani)");
+    expect(email.html).toContain("prefiero%20despacharlo%20con%20Andreani");
+  });
+
+  it("envío cotizado cobra el envío y promete seguimiento", () => {
+    const email = renderOrderEmail(
+      "customer_payment_approved",
+      { ...order("envio"), shipping: 8_000, shipping_quote_id: "q1", shipping_carrier: "OCA", shipping_status: "quoted" },
+      "https://litoralmaq.com",
+    );
+
+    expect(email.html).not.toContain("A coordinar");
+    expect(email.html).toContain("seguimiento cuando se despache");
   });
 
   it("para retiro usa el aviso listo para retirar y cierra como retirado", () => {

@@ -18,7 +18,7 @@ import {
   isMercadoPagoEnabled,
 } from "@/services/payments";
 import type { Order, Session, ShippingDeliveryType } from "@/lib/types";
-import { snapshotOrderLines } from "@/lib/order-details";
+import { SHIPPING_CARRIER_OPTIONS, snapshotOrderLines } from "@/lib/order-details";
 import { validateCartPurchaseLimits } from "@/lib/purchase-limits";
 
 const PROVINCES = [
@@ -67,6 +67,9 @@ export default function CheckoutPage() {
   const [quoteOptions, setQuoteOptions] = useState<ShippingQuoteOption[]>([]);
   const [selectedQuoteId, setSelectedQuoteId] = useState("");
   const [manualReason, setManualReason] = useState("");
+  // Con envío a coordinar el cliente paga los productos y elige qué logística
+  // prefiere; Litoral Maq confirma el despacho y el costo después del pago.
+  const [preferredCarrier, setPreferredCarrier] = useState("");
   const [quoting, setQuoting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -241,6 +244,10 @@ export default function CheckoutPage() {
       setError("Elegí una opción de envío.");
       return;
     }
+    if (method === "envio" && manualReason && !preferredCarrier) {
+      setError("Elegí con qué logística preferís recibir el envío.");
+      return;
+    }
     const quantityError = validateCartPurchaseLimits(cart, products);
     if (quantityError) {
       setError(quantityError);
@@ -292,7 +299,8 @@ export default function CheckoutPage() {
         addressReference: form.reference.trim() || undefined,
         shippingQuoteId: selectedQuote?.id,
         shippingProvider: selectedQuote?.provider,
-        shippingCarrier: selectedQuote?.carrierName,
+        shippingCarrier: selectedQuote?.carrierName ??
+          (method === "envio" && manualReason ? preferredCarrier : undefined),
         shippingService: selectedQuote?.service,
         shippingDeliveryType: method === "envio" ? deliveryType : undefined,
         shippingBranchId: selectedQuote?.branchId || undefined,
@@ -314,8 +322,9 @@ export default function CheckoutPage() {
         phone: form.phone.trim(),
         role: "customer",
       });
-      const automaticPayment =
-        paymentEnabled && (method === "retiro" || Boolean(selectedQuote));
+      // Se cobra siempre que Mercado Pago esté habilitado. Con envío a coordinar
+      // se pagan los productos y el envío se arregla aparte con el cliente.
+      const automaticPayment = paymentEnabled;
       if (automaticPayment) {
         try {
           const preference = await createPaymentPreference(order.id);
@@ -616,11 +625,27 @@ export default function CheckoutPage() {
             )}
             {manualReason && (
               <div className="manual-shipping-message">
-                <strong>Cotización manual</strong>
+                <strong>Envío a coordinar</strong>
                 <span>
-                  {manualReason} El equipo te confirmará costo y plazo antes del
-                  pago.
+                  {paymentEnabled
+                    ? "Pagás ahora los productos. El costo del envío se coordina y abona aparte: después del pago, Litoral Maq te contacta para acordar la logística y el despacho."
+                    : `${manualReason} El equipo te confirmará costo y plazo.`}
                 </span>
+                <label className="carrier-preference">
+                  ¿Con qué logística preferís recibirlo?
+                  <select
+                    value={preferredCarrier}
+                    onChange={(event) => setPreferredCarrier(event.target.value)}
+                    required
+                  >
+                    <option value="">Elegí una opción</option>
+                    {SHIPPING_CARRIER_OPTIONS.map((carrier) => (
+                      <option key={carrier} value={carrier}>
+                        {carrier}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               </div>
             )}
             {shipping !== null && !manualReason && (
@@ -651,7 +676,7 @@ export default function CheckoutPage() {
             </div>
             <p className="helper">
               {paymentEnabled
-                ? "El pago solo se confirma mediante la notificación firmada de Mercado Pago. Si el envío requiere cotización manual, Litoral Maq te contactará antes de cobrar."
+                ? "Pagás en Mercado Pago con tarjeta de crédito en cuotas, débito o dinero en cuenta. El pago se confirma con la notificación firmada de Mercado Pago."
                 : "La guía logística se crea únicamente cuando Litoral Maq confirma el pago. Enviar esta solicitud no genera cargos ni despachos."}
             </p>
           </section>
@@ -677,13 +702,13 @@ export default function CheckoutPage() {
                 : method === "retiro"
                   ? "Gratis"
                   : manualReason
-                    ? "A confirmar"
+                    ? "A coordinar"
                     : formatCurrency(shipping)}
             </strong>
           </div>
           <hr />
           <div className="summary-total">
-            <span>{manualReason ? "Total parcial" : "Total"}</span>
+            <span>{manualReason ? "Total a pagar ahora" : "Total"}</span>
             <strong>{formatCurrency(cartSubtotal + (shipping || 0))}</strong>
           </div>
           <button
@@ -699,13 +724,15 @@ export default function CheckoutPage() {
               ? "Procesando…"
               : shipping === null
                 ? "Confirmá la entrega para continuar"
-                : paymentEnabled && !manualReason
+                : paymentEnabled
                   ? "Continuar a Mercado Pago"
                   : "Enviar solicitud de compra"}
           </button>
           <small>
-            {paymentEnabled && !manualReason
-              ? "El cobro se completa fuera de la tienda, en Mercado Pago."
+            {paymentEnabled
+              ? manualReason
+                ? "Pagás los productos en Mercado Pago. El envío se coordina y abona aparte."
+                : "El cobro se completa fuera de la tienda, en Mercado Pago."
               : "No se realizará ningún cobro en este paso."}
           </small>
         </aside>
