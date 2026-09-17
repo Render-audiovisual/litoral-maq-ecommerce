@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
+import { paymentMethodLabel } from "@/lib/whatsapp";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   adminOrderStatusLabel,
@@ -218,6 +219,19 @@ export default function AdminOrdersPage() {
   }
 
   const selectedLines = selected ? resolveOrderLines(selected, products) : [];
+  // Cómo pagó el cliente. Solo existe cuando Mercado Pago ya acreditó el pago.
+  const paymentSummary = selected?.paymentStatus === "approved"
+    ? [
+      paymentMethodLabel(selected.paymentMethodId),
+      selected.paymentInstallments && selected.paymentInstallments > 1
+        ? `${selected.paymentInstallments} cuotas${
+          selected.paymentInstallmentAmount
+            ? ` de ${formatCurrency(selected.paymentInstallmentAmount)}`
+            : ""
+        }`
+        : "1 pago",
+    ].filter(Boolean).join(" · ")
+    : "";
   const selectedCustomer = selected
     ? customers.find((customer) => customer.id === selected.customerId)
     : null;
@@ -479,6 +493,12 @@ export default function AdminOrdersPage() {
                   {paymentAutomatic
                     ? "Estado confirmado automáticamente por Mercado Pago"
                     : selected.paymentReference || "Sin referencia"}
+                  {paymentSummary && (
+                    <>
+                      <br />
+                      💳 {paymentSummary}
+                    </>
+                  )}
                 </small>
               </label>
               <label>

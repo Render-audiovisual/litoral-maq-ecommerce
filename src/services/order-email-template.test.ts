@@ -37,10 +37,13 @@ describe("correo posterior al pago", () => {
       "https://litoralmaq.com",
     );
 
-    expect(email.subject).toBe("Pago confirmado · Pedido LM-12345678");
+    expect(email.subject).toBe(
+      "¡Gracias por tu compra! Pedido LM-12345678 confirmado",
+    );
+    expect(email.html).toContain("Total pagado");
     expect(email.html).toContain("Pago acreditado por Mercado Pago.");
     expect(email.html).toContain("Visa · 3 cuotas de $\u00a06.666,67");
-    expect(email.html).toContain("vamos a evaluar el correo disponible");
+    expect(email.html).toContain("coordinamos el envío a tu domicilio");
     expect(email.html).not.toContain("Sujeto a la confirmación operativa");
     expect(email.html).toContain("https://litoralmaq.com/cuenta/pedidos");
     expect(email.html).toContain("Hablar con Litoral Maq por WhatsApp");
@@ -55,7 +58,7 @@ describe("correo posterior al pago", () => {
       "https://litoralmaq.com/",
     );
 
-    expect(email.html).toContain("cuando el pedido esté listo para retirar");
+    expect(email.html).toContain("listo para retirar en Sáenz 1587");
   });
 
   it("para retiro usa el aviso listo para retirar y cierra como retirado", () => {
@@ -112,5 +115,48 @@ describe("correo posterior al pago", () => {
 
     expect(email.html).toContain("https://admin.litoralmaq.com/admin/pedidos");
     expect(email.html).not.toContain("Hablar con Litoral Maq por WhatsApp");
+  });
+});
+
+describe("detalle del correo de compra", () => {
+  const conPago = (): OrderRecord => ({
+    ...order("envio"),
+    total: 134_999,
+    shipping: 15_000,
+    payment_installments: 3,
+    payment_installment_amount: 48_500,
+    payment_method_id: "visa",
+    payment_type_id: "credit_card",
+  });
+
+  it("abre el total: productos y envío por separado", () => {
+    const email = renderOrderEmail("customer_payment_approved", conPago(), "https://litoralmaq.com");
+    expect(email.html).toContain("Productos");
+    expect(email.html).toContain("119.999"); // 134.999 menos 15.000 de envío
+  });
+
+  it("incluye la foto del producto cuando la hay, y no rompe cuando falta", () => {
+    const base = conPago();
+    const conFoto = renderOrderEmail(
+      "customer_payment_approved",
+      { ...base, lines: [{ ...base.lines[0], productId: "p1" }] },
+      "https://litoralmaq.com",
+      { p1: "https://litoralmaq.com/products/catalog/x.webp" },
+    );
+    expect(conFoto.html).toContain("products/catalog/x.webp");
+    const sinFoto = renderOrderEmail("customer_payment_approved", base, "https://litoralmaq.com");
+    expect(sinFoto.html).not.toContain("<img");
+  });
+
+  it("dice qué sigue y dónde está el local", () => {
+    const email = renderOrderEmail("customer_payment_approved", conPago(), "https://litoralmaq.com");
+    expect(email.html).toContain("Qué sigue");
+    expect(email.html).toContain("Sáenz 1587, Corrientes");
+  });
+
+  // El aviso interno no lleva los datos del local: el equipo ya sabe dónde trabaja.
+  it("el aviso al equipo no incluye el bloque del local", () => {
+    const email = renderOrderEmail("team_new_order", conPago(), "https://admin.litoralmaq.com");
+    expect(email.html).not.toContain("Horarios:");
   });
 });
