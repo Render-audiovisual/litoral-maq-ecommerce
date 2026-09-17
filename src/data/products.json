@@ -1090,7 +1090,8 @@
     "brand": "ENERGY",
     "image": "/products/catalog/3544-vc35-220.webp",
     "images": [
-      "/products/catalog/3544-vc35-220.webp"
+      "/products/catalog/3544-vc35-220.webp",
+      "/products/catalog/3544-vc35-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -1142,7 +1143,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3545-a1170-220.webp",
     "images": [
-      "/products/catalog/3545-a1170-220.webp"
+      "/products/catalog/3545-a1170-220.webp",
+      "/products/catalog/3545-a-1170-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5438,7 +5440,8 @@
     "brand": "FOREST & GARDEN",
     "image": "/products/catalog/3665-h4090-220.webp",
     "images": [
-      "/products/catalog/3665-h4090-220.webp"
+      "/products/catalog/3665-h4090-220.webp",
+      "/products/catalog/3665-h-4090-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5544,7 +5547,8 @@
     "brand": "FOREST & GARDEN",
     "image": "/products/catalog/3667-h7160rm-220.webp",
     "images": [
-      "/products/catalog/3667-h7160rm-220.webp"
+      "/products/catalog/3667-h7160rm-220.webp",
+      "/products/catalog/3667-h-7160rm-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5570,7 +5574,8 @@
     "brand": "FOREST & GARDEN",
     "image": "/products/catalog/3669-h10170m-220.webp",
     "images": [
-      "/products/catalog/3669-h10170m-220.webp"
+      "/products/catalog/3669-h10170m-220.webp",
+      "/products/catalog/3669-h-10170m-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5700,7 +5705,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3653-jti1014.webp",
     "images": [
-      "/products/catalog/3653-jti1014.webp"
+      "/products/catalog/3653-jti1014.webp",
+      "/products/catalog/3653-jti-1014-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5726,7 +5732,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3656-jt10171.webp",
     "images": [
-      "/products/catalog/3656-jt10171.webp"
+      "/products/catalog/3656-jt10171.webp",
+      "/products/catalog/3656-jt-10171-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5752,7 +5759,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3652-jt10171p.webp",
     "images": [
-      "/products/catalog/3652-jt10171p.webp"
+      "/products/catalog/3652-jt10171p.webp",
+      "/products/catalog/3652-jt-10171-p-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5778,7 +5786,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3655-jt10110.webp",
     "images": [
-      "/products/catalog/3655-jt10110.webp"
+      "/products/catalog/3655-jt10110.webp",
+      "/products/catalog/3655-jt-10110-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5804,7 +5813,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3651-jt1073.webp",
     "images": [
-      "/products/catalog/3651-jt1073.webp"
+      "/products/catalog/3651-jt1073.webp",
+      "/products/catalog/3651-jt-1073-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5856,7 +5866,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3649-jt10221-2.webp",
     "images": [
-      "/products/catalog/3649-jt10221-2.webp"
+      "/products/catalog/3649-jt10221-2.webp",
+      "/products/catalog/3649-jt-1022-1-2-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5882,7 +5893,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3650-jt10321-2.webp",
     "images": [
-      "/products/catalog/3650-jt10321-2.webp"
+      "/products/catalog/3650-jt10321-2.webp",
+      "/products/catalog/3650-jt-1032-1-2-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -5908,7 +5920,8 @@
     "brand": "GLADIATOR",
     "image": "/products/catalog/3648-jt10461-4p.webp",
     "images": [
-      "/products/catalog/3648-jt10461-4p.webp"
+      "/products/catalog/3648-jt10461-4p.webp",
+      "/products/catalog/3648-jt-1046-1-4-p-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -6248,7 +6261,8 @@
     "brand": "NEO",
     "image": "/products/catalog/3540-lb976-1-220.webp",
     "images": [
-      "/products/catalog/3540-lb976-1-220.webp"
+      "/products/catalog/3540-lb976-1-220.webp",
+      "/products/catalog/3540-lb-976-1-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -11226,7 +11240,8 @@
     "brand": "NEO",
     "image": "/products/catalog/3777-ar11-15.webp",
     "images": [
-      "/products/catalog/3777-ar11-15.webp"
+      "/products/catalog/3777-ar11-15.webp",
+      "/products/catalog/3777-ar-11-15-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -13813,7 +13828,8 @@
     "brand": "ENERGY",
     "image": "/products/catalog/3780-imet150-1-220.webp",
     "images": [
-      "/products/catalog/3780-imet150-1-220.webp"
+      "/products/catalog/3780-imet150-1-220.webp",
+      "/products/catalog/3780-imet150-1-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
@@ -13840,7 +13856,8 @@
     "brand": "ENERGY NEXT",
     "image": "/products/catalog/3786-imet150x-220.webp",
     "images": [
-      "/products/catalog/3786-imet150x-220.webp"
+      "/products/catalog/3786-imet150x-220.webp",
+      "/products/catalog/3786-imet150x-220-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
