@@ -38,7 +38,7 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await expect(modal).toContainText(productName);
   await expect(modal).toContainText("Cód. 3403");
   await expect(modal).toContainText("3794000000");
-  await expect(modal).toContainText("Pago a coordinar");
+  await expect(modal).toContainText("Pago pendiente");
 
   const rowStatus = row.locator(".status-select");
   await expect(rowStatus.locator('option[value="listo"]')).toHaveText(

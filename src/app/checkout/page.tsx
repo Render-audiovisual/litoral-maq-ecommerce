@@ -367,8 +367,9 @@ export default function CheckoutPage() {
         <span className="eyebrow orange">FINALIZAR COMPRA</span>
         <h1>Confirmá tu pedido</h1>
         <p>
-          Completá tus datos, elegí cómo recibirlo y pagá seguro con Mercado
-          Pago.
+          {paymentEnabled
+            ? "Completá tus datos, elegí cómo recibirlo y pagá seguro con Mercado Pago."
+            : "Completá tus datos y elegí cómo querés recibirlo."}
         </p>
       </div>
       <form className="checkout-layout" onSubmit={submit}>
@@ -627,9 +628,9 @@ export default function CheckoutPage() {
               <div className="manual-shipping-message">
                 <strong>Envío a coordinar</strong>
                 <span>
-                  Pagás ahora los productos. Elegí con qué empresa querés
-                  recibirlo: después del pago te pasamos el costo del envío,
-                  que se abona aparte.
+                  {paymentEnabled
+                    ? "Pagás ahora los productos. Elegí con qué empresa querés recibirlo: después del pago te pasamos el costo del envío, que se abona aparte."
+                    : "Elegí con qué empresa querés recibirlo. Te pasamos el costo del envío, que se abona aparte."}
                 </span>
                 <fieldset className="carrier-preference">
                   <legend>¿Con qué empresa querés el envío?</legend>
@@ -735,7 +736,7 @@ export default function CheckoutPage() {
             {paymentEnabled
               ? manualReason
                 ? "Pagás los productos en Mercado Pago. El envío se cotiza y abona aparte."
-                : "El pago se completa en Mercado Pago."
+                : "Te contactamos para coordinar el pago."
               : "No se realizará ningún cobro en este paso."}
           </small>
         </aside>
