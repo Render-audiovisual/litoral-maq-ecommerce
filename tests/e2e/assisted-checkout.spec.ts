@@ -22,7 +22,7 @@ test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ pa
 
   await expect(page.getByText("Envío a coordinar", { exact: true })).toBeVisible();
   await expect(page.getByText("A coordinar", { exact: true })).toBeVisible();
-  await page.getByLabel("¿Con qué logística preferís recibirlo?").selectOption("Andreani");
+  await page.getByRole("radio", { name: "Andreani" }).check();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
 
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
