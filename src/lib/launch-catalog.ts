@@ -57,7 +57,7 @@ export const LAUNCH_FAMILIES = [
     slug: "taladros",
     label: "Taladros",
     description: "Perforación y atornillado",
-    image: "/promos/taladro-energy-550w.jpg",
+    image: "/promos/kit-taladro-amoladora-energy.jpg",
     pattern: /^(TALADRO|ATORNILLADOR)/,
   },
   {

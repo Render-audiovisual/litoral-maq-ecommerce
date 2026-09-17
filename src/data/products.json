@@ -5479,7 +5479,8 @@
     "source": "google-sheet",
     "sourceRow": 210,
     "incomplete": [
-      "stock"
+      "stock",
+      "sheet-absent"
     ],
     "purchaseLimit": 3
   },
@@ -5579,14 +5580,15 @@
     ],
     "stock": 0,
     "lowStockThreshold": 5,
-    "active": true,
+    "active": false,
     "featured": false,
     "description": "Hidrolavadora Eléctrica 2500w Forest Garden H10170M/220. VOLTAJE-FRECUENCIA: 220V ~ 50-60Hz POTENCIA: 2500W PRESIóN: 110bar PRESIóN MáXIMA: 170bar CAUDAL: 6,7L/min UNIDADES DE LIMPIEZA: 1241 íNDICE DE PROTECCIóN: IPX5 ALIMENTACIóN MíNIMA: 10,95L/min LARGO DE CABLE: 5m TIPO DE AISLACIóN: CLASE I PESO: 17,8kg (39,24lb). CONTENIDO. 1 Hidrolavadora eléctrica. 1 Lanza metálica. 1 Manguera de 5m. 1 Dispenser de Jabón. 1 Conector para manguera. 1 Dosificador de detergente.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 214,
     "incomplete": [
-      "stock"
+      "stock",
+      "sheet-absent"
     ],
     "purchaseLimit": 3
   },
@@ -8488,14 +8490,15 @@
     ],
     "stock": 0,
     "lowStockThreshold": 5,
-    "active": true,
+    "active": false,
     "featured": false,
     "description": "Mini motosierra inalámbrica Garden para tareas de corte y mantenimiento exterior.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 325,
     "incomplete": [
-      "stock"
+      "stock",
+      "sheet-absent"
     ],
     "purchaseLimit": 3
   },
@@ -12264,7 +12267,8 @@
     "sourceRow": 468,
     "incomplete": [
       "stock",
-      "description"
+      "description",
+      "sheet-absent"
     ],
     "purchaseLimit": 3
   },
@@ -12469,14 +12473,15 @@
     ],
     "stock": 0,
     "lowStockThreshold": 5,
-    "active": true,
+    "active": false,
     "featured": false,
     "description": "Taladro Energy ID13/2/220 de 550 W con mandril de 13 mm.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 476,
     "incomplete": [
-      "stock"
+      "stock",
+      "sheet-absent"
     ],
     "purchaseLimit": 3
   },
