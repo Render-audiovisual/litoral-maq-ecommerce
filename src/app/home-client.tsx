@@ -66,10 +66,10 @@ const PROMO_SLIDES = [
 ] as const;
 
 const STAR_PRODUCTS = [
-  { productId: "3604", image: "/products/catalog/3604-aa10115-220p.webp" },
   { productId: "3381", image: "/products/catalog/3381-aa518-220plus.webp" },
-  { productId: "3881", image: "/products/catalog/3881-aa11115-20c1.webp" },
-  { productId: "3658", image: "/products/catalog/3658-aa623-220.webp" },
+  { productId: "3506", image: "/products/MOTOSIERRA_.png" },
+  { productId: "3499", image: "/products/catalog/3499-bwir150.webp" },
+  { productId: "3542", image: "/products/catalog/3542-lo180-220.webp" },
 ] as const;
 
 const HERO_AUTO_SPEED = 0.18;
