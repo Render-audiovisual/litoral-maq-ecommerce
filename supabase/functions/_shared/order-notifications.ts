@@ -53,12 +53,22 @@ export async function processPendingOrderNotifications(
 
   for (const event of events) {
     try {
+      // Las cuotas viven en `payments`: se traen con el pedido para poder decir
+      // "3 cuotas de $50.000" en el correo.
       const { data: rawOrder, error: orderError } = await db.from("orders")
-        .select("*").eq("id", event.order_id).maybeSingle();
+        .select(
+          "*, payments(installments,installment_amount,payment_type_id)",
+        )
+        .eq("id", event.order_id).maybeSingle();
       if (orderError || !rawOrder) {
         throw new Error("No se encontró el pedido del evento.");
       }
-      const order = rawOrder as OrderRecord;
+      const fila = rawOrder as Record<string, unknown>;
+      const pagos = fila.payments;
+      const order = {
+        ...fila,
+        payment: Array.isArray(pagos) ? pagos[0] ?? null : pagos ?? null,
+      } as OrderRecord;
       const recipient = event.event_type === "team_new_order"
         ? teamEmail
         : order.email;

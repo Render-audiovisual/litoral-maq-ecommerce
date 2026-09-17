@@ -20,6 +20,14 @@ export type OrderRecord = {
   payment_status: string;
   shipping_tracking_number: string | null;
   shipping_carrier: string | null;
+  /** Cómo pagó, desde la tabla `payments`. Solo existe con el pago acreditado. */
+  payment?: PaymentDetail | null;
+};
+
+export type PaymentDetail = {
+  installments?: number | null;
+  installment_amount?: number | null;
+  payment_type_id?: string | null;
 };
 
 export type OrderEmailEvent =
@@ -38,6 +46,36 @@ function escapeHtml(value: unknown) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+// Espejo de src/lib/payment-summary.ts: las Edge Functions corren en Deno y no
+// pueden importar del front. Si cambia el texto, cambiarlo en los dos lados.
+const MEDIOS_DE_PAGO: Record<string, string> = {
+  credit_card: "crédito",
+  debit_card: "débito",
+  prepaid_card: "tarjeta prepaga",
+  ticket: "efectivo",
+  bank_transfer: "transferencia",
+  account_money: "dinero en cuenta",
+};
+
+function formatPaymentSummary(
+  payment: PaymentDetail | null | undefined,
+  total: number,
+) {
+  if (!payment) return "";
+  const installments = Number(payment.installments);
+  if (Number.isInteger(installments) && installments > 1) {
+    // El importe de cuota de Mercado Pago ya trae el interés; el total dividido no.
+    const cuota = typeof payment.installment_amount === "number"
+      ? payment.installment_amount
+      : total / installments;
+    return `${installments} cuotas de ${money(cuota)}`;
+  }
+  const medio = payment.payment_type_id
+    ? MEDIOS_DE_PAGO[payment.payment_type_id]
+    : undefined;
+  return medio ? `Mercado Pago (${medio})` : "Mercado Pago";
 }
 
 function money(value: unknown) {
@@ -152,6 +190,9 @@ export function renderOrderEmail(
   const totalNote = eventType === "customer_payment_approved"
     ? "Pago acreditado por Mercado Pago."
     : "Sujeto a la confirmación operativa indicada en el pedido.";
+  const paymentSummary = order.payment_status === "approved"
+    ? formatPaymentSummary(order.payment, order.total)
+    : "";
 
   return {
     subject: copy.subject,
@@ -166,7 +207,13 @@ export function renderOrderEmail(
         money(order.total)
       }</td></tr><tr><td colspan="2" style="padding:0 14px 14px;color:#475467;font-size:13px"><strong>Entrega:</strong> ${
         escapeHtml(destination)
-      }</td></tr></table><div style="text-align:center;margin-top:26px"><a href="${
+      }</td></tr>${
+        paymentSummary
+          ? `<tr><td colspan="2" style="padding:0 14px 14px;color:#475467;font-size:13px"><strong>Pago:</strong> ${
+            escapeHtml(paymentSummary)
+          }</td></tr>`
+          : ""
+      }</table><div style="text-align:center;margin-top:26px"><a href="${
         escapeHtml(buttonUrl)
       }" style="display:inline-block;background:#f58220;color:#fff;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:9px">${
         copy.action || "Ver mi pedido"

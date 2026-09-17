@@ -97,6 +97,13 @@ export type Order = {
   createdAt: string;
   paymentReference: string;
   paymentStatus?: PaymentStatus;
+  /** Cómo pagó: lo informa Mercado Pago al acreditar, antes no existe. */
+  payment?: {
+    installments?: number | null;
+    installmentAmount?: number | null;
+    paymentMethodId?: string | null;
+    paymentTypeId?: string | null;
+  };
   phone?: string;
   postalCode?: string;
   province?: string;

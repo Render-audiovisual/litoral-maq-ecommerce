@@ -1,4 +1,5 @@
 import type { Order } from "./types";
+import { formatPaymentSummary } from "./payment-summary";
 import { formatCurrency } from "./utils";
 
 const WHATSAPP_NUMBER = "5493794215065";
@@ -20,9 +21,15 @@ export function getOrderWhatsAppUrl(order: Order | undefined, orderId: string) {
       ? `envío por ${order.shippingCarrier || "correo"} (${formatCurrency(order.shipping)})`
       : "envío a cotizar";
   const productTotal = Math.max(0, order.total - (order.shipping || 0));
+  // Solo cuando Mercado Pago ya acreditó: antes del pago no hay cuotas que contar.
+  const pago = order.paymentStatus === "approved"
+    ? formatPaymentSummary({ ...order.payment, total: order.total })
+    : "";
   return getWhatsAppUrl(
     `Hola, envié la solicitud ${order.id} desde la web. ` +
     `Productos: ${products}. Total de productos: ${formatCurrency(productTotal)}. ` +
-    `Elegí ${delivery}. Quiero confirmar disponibilidad y próximos pasos.`,
+    `Elegí ${delivery}. ` +
+    (pago ? `💳 Pago: ${pago}. ` : "") +
+    `Quiero confirmar disponibilidad y próximos pasos.`,
   );
 }

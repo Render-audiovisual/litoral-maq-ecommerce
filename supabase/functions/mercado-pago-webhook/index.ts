@@ -119,11 +119,31 @@ Deno.serve(async (request) => {
       ? payment.live_mode
       : null;
     const now = new Date().toISOString();
+    // Cómo pagó el cliente. Ya venía en la respuesta de Mercado Pago; antes se
+    // descartaba. El importe de cuota sale de transaction_details porque ahí ya
+    // está con el interés aplicado.
+    const installments = Number(payment.installments);
+    const transactionDetails = payment.transaction_details &&
+        typeof payment.transaction_details === "object"
+      ? payment.transaction_details as Record<string, unknown>
+      : {};
+    const installmentAmount = Number(transactionDetails.installment_amount);
     const { error: paymentError } = await db.from("payments").update({
       payment_id: paymentId,
       status,
       status_detail: String(payment.status_detail || "").slice(0, 120) || null,
       live_mode: liveMode,
+      installments: Number.isInteger(installments) && installments > 0
+        ? Math.min(installments, 24)
+        : null,
+      installment_amount: Number.isFinite(installmentAmount) &&
+          installmentAmount >= 0
+        ? installmentAmount
+        : null,
+      payment_method_id:
+        String(payment.payment_method_id || "").slice(0, 40) || null,
+      payment_type_id: String(payment.payment_type_id || "").slice(0, 40) ||
+        null,
       last_error: null,
       updated_at: now,
     }).eq("order_id", orderId);

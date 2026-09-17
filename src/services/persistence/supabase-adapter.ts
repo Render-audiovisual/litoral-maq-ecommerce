@@ -120,8 +120,26 @@ function orderToInsert(
   };
 }
 
+// El join de `payments` llega como arreglo (PostgREST) y solo existe en las
+// lecturas que lo piden: en un insert o un update el campo no viene.
+function rowPayment(row: OrderRow & { payments?: unknown }): Order["payment"] {
+  const fila = Array.isArray(row.payments) ? row.payments[0] : row.payments;
+  if (!fila || typeof fila !== "object") return undefined;
+  const pago = fila as Record<string, unknown>;
+  return {
+    installments: typeof pago.installments === "number" ? pago.installments : null,
+    installmentAmount:
+      typeof pago.installment_amount === "number" ? pago.installment_amount : null,
+    paymentMethodId:
+      typeof pago.payment_method_id === "string" ? pago.payment_method_id : null,
+    paymentTypeId:
+      typeof pago.payment_type_id === "string" ? pago.payment_type_id : null,
+  };
+}
+
 function rowToOrder(row: OrderRow): Order {
   return {
+    payment: rowPayment(row),
     id: row.id,
     customerId: row.customer_id,
     customerName: row.customer_name,
@@ -249,9 +267,11 @@ export function createSupabasePersistenceAdapter(
     },
 
     async listOrders() {
+      // Las cuotas viven en `payments`, no en `orders`: se traen con el pedido
+      // para que el panel y el mensaje de WhatsApp puedan mostrarlas.
       const { data, error } = await client
         .from("orders")
-        .select("*")
+        .select("*, payments(installments,installment_amount,payment_method_id,payment_type_id)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []).map(rowToOrder);
