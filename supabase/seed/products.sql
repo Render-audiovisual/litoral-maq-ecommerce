@@ -78,9 +78,9 @@ Datos técnicos:
 • Peso: 5,85kg - 12,9lb
 
 Contenido: 1 aspiradora seco-húmedo, 1 manguera, 2 tubos plásticos, 1 filtro de bolsa de esponja y tela, 1 cepillo seco-húmedo, 1 boquilla 2 en 1 y 1 esponja.', '{}', 'google-sheet', 42, '{"stock"}'),
-  ('3544', 'aspiradora-35-l-energy-1400w-vc35-220-3544', '3544', 'ASPIRADORA 35 L ENERGY 1400W - VC35/220', 94999.84, '$ 94.999,84', 'Otros', 'ENERGY', '/products/catalog/3544-vc35-220.webp', '{"/products/catalog/3544-vc35-220.webp"}', 0, 5, 3, true, false, 'La Aspiradora Industrial Energy VC35/220 es una máquina 3 en 1 de 35 litros y 1400 W: aspira en seco, levanta líquidos y también sopla. Su tacho de acero inoxidable soporta el uso rudo del taller, la obra o el garaje, y las ruedas giratorias 360° la hacen fácil de mover. El filtro HEPA retiene el polvo fino y la potencia de 1400 W no deja nada atrás: aserrín, agua, escombro, hojas. Ideal para talleres mecánicos, carpinterías, después de una obra o para la limpieza pesada del hogar. Viene con manguera, tubos de extensión y boquillas para llegar a cada rincón.', '{}', 'google-sheet', 43, '{"stock"}'),
+  ('3544', 'aspiradora-35-l-energy-1400w-vc35-220-3544', '3544', 'ASPIRADORA 35 L ENERGY 1400W - VC35/220', 94999.84, '$ 94.999,84', 'Otros', 'ENERGY', '/products/catalog/3544-vc35-220.webp', '{"/products/catalog/3544-vc35-220.webp","/products/catalog/3544-vc35-220-ficha.webp"}', 0, 5, 3, true, false, 'La Aspiradora Industrial Energy VC35/220 es una máquina 3 en 1 de 35 litros y 1400 W: aspira en seco, levanta líquidos y también sopla. Su tacho de acero inoxidable soporta el uso rudo del taller, la obra o el garaje, y las ruedas giratorias 360° la hacen fácil de mover. El filtro HEPA retiene el polvo fino y la potencia de 1400 W no deja nada atrás: aserrín, agua, escombro, hojas. Ideal para talleres mecánicos, carpinterías, después de una obra o para la limpieza pesada del hogar. Viene con manguera, tubos de extensión y boquillas para llegar a cada rincón.', '{}', 'google-sheet', 43, '{"stock"}'),
   ('3236', 'aspiradora-60-lt-1200w-gladiator-a960-220-3236', '3236', 'ASPIRADORA 60 LT 1200W GLADIATOR A960/220', 219999.24, '$ 219.999,24', 'Otros', 'GLADIATOR', '/products/catalog/3236-a960-220.webp', '{"/products/catalog/3236-a960-220.webp"}', 0, 5, 3, true, false, 'Aspiradora Gladiator 1200w 60 Litros Seco Húmedo A960/220. Voltaje – frecuencia: 220V-50-60Hz. Potencia: 1200W. Potencia máxima: 1400W. Presión de vacío: 15-16kpa. Capacidad: 60L. Diámetro de Accesorios: 40mm-11/2&rdquo. índice e protección: IP24. Aislación: CLASE 2. Peso: 11kg-24lb. Contiene. 1 Boquilla plana. 1 Boquilla circular. 1 Cepillo humedo-seco. 1 Filtro HEPA. 1 Manguera de 1.5m. 2 Extensiones de plasticos.', '{}', 'google-sheet', 44, '{"stock"}'),
-  ('3545', 'aspiradora-70-lt-2400w-gladiator-a1170-220-3545', '3545', 'ASPIRADORA 70 LT 2400W GLADIATOR - A1170/220', 250000.52, '$ 250.000,52', 'Otros', 'GLADIATOR', '/products/catalog/3545-a1170-220.webp', '{"/products/catalog/3545-a1170-220.webp"}', 0, 5, 3, true, false, 'La Aspiradora Industrial Gladiator A1170/220 es una máquina de trabajo pesado: 70 litros de capacidad y 2400 W de potencia para obra, industria y talleres grandes. Aspira en seco y en húmedo, así que resuelve desde escombro y aserrín hasta derrames de líquido, sin cambiar de equipo. Su gran capacidad reduce las paradas para vaciar el tacho, clave cuando el trabajo es continuo. Pensada para quien necesita una aspiradora que no se quede corta.', '{}', 'google-sheet', 45, '{"stock"}'),
+  ('3545', 'aspiradora-70-lt-2400w-gladiator-a1170-220-3545', '3545', 'ASPIRADORA 70 LT 2400W GLADIATOR - A1170/220', 250000.52, '$ 250.000,52', 'Otros', 'GLADIATOR', '/products/catalog/3545-a1170-220.webp', '{"/products/catalog/3545-a1170-220.webp","/products/catalog/3545-a-1170-220-ficha.webp"}', 0, 5, 3, true, false, 'La Aspiradora Industrial Gladiator A1170/220 es una máquina de trabajo pesado: 70 litros de capacidad y 2400 W de potencia para obra, industria y talleres grandes. Aspira en seco y en húmedo, así que resuelve desde escombro y aserrín hasta derrames de líquido, sin cambiar de equipo. Su gran capacidad reduce las paradas para vaciar el tacho, clave cuando el trabajo es continuo. Pensada para quien necesita una aspiradora que no se quede corta.', '{}', 'google-sheet', 45, '{"stock"}'),
   ('3586', 'atorn-1-4-llave-imp-1-2-20v-neo-ali1012-1-20c1-3586', '3586', 'ATORN 1/4" LLAVE IMP 1/2 20V NEO - ALI1012/1/20C1', 135000.34, '$ 135.000,34', 'Herramientas manuales', 'NEO', '/products/catalog/3586-ali1012-1-20c1.webp', '{"/products/catalog/3586-ali1012-1-20c1.webp"}', 0, 5, 3, true, false, 'Atornillador 1/4" y Llave de Impacto 1/2" Brushless ALI1012/1/20C1. TORQUE MáX: 350N/m. ENCASTRE. 1/4&rdquo; Atornillador. 1/2&rdquo; Llave de Impacto. Incluye. 1 Batería de 2Ah. 1 Cargador.', '{}', 'google-sheet', 46, '{"stock"}'),
   ('3730', 'atorn-de-impacto-230n-m-20v-neo-ai1014-2-20c1-3730', '3730', 'ATORN DE IMPACTO 230N/M 20V NEO - AI1014/2/20C1', 134999.88, '$ 134.999,88', 'Otros', 'NEO', '/products/catalog/3730-ai1014-2-20c1.webp', '{"/products/catalog/3730-ai1014-2-20c1.webp"}', 0, 5, 3, true, false, 'Atornillador de Impacto NEO a Batería 20v 1/4" 230Nm AI1014/2/20C1. Marca: NEO. Datos técnicos. Velocidad en vacío. 1: 0 - 1.000RPM. 2: 0 - 2.500RPM. 3: 0 - 3.100RPM. Impactos por minuto. 1: 0 - 1.000bpm. 2: 0 - 2.500bpm. 3: 0 - 3.100bpm. Torque máximo: 230 Nm. Encastre atornillador: 1/4". Peso: 1.1Kg. Incluye. 1 batería de 20V Litio Ion de 2Amp. 1 cargador rápido de 60min.', '{}', 'google-sheet', 47, '{"stock"}'),
   ('3507', 'atornillador-3-6v-kit-ad636-3-gladiator-3507', '3507', 'ATORNILLADOR 3.6V KIT AD636/3 GLADIATOR', 25000.03, '$ 25.000,03', 'Taladros y atornilladores', 'GLADIATOR', '/products/TALADRO ATORNILLADOR.png', '{"/products/TALADRO ATORNILLADOR.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 48, '{"stock","description"}'),
@@ -403,7 +403,19 @@ Datos técnicos:
 • Hojas adicionales: Incluye 2 hojas de corte en compartimiento
 
 Contenido: 1 cutter.', '{}', 'google-sheet', 121, '{"stock"}'),
-  ('3502', 'desmalezadora-4-en-1-52cc-energy-bc524-1-3502', '3502', 'DESMALEZADORA 4 EN 1 52CC ENERGY BC524-1', 340000.97, '$ 340.000,97', 'Jardín', 'ENERGY', '/products/DESMALEZADORA.png', '{"/products/DESMALEZADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 122, '{"stock","description"}'),
+  ('3502', 'desmalezadora-4-en-1-52cc-energy-bc524-1-3502', '3502', 'DESMALEZADORA 4 EN 1 52CC ENERGY BC524-1', 340000.97, '$ 340.000,97', 'Jardín', 'ENERGY', '/products/DESMALEZADORA.png', '{"/products/DESMALEZADORA.png","/products/catalog/3502-bc524-1-ficha.webp"}', 0, 5, 3, false, false, 'Desmalezadora a gasolina 4 en 1 ENERGY BC524-1.
+
+Datos técnicos:
+• Cilindrada: 52cc
+• Potencia: 1,94HP (1,45kW)
+• Velocidad en vacío: 7500/min
+• Capacidad de tanque: 1200ml
+• Sierra: 25cm - 10"
+• Cortacerco: 40cm - 16"
+• Tanza: 3m
+• Peso: 14,6kg (32lb)
+
+Contenido: 1 desmalezadora a gasolina 4 en 1, 1 extensión de cortacerco, 1 extensión de sierra a cadena, 1 extensión de desmalezadora, 1 cabezal para bordeadora, 1 carretel de nylon, 1 hoja de corte 3T, 1 correa y 1 botella de aceite.', '{}', 'google-sheet', 122, '{"stock"}'),
   ('2484', 'desmalezadora-52-cc-energy-2484', '2484', 'DESMALEZADORA 52 CC ENERGY', 120000.42, '$ 120.000,42', 'Jardín', 'ENERGY', '/products/DESMALEZADORA.png', '{"/products/DESMALEZADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 123, '{"stock","description"}'),
   ('3901', 'desmalezadora-52cc-dg852-1-3901', '3901', 'DESMALEZADORA 52CC - DG852/1', 110000, '$ 110.000,00', 'Jardín', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 124, '{"image","stock","description"}'),
   ('3878', 'desmalezadora-52cc-dg752-3878', '3878', 'DESMALEZADORA 52CC - DG752', 106000.33, '$ 106.000,33', 'Jardín', 'GLADIATOR', '/products/catalog/3878-dg752.webp', '{"/products/catalog/3878-dg752.webp"}', 0, 5, 3, true, true, 'La Desmalezadora a Gasolina 52cc Gladiator es la herramienta ideal para el mantenimiento de jardines y áreas verdes. Con un motor potente de 1.4 kW y 52 cc , ofrece un rendimiento eficiente y duradero. Incluye dos cajas y una capacidad de corte con nylon de 420 mm y guadaña de 250 mm , facilitando el desmalezado en distintas superficies. Perfecta para uso profesional y doméstico, asegura precisión y comodidad en cada trabajo.', '{}', 'google-sheet', 125, '{"stock"}'),
@@ -585,8 +597,22 @@ Contenido: 1 electrosierra.', '{}', 'google-sheet', 172, '{"stock"}'),
   ('3367', 'hacha-600g-obra-ha600-3367', '3367', 'HACHA 600G OBRA HA600', 15000, '$ 15.000,00', 'Otros', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 206, '{"image","stock","description"}'),
   ('2985', 'herramienta-para-jardin-juego-x-3-2985', '2985', 'HERRAMIENTA PARA JARDIN JUEGO X 3', 12000.04, '$ 12.000,04', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 207, '{"image","stock","description"}'),
   ('3174', 'hidrolavadora-1200w-90-bar-hl7000-220m-gladiator-3174', '3174', 'HIDROLAVADORA 1200W 90 BAR HL7000/220M GLADIATOR', 90000, '$ 90.000,00', 'Hidrolavado y bombas', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 208, '{"image","stock","description"}'),
-  ('3665', 'hidrolavadora-1300w-90-bar-h4090-220-forest-3665', '3665', 'HIDROLAVADORA 1300W 90 BAR - H4090/220 FOREST', 74999.73, '$ 74.999,73', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3665-h4090-220.webp', '{"/products/catalog/3665-h4090-220.webp"}', 0, 5, 3, false, false, 'Hidrolavadora Eléctrica 1300w Forest Garden H4090/220. VOLTAJE - FRECUENCIA: 220V ~ 50-60Hz POTENCIA: 1300W - 1,74HP PRESIóN DE TRABAJO: 55bar - 798PSI PRESIóN NOMINAL: 60bar - 870PSI PRESIóN MáXIMA: 90bar - 1305PSI FLUJO DE TRABAJO: 4,5L/min CAUDAL: 5L/min UNIDADES DE LIMPIEZA: 450UL LARGO DE CABLE: 5 Metros MANGUERA DE ALTA PRESIóN: 3 Metros TIPO DE AISLACIóN: CLASE II CABLE: 5m PESO: 4,2 (9lb). CONTIENE. 1 Hidrolavadora eléctrica. 1 Manguera de alta presión. 1 Lanza. 1 Lanza de Extensión.', '{}', 'google-sheet', 209, '{"stock"}'),
-  ('3666', 'hidrolavadora-1400w-110-bar-h4110m-220-forest-3666', '3666', 'HIDROLAVADORA 1400W 110 BAR - H4110M/220 FOREST', 80000.09, '$ 80.000,09', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3666-h4110m-220.webp', '{"/products/catalog/3666-h4110m-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 210, '{"stock","description"}'),
+  ('3665', 'hidrolavadora-1300w-90-bar-h4090-220-forest-3665', '3665', 'HIDROLAVADORA 1300W 90 BAR - H4090/220 FOREST', 74999.73, '$ 74.999,73', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3665-h4090-220.webp', '{"/products/catalog/3665-h4090-220.webp","/products/catalog/3665-h-4090-220-ficha.webp"}', 0, 5, 3, false, false, 'Hidrolavadora Eléctrica 1300w Forest Garden H4090/220. VOLTAJE - FRECUENCIA: 220V ~ 50-60Hz POTENCIA: 1300W - 1,74HP PRESIóN DE TRABAJO: 55bar - 798PSI PRESIóN NOMINAL: 60bar - 870PSI PRESIóN MáXIMA: 90bar - 1305PSI FLUJO DE TRABAJO: 4,5L/min CAUDAL: 5L/min UNIDADES DE LIMPIEZA: 450UL LARGO DE CABLE: 5 Metros MANGUERA DE ALTA PRESIóN: 3 Metros TIPO DE AISLACIóN: CLASE II CABLE: 5m PESO: 4,2 (9lb). CONTIENE. 1 Hidrolavadora eléctrica. 1 Manguera de alta presión. 1 Lanza. 1 Lanza de Extensión.', '{}', 'google-sheet', 209, '{"stock"}'),
+  ('3666', 'hidrolavadora-1400w-110-bar-h4110m-220-forest-3666', '3666', 'HIDROLAVADORA 1400W 110 BAR - H4110M/220 FOREST', 80000.09, '$ 80.000,09', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3666-h4110m-220.webp', '{"/products/catalog/3666-h4110m-220.webp","/products/catalog/3666-h4110m-220-ficha.webp"}', 0, 5, 3, false, false, 'Hidrolavadora eléctrica FOREST & GARDEN H4110M/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1400W
+• Presión máxima: 110bar
+• Presión nominal: 75 ± 5bar
+• Caudal: 5,1L/min
+• Flujo de trabajo: 4,8 ± 0,2 L/min
+• Unidades de limpieza: 561UL
+• Largo de cable: 5m
+• Tipo de aislación: Clase II
+• Peso: 6,1kg (13,23lb)
+
+Contenido: 1 hidrolavadora eléctrica, 1 pistola de gatillo, 1 lanza, 1 boquilla ajustable, 1 adaptador de entrada, 1 manguera de presión de 5 m, 1 pin de limpieza y 1 dosificador de detergente.', '{}', 'google-sheet', 210, '{"stock"}'),
   ('3670', 'hidrolavadora-1800w-160-bar-h6130m-1-220-forest-3670', '3670', 'HIDROLAVADORA 1800W 160 BAR - H6130M/1/220 FOREST', 84999.82, '$ 84.999,82', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3670-h6130m-1-220.webp', '{"/products/catalog/3670-h6130m-1-220.webp","/products/catalog/3670-h6130m-1-220-ficha.webp"}', 0, 5, 3, false, false, 'Hidrolavadora eléctrica FOREST & GARDEN H6130M/1/220.
 
 Datos técnicos:
@@ -603,21 +629,21 @@ Datos técnicos:
 
 Contenido: 1 hidrolavadora eléctrica, 1 manguera de 5 m, 1 lanza, 1 conector de manguera, 1 dosificador de detergente.', '{}', 'google-sheet', 211, '{"stock"}'),
   ('3668', 'hidrolavadora-2000w-140-bar-h9140rm-220-forest-3668', '3668', 'HIDROLAVADORA 2000W 140 BAR - H9140RM/220 FOREST', 150000.14, '$ 150.000,14', 'Hidrolavado y bombas', 'FOREST & GARDEN', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 212, '{"stock","description","image"}'),
-  ('3667', 'hidrolavadora-2200w-160-bar-h7160rm-220-forest-3667', '3667', 'HIDROLAVADORA 2200W 160 BAR - H7160RM/220 FOREST', 130000.36, '$ 130.000,36', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3667-h7160rm-220.webp', '{"/products/catalog/3667-h7160rm-220.webp"}', 0, 5, 3, false, false, 'Hidrolavadora Eléctrica 2200w Forest Garden H7160RM/220. VOLTAJE-FRECUENCIA: 220V ~ 50-60Hz. POTENCIA: 2200W PRESIóN MáXIMA: 160bar CAUDAL: 5,6L/min FLUJO DE TRABAJO: 5,2 &plusmn; 0,4 L/min UNIDADES DE LIMPIEZA: 896UL LARGO DE CABLE: 5m TIPO DE AISLACIóN: CLASE II PESO: 9,4kg (20,72lb). CONTENIDO. 1 Hidrolavadora eléctrica. 1 Pistola de gatillo. 1 Lanza. 1 Boquilla ajustable. 1 Adaptador de entrada. 1 Manguera de presión. 1 Pin de limpieza. 1 Dosificador de detergente.', '{}', 'google-sheet', 213, '{"stock"}'),
-  ('3669', 'hidrolavadora-2500w-170-bar-h10170m-220-forest-3669', '3669', 'HIDROLAVADORA 2500W 170 BAR - H10170M/220 FOREST', 250000.55, '$ 250.000,55', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3669-h10170m-220.webp', '{"/products/catalog/3669-h10170m-220.webp"}', 0, 5, 3, true, false, 'Hidrolavadora Eléctrica 2500w Forest Garden H10170M/220. VOLTAJE-FRECUENCIA: 220V ~ 50-60Hz POTENCIA: 2500W PRESIóN: 110bar PRESIóN MáXIMA: 170bar CAUDAL: 6,7L/min UNIDADES DE LIMPIEZA: 1241 íNDICE DE PROTECCIóN: IPX5 ALIMENTACIóN MíNIMA: 10,95L/min LARGO DE CABLE: 5m TIPO DE AISLACIóN: CLASE I PESO: 17,8kg (39,24lb). CONTENIDO. 1 Hidrolavadora eléctrica. 1 Lanza metálica. 1 Manguera de 5m. 1 Dispenser de Jabón. 1 Conector para manguera. 1 Dosificador de detergente.', '{}', 'google-sheet', 214, '{"stock"}'),
+  ('3667', 'hidrolavadora-2200w-160-bar-h7160rm-220-forest-3667', '3667', 'HIDROLAVADORA 2200W 160 BAR - H7160RM/220 FOREST', 130000.36, '$ 130.000,36', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3667-h7160rm-220.webp', '{"/products/catalog/3667-h7160rm-220.webp","/products/catalog/3667-h-7160rm-220-ficha.webp"}', 0, 5, 3, false, false, 'Hidrolavadora Eléctrica 2200w Forest Garden H7160RM/220. VOLTAJE-FRECUENCIA: 220V ~ 50-60Hz. POTENCIA: 2200W PRESIóN MáXIMA: 160bar CAUDAL: 5,6L/min FLUJO DE TRABAJO: 5,2 &plusmn; 0,4 L/min UNIDADES DE LIMPIEZA: 896UL LARGO DE CABLE: 5m TIPO DE AISLACIóN: CLASE II PESO: 9,4kg (20,72lb). CONTENIDO. 1 Hidrolavadora eléctrica. 1 Pistola de gatillo. 1 Lanza. 1 Boquilla ajustable. 1 Adaptador de entrada. 1 Manguera de presión. 1 Pin de limpieza. 1 Dosificador de detergente.', '{}', 'google-sheet', 213, '{"stock"}'),
+  ('3669', 'hidrolavadora-2500w-170-bar-h10170m-220-forest-3669', '3669', 'HIDROLAVADORA 2500W 170 BAR - H10170M/220 FOREST', 250000.55, '$ 250.000,55', 'Hidrolavado y bombas', 'FOREST & GARDEN', '/products/catalog/3669-h10170m-220.webp', '{"/products/catalog/3669-h10170m-220.webp","/products/catalog/3669-h-10170m-220-ficha.webp"}', 0, 5, 3, true, false, 'Hidrolavadora Eléctrica 2500w Forest Garden H10170M/220. VOLTAJE-FRECUENCIA: 220V ~ 50-60Hz POTENCIA: 2500W PRESIóN: 110bar PRESIóN MáXIMA: 170bar CAUDAL: 6,7L/min UNIDADES DE LIMPIEZA: 1241 íNDICE DE PROTECCIóN: IPX5 ALIMENTACIóN MíNIMA: 10,95L/min LARGO DE CABLE: 5m TIPO DE AISLACIóN: CLASE I PESO: 17,8kg (39,24lb). CONTENIDO. 1 Hidrolavadora eléctrica. 1 Lanza metálica. 1 Manguera de 5m. 1 Dispenser de Jabón. 1 Conector para manguera. 1 Dosificador de detergente.', '{}', 'google-sheet', 214, '{"stock"}'),
   ('3592', 'hidrolavadora-a-gasolina-6-5hp-h10250g-3592', '3592', 'HIDROLAVADORA A GASOLINA 6,5HP - H10250G', 550000.06, '$ 550.000,06', 'Hidrolavado y bombas', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 215, '{"image","stock","description"}'),
   ('3353', 'hormigonera-140-lts-obra-mh8140-25-3353', '3353', 'HORMIGONERA 140 LTS OBRA MH8140/25', 354999, '$ 354.999,00', 'Construcción', 'OBRA', '/promos/hormigonera-obra-140l.jpg', '{"/promos/hormigonera-obra-140l.jpg"}', 0, 5, 3, true, false, 'Hormigonera Obra MH8140/25 de 140 litros.', '{}', 'google-sheet', 216, '{"stock"}'),
   ('3816', 'hormigonera-200-lts-850w-obra-mh8200-25-3816', '3816', 'HORMIGONERA 200 LTS 850W OBRA - MH8200/25', 447999.4, '$ 447.999,40', 'Construcción', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 217, '{"image","stock","description"}'),
   ('3654', 'juego-de-tubo-a-impacto-1-2-x-13-p-jti1013-3654', '3654', 'JUEGO DE TUBO A IMPACTO 1/2 X 13 P - JTI1013', 32000.05, '$ 32.000,05', 'Otros', 'GLADIATOR', '/products/catalog/3654-jti1013.webp', '{"/products/catalog/3654-jti1013.webp"}', 0, 5, 3, false, false, 'Juego De Tubos Impacto 13 Piezas Gladiator 1/2" JTI1013. Material: Cromo molibdeno. Medidas: 10/11/12/13/14/15/16/17/18/19/21/22/24 mm.', '{}', 'google-sheet', 218, '{"stock"}'),
-  ('3653', 'juego-de-tubo-a-impacto-1-2-x-14-p-jti1014-3653', '3653', 'JUEGO DE TUBO A IMPACTO 1/2 X 14 P - JTI1014', 75000.25, '$ 75.000,25', 'Otros', 'GLADIATOR', '/products/catalog/3653-jti1014.webp', '{"/products/catalog/3653-jti1014.webp"}', 0, 5, 3, true, false, 'Juego De Tubos Impacto 14 Piezas Gladiator 1/2" JTI1014. Material: CR-MO. Cromo molibdeno. Contenido. 14 tubos: 10 / 11 / 12 / 13 / 14 / 16 / 17 / 19 / 21 / 22 / 24 / 27 / 30 / 32 mm.', '{}', 'google-sheet', 219, '{"stock"}'),
-  ('3656', 'juego-de-tubos-1-2-1-4-3-8-x-171-p-jt10171-3656', '3656', 'JUEGO DE TUBOS 1/2 1/4 3/8 X 171 P - JT10171', 198000, '$ 198.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3656-jt10171.webp', '{"/products/catalog/3656-jt10171.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 171 Piezas Gladiator Milimétrico JT10171. Material: Cromo Vanadio. Linea Profesional. Contiene. Encastre de 1/4". 13 Bocallaves hexagonales estándar: 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10, 11, 12, 13 y 14 mm. 7 Bocallaves hexagonales largas: 4, 5, 6, 7, 8, 9 y 10 mm. 5 Bocallaves perfil E-Torx: E4, E5, E6, E7 y E8. Accesorios: 1 Llave crique (ratchet) reversible, barras de extensión, 1 movimiento universal (articulación), 1 mango deslizable en T, y 1 destornillador porta puntas. 30 Bocallaves con puntas integradas: Slotted (planas), Phillips, Pozidriv, Hexagonales (Allen) y Torx. Encastre de 3/8". 10 Bocallaves hexagonales estándar: 10, 11, 12, 13, 14, 15, 16, 17, 18 y 19 mm. 6 Bocallaves hexagonales largas: 10, 11, 12, 13, 14 y 15 mm. 6 Bocallaves perfil E-Torx: E10, E11, E12, E14, E16 y E18. 1 Bocallave saca bujías: 18 mm.', '{}', 'google-sheet', 220, '{"stock"}'),
-  ('3652', 'juego-de-tubos-1-2-1-4-3-8-x-171-p-pulg-jt10171p-3652', '3652', 'JUEGO DE TUBOS 1/2 1/4 3/8 X 171 P PULG - JT10171P', 198000.74, '$ 198.000,74', 'Otros', 'GLADIATOR', '/products/catalog/3652-jt10171p.webp', '{"/products/catalog/3652-jt10171p.webp"}', 0, 5, 3, true, false, 'Juego de Tubos Gladiator 171 Piezas Pulgadas JT10171P. Material: Cromo Vanadio. Linea Profesional. Maletín: Plástico rígido de alta resistencia con clips de cierre rápido y divisiones internas para cada pieza. Contiene. Encastre 1/4". 13 Bocallaves hexagonales estándar: 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10, 11, 12, 13 y 14 mm. 7 Bocallaves hexagonales largas (profundas): 4, 5, 6, 7, 8, 9 y 10 mm. 5 Bocallaves perfil E-Torx: E4, E5, E6, E7 y E8. Accesorios incluidos: 1 Llave crique (ratchet) de 72 dientes con botón de liberación rápida, 2 barras de extensión (2" y 4"), 1 movimiento universal articulado, 1 mango deslizable en "T", y 1 destornillador porta puntas. 30 Bocallaves con puntas integradas: Formatos planos, Phillips, Pozidriv, Hexagonales (Allen) y Torx. Encastre 3/8". 10 Bocallaves hexagonales estándar: 10, 11, 12, 13, 14, 15, 16, 17, 18 y 19 mm.', '{}', 'google-sheet', 221, '{"stock"}'),
-  ('3655', 'juego-de-tubos-1-2-1-4-x-110-p-jt10110-3655', '3655', 'JUEGO DE TUBOS 1/2 1/4 X 110 P - JT10110', 135000.35, '$ 135.000,35', 'Otros', 'GLADIATOR', '/products/catalog/3655-jt10110.webp', '{"/products/catalog/3655-jt10110.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 110 Piezas Gladiator JT10110. Encastre de 1/2". 17 tubos: 10/11/12/13/14/15/16/17/18/19/20/21/22/24/27/30/32 mm. 8 tubos tipo E: E10, E11, E12, E14, E16, E18, E20, E24. 5 tubos profundos: 14/15/17/19/22 mm. 1 trinquete de 72 dientes. 2 barras de extensión: 125 mm y 250 mm. 1 junta universal. 1 adaptador de 3 vías. 2 tubos para bujías: 16 mm y 21 mm. 1 portapuntas: 5/16&rdquo. 17 puntas de 30 mm de longitud. TX: 40/45/50/55/60. PH (Phillips): 3/4. PZ (Pozidrive): 3/4. HEX (Hexagonal): 7/8/10/12/14. FD (Ranurado): 8/10/12. Encastre de 1/4". 13 tubos: 4/4.5/5/5.5/6/7/8/9/10/11/12/13/14 mm. 8 piezas de llave profunda: 6, 7, 8, 9, 10, 11, 12, 13 mm. 1 pieza de junta universal. 2 piezas de barra de extensión: 50 mm, 100 mm. 1 pieza de trinquete de 72 dientes. 1 pieza de barra deslizante de 115 mm. 1 pieza de mango giratorio de 150 mm. 4 llaves Allen: 1.27, 1.5, 2, 2.5 mm.', '{}', 'google-sheet', 222, '{"stock"}'),
-  ('3651', 'juego-de-tubos-1-2-1-4-x-73-p-jt1073-3651', '3651', 'JUEGO DE TUBOS 1/2 1/4 X 73 P - JT1073', 85000, '$ 85.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3651-jt1073.webp', '{"/products/catalog/3651-jt1073.webp"}', 0, 5, 3, true, false, 'Juego de Tubos Gladiator 73 Piezas JT1073. Material: Cromo Vanadio. Linea Profesional. Maletín plástico rígido de alta resistencia con cierres. Encastre de 1/2". 16 Bocallaves / Tubos hexagonales: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 y 27 mm. 1 Llave Crique (Matraca): 72 dientes con selector de giro y botón de liberación rápida. 2 Extensiones: Una de 125 mm y una de 250 mm. 2 Tubos para bujías: 16 mm y 21 mm. 1 Movimiento universal (Junta articulada). 1 Adaptador de triple vía. Encastere de 1/4". 10 Bocallaves / Tubos hexagonales: 4, 5, 5.5, 6, 7, 8, 9, 10, 11, 12 y 13 mm. 1 Mango destornillador (Portapuntas giratorio). 1 Acople portapuntas: 1/4&rdquo; x 1/4&rdquo. Puntas surtidas para atornillar (Planos, Phillips, Torx y Allen de encastre directo).', '{}', 'google-sheet', 223, '{"stock"}'),
+  ('3653', 'juego-de-tubo-a-impacto-1-2-x-14-p-jti1014-3653', '3653', 'JUEGO DE TUBO A IMPACTO 1/2 X 14 P - JTI1014', 75000.25, '$ 75.000,25', 'Otros', 'GLADIATOR', '/products/catalog/3653-jti1014.webp', '{"/products/catalog/3653-jti1014.webp","/products/catalog/3653-jti-1014-ficha.webp"}', 0, 5, 3, true, false, 'Juego De Tubos Impacto 14 Piezas Gladiator 1/2" JTI1014. Material: CR-MO. Cromo molibdeno. Contenido. 14 tubos: 10 / 11 / 12 / 13 / 14 / 16 / 17 / 19 / 21 / 22 / 24 / 27 / 30 / 32 mm.', '{}', 'google-sheet', 219, '{"stock"}'),
+  ('3656', 'juego-de-tubos-1-2-1-4-3-8-x-171-p-jt10171-3656', '3656', 'JUEGO DE TUBOS 1/2 1/4 3/8 X 171 P - JT10171', 198000, '$ 198.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3656-jt10171.webp', '{"/products/catalog/3656-jt10171.webp","/products/catalog/3656-jt-10171-ficha.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 171 Piezas Gladiator Milimétrico JT10171. Material: Cromo Vanadio. Linea Profesional. Contiene. Encastre de 1/4". 13 Bocallaves hexagonales estándar: 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10, 11, 12, 13 y 14 mm. 7 Bocallaves hexagonales largas: 4, 5, 6, 7, 8, 9 y 10 mm. 5 Bocallaves perfil E-Torx: E4, E5, E6, E7 y E8. Accesorios: 1 Llave crique (ratchet) reversible, barras de extensión, 1 movimiento universal (articulación), 1 mango deslizable en T, y 1 destornillador porta puntas. 30 Bocallaves con puntas integradas: Slotted (planas), Phillips, Pozidriv, Hexagonales (Allen) y Torx. Encastre de 3/8". 10 Bocallaves hexagonales estándar: 10, 11, 12, 13, 14, 15, 16, 17, 18 y 19 mm. 6 Bocallaves hexagonales largas: 10, 11, 12, 13, 14 y 15 mm. 6 Bocallaves perfil E-Torx: E10, E11, E12, E14, E16 y E18. 1 Bocallave saca bujías: 18 mm.', '{}', 'google-sheet', 220, '{"stock"}'),
+  ('3652', 'juego-de-tubos-1-2-1-4-3-8-x-171-p-pulg-jt10171p-3652', '3652', 'JUEGO DE TUBOS 1/2 1/4 3/8 X 171 P PULG - JT10171P', 198000.74, '$ 198.000,74', 'Otros', 'GLADIATOR', '/products/catalog/3652-jt10171p.webp', '{"/products/catalog/3652-jt10171p.webp","/products/catalog/3652-jt-10171-p-ficha.webp"}', 0, 5, 3, true, false, 'Juego de Tubos Gladiator 171 Piezas Pulgadas JT10171P. Material: Cromo Vanadio. Linea Profesional. Maletín: Plástico rígido de alta resistencia con clips de cierre rápido y divisiones internas para cada pieza. Contiene. Encastre 1/4". 13 Bocallaves hexagonales estándar: 4, 4.5, 5, 5.5, 6, 7, 8, 9, 10, 11, 12, 13 y 14 mm. 7 Bocallaves hexagonales largas (profundas): 4, 5, 6, 7, 8, 9 y 10 mm. 5 Bocallaves perfil E-Torx: E4, E5, E6, E7 y E8. Accesorios incluidos: 1 Llave crique (ratchet) de 72 dientes con botón de liberación rápida, 2 barras de extensión (2" y 4"), 1 movimiento universal articulado, 1 mango deslizable en "T", y 1 destornillador porta puntas. 30 Bocallaves con puntas integradas: Formatos planos, Phillips, Pozidriv, Hexagonales (Allen) y Torx. Encastre 3/8". 10 Bocallaves hexagonales estándar: 10, 11, 12, 13, 14, 15, 16, 17, 18 y 19 mm.', '{}', 'google-sheet', 221, '{"stock"}'),
+  ('3655', 'juego-de-tubos-1-2-1-4-x-110-p-jt10110-3655', '3655', 'JUEGO DE TUBOS 1/2 1/4 X 110 P - JT10110', 135000.35, '$ 135.000,35', 'Otros', 'GLADIATOR', '/products/catalog/3655-jt10110.webp', '{"/products/catalog/3655-jt10110.webp","/products/catalog/3655-jt-10110-ficha.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 110 Piezas Gladiator JT10110. Encastre de 1/2". 17 tubos: 10/11/12/13/14/15/16/17/18/19/20/21/22/24/27/30/32 mm. 8 tubos tipo E: E10, E11, E12, E14, E16, E18, E20, E24. 5 tubos profundos: 14/15/17/19/22 mm. 1 trinquete de 72 dientes. 2 barras de extensión: 125 mm y 250 mm. 1 junta universal. 1 adaptador de 3 vías. 2 tubos para bujías: 16 mm y 21 mm. 1 portapuntas: 5/16&rdquo. 17 puntas de 30 mm de longitud. TX: 40/45/50/55/60. PH (Phillips): 3/4. PZ (Pozidrive): 3/4. HEX (Hexagonal): 7/8/10/12/14. FD (Ranurado): 8/10/12. Encastre de 1/4". 13 tubos: 4/4.5/5/5.5/6/7/8/9/10/11/12/13/14 mm. 8 piezas de llave profunda: 6, 7, 8, 9, 10, 11, 12, 13 mm. 1 pieza de junta universal. 2 piezas de barra de extensión: 50 mm, 100 mm. 1 pieza de trinquete de 72 dientes. 1 pieza de barra deslizante de 115 mm. 1 pieza de mango giratorio de 150 mm. 4 llaves Allen: 1.27, 1.5, 2, 2.5 mm.', '{}', 'google-sheet', 222, '{"stock"}'),
+  ('3651', 'juego-de-tubos-1-2-1-4-x-73-p-jt1073-3651', '3651', 'JUEGO DE TUBOS 1/2 1/4 X 73 P - JT1073', 85000, '$ 85.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3651-jt1073.webp', '{"/products/catalog/3651-jt1073.webp","/products/catalog/3651-jt-1073-ficha.webp"}', 0, 5, 3, true, false, 'Juego de Tubos Gladiator 73 Piezas JT1073. Material: Cromo Vanadio. Linea Profesional. Maletín plástico rígido de alta resistencia con cierres. Encastre de 1/2". 16 Bocallaves / Tubos hexagonales: 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 y 27 mm. 1 Llave Crique (Matraca): 72 dientes con selector de giro y botón de liberación rápida. 2 Extensiones: Una de 125 mm y una de 250 mm. 2 Tubos para bujías: 16 mm y 21 mm. 1 Movimiento universal (Junta articulada). 1 Adaptador de triple vía. Encastere de 1/4". 10 Bocallaves / Tubos hexagonales: 4, 5, 5.5, 6, 7, 8, 9, 10, 11, 12 y 13 mm. 1 Mango destornillador (Portapuntas giratorio). 1 Acople portapuntas: 1/4&rdquo; x 1/4&rdquo. Puntas surtidas para atornillar (Planos, Phillips, Torx y Allen de encastre directo).', '{}', 'google-sheet', 223, '{"stock"}'),
   ('3337', 'juego-de-tubos-1-2-x-12-jt1012-1-2-3337', '3337', 'JUEGO DE TUBOS 1/2" X 12 - JT1012 1/2', 36900, '$ 36.900,00', 'Otros', 'GLADIATOR', '/products/catalog/3337-jt1012.webp', '{"/products/catalog/3337-jt1012.webp"}', 0, 5, 3, true, false, 'Juego de Tubos Gladiator. Material: Cromo Vanadio. Línea Profesional. JT1012 1/2. Contiene. 10 Tubos de 10 - 11 -12 - 13 - 14 - 15 - 17 - 19 - 22 - 24mm. 1 Barra de extension de 125mm. 1 Trinquete de 72 dientes. JT1012 3/8. Contiene. 10 Tubos de 10 - 11 -12 - 13 - 14 - 15 - 17 - 19 - 22 - 24mm. 1 Barra de extension de 150mm. 1 Trinquete de 72 dientes.', '{}', 'google-sheet', 224, '{"stock"}'),
-  ('3649', 'juego-de-tubos-1-2-x-22-jt10221-2-3649', '3649', 'JUEGO DE TUBOS 1/2" X 22 - JT10221/2', 50000, '$ 50.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3649-jt10221-2.webp', '{"/products/catalog/3649-jt10221-2.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 22 Piezas Gladiator 1/2" JT10221/2. Material: CRV. Cromo vanadio. 15 tubos: 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 / 19 / 22 / 24 / 30 / 32 mm. 2 tubos para bujías: 16 mm y 21 mm. 1 trinquete de 72 dientes. 2 barras de extensión: 125 mm y 250 mm. 1 pieza de adaptador de 3 vías. 1 pieza de junta universal.', '{}', 'google-sheet', 225, '{"stock"}'),
-  ('3650', 'juego-de-tubos-1-2-x-32-jt10321-2-3650', '3650', 'JUEGO DE TUBOS 1/2" X 32 - JT10321/2', 77999.96, '$ 77.999,96', 'Otros', 'GLADIATOR', '/products/catalog/3650-jt10321-2.webp', '{"/products/catalog/3650-jt10321-2.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 32 Piezas Gladiator 1/2" JT10321/2. Material: CRV. Cromo vanadio. Contenido. 19 tubos: 8 / 9 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 / 19 / 21 / 22 / 24 / 27 / 30 / 32 mm. 6 tubos de 12 puntas: 10 / 12 / 14 / 15 / 17 / 19 mm. 1 trinquete de 72 dientes. 2 barras de extensión: 125 mm y 250 mm. 1 adaptador de 3 vías. 2 tubos para bujías: 16 mm y 21 mm. 1 junta universal.', '{}', 'google-sheet', 226, '{"stock"}'),
-  ('3648', 'juego-de-tubos-1-4-x-46-en-pulgadas-jt10461-4p-3648', '3648', 'JUEGO DE TUBOS 1/4" X 46 EN PULGADAS - JT10461/4P', 36999.86, '$ 36.999,86', 'Otros', 'GLADIATOR', '/products/catalog/3648-jt10461-4p.webp', '{"/products/catalog/3648-jt10461-4p.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 46 Piezas Gladiator 1/4" Pulagadas JT10461/4P. Material: CRV. Cromo vanadio. Contenido. Conductor de 1/4 pulgadas. 13 tubos: 5/32&rdquo; / 3/16&rdquo; / 7/32&rdquo; / 1/4&rdquo; / 9/32&rdquo; / 5/16&rdquo; / 11/32&rdquo; / 3/8&rdquo; / 7/16&rdquo; / 15/32&rdquo; / 1/2&rdquo; / 9/16&rdquo; / 19/32&rdquo. 21 puntas. TX (Torx): 10 / 15 / 20 / 25 / 30 / 40. HEX (Hexagonal): 3 / 4 / 5 / 6 / 7 / 8. PH (Phillips): 1 / 2 / 3. PZ (Pozidrive): 1 / 2 / 3. FD (Ranurado): 4 / 5.5 / 7. 1 junta universal. 1 trinquete de 72 dientes. 1 barra deslizante de 4-1/2&rdquo. 1 barra de extensión flexible de 6&rdquo. 1 mango giratorio de 6&rdquo. 1 adaptador hexagonal de 1-1/8&rdquo. 2 barras de extensión de 2&rdquo; y 4&rdquo. 4 llaves hexagonales: 1/16&rdquo; / 5/64&rdquo; / 3/32&rdquo; / 1/8&rdquo.', '{}', 'google-sheet', 227, '{"stock"}'),
+  ('3649', 'juego-de-tubos-1-2-x-22-jt10221-2-3649', '3649', 'JUEGO DE TUBOS 1/2" X 22 - JT10221/2', 50000, '$ 50.000,00', 'Otros', 'GLADIATOR', '/products/catalog/3649-jt10221-2.webp', '{"/products/catalog/3649-jt10221-2.webp","/products/catalog/3649-jt-1022-1-2-ficha.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 22 Piezas Gladiator 1/2" JT10221/2. Material: CRV. Cromo vanadio. 15 tubos: 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 / 19 / 22 / 24 / 30 / 32 mm. 2 tubos para bujías: 16 mm y 21 mm. 1 trinquete de 72 dientes. 2 barras de extensión: 125 mm y 250 mm. 1 pieza de adaptador de 3 vías. 1 pieza de junta universal.', '{}', 'google-sheet', 225, '{"stock"}'),
+  ('3650', 'juego-de-tubos-1-2-x-32-jt10321-2-3650', '3650', 'JUEGO DE TUBOS 1/2" X 32 - JT10321/2', 77999.96, '$ 77.999,96', 'Otros', 'GLADIATOR', '/products/catalog/3650-jt10321-2.webp', '{"/products/catalog/3650-jt10321-2.webp","/products/catalog/3650-jt-1032-1-2-ficha.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 32 Piezas Gladiator 1/2" JT10321/2. Material: CRV. Cromo vanadio. Contenido. 19 tubos: 8 / 9 / 10 / 11 / 12 / 13 / 14 / 15 / 16 / 17 / 18 / 19 / 21 / 22 / 24 / 27 / 30 / 32 mm. 6 tubos de 12 puntas: 10 / 12 / 14 / 15 / 17 / 19 mm. 1 trinquete de 72 dientes. 2 barras de extensión: 125 mm y 250 mm. 1 adaptador de 3 vías. 2 tubos para bujías: 16 mm y 21 mm. 1 junta universal.', '{}', 'google-sheet', 226, '{"stock"}'),
+  ('3648', 'juego-de-tubos-1-4-x-46-en-pulgadas-jt10461-4p-3648', '3648', 'JUEGO DE TUBOS 1/4" X 46 EN PULGADAS - JT10461/4P', 36999.86, '$ 36.999,86', 'Otros', 'GLADIATOR', '/products/catalog/3648-jt10461-4p.webp', '{"/products/catalog/3648-jt10461-4p.webp","/products/catalog/3648-jt-1046-1-4-p-ficha.webp"}', 0, 5, 3, true, false, 'Juego de Tubos 46 Piezas Gladiator 1/4" Pulagadas JT10461/4P. Material: CRV. Cromo vanadio. Contenido. Conductor de 1/4 pulgadas. 13 tubos: 5/32&rdquo; / 3/16&rdquo; / 7/32&rdquo; / 1/4&rdquo; / 9/32&rdquo; / 5/16&rdquo; / 11/32&rdquo; / 3/8&rdquo; / 7/16&rdquo; / 15/32&rdquo; / 1/2&rdquo; / 9/16&rdquo; / 19/32&rdquo. 21 puntas. TX (Torx): 10 / 15 / 20 / 25 / 30 / 40. HEX (Hexagonal): 3 / 4 / 5 / 6 / 7 / 8. PH (Phillips): 1 / 2 / 3. PZ (Pozidrive): 1 / 2 / 3. FD (Ranurado): 4 / 5.5 / 7. 1 junta universal. 1 trinquete de 72 dientes. 1 barra deslizante de 4-1/2&rdquo. 1 barra de extensión flexible de 6&rdquo. 1 mango giratorio de 6&rdquo. 1 adaptador hexagonal de 1-1/8&rdquo. 2 barras de extensión de 2&rdquo; y 4&rdquo. 4 llaves hexagonales: 1/16&rdquo; / 5/64&rdquo; / 3/32&rdquo; / 1/8&rdquo.', '{}', 'google-sheet', 227, '{"stock"}'),
   ('3474', 'juego-de-tubos-1-4-x-46-cv-jt10461-4-3474', '3474', 'JUEGO DE TUBOS 1/4" X 46 - CV JT10461/4', 39800, '$ 39.800,00', 'Otros', 'GLADIATOR', '/products/catalog/3474-jt10461-4.webp', '{"/products/catalog/3474-jt10461-4.webp","/products/catalog/3474-jt10461-4-ficha.webp"}', 0, 5, 3, false, false, 'Juego de tubos de 46 piezas de 1/4" GLADIATOR JT10461/4.
 
 Datos técnicos:
@@ -656,7 +682,7 @@ Datos técnicos:
 • Tipo: Recargable', '{}', 'google-sheet', 237, '{"stock"}'),
   ('2435', 'lapiz-corta-vidrio-tipo-jobo-2435', '2435', 'LAPIZ CORTA VIDRIO TIPO JOBO', 2000.01, '$ 2.000,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 238, '{"image","stock","description"}'),
   ('2806', 'latex-color-x-4-lts-verde-safari-m-y-m-2806', '2806', 'LATEX COLOR X 4 LTS VERDE SAFARI M Y M', 15000.01, '$ 15.000,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 239, '{"image","stock","description"}'),
-  ('3540', 'lijadora-de-banda-1150w-neo-lb976-1-220-3540', '3540', 'LIJADORA DE BANDA 1150W NEO - LB976/1/220', 99999.72, '$ 99.999,72', 'Accesorios y consumibles', 'NEO', '/products/catalog/3540-lb976-1-220.webp', '{"/products/catalog/3540-lb976-1-220.webp"}', 0, 5, 3, true, false, 'Lijadora de Banda NEO 1150w 76x533mm LB976/1/220. Potencia: 1150W. Tamaño de banda: 76 x 533 mm. Velocidad en vacío: n₀ = 120-380/min. Voltaje/Frecuencia: Compatible con 220V (50-60Hz) y 120V (60Hz). Largo de cable: 1.8m. Aislación: Clase II. Peso: 2,80 kg.', '{}', 'google-sheet', 240, '{"stock"}'),
+  ('3540', 'lijadora-de-banda-1150w-neo-lb976-1-220-3540', '3540', 'LIJADORA DE BANDA 1150W NEO - LB976/1/220', 99999.72, '$ 99.999,72', 'Accesorios y consumibles', 'NEO', '/products/catalog/3540-lb976-1-220.webp', '{"/products/catalog/3540-lb976-1-220.webp","/products/catalog/3540-lb-976-1-220-ficha.webp"}', 0, 5, 3, true, false, 'Lijadora de Banda NEO 1150w 76x533mm LB976/1/220. Potencia: 1150W. Tamaño de banda: 76 x 533 mm. Velocidad en vacío: n₀ = 120-380/min. Voltaje/Frecuencia: Compatible con 220V (50-60Hz) y 120V (60Hz). Largo de cable: 1.8m. Aislación: Clase II. Peso: 2,80 kg.', '{}', 'google-sheet', 240, '{"stock"}'),
   ('3489', 'lijadora-delta-18v-bat2ah-ld8140-18c1-3489', '3489', 'LIJADORA DELTA 18V BAT2AH LD8140/18C1', 54999.91, '$ 54.999,91', 'Accesorios y consumibles', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 241, '{"image","stock","description"}'),
   ('3756', 'lijadora-orbital-1-4-energy-fs50-220-3756', '3756', 'LIJADORA ORBITAL 1/4 ENERGY - FS50/220', 35999.93, '$ 35.999,93', 'Accesorios y consumibles', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 242, '{"image","stock","description"}'),
   ('3542', 'lijadora-orbital-energy-150w-lo180-220-3542', '3542', 'LIJADORA ORBITAL ENERGY 150W - LO180/220', 44999.91, '$ 44.999,91', 'Accesorios y consumibles', 'ENERGY', '/products/catalog/3542-lo180-220.webp', '{"/products/catalog/3542-lo180-220.webp"}', 0, 5, 3, true, false, 'Lijadora Orbital Energy 150w 90x187mm LO180/220. Tensión: 230 V / 50 Hz. Potencia: 150 W. Velocidad Variable: 12000rpm. Base porta lija: 90 x 187 mm. Peso: 1.250kg. Contiene. 1 Lijadora Orbital. 1 Papel de Lija. 1 Tubo para Polvo.', '{}', 'google-sheet', 243, '{"stock"}'),
@@ -710,7 +736,16 @@ Datos técnicos:
 
 Contenido: 1 llave de impacto recargable, 2 baterías de 20V - 4Ah, 1 cargador base de 4A, 1 maletín plástico.', '{}', 'google-sheet', 264, '{"stock"}'),
   ('3616', 'llave-de-impacto-20v-650nm-li12650-20c1-4-3616', '3616', 'LLAVE DE IMPACTO 20V 650NM LI12650/20C1-4', 186000.29, '$ 186.000,29', 'Herramientas manuales', 'NEO', '/products/catalog/3616-li12650-20c1-4.webp', '{"/products/catalog/3616-li12650-20c1-4.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 265, '{"stock","description"}'),
-  ('3539', 'llave-de-impacto-800w-gladiator-li1012-220-3539', '3539', 'LLAVE DE IMPACTO 800W GLADIATOR - LI1012/220', 94999.96, '$ 94.999,96', 'Herramientas manuales', 'GLADIATOR', '/products/catalog/3539-li1012-220.webp', '{"/products/catalog/3539-li1012-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 266, '{"stock","description"}'),
+  ('3539', 'llave-de-impacto-800w-gladiator-li1012-220-3539', '3539', 'LLAVE DE IMPACTO 800W GLADIATOR - LI1012/220', 94999.96, '$ 94.999,96', 'Herramientas manuales', 'GLADIATOR', '/products/catalog/3539-li1012-220.webp', '{"/products/catalog/3539-li1012-220.webp","/products/catalog/3539-li1012-220-ficha.webp"}', 0, 5, 3, false, false, 'Llave de impacto GLADIATOR LI1012/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 800W
+• Torque máximo: 500N/m
+• Tipo de aislación: Clase II
+• Peso: 2,6kg - 5,73lb
+
+Contenido: 1 llave de impacto.', '{}', 'google-sheet', 266, '{"stock"}'),
   ('2279', 'llave-torx-x-9-piezas-mediana-2279', '2279', 'LLAVE TORX X 9 PIEZAS MEDIANA', 7999.99, '$ 7.999,99', 'Herramientas manuales', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 267, '{"image","stock","description"}'),
   ('3170', 'luminaria-led-via-publica-100w-220v-luxom-3170', '3170', 'LUMINARIA LED VIA PUBLICA 100W 220V LUXOM', 35000.1, '$ 35.000,10', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 268, '{"image","stock","description"}'),
   ('3171', 'luminaria-led-via-publica-150w-220v-luxom-3171', '3171', 'LUMINARIA LED VIA PUBLICA 150W 220V LUXOM', 49799.96, '$ 49.799,96', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 269, '{"image","stock","description"}'),
@@ -765,7 +800,18 @@ Contenido: 1 martillo demoledor, 1 cable de 3 metros con enchufe VDE, 1 mango au
   ('3583', 'mazo-de-goma-obra-16oz-mg16-3583', '3583', 'MAZO DE GOMA OBRA 16OZ - MG16', 7500, '$ 7.500,00', 'Otros', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 295, '{"image","stock","description"}'),
   ('3584', 'mazo-de-goma-obra-32oz-mg32-3584', '3584', 'MAZO DE GOMA OBRA 32OZ - MG32', 10000, '$ 10.000,00', 'Otros', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 296, '{"image","stock","description"}'),
   ('3364', 'mazo-de-goma-obra-8oz-mg8-3364', '3364', 'MAZO DE GOMA OBRA 8OZ - MG8', 6000, '$ 6.000,00', 'Otros', 'OBRA', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 297, '{"image","stock","description"}'),
-  ('3574', 'mecha-escalonada-en-set-3-piezas-bco803k-3574', '3574', 'MECHA ESCALONADA EN SET 3 PIEZAS - BCO803K', 38000.11, '$ 38.000,11', 'Taladros y atornilladores', 'GLADIATOR', '/products/catalog/3574-bco803k.webp', '{"/products/catalog/3574-bco803k.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 298, '{"stock","description"}'),
+  ('3574', 'mecha-escalonada-en-set-3-piezas-bco803k-3574', '3574', 'MECHA ESCALONADA EN SET 3 PIEZAS - BCO803K', 38000.11, '$ 38.000,11', 'Taladros y atornilladores', 'GLADIATOR', '/products/catalog/3574-bco803k.webp', '{"/products/catalog/3574-bco803k.webp","/products/catalog/3574-bco803k-ficha.webp"}', 0, 5, 3, false, false, 'Set de 3 brocas escalonadas de ranura recta GLADIATOR BCO803K.
+
+Datos técnicos:
+• Cantidad de piezas: 3
+• Material: HSS 4241
+• Segmento: Hogar
+• Broca 1: 4-12mm (5/32" - 15/32")
+• Broca 2: 4-20mm (5/32" - 25/32")
+• Broca 3: 4-32mm (5/32" - 1 1/4")
+• Tipo: Ranura recta - perfora distintos diámetros en un solo paso
+
+Contenido: 3 brocas escalonadas de ranura recta y 1 maletín de madera.', '{}', 'google-sheet', 298, '{"stock"}'),
   ('1891', 'mecha-paleta-juego-x-6-piezas-1891', '1891', 'MECHA PALETA JUEGO X 6 PIEZAS', 9999.98, '$ 9.999,98', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 299, '{"image","stock","description"}'),
   ('1173', 'mecha-para-acero-n-7-5-1173', '1173', 'MECHA PARA ACERO N°7,5', 2800, '$ 2.800,00', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 300, '{"image","stock","description"}'),
   ('1175', 'mecha-para-acero-n-9-1175', '1175', 'MECHA PARA ACERO N°9', 4000, '$ 4.000,00', 'Taladros y atornilladores', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 301, '{"image","stock","description"}'),
@@ -820,7 +866,19 @@ Contenido: 1 medidor de distancia láser, 1 cinta de seguridad, 1 estuche.', '{}
   ('3428', 'mensula-para-split-corta-42cm-3428', '3428', 'MENSULA PARA SPLIT CORTA 42CM', 11000.02, '$ 11.000,02', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 320, '{"image","stock","description"}'),
   ('3430', 'mensula-para-split-extra-larga-60cm-3430', '3430', 'MENSULA PARA SPLIT EXTRA LARGA 60CM', 14000.03, '$ 14.000,03', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 321, '{"image","stock","description"}'),
   ('3429', 'mensula-para-split-larga-50cm-3429', '3429', 'MENSULA PARA SPLIT LARGA 50CM', 11999.96, '$ 11.999,96', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 322, '{"image","stock","description"}'),
-  ('3538', 'mezclador-de-pintura-1500w-gladiator-mx900-220-3538', '3538', 'MEZCLADOR DE PINTURA 1500W GLADIATOR MX900/220', 137999.5, '$ 137.999,50', 'Construcción', 'GLADIATOR', '/products/catalog/3538-mx900-220.webp', '{"/products/catalog/3538-mx900-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 323, '{"stock","description"}'),
+  ('3538', 'mezclador-de-pintura-1500w-gladiator-mx900-220-3538', '3538', 'MEZCLADOR DE PINTURA 1500W GLADIATOR MX900/220', 137999.5, '$ 137.999,50', 'Construcción', 'GLADIATOR', '/products/catalog/3538-mx900-220.webp', '{"/products/catalog/3538-mx900-220.webp","/products/catalog/3538-mx900-220-ficha.webp"}', 0, 5, 3, false, false, 'Mezcladora de pintura GLADIATOR MX900/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1500W
+• Velocidad en vacío: Velocidad 1: 200-500rpm · Velocidad 2: 400-800rpm
+• Largo de paleta: 600mm - 24"
+• Diámetro de paleta: 120mm - 4 23/32"
+• Mezclador: M14
+• Tipo de aislación: Clase II
+• Peso: 5kg - 11,02lb
+
+Contenido: 1 mezclador de pintura.', '{}', 'google-sheet', 323, '{"stock"}'),
   ('3890', 'mezclador-de-pintura-18v-2-vel-mx818-18c1-3890', '3890', 'MEZCLADOR DE PINTURA 18V 2 VEL - MX818/18C1', 139799.79, '$ 139.799,79', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 324, '{"image","stock","description"}'),
   ('3246', 'mini-motosierra-electrosierra-inalambrica-garden-3246', '3246', 'MINI MOTOSIERRA - ELECTROSIERRA INALAMBRICA GARDEN', 64999.76, '$ 64.999,76', 'Jardín', 'Sin marca informada', '/products/MOTOSIERRA_.png', '{"/products/MOTOSIERRA_.png"}', 0, 5, 3, true, false, 'Mini motosierra inalámbrica Garden para tareas de corte y mantenimiento exterior.', '{}', 'google-sheet', 325, '{"stock"}'),
   ('3384', 'motobomba-a-gasolina-6-5hp-energy-gwp2-1-3384', '3384', 'MOTOBOMBA A GASOLINA 6,5HP ENERGY GWP2/1', 179800.07, '$ 179.800,07', 'Hidrolavado y bombas', 'ENERGY', '/products/catalog/3384-gwp2-1.webp', '{"/products/catalog/3384-gwp2-1.webp","/products/catalog/3384-gwp2-1-ficha.webp"}', 0, 5, 3, false, false, 'Motobomba a gasolina ENERGY GWP2/1.
@@ -861,7 +919,23 @@ Contenido: 1 motobomba a gasolina.', '{}', 'google-sheet', 327, '{"stock"}'),
   ('3759', 'motosierra-58cc-20-espada-gladiator-pro-m958-20-3759', '3759', 'MOTOSIERRA 58CC 20" ESPADA GLADIATOR PRO - M958/20', 124999.85, '$ 124.999,85', 'Jardín', 'GLADIATOR PRO', '/products/catalog/3759-m958-20.webp', '{"/products/catalog/3759-m958-20.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 331, '{"stock","description"}'),
   ('3763', 'mototool-135w-c-accesorios-gladiator-mt600-220k-3763', '3763', 'MOTOTOOL 135W C ACCESORIOS GLADIATOR - MT600/220K', 60000, '$ 60.000,00', 'Otros', 'GLADIATOR', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 332, '{"image","stock","description"}'),
   ('1875', 'nivel-de-mano-aluminio-20-50-cm-1875', '1875', 'NIVEL DE MANO ALUMINIO 20" 50 CM', 8500, '$ 8.500,00', 'Construcción', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 333, '{"image","stock","description"}'),
-  ('3708', 'nivel-laser-autonivelante-30-mt-nlp830-3708', '3708', 'NIVEL LASER AUTONIVELANTE 30 MT - NLP830', 75900.22, '$ 75.900,22', 'Construcción', 'GLADIATOR', '/products/catalog/3708-nlp830.webp', '{"/products/catalog/3708-nlp830.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 334, '{"stock","description"}'),
+  ('3708', 'nivel-laser-autonivelante-30-mt-nlp830-3708', '3708', 'NIVEL LASER AUTONIVELANTE 30 MT - NLP830', 75900.22, '$ 75.900,22', 'Construcción', 'GLADIATOR', '/products/catalog/3708-nlp830.webp', '{"/products/catalog/3708-nlp830.webp","/products/catalog/3708-nlp830-ficha.webp"}', 0, 5, 3, false, false, 'Nivel láser autonivelante con punto plomo GLADIATOR NLP830.
+
+Datos técnicos:
+• Distancia de trabajo: 30m
+• Funciones: Luz cruz (horizontal y vertical) y 2 puntos plomo
+• Tipo de láser: 520nm OSRAM
+• Precisión horizontal/vertical: ±3mm - 10m
+• Precisión de puntos: ±3mm - 10m
+• Rango de autonivelado: 4° ± 1°
+• Rosca de trípode: 1/4" y 5/8"
+• Medida de ángulo: 360° - 130°
+• Índice de protección: IP54
+• Batería: 2 pilas AA (no incluidas)
+• Clase de láser: Clase 2
+• Peso: 320g - 0,71lb
+
+Contenido: 1 nivel láser autonivelante con punto plomo, 1 estuche, 1 placa de destino verde, 1 base de rotación 360° y 1 soporte magnético en L.', '{}', 'google-sheet', 334, '{"stock"}'),
   ('3714', 'nivel-laser-autonivelante-45-mt-nl1045-3-3714', '3714', 'NIVEL LASER AUTONIVELANTE 45 MT - NL1045/3', 114999.56, '$ 114.999,56', 'Construcción', 'GLADIATOR', '/products/catalog/3714-nl1045-3.webp', '{"/products/catalog/3714-nl1045-3.webp","/products/catalog/3714-nl1045-3-ficha.webp"}', 0, 5, 3, false, false, 'Nivel láser autonivelante GLADIATOR NL1045/3.
 
 Datos técnicos:
@@ -1015,7 +1089,23 @@ Datos técnicos:
 • Phillips (PH): x10
 
 Contenido: 1 set de puntas de 10 piezas de 50mm, material S2 + alto impacto.', '{}', 'google-sheet', 418, '{"stock"}'),
-  ('3773', 'set-de-puntas-19-piezas-spp1019-3773', '3773', 'SET DE PUNTAS 19 PIEZAS - SPP1019', 19500.06, '$ 19.500,06', 'Accesorios y consumibles', 'NEO', '/products/catalog/3773-spp1019.webp', '{"/products/catalog/3773-spp1019.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 419, '{"stock","description"}'),
+  ('3773', 'set-de-puntas-19-piezas-spp1019-3773', '3773', 'SET DE PUNTAS 19 PIEZAS - SPP1019', 19500.06, '$ 19.500,06', 'Accesorios y consumibles', 'NEO', '/products/catalog/3773-spp1019.webp', '{"/products/catalog/3773-spp1019.webp","/products/catalog/3773-spp1019-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 19 piezas NEO SPP1019.
+
+Datos técnicos:
+• Cantidad de piezas: 19
+• Material: S2 + alto impacto
+• Segmento: Industrial
+• Phillips (PH) 25mm: x3
+• Phillips (PH) 50mm: x2
+• Pozidriv (PZ) 25mm: x3
+• Pozidriv (PZ) 50mm: x1
+• Recto (SL) 25mm: x2
+• Recto (SL) 50mm: x1
+• Torx (T) 25mm: x4
+• Torx (T) 50mm: x2
+• Quick changer: x1
+
+Contenido: 1 set de puntas de 19 piezas y 1 maletín plástico.', '{}', 'google-sheet', 419, '{"stock"}'),
   ('3770', 'set-de-puntas-25-piezas-sp25-3770', '3770', 'SET DE PUNTAS 25 PIEZAS - SP25', 14000.02, '$ 14.000,02', 'Accesorios y consumibles', 'ENERGY', '/products/catalog/3770-sp25.webp', '{"/products/catalog/3770-sp25.webp","/products/catalog/3770-sp25-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 25 piezas ENERGY SP25.
 
 Datos técnicos:
@@ -1028,8 +1118,34 @@ Datos técnicos:
 • Soporte universal magnético: x1
 
 Contenido: Set de 25 piezas material S2, maletín plástico.', '{}', 'google-sheet', 420, '{"stock"}'),
-  ('3775', 'set-de-puntas-25-piezas-spp1025-3775', '3775', 'SET DE PUNTAS 25 PIEZAS - SPP1025', 14800.03, '$ 14.800,03', 'Accesorios y consumibles', 'NEO', '/products/catalog/3775-spp1025.webp', '{"/products/catalog/3775-spp1025.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 421, '{"stock","description"}'),
-  ('3569', 'set-de-puntas-25-puntas-spp825-3569', '3569', 'SET DE PUNTAS 25 PUNTAS - SPP825', 14800.02, '$ 14.800,02', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3569-spp825.webp', '{"/products/catalog/3569-spp825.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 422, '{"stock","description"}'),
+  ('3775', 'set-de-puntas-25-piezas-spp1025-3775', '3775', 'SET DE PUNTAS 25 PIEZAS - SPP1025', 14800.03, '$ 14.800,03', 'Accesorios y consumibles', 'NEO', '/products/catalog/3775-spp1025.webp', '{"/products/catalog/3775-spp1025.webp","/products/catalog/3775-spp1025-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 25 piezas NEO SPP1025.
+
+Datos técnicos:
+• Cantidad de piezas: 25
+• Material: S2 + alto impacto
+• Segmento: Industrial
+• Phillips (PH): x6
+• Pozidriv (PZ): x3
+• Recto (SL): x5
+• Hexagonal (H): x3
+• Torx (T): x7
+• Soporte universal magnético: x1
+
+Contenido: 1 set de puntas de 25 piezas material S2 + alto impacto y 1 maletín plástico.', '{}', 'google-sheet', 421, '{"stock"}'),
+  ('3569', 'set-de-puntas-25-puntas-spp825-3569', '3569', 'SET DE PUNTAS 25 PUNTAS - SPP825', 14800.02, '$ 14.800,02', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3569-spp825.webp', '{"/products/catalog/3569-spp825.webp","/products/catalog/3569-spp825-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 25 piezas GLADIATOR SPP825.
+
+Datos técnicos:
+• Cantidad de piezas: 25
+• Material: S2
+• Segmento: Profesional
+• Phillips (PH): x6
+• Pozidriv (PZ): x3
+• Recto (SL): x5
+• Hexagonal (H): x3
+• Torx (T): x7
+• Soporte universal magnético: x1
+
+Contenido: 1 set de puntas de 25 piezas material S2 y 1 maletín plástico.', '{}', 'google-sheet', 422, '{"stock"}'),
   ('3771', 'set-de-puntas-32-piezas-sp32-3771', '3771', 'SET DE PUNTAS 32 PIEZAS - SP32', 15000.02, '$ 15.000,02', 'Accesorios y consumibles', 'ENERGY', '/products/catalog/3771-sp32.webp', '{"/products/catalog/3771-sp32.webp","/products/catalog/3771-sp32-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas de 32 piezas ENERGY SP32.
 
 Datos técnicos:
@@ -1096,9 +1212,25 @@ Datos técnicos:
 • Recto (SL): x10
 
 Contenido: 1 set de puntas de 10 piezas material S2 - 50mm.', '{}', 'google-sheet', 427, '{"stock"}'),
-  ('3776', 'set-de-puntas-para-router-ar10-15-3776', '3776', 'SET DE PUNTAS PARA ROUTER - AR10/15', 38499.96, '$ 38.499,96', 'Accesorios y consumibles', 'NEO', '/products/catalog/3776-ar10-15.webp', '{"/products/catalog/3776-ar10-15.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 428, '{"stock","description"}'),
-  ('3575', 'set-de-puntas-para-router-ar8-15-3575', '3575', 'SET DE PUNTAS PARA ROUTER - AR8/15', 35000.07, '$ 35.000,07', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3575-ar8-15.webp', '{"/products/catalog/3575-ar8-15.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 429, '{"stock","description"}'),
-  ('3777', 'set-de-puntas-para-router-ar11-15-3777', '3777', 'SET DE PUNTAS PARA ROUTER AR11/15', 38499.96, '$ 38.499,96', 'Accesorios y consumibles', 'NEO', '/products/catalog/3777-ar11-15.webp', '{"/products/catalog/3777-ar11-15.webp"}', 0, 5, 3, true, false, 'El Set de 15 Puntas para Router con Mango 1/2" Neo es la herramienta esencial para quienes buscan precisión y versatilidad en trabajos de carpintería y decoración. Este kit incluye diversas puntas diseñadas para cortes y acabados profesionales, facilitando proyectos con madera y materiales similares. Su mango de 1/2" garantiza un ajuste seguro y estable en tu router, brindando mayor control y seguridad durante el uso. Ideal para usuarios profesionales y aficionados que desean resultados de alta calidad. &iexcl;Optimiza tu taller con este completo set Neo!.', '{}', 'google-sheet', 430, '{"stock"}'),
+  ('3776', 'set-de-puntas-para-router-ar10-15-3776', '3776', 'SET DE PUNTAS PARA ROUTER - AR10/15', 38499.96, '$ 38.499,96', 'Accesorios y consumibles', 'NEO', '/products/catalog/3776-ar10-15.webp', '{"/products/catalog/3776-ar10-15.webp","/products/catalog/3776-ar10-15-ficha.webp"}', 0, 5, 3, false, false, 'Kit de 15 puntas para router NEO AR10/15.
+
+Datos técnicos:
+• Cantidad de piezas: 15
+• Uso: Ranuradoras y routers
+• Estuche: De madera
+
+Contenido: 15 puntas para router y 1 estuche de madera.', '{}', 'google-sheet', 428, '{"stock"}'),
+  ('3575', 'set-de-puntas-para-router-ar8-15-3575', '3575', 'SET DE PUNTAS PARA ROUTER - AR8/15', 35000.07, '$ 35.000,07', 'Accesorios y consumibles', 'GLADIATOR', '/products/catalog/3575-ar8-15.webp', '{"/products/catalog/3575-ar8-15.webp","/products/catalog/3575-ar8-15-ficha.webp"}', 0, 5, 3, false, false, 'Kit de 15 puntas para router GLADIATOR AR8/15.
+
+Datos técnicos:
+• Cantidad de piezas: 15
+• Material: Carburo C3 con revestimiento antiadherente
+• Mango: 1/4 pulgada
+• Puntas: 5/32" Roman ogee, 1/4" y 1/2" rebajado, 1/2" y 5/8" chaflán de 45°, 1/4", 3/8" y 1/2" redondeo, 1/4" y 1/2" recorte al ras, 1/4", 3/8" y 1/2" recta, 1/2" mortajadora para bisagras y 1/2" machihembrado
+• Tratamiento: Cuerpos y mangos tratados térmicamente
+
+Contenido: 15 puntas para router y 1 estuche protector de madera.', '{}', 'google-sheet', 429, '{"stock"}'),
+  ('3777', 'set-de-puntas-para-router-ar11-15-3777', '3777', 'SET DE PUNTAS PARA ROUTER AR11/15', 38499.96, '$ 38.499,96', 'Accesorios y consumibles', 'NEO', '/products/catalog/3777-ar11-15.webp', '{"/products/catalog/3777-ar11-15.webp","/products/catalog/3777-ar-11-15-ficha.webp"}', 0, 5, 3, true, false, 'El Set de 15 Puntas para Router con Mango 1/2" Neo es la herramienta esencial para quienes buscan precisión y versatilidad en trabajos de carpintería y decoración. Este kit incluye diversas puntas diseñadas para cortes y acabados profesionales, facilitando proyectos con madera y materiales similares. Su mango de 1/2" garantiza un ajuste seguro y estable en tu router, brindando mayor control y seguridad durante el uso. Ideal para usuarios profesionales y aficionados que desean resultados de alta calidad. &iexcl;Optimiza tu taller con este completo set Neo!.', '{}', 'google-sheet', 430, '{"stock"}'),
   ('3778', 'set-de-puntas-y-brocas-37-piezas-spb1237-3778', '3778', 'SET DE PUNTAS Y BROCAS 37 PIEZAS - SPB1237', 30000.06, '$ 30.000,06', 'Accesorios y consumibles', 'NEO NEXT', '/products/catalog/3778-spb1237.webp', '{"/products/catalog/3778-spb1237.webp","/products/catalog/3778-spb1237-ficha.webp"}', 0, 5, 3, false, false, 'Set de puntas y brocas de 37 piezas NEO NEXT SPB1237.
 
 Datos técnicos:
@@ -1250,7 +1382,20 @@ Datos técnicos:
 • Peso: 20kg - 44,09lb
 
 Contenido: 1 sierra ingletadora, 1 llave inglesa, 1 bolsa para polvo, 1 abrazadera de trabajo, 1 hoja de sierra de 40 dientes.', '{}', 'google-sheet', 450, '{"stock"}'),
-  ('3537', 'sierra-ingletadora-1800w-10-glad-si710-3-220-3537', '3537', 'SIERRA INGLETADORA 1800W 10" GLAD. SI710/3/220', 164999.48, '$ 164.999,48', 'Otros', 'GLADIATOR', '/products/catalog/3537-si710-3-220.webp', '{"/products/catalog/3537-si710-3-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 451, '{"stock","description"}'),
+  ('3537', 'sierra-ingletadora-1800w-10-glad-si710-3-220-3537', '3537', 'SIERRA INGLETADORA 1800W 10" GLAD. SI710/3/220', 164999.48, '$ 164.999,48', 'Otros', 'GLADIATOR', '/products/catalog/3537-si710-3-220.webp', '{"/products/catalog/3537-si710-3-220.webp","/products/catalog/3537-si710-3-220-ficha.webp"}', 0, 5, 3, false, false, 'Sierra ingletadora GLADIATOR SI710/3/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1800W - 2,4HP
+• Velocidad en vacío: 6000rpm
+• Diámetro de hoja: 255mm - 10"
+• Capacidad de corte 0° x 0°: 85 x 110mm - 3 11/32" x 4 1/3"
+• Capacidad de corte 0° x 45°: 85 x 80mm - 3 11/32" x 3"
+• Giro de la base: Hasta 45° a ambos lados
+• Tipo de aislación: Clase II
+• Peso: 9kg - 19,84lb
+
+Contenido: 1 sierra ingletadora, 1 cuchilla de 40 dientes, 1 llave inglesa, 1 llave de ajuste, 1 bolsa recolectora de polvo y 1 juego de carbones.', '{}', 'google-sheet', 451, '{"stock"}'),
   ('3492', 'sierra-sable-18v-100-mm-ss810-18c1-3492', '3492', 'SIERRA SABLE 18V 100 MM SS810/18C1', 134999.6, '$ 134.999,60', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 452, '{"image","stock","description"}'),
   ('3882', 'sierra-sable-20v-ss1150-20c1-3882', '3882', 'SIERRA SABLE 20V - SS1150/20C1', 143000.01, '$ 143.000,01', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 453, '{"image","stock","description"}'),
   ('3330', 'silicona-en-cartucho-negra-x-280-ml-3330', '3330', 'SILICONA EN CARTUCHO NEGRA X 280 ML', 4250, '$ 4.250,00', 'Otros', 'Sin marca informada', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 454, '{"image","stock","description"}'),
@@ -1282,13 +1427,75 @@ Contenido: 1 soldadora inverter de electrodo, 1 pinza porta electrodo y 1 pinza 
   ('3884', 'soldadora-170-amp-combinada-itep8170-220-3884', '3884', 'SOLDADORA 170 AMP COMBINADA - ITEP8170/220', 339998.69, '$ 339.998,69', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 458, '{"stock","description"}'),
   ('3886', 'soldadora-200-amp-ie-6200-7-220-3886', '3886', 'SOLDADORA 200 AMP - IE 6200/7/220', 107999.58, '$ 107.999,58', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 459, '{"stock","description"}'),
   ('3711', 'soldadora-200-amp-3en1-black-and-w-bwimet200-220-3711', '3711', 'SOLDADORA 200 AMP 3EN1 BLACK AND W. BWIMET200/220', 195000.22, '$ 195.000,22', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 460, '{"stock","description"}'),
-  ('3781', 'soldadora-200-amp-3en1-energy-imet200-2-220-3781', '3781', 'SOLDADORA 200 AMP 3EN1 ENERGY IMET200/2/220', 265000.74, '$ 265.000,74', 'Soldadura', 'ENERGY', '/products/catalog/3781-imet200-2-220.webp', '{"/products/catalog/3781-imet200-2-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 461, '{"stock","description"}'),
-  ('3788', 'soldadora-200-amp-3en1-nergy-next-imet200x-220-3788', '3788', 'SOLDADORA 200 AMP 3EN1 NERGY NEXT -IMET200X/220', 265000.57, '$ 265.000,57', 'Soldadura', 'ENERGY', '/products/catalog/3788-imet200x-220.webp', '{"/products/catalog/3788-imet200x-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 462, '{"stock","description"}'),
-  ('3783', 'soldadora-200-amp-energy-next-ie200x-220-3783', '3783', 'SOLDADORA 200 AMP ENERGY NEXT - IE200X/220', 119999.75, '$ 119.999,75', 'Soldadura', 'ENERGY NEXT', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 463, '{"stock","description"}'),
+  ('3781', 'soldadora-200-amp-3en1-energy-imet200-2-220-3781', '3781', 'SOLDADORA 200 AMP 3EN1 ENERGY IMET200/2/220', 265000.74, '$ 265.000,74', 'Soldadura', 'ENERGY', '/products/catalog/3781-imet200-2-220.webp', '{"/products/catalog/3781-imet200-2-220.webp","/products/catalog/3781-imet200-2-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter MIG electrodo TIG ENERGY IMET200/2/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 30 - 200A
+• Amperaje: 200A
+• Voltaje en vacío: 57V
+• Capacidad del electrodo: 1,6 - 4,0mm
+• Capacidad del alambre: 1 y 5kg
+• Diámetro del alambre: 0,6 - 1,0mm
+• Potencia de entrada: 7kVA
+• Potencia de salida: 4,3kW
+• Tipo de soldadura: MIG gas/gasless - sólido, electrodo y TIG
+• Aislación: Clase I
+• Peso: 6,9kg (15,21lb)
+• Extras: Pantalla digital, VRD, hot start, arc force, IGBT, anti-stick y sinérgica
+
+Contenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,8 m, 1 pinza porta electrodo con cable de 2,5 m, 1 torcha MIG gasless de 2,5 m (tipo 14AK) y 1 set de mangueras de 12x8mm de 2 m.', '{}', 'google-sheet', 461, '{"stock"}'),
+  ('3788', 'soldadora-200-amp-3en1-nergy-next-imet200x-220-3788', '3788', 'SOLDADORA 200 AMP 3EN1 NERGY NEXT -IMET200X/220', 265000.57, '$ 265.000,57', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3788-imet200x-220.webp', '{"/products/catalog/3788-imet200x-220.webp","/products/catalog/3788-imet200x-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter MIG electrodo TIG ENERGY NEXT IMET200X/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 30 - 200A
+• Amperaje: 200A
+• Voltaje en vacío: 57V
+• Capacidad del electrodo: 1,6 - 4,0mm
+• Capacidad del alambre: 1 y 5kg
+• Diámetro del alambre: 0,6 - 1,0mm
+• Potencia de entrada: 7kVA
+• Potencia de salida: 4,3kW
+• Tipo de soldadura: MIG gas/gasless - sólido, electrodo y TIG
+• Aislación: Clase I
+• Peso: 6,9kg (15lb)
+• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick, sinérgica y alimentador de alambre de aluminio
+
+Contenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,8 m, 1 pinza porta electrodo con cable de 2,5 m y 1 torcha MIG de 2,5 m (tipo 14AK).', '{}', 'google-sheet', 462, '{"stock"}'),
+  ('3783', 'soldadora-200-amp-energy-next-ie200x-220-3783', '3783', 'SOLDADORA 200 AMP ENERGY NEXT - IE200X/220', 119999.75, '$ 119.999,75', 'Soldadura', 'ENERGY NEXT', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png","/products/catalog/3783-ie200x-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter de electrodo ENERGY NEXT IE200X/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 20 - 200A
+• Amperaje: 200A
+• Voltaje en vacío: 69V
+• Capacidad del electrodo: 1,6 - 4,0mm
+• Potencia de entrada: 8,2kVA
+• Potencia de salida: 5,1kW
+• Aislación: Clase I
+• Peso: 3,1kg (7lb)
+• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y función pulse
+
+Contenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1,2 m y 1 pinza porta electrodo con cable de 1,8 m.', '{}', 'google-sheet', 463, '{"stock"}'),
   ('3635', 'soldadora-200-amp-mma-tig-1-2-ite10200-ac-dc-220-3635', '3635', 'SOLDADORA 200 AMP MMA-TIG 1/2 ITE10200/AC-DC/220', 564999.66, '$ 564.999,66', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 464, '{"stock","description"}'),
   ('3823', 'soldadora-200amp-amol-800w-ie6200-8-220plus-3823', '3823', 'SOLDADORA 200AMP + AMOL 800W - IE6200/8/220PLUS', 149999.9, '$ 149.999,90', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 465, '{"stock","description"}'),
   ('3824', 'soldadora-200amp-glad-10-disc-ie6200-8-220plus-3824', '3824', 'SOLDADORA 200AMP GLAD + 10 DISC - IE6200/8/220PLUS', 119999.92, '$ 119.999,92', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 466, '{"stock","description"}'),
-  ('3784', 'soldadora-250-amp-energy-next-ie250x-220-3784', '3784', 'SOLDADORA 250 AMP ENERGY NEXT - IE250X/220', 158000.26, '$ 158.000,26', 'Soldadura', 'ENERGY NEXT', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 467, '{"stock","description"}'),
+  ('3784', 'soldadora-250-amp-energy-next-ie250x-220-3784', '3784', 'SOLDADORA 250 AMP ENERGY NEXT - IE250X/220', 158000.26, '$ 158.000,26', 'Soldadura', 'ENERGY NEXT', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png","/products/catalog/3784-ie250x-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter de electrodo ENERGY NEXT IE250X/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 20 - 250A
+• Amperaje: 250A
+• Voltaje en vacío: 69V
+• Capacidad del electrodo: 1,6 - 5,0mm
+• Potencia de entrada: 10,8kVA
+• Potencia de salida: 6,8kW
+• Aislación: Clase I
+• Peso: 3,4kg (7,5lb)
+• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y función pulse
+
+Contenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1,2 m y 1 pinza porta electrodo con cable de 1,8 m.', '{}', 'google-sheet', 467, '{"stock"}'),
   ('3644', 'soldadora-250-amp-mig-electrodo-ime10250-1-220-3644', '3644', 'SOLDADORA 250 AMP MIG - ELECTRODO - IME10250/1/220', 249799.02, '$ 249.799,02', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA 3 en 1.png', '{"/products/SOLDADORA 3 en 1.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 468, '{"stock","description"}'),
   ('3690', 'soldadora-250-amp-neo-ie10250-6-220-3690', '3690', 'SOLDADORA 250 AMP NEO - IE10250/6/220', 198900, '$ 198.900,00', 'Soldadura', 'NEO', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 469, '{"stock","description"}'),
   ('3822', 'soldadora-3en1-140-amp-gladiator-imet6140-1-220-3822', '3822', 'SOLDADORA 3EN1 140 AMP GLADIATOR - IMET6140/1/220', 140000.44, '$ 140.000,44', 'Soldadura', 'GLADIATOR', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 470, '{"stock","description"}'),
@@ -1302,7 +1509,23 @@ Contenido: 1 soldadora inverter de electrodo, 1 pinza porta electrodo y 1 pinza 
   ('3464', 'taladro-850w-13mm-gladiator-tp913-2201v-3464', '3464', 'TALADRO 850W 13MM GLADIATOR TP913/2201V', 63000, '$ 63.000,00', 'Taladros y atornilladores', 'GLADIATOR', '/products/catalog/3464-tp913-2201v.webp', '{"/products/catalog/3464-tp913-2201v.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 478, '{"stock","description"}'),
   ('3696', 'taladro-agujereadora-de-pie-gladiator-1500w-3696', '3696', 'TALADRO AGUJEREADORA DE PIE GLADIATOR 1500W', 1150003.77, '$ 1.150.003,77', 'Taladros y atornilladores', 'GLADIATOR', '/products/TALADRO ATORNILLADOR.png', '{"/products/TALADRO ATORNILLADOR.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 479, '{"stock","description"}'),
   ('3377', 'taladro-atorn-brushless-12v-energy-ddib10-12c1-3377', '3377', 'TALADRO ATORN. BRUSHLESS 12V ENERGY DDIB10/12C1', 56000, '$ 56.000,00', 'Taladros y atornilladores', 'ENERGY', null, '{}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 480, '{"image","stock","description"}'),
-  ('625', 'taladro-atornillador-12v-10-mm-energy-ddi10-2-12c1-625', '625', 'TALADRO ATORNILLADOR 12V 10 MM ENERGY DDI10/2/12C1', 40000, '$ 40.000,00', 'Taladros y atornilladores', 'ENERGY', '/products/catalog/625-ddi10-2-12c1.webp', '{"/products/catalog/625-ddi10-2-12c1.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 481, '{"stock","description"}'),
+  ('625', 'taladro-atornillador-12v-10-mm-energy-ddi10-2-12c1-625', '625', 'TALADRO ATORNILLADOR 12V 10 MM ENERGY DDI10/2/12C1', 40000, '$ 40.000,00', 'Taladros y atornilladores', 'ENERGY', '/products/catalog/625-ddi10-2-12c1.webp', '{"/products/catalog/625-ddi10-2-12c1.webp","/products/catalog/625-ddi10-2-12c1-ficha.webp"}', 0, 5, 3, false, false, 'Taladro atornillador percutor recargable ENERGY DDI10/2/12C1.
+
+Datos técnicos:
+• Velocidad en vacío: 0-400/min y 0-1400/min
+• Energía de impacto: 0-6000bpm y 0-22500bpm
+• Torque máximo: 32N/m
+• Posiciones de torque: 20 + 3
+• Capacidad: 10mm - 3/8"
+• Tiempo de carga: 120 minutos
+• Tensión nominal: 10,8V
+• Tensión máxima: 12V
+• Batería: 12V - 1,5Ah
+• Cargador: 0,8A
+• Peso: 0,98kg - 2,16lb
+• Extras: Spindle lock, rubber finish, freno eléctrico e indicador de carga
+
+Contenido: 1 taladro atornillador percutor recargable de 12V, 1 batería de 12V - 1,5Ah y 1 cargador de 0,8A.', '{}', 'google-sheet', 481, '{"stock"}'),
   ('3490', 'taladro-per-13-mm-18v-tp813-18c1-3490', '3490', 'TALADRO PER. 13 MM 18V TP813/18C1', 80000.2, '$ 80.000,20', 'Taladros y atornilladores', 'Sin marca informada', '/products/TALADRO ATORNILLADOR.png', '{"/products/TALADRO ATORNILLADOR.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 482, '{"stock","description"}'),
   ('3609', 'taladro-perc-20v-neo-t12110-20c1-4-3609', '3609', 'TALADRO PERC 20V NEO - T12110/20C1-4', 165000.49, '$ 165.000,49', 'Taladros y atornilladores', 'NEO NEXT', '/products/catalog/3609-t12110-20c1-4.webp', '{"/products/catalog/3609-t12110-20c1-4.webp"}', 0, 5, 3, true, false, 'Taladro Percutor Atornillador Neo Next a Batería 20v 13mm 110Nm T12110/20C1-4. Brushless. Mandril Metálico. Velocidad en vacío. 0 - 500/min. 0 - 2100/min. Impactos por minuto. 7500 bpm. 31500 bpm. Torque máx.: 110n/m. Capacidad. Madera: 60mm. Acero: 13mm. Capacidad de mandril: 1 - 13mm. Tensión nominal: 18v. Tensión máxima: 20v. Batería: 4ah. Peso: 2,28kg. Contenido. 1 Taladro atornillador percutor recargable. 1 Batería de 20v - 4Ah. 1 Mango auxiliar. 1 Cargador base de 4Ah.', '{}', 'google-sheet', 483, '{"stock"}'),
   ('3610', 'taladro-perc-20v-neo-t12110-20k2-4-3610', '3610', 'TALADRO PERC 20V NEO - T12110/20K2-4', 215000.16, '$ 215.000,16', 'Taladros y atornilladores', 'NEO NEXT', '/products/catalog/3610-t12110-20k2-4.webp', '{"/products/catalog/3610-t12110-20k2-4.webp"}', 0, 5, 3, true, false, 'Taladro Percutor Atornillador Neo Next 2 Baterías 20v 13mm 110Nm T12110/20K2-4. Brushless. Mandril Metálico. Velocidad en vacío. 0 - 500/min. 0 - 2100/min. Impactos por minuto. 7500 bpm. 31500 bpm. Torque máx.: 110n/m. Capacidad. Madera: 60mm. Acero: 13mm. Capacidad de mandril: 1 - 13mm. Tensión nominal: 18v. Tensión máxima: 20v. Peso: 2,78kg. Contenido. 1 Taladro atornillador percutor recargable. 2 Baterías de 20v - 4Ah. 1 Mango auxiliar. 1 Cargador base de 4Ah. 1 Maletín Plástico.', '{}', 'google-sheet', 484, '{"stock"}'),
@@ -1352,19 +1575,127 @@ Datos técnicos:
 • Peso: 4,57kg - 10,07lb
 
 Contenido: 1 aspiradora seco-húmedo y soplador, 1 cepillo, 1 boquilla amplia, 1 esponja, 1 bolsa de tela, 2 tubos plásticos y 1 manguera flexible.', '{}', 'google-sheet', 38, '{"stock","sheet-absent"}'),
-  ('3543', 'aspiradora-22l-energy-vc22-220-3543', '3543', 'ASPIRADORA 22L ENERGY - VC22/220', 60000, '$ 60.000,00', 'Otros', 'ENERGY', '/products/catalog/3543-vc22-220.webp', '{"/products/catalog/3543-vc22-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 39, '{"stock","description","sheet-absent"}'),
+  ('3543', 'aspiradora-22l-energy-vc22-220-3543', '3543', 'ASPIRADORA 22L ENERGY - VC22/220', 60000, '$ 60.000,00', 'Otros', 'ENERGY', '/products/catalog/3543-vc22-220.webp', '{"/products/catalog/3543-vc22-220.webp","/products/catalog/3543-vc22-220-ficha.webp"}', 0, 5, 3, false, false, 'Aspiradora seco-húmedo y soplador ENERGY VC22/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Potencia: 1400W
+• Presión de trabajo: ≥ 15 ± 1,5KPa
+• Máximo caudal de aire: 1,5 ± 0,15 CBM/min
+• Caudal de soplido: ≥ 1,1 m³/min
+• Máxima potencia de succión: ≥ 115 ± 15W
+• Ruido: ≥ 93db
+• Capacidad de tanque: 22 litros
+• Índice de protección: IPX4
+• Aislación: Clase II
+• Peso: 4,1kg - 9,03lb
+
+Contenido: 1 aspiradora seco-húmedo y soplador, 1 cepillo, 1 cepillo seco-húmedo, 2 tubos plásticos, 1 filtro HEPA, 1 filtro esponja, 1 filtro de tela y 1 manguera flexible.', '{}', 'google-sheet', 39, '{"stock","sheet-absent"}'),
   ('3505', 'compresor-energy-24-lts-c24-25-3505', '3505', 'COMPRESOR ENERGY 24 LTS C24/25', 138000, '$ 138.000,00', 'Compresores y neumática', 'ENERGY', '/products/catalog/3505-c24-25.webp', '{"/products/catalog/3505-c24-25.webp"}', 0, 5, 3, false, false, 'Compresor de aire Energy C24/25. Potencia: 1100W (1,5 HP). Capacidad del tanque: 24 L. Presión máxima: 8 bar (115 PSI). Caudal: 169 L/min. Velocidad: 2850 rpm (50Hz) / 3400 rpm (60Hz). Peso: 19,5 kg.', '{}', 'google-sheet', 98, '{"stock","sheet-absent"}'),
-  ('3551', 'soldadora-120-amp-energy-i120-2-220-3551', '3551', 'SOLDADORA 120 AMP ENERGY - I120/2/220', 62999.77, '$ 62.999,77', 'Soldadura', 'ENERGY', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 441, '{"stock","description","sheet-absent"}'),
+  ('3551', 'soldadora-120-amp-energy-i120-2-220-3551', '3551', 'SOLDADORA 120 AMP ENERGY - I120/2/220', 62999.77, '$ 62.999,77', 'Soldadura', 'ENERGY', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png","/products/catalog/3551-i120-2-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter de electrodo ENERGY I120/2/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 20 - 120A
+• Amperaje: 120A
+• Voltaje en vacío: 69V
+• Capacidad del electrodo: 1,6 - 3,2mm
+• Potencia de entrada: 4,6kVA
+• Potencia de salida: 2,9kW
+• Aislación: Clase I
+• Peso: 2,2kg (4,85lb)
+• Extras: Pantalla digital, hot start, IGBT y anti-stick
+
+Contenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1 m y 1 pinza porta electrodo con cable de 1 m.', '{}', 'google-sheet', 441, '{"stock","sheet-absent"}'),
   ('3643', 'soldadora-130-amp-mig-im130-220-3643', '3643', 'SOLDADORA 130 AMP MIG - IM130/220', 89980, '$ 89.980,00', 'Soldadura', 'ENERGY', '/products/catalog/3643-im130-220.webp', '{"/products/catalog/3643-im130-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 442, '{"stock","description","sheet-absent"}'),
-  ('3311', 'soldadora-140-amp-3en1-energy-imet140-2-220-3311', '3311', 'SOLDADORA 140 AMP 3EN1 ENERGY IMET140/2/220', 119999.86, '$ 119.999,86', 'Soldadura', 'ENERGY', '/products/catalog/3311-imet140-2-220.webp', '{"/products/catalog/3311-imet140-2-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 443, '{"stock","description","sheet-absent"}'),
-  ('3785', 'soldadora-140-amp-3en1-energy-next-imet140x-220-3785', '3785', 'SOLDADORA 140 AMP 3EN1 ENERGY NEXT - IMET140X/220', 120000, '$ 120.000,00', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3785-imet140x-220.webp', '{"/products/catalog/3785-imet140x-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 444, '{"stock","description","sheet-absent"}'),
+  ('3311', 'soldadora-140-amp-3en1-energy-imet140-2-220-3311', '3311', 'SOLDADORA 140 AMP 3EN1 ENERGY IMET140/2/220', 119999.86, '$ 119.999,86', 'Soldadura', 'ENERGY', '/products/catalog/3311-imet140-2-220.webp', '{"/products/catalog/3311-imet140-2-220.webp","/products/catalog/3311-imet140-2-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter MIG electrodo TIG ENERGY IMET140/2/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 30 - 140A
+• Amperaje: 140A
+• Voltaje en vacío: 60V
+• Capacidad del electrodo: 1,6 - 3,2mm
+• Capacidad del alambre: 1kg
+• Diámetro del alambre: 0,8 - 1,0mm
+• Potencia de entrada: 4,8kVA
+• Potencia de salida: 3kW
+• Tipo de soldadura: MIG gasless, electrodo y TIG
+• Aislación: Clase I
+• Peso: 3,3kg (7,28lb)
+• Extras: Pantalla digital, VRD, hot start, arc force, IGBT, anti-stick y sinérgica
+
+Contenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,2 m, 1 pinza porta electrodo con cable de 1,8 m y 1 torcha MIG gasless de 1,5 m (tipo 14AK).', '{}', 'google-sheet', 443, '{"stock","sheet-absent"}'),
+  ('3785', 'soldadora-140-amp-3en1-energy-next-imet140x-220-3785', '3785', 'SOLDADORA 140 AMP 3EN1 ENERGY NEXT - IMET140X/220', 120000, '$ 120.000,00', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3785-imet140x-220.webp', '{"/products/catalog/3785-imet140x-220.webp","/products/catalog/3785-imet140x-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter MIG electrodo TIG ENERGY NEXT IMET140X/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 30 - 140A
+• Amperaje: 140A
+• Voltaje en vacío: 60V
+• Capacidad del electrodo: 1,6 - 3,2mm
+• Capacidad del alambre: 1kg
+• Diámetro del alambre: 0,8 - 1,0mm
+• Potencia de entrada: 5,5kVA
+• Potencia de salida: 3,6kW
+• Tipo de soldadura: MIG gasless, electrodo y TIG
+• Aislación: Clase I
+• Peso: 3,3kg (7,28lb)
+• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y sinérgica
+
+Contenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,2 m, 1 pinza porta electrodo con cable de 1,8 m y 1 torcha MIG gasless de 2 m (tipo 14AK).', '{}', 'google-sheet', 444, '{"stock","sheet-absent"}'),
   ('3712', 'soldadora-140-amp-compact-black-and-w-bwic140-220-3712', '3712', 'SOLDADORA 140 AMP COMPACT BLACK AND W. BWIC140/220', 85000, '$ 85.000,00', 'Soldadura', 'Sin marca informada', '/products/catalog/3712-bwic140-220.webp', '{"/products/catalog/3712-bwic140-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 445, '{"stock","description","sheet-absent"}'),
-  ('3552', 'soldadora-140-amp-energy-i140-6-220-3552', '3552', 'SOLDADORA 140 AMP ENERGY - I140/6/220', 80000.02, '$ 80.000,02', 'Soldadura', 'ENERGY', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 446, '{"stock","description","sheet-absent"}'),
-  ('3782', 'soldadora-140-amp-energy-next-ie140x-220-3782', '3782', 'SOLDADORA 140 AMP ENERGY NEXT - IE140X/220', 80000, '$ 80.000,00', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3782-ie140x-220.webp', '{"/products/catalog/3782-ie140x-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 447, '{"stock","description","sheet-absent"}'),
+  ('3552', 'soldadora-140-amp-energy-i140-6-220-3552', '3552', 'SOLDADORA 140 AMP ENERGY - I140/6/220', 80000.02, '$ 80.000,02', 'Soldadura', 'ENERGY', '/products/SOLDADORA.png', '{"/products/SOLDADORA.png","/products/catalog/3552-i140-6-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter de electrodo ENERGY I140/6/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 20 - 140A
+• Amperaje: 140A
+• Voltaje en vacío: 69V
+• Capacidad del electrodo: 1,6 - 3,2mm
+• Potencia de entrada: 5,7kVA
+• Potencia de salida: 3,6kW
+• Aislación: Clase I
+• Peso: 2,2kg (4,85lb)
+• Extras: Pantalla digital, hot start, IGBT y anti-stick
+
+Contenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1,2 m y 1 pinza porta electrodo con cable de 1,8 m.', '{}', 'google-sheet', 446, '{"stock","sheet-absent"}'),
+  ('3782', 'soldadora-140-amp-energy-next-ie140x-220-3782', '3782', 'SOLDADORA 140 AMP ENERGY NEXT - IE140X/220', 80000, '$ 80.000,00', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3782-ie140x-220.webp', '{"/products/catalog/3782-ie140x-220.webp","/products/catalog/3782-ie140x-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter de electrodo ENERGY NEXT IE140X/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 20 - 140A
+• Amperaje: 140A
+• Voltaje en vacío: 69V
+• Capacidad del electrodo: 1,6 - 3,2mm
+• Potencia de entrada: 5,7kVA
+• Potencia de salida: 3,6kW
+• Aislación: Clase I
+• Peso: 2,2kg (4,85lb)
+• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y función pulse
+
+Contenido: 1 soldadora inverter de electrodo, 1 pinza de masa con cable de 1,2 m y 1 pinza porta electrodo con cable de 1,8 m.', '{}', 'google-sheet', 447, '{"stock","sheet-absent"}'),
   ('3642', 'soldadora-140-amp-mig-y-elect-ime140-1-220-3642', '3642', 'SOLDADORA 140 AMP MIG Y ELECT - IME140/1/220', 99800.38, '$ 99.800,38', 'Soldadura', 'Sin marca informada', '/products/SOLDADORA 3 en 1.png', '{"/products/SOLDADORA 3 en 1.png"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 448, '{"stock","description","sheet-absent"}'),
-  ('3780', 'soldadora-150-amp-3en1-energy-imet150-1-220-3780', '3780', 'SOLDADORA 150 AMP 3EN1 ENERGY IMET150/1/220', 145000, '$ 145.000,00', 'Soldadura', 'ENERGY', '/products/catalog/3780-imet150-1-220.webp', '{"/products/catalog/3780-imet150-1-220.webp"}', 0, 5, 3, false, false, 'Soldadora Inverter Energy 150A MIG TIG IMET150/1/220. Voltaje-frecuencia: 220v - 50-60hz. Rango de amperaje: 30 - 150a. Amperaje: 150A. Voltaje en vacío: 60v. Capacidad del electrodo: 1,6 - 3,2mm. Capacidad del alambre: 1,5kg. Diámetro del alambre: 0,8 - 1,0mm. Potencia de entrada: 5,3kva. Potencia de salida: 2,5kw. Tipo de soldadura: mig gasless / electrodo / tig. Aislación: clase i. Peso: 5,1kg (11,24lb).', '{}', 'google-sheet', 449, '{"stock","sheet-absent"}'),
-  ('3786', 'soldadora-150-amp-3en1-energy-next-imet150x-220-3786', '3786', 'SOLDADORA 150 AMP 3EN1 ENERGY NEXT - IMET150X/220', 145000.09, '$ 145.000,09', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3786-imet150x-220.webp', '{"/products/catalog/3786-imet150x-220.webp"}', 0, 5, 3, false, false, 'Soldadora Energy 150A MIG GASLESS + TIG LIFT + MMA IMET150X/220. Voltaje–frecuencia: 220V ~ 50–60Hz. Rango de amperaje: 30 – 150A. Amperaje: 150A. Voltaje en vacío: 60V. Capacidad del electrodo: 1,6 – 3,2 mm. Capacidad del alambre: 1 kg. Diámetro del alambre: 0,8 – 1,0 mm. Potencia de entrada: 6 kVA. Potencia de salida: 4 kW. Tipo de soldadura: MIG Gasless / Electrodo / TIG. Aislación: Clase I. Peso: 3,3 kg (7,2 lb). Contiene. 1 soldadora inverter MIG / Electrodo / TIG. 1 pinza de masa con cable de 1,2 m. 1 pinza porta electrodo con cable de 1,8 m. 1 torcha MIG gasless de 2 m (tipo 14AK). Ciclo de Trabajo. MIG. &Oslash; 0,8 mm (0.031"): 100%. &Oslash; 0,9 mm (0.035"): 80%. &Oslash; 1,0 mm (0.040"): 60%. Electrodo. &Oslash; 1,6 mm (1/16"): 100%. &Oslash; 2,0 mm (5/64"): 100%. &Oslash; 2,5 mm (3/32"): 100%. &Oslash; 3,2 mm (1/8"): 60%.', '{}', 'google-sheet', 450, '{"stock","sheet-absent"}'),
-  ('3787', 'soldadora-150-amp-3en1-energy-next-imet150x-1-220-3787', '3787', 'SOLDADORA 150 AMP 3EN1 ENERGY NEXT IMET150X/1/220', 158000, '$ 158.000,00', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3787-imet150x-1-220.webp', '{"/products/catalog/3787-imet150x-1-220.webp"}', 0, 5, 3, false, false, null, '{}', 'google-sheet', 451, '{"stock","description","sheet-absent"}')
+  ('3780', 'soldadora-150-amp-3en1-energy-imet150-1-220-3780', '3780', 'SOLDADORA 150 AMP 3EN1 ENERGY IMET150/1/220', 145000, '$ 145.000,00', 'Soldadura', 'ENERGY', '/products/catalog/3780-imet150-1-220.webp', '{"/products/catalog/3780-imet150-1-220.webp","/products/catalog/3780-imet150-1-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora Inverter Energy 150A MIG TIG IMET150/1/220. Voltaje-frecuencia: 220v - 50-60hz. Rango de amperaje: 30 - 150a. Amperaje: 150A. Voltaje en vacío: 60v. Capacidad del electrodo: 1,6 - 3,2mm. Capacidad del alambre: 1,5kg. Diámetro del alambre: 0,8 - 1,0mm. Potencia de entrada: 5,3kva. Potencia de salida: 2,5kw. Tipo de soldadura: mig gasless / electrodo / tig. Aislación: clase i. Peso: 5,1kg (11,24lb).', '{}', 'google-sheet', 449, '{"stock","sheet-absent"}'),
+  ('3786', 'soldadora-150-amp-3en1-energy-next-imet150x-220-3786', '3786', 'SOLDADORA 150 AMP 3EN1 ENERGY NEXT - IMET150X/220', 145000.09, '$ 145.000,09', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3786-imet150x-220.webp', '{"/products/catalog/3786-imet150x-220.webp","/products/catalog/3786-imet150x-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora Energy 150A MIG GASLESS + TIG LIFT + MMA IMET150X/220. Voltaje–frecuencia: 220V ~ 50–60Hz. Rango de amperaje: 30 – 150A. Amperaje: 150A. Voltaje en vacío: 60V. Capacidad del electrodo: 1,6 – 3,2 mm. Capacidad del alambre: 1 kg. Diámetro del alambre: 0,8 – 1,0 mm. Potencia de entrada: 6 kVA. Potencia de salida: 4 kW. Tipo de soldadura: MIG Gasless / Electrodo / TIG. Aislación: Clase I. Peso: 3,3 kg (7,2 lb). Contiene. 1 soldadora inverter MIG / Electrodo / TIG. 1 pinza de masa con cable de 1,2 m. 1 pinza porta electrodo con cable de 1,8 m. 1 torcha MIG gasless de 2 m (tipo 14AK). Ciclo de Trabajo. MIG. &Oslash; 0,8 mm (0.031"): 100%. &Oslash; 0,9 mm (0.035"): 80%. &Oslash; 1,0 mm (0.040"): 60%. Electrodo. &Oslash; 1,6 mm (1/16"): 100%. &Oslash; 2,0 mm (5/64"): 100%. &Oslash; 2,5 mm (3/32"): 100%. &Oslash; 3,2 mm (1/8"): 60%.', '{}', 'google-sheet', 450, '{"stock","sheet-absent"}'),
+  ('3787', 'soldadora-150-amp-3en1-energy-next-imet150x-1-220-3787', '3787', 'SOLDADORA 150 AMP 3EN1 ENERGY NEXT IMET150X/1/220', 158000, '$ 158.000,00', 'Soldadura', 'ENERGY NEXT', '/products/catalog/3787-imet150x-1-220.webp', '{"/products/catalog/3787-imet150x-1-220.webp","/products/catalog/3787-imet150x-1-220-ficha.webp"}', 0, 5, 3, false, false, 'Soldadora inverter MIG electrodo TIG ENERGY NEXT IMET150X/1/220.
+
+Datos técnicos:
+• Voltaje-frecuencia: 220V ~ 50-60Hz
+• Rango de amperaje: 30 - 150A
+• Amperaje: 150A
+• Voltaje en vacío: 60V
+• Capacidad del electrodo: 1,6 - 3,2mm
+• Capacidad del alambre: 1 y 5kg
+• Diámetro del alambre: 0,8 - 1,0mm
+• Potencia de entrada: 6kVA
+• Potencia de salida: 4kW
+• Tipo de soldadura: MIG gasless, electrodo y TIG
+• Aislación: Clase I
+• Peso: 5,1kg (11,2lb)
+• Extras: Pantalla LED, VRD, hot start, arc force, IGBT, anti-stick y sinérgica
+
+Contenido: 1 soldadora inverter MIG-electrodo-TIG, 1 pinza de masa con cable de 1,2 m, 1 pinza porta electrodo con cable de 1,8 m y 1 torcha MIG gasless de 2 m (tipo 14AK).', '{}', 'google-sheet', 451, '{"stock","sheet-absent"}')
 on conflict (id) do update set
   slug = excluded.slug,
   code = excluded.code,
