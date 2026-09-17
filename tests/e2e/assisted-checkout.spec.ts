@@ -20,8 +20,9 @@ test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ pa
   await page.getByLabel("Número").fill("1234");
   await page.getByRole("button", { name: "Calcular opciones de envío" }).click();
 
-  await expect(page.getByText("Cotización manual", { exact: true })).toBeVisible();
-  await expect(page.getByText("A confirmar", { exact: true })).toBeVisible();
+  await expect(page.getByText("Envío a coordinar", { exact: true })).toBeVisible();
+  await expect(page.getByText("A coordinar", { exact: true })).toBeVisible();
+  await page.getByLabel("¿Con qué logística preferís recibirlo?").selectOption("Andreani");
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
 
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
@@ -30,5 +31,5 @@ test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ pa
   const whatsapp = page.getByRole("link", { name: "Avisar por WhatsApp" });
   await expect(whatsapp).toHaveAttribute("href", /wa\.me\/5493794215065/);
   await expect(whatsapp).toHaveAttribute("href", /LM-/);
-  await expect(whatsapp).toHaveAttribute("href", /env%C3%ADo%20a%20cotizar/);
+  await expect(whatsapp).toHaveAttribute("href", /env%C3%ADo%20a%20coordinar%2C%20prefiero%20despacharlo%20con%20Andreani/);
 });
