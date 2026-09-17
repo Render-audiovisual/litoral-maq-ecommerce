@@ -15,13 +15,6 @@ import { useStore } from "@/store/store";
 
 const PROMO_SLIDES = [
   {
-    id: "taladro-energy-550w",
-    productId: "580",
-    image: "/promos/taladro-energy-550w.jpg",
-    label: "Taladro Energy 550W 13 mm",
-    href: "/productos/taladro-550w-13mm-energy-id13-2-220-580",
-  },
-  {
     id: "electrosierra-forest-20v",
     productId: "3757",
     image: "/promos/electrosierra-forest-20v.jpg",
@@ -69,20 +62,6 @@ const PROMO_SLIDES = [
     image: "/promos/llave-impacto-neo-next.jpg",
     label: "Llave de impacto Neo Next 20V",
     href: "/productos/llave-de-impacto-20v-650-n-m-neo-li1065-20c1-3732",
-  },
-  {
-    id: "motosierra-knock-out",
-    productId: "3506",
-    image: "/promos/motosierra-knock-out.jpg",
-    label: "Motosierra Knock Out 460 mm",
-    href: "/productos/motosierra-460-mm-45-cc-knock-out-kom345-3506",
-  },
-  {
-    id: "minimotosierra-garden",
-    productId: "3246",
-    image: "/promos/minimotosierra-garden.jpg",
-    label: "Minimotosierra inalámbrica Garden",
-    href: "/productos/mini-motosierra-electrosierra-inalambrica-garden-3246",
   },
 ] as const;
 

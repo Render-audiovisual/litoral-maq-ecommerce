@@ -38,7 +38,7 @@ function product(name: string, overrides: Partial<Product> = {}): Product {
 describe("catálogo inicial", () => {
   it("mantiene activos y presentes en Sheet todos los productos elegidos para el carrusel de inicio", () => {
     const seed = productsSeed as Product[];
-    const promoIds = ["580", "3757", "3348", "3353", "3378", "3687", "3650", "3732", "3506", "3246"];
+    const promoIds = ["3757", "3348", "3353", "3378", "3687", "3650", "3732"];
     const promos = promoIds.map((id) => seed.find((item) => item.id === id));
     expect(promos.every(Boolean)).toBe(true);
     expect(promos.every((item) => item?.active && !item.incomplete.includes("sheet-absent"))).toBe(true);
