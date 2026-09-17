@@ -38,8 +38,8 @@ function envioACoordinar(order: OrderRecord) {
     (!order.shipping_quote_id || order.shipping_status === "manual_quote");
 }
 
-function preferenciaLogistica(order: OrderRecord) {
-  return order.shipping_carrier ? ` con ${escapeHtml(order.shipping_carrier)}` : "";
+function empresaEnvio(order: OrderRecord) {
+  return order.shipping_carrier ? ` por ${escapeHtml(order.shipping_carrier)}` : "";
 }
 
 export type OrderEmailEvent =
@@ -107,7 +107,7 @@ function subtotalRowsHtml(order: OrderRecord) {
       order.delivery_method === "retiro"
         ? "Retiro sin cargo"
         : envioACoordinar(order)
-        ? "A coordinar (se abona aparte)"
+        ? `${order.shipping_carrier ? `${escapeHtml(order.shipping_carrier)} · ` : ""}a cotizar (se abona aparte)`
         : shipping > 0
         ? money(shipping)
         : "A coordinar",
@@ -125,10 +125,10 @@ function nextStepsHtml(eventType: OrderEmailEvent, order: OrderRecord) {
       ]
       : envioACoordinar(order)
       ? [
-        "Te contactamos por WhatsApp o correo para coordinar el envío.",
-        `Acordamos la logística${
-          order.shipping_carrier ? ` (preferiste ${order.shipping_carrier})` : ""
-        } y el costo del envío.`,
+        "Mandanos el mensaje ya armado por WhatsApp (botón verde de abajo).",
+        `Te respondemos con el costo del envío${
+          order.shipping_carrier ? ` por ${order.shipping_carrier}` : ""
+        }.`,
         "Despachamos tu pedido y te enviamos el número de seguimiento.",
       ]
       : [
@@ -138,9 +138,11 @@ function nextStepsHtml(eventType: OrderEmailEvent, order: OrderRecord) {
       ]
     : eventType === "customer_order_received"
     ? [
-      "Revisamos disponibilidad y el total final.",
-      "Te confirmamos por correo antes de cobrar.",
-      "Recién ahí avanzamos con el pago.",
+      "Completás el pago en Mercado Pago.",
+      "Apenas se acredita te llega la confirmación de compra.",
+      order.delivery_method === "retiro"
+        ? "Preparamos tu pedido para retirar en Sáenz 1587."
+        : "Preparamos tu pedido para el envío.",
     ]
     : [];
   if (!pasos.length) return "";
@@ -165,9 +167,9 @@ function paymentApprovedIntro(order: OrderRecord) {
     return `${saludo} por elegirnos. Tu pago ya fue acreditado y el pedido quedó confirmado para retirar en el local. Lo preparamos y te avisamos apenas puedas pasar por Sáenz 1587.`;
   }
   if (envioACoordinar(order)) {
-    return `${saludo} por elegirnos. Tu pago de los productos ya fue acreditado. El envío se coordina aparte: te vamos a contactar para acordar la logística${
-      preferenciaLogistica(order)
-    } y el costo del envío.`;
+    return `${saludo} por elegirnos. Tu pago de los productos ya fue acreditado. Elegiste el envío${
+      empresaEnvio(order)
+    }: escribinos por WhatsApp con el mensaje ya armado y te pasamos el costo del envío, que se abona aparte.`;
   }
   return `${saludo} por elegirnos. Tu pago ya fue acreditado y el pedido quedó confirmado. Lo preparamos y te enviamos el seguimiento cuando se despache.`;
 }
@@ -212,14 +214,33 @@ function whatsappUrl(order: OrderRecord) {
         : "1 pago"
     }.`
     : "";
-  const delivery = order.delivery_method === "retiro"
-    ? "retiro en el local de Sáenz 1587"
-    : envioACoordinar(order)
-    ? `envío a coordinar${
-      order.shipping_carrier ? `, prefiero despacharlo con ${order.shipping_carrier}` : ""
-    }`
-    : `envío por ${order.shipping_carrier || "correo"}`;
-  const message = `Hola, consulto por el pedido ${order.id}. Productos: ${products}. Total: ${money(order.total)}. Elegí ${delivery}.${payment}`;
+  const pagado = order.payment_status === "approved";
+  const coordinar = envioACoordinar(order);
+  const hacia = order.address ? ` a ${order.address}` : "";
+  const entrega = order.delivery_method === "retiro"
+    ? "Elegí retiro en el local de Sáenz 1587."
+    : coordinar
+    ? `Elegí el envío por ${order.shipping_carrier || "la empresa que me recomienden"}${hacia}.`
+    : `Elegí el envío por ${order.shipping_carrier || "correo"}${hacia}.`;
+  const cierre = !pagado
+    ? "Quiero confirmar que les llegó el pago."
+    : order.delivery_method === "retiro"
+    ? "¿Me avisan cuándo puedo pasar a retirarlo?"
+    : coordinar
+    ? "Quedo a la espera del costo del envío."
+    : "Quedo atento al número de seguimiento.";
+  const shipping = Number(order.shipping) || 0;
+  const message = [
+    `Hola, buenas.${order.customer_name ? ` Soy ${order.customer_name}.` : ""}`,
+    `${pagado ? "Hice la compra" : "Hice el pedido"} ${order.id} desde la web.`,
+    `Productos: ${products}.`,
+    `${pagado ? "Total pagado" : "Total"}${coordinar ? " (productos)" : ""}: ${
+      money(coordinar ? Math.max(0, Number(order.total) - shipping) : order.total)
+    }.`,
+    payment.trim(),
+    entrega,
+    cierre,
+  ].filter(Boolean).join("\n");
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
@@ -235,18 +256,18 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
   > = {
     customer_order_received: {
       subject: `Recibimos tu pedido ${order.id}`,
-      title: "Recibimos tu solicitud",
+      title: "Recibimos tu pedido",
       intro:
-        "El equipo de Litoral Maq va a verificar disponibilidad, entrega y total final antes de avanzar con el cobro.",
+        "Registramos tu pedido. Cuando Mercado Pago acredite el pago te enviamos la confirmación de compra. Si no llegaste a terminar el pago, escribinos y te ayudamos.",
     },
     team_new_order: {
       subject: `Nuevo pedido ${order.id} · ${order.customer_name}`,
       title: "Entró un nuevo pedido",
       intro: envioACoordinar(order)
-        ? `${escapeHtml(order.customer_name)} hizo un pedido con envío a coordinar${
-          preferenciaLogistica(order)
-        }. Hay que contactarlo para acordar la logística y el costo del envío.`
-        : `${escapeHtml(order.customer_name)} envió una solicitud que necesita revisión operativa.`,
+        ? `${escapeHtml(order.customer_name)} hizo un pedido con envío${
+          empresaEnvio(order)
+        }. Cuando se acredite el pago, pasale el costo del envío por WhatsApp.`
+        : `${escapeHtml(order.customer_name)} hizo un pedido. Se confirma cuando Mercado Pago acredite el pago.`,
       action: "Abrir panel de pedidos",
     },
     customer_payment_approved: {
@@ -300,25 +321,22 @@ export function renderOrderEmail(
   fotos: Record<string, string> = {},
 ) {
   const copy = emailCopy(eventType, order);
-  const totalLabel = eventType === "customer_payment_approved"
-    ? "Total pagado"
-    : "Total registrado";
+  const pagado = order.payment_status === "approved";
+  const totalLabel = pagado ? "Total pagado" : "Total";
   const destination = order.delivery_method === "retiro"
     ? "Retiro en el local de Sáenz 1587"
-    : envioACoordinar(order)
-    ? `${order.address ? `${order.address} · ` : ""}Envío a coordinar${
-      order.shipping_carrier ? ` (preferencia: ${order.shipping_carrier})` : ""
-    }`
-    : order.address || "Envío a coordinar";
+    : `Envío${order.shipping_carrier ? ` por ${order.shipping_carrier}` : ""}${
+      order.address ? ` a ${order.address}` : ""
+    }`;
   const buttonUrl = eventType === "team_new_order"
     ? `${publicUrl.replace(/\/$/, "")}/admin/pedidos`
     : `${publicUrl.replace(/\/$/, "")}/cuenta/pedidos`;
   const customerWhatsAppButton = eventType === "team_new_order"
     ? ""
     : `<div style="text-align:center;margin-top:12px"><a href="${escapeHtml(whatsappUrl(order))}" style="display:inline-block;background:#1fa855;color:#fff;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:9px">Hablar con Litoral Maq por WhatsApp</a></div>`;
-  const totalNote = eventType === "customer_payment_approved"
+  const totalNote = pagado
     ? "Pago acreditado por Mercado Pago."
-    : "Sujeto a la confirmación operativa indicada en el pedido.";
+    : "Pendiente de pago en Mercado Pago.";
 
   return {
     subject: copy.subject,

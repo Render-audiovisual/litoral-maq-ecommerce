@@ -107,9 +107,9 @@ export default function CartPage() {
               <strong>{formatCurrency(cartSubtotal)}</strong>
             </div>
             <Link href="/checkout" className="button primary large full">
-              Solicitar compra
+              Iniciar compra
             </Link>
-            <small>Confirmamos stock y entrega antes de cobrar.</small>
+            <small>Pagás seguro con Mercado Pago: cuotas, débito o dinero en cuenta.</small>
           </aside>
         </div>
       )}

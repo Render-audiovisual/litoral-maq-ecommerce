@@ -10,7 +10,7 @@ export type ResolvedOrderLine = OrderLine & {
 
 export const ORDER_STATUS_LABELS: Record<Order["status"], string> = {
   pendiente: "Pendiente",
-  pago_simulado: "Pago demo",
+  pago_simulado: "Pedido histórico",
   preparando: "Preparando",
   listo: "Listo para entregar",
   enviado: "Enviado",
@@ -19,16 +19,10 @@ export const ORDER_STATUS_LABELS: Record<Order["status"], string> = {
 };
 
 /**
- * Logísticas que el cliente puede preferir cuando el envío no se cotiza en el
- * momento. No es una reserva: Litoral Maq confirma con el cliente después del pago.
+ * Empresas de envío que el cliente elige cuando el envío no se cotiza en el
+ * momento. Litoral Maq le pasa el costo con esa empresa después del pago.
  */
-export const SHIPPING_CARRIER_OPTIONS = [
-  "OCA",
-  "Andreani",
-  "Vía Cargo",
-  "Correo Argentino",
-  "Que Litoral Maq elija la mejor opción",
-] as const;
+export const SHIPPING_CARRIER_OPTIONS = ["Vía Cargo", "OCA", "Andreani"] as const;
 
 /**
  * Envío a coordinar: el cliente paga los productos y el envío se arregla aparte.
@@ -44,7 +38,7 @@ export function isShippingToCoordinate(
 /** Etiquetas del circuito operativo que ve el equipo en el panel. */
 export const ADMIN_ORDER_STATUS_LABELS: Record<Order["status"], string> = {
   pendiente: "Paso 0 · Pedido recibido",
-  pago_simulado: "Paso 0 · Pedido de prueba",
+  pago_simulado: "Pedido histórico",
   preparando: "Paso 1 · Preparando",
   listo: "Paso 2 · Listo para entregar",
   enviado: "Paso 3 · Enviado",
@@ -54,15 +48,15 @@ export const ADMIN_ORDER_STATUS_LABELS: Record<Order["status"], string> = {
 
 export const ORDER_STATUS_MESSAGES: Record<Order["status"], string> = {
   pendiente:
-    "Recibimos tu solicitud. Estamos verificando stock, entrega y total final.",
-  pago_simulado: "Este es un pedido histórico del período de pruebas.",
+    "Recibimos tu pedido. Se confirma cuando Mercado Pago acredita el pago.",
+  pago_simulado: "Pedido histórico.",
   preparando: "Tu pedido fue confirmado y el equipo lo está preparando.",
   listo: "Tu pedido está preparado y listo para retirar o despachar.",
   enviado:
     "Tu pedido ya salió. El negocio te compartirá el seguimiento disponible.",
   entregado: "El pedido figura como entregado.",
   cancelado:
-    "La solicitud fue cancelada. Si necesitás ayuda, comunicate con Litoral Maq.",
+    "El pedido fue cancelado. Si necesitás ayuda, comunicate con Litoral Maq.",
 };
 
 const DELIVERY_STATUS_FLOW: Record<

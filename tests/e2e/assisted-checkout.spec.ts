@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ page }) => {
+test("el checkout registra el pedido y no inventa un costo de envío", async ({ page }) => {
   await page.goto("/productos?q=3403");
   await page.locator(".product-card").first().getByRole("button", { name: "Agregar al carrito" }).click();
   await page.goto("/checkout");
@@ -21,7 +21,7 @@ test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ pa
   await page.getByRole("button", { name: "Calcular opciones de envío" }).click();
 
   await expect(page.getByText("Envío a coordinar", { exact: true })).toBeVisible();
-  await expect(page.getByText("A coordinar", { exact: true })).toBeVisible();
+  await expect(page.getByText("A cotizar", { exact: true })).toBeVisible();
   await page.getByRole("radio", { name: "Andreani" }).check();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
 
@@ -31,5 +31,5 @@ test("el checkout crea una solicitud sin cobro ni envío inventado", async ({ pa
   const whatsapp = page.getByRole("link", { name: "Avisar por WhatsApp" });
   await expect(whatsapp).toHaveAttribute("href", /wa\.me\/5493794215065/);
   await expect(whatsapp).toHaveAttribute("href", /LM-/);
-  await expect(whatsapp).toHaveAttribute("href", /env%C3%ADo%20a%20coordinar%2C%20prefiero%20despacharlo%20con%20Andreani/);
+  await expect(whatsapp).toHaveAttribute("href", /Eleg%C3%AD%20el%20env%C3%ADo%20por%20Andreani/);
 });

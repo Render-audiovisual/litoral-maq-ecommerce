@@ -23,7 +23,7 @@ export default function AdminDashboardPage() {
       <div className="admin-grid">
         <section className="admin-card wide">
           <div className="card-heading"><div><h2>Pedidos recientes</h2><p>Últimos movimientos del e-commerce</p></div><Link href="/admin/pedidos">Ver todos →</Link></div>
-          {!orders.length ? <div className="empty-inline">Todavía no hay solicitudes. Cuando un cliente confirme su pedido va a aparecer acá.</div> : (
+          {!orders.length ? <div className="empty-inline">Todavía no hay pedidos. Cuando un cliente compre va a aparecer acá.</div> : (
             <TableScroll><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Total productos</th><th>Estado</th></tr></thead><tbody>{orders.slice(0, 6).map((order) => <tr key={order.id}><td><strong>{order.id}</strong></td><td>{order.customerName}</td><td>{formatDate(order.createdAt)}</td><td>{formatCurrency(order.total)}</td><td><span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span></td></tr>)}</tbody></table></TableScroll>
           )}
         </section>
@@ -33,7 +33,7 @@ export default function AdminDashboardPage() {
           <ul className="check-list"><li className="done">✓ Códigos: completos</li><li className="done">✓ Precios: completos</li><li>! Imágenes pendientes: {products.filter((product) => !product.image).length}</li><li>! Stock real pendiente: {products.filter((product) => product.incomplete.includes("stock")).length}</li><li>! Descripciones pendientes: {products.filter((product) => !product.description).length}</li></ul>
         </section>
         <section className="admin-card">
-          <div className="card-heading"><div><h2>Clientes</h2><p>Registrados por solicitudes web</p></div></div>
+          <div className="card-heading"><div><h2>Clientes</h2><p>Registrados por compras web</p></div></div>
           <div className="quality-score"><strong>{customers.length}</strong><span>clientes</span></div>
           <Link href="/admin/clientes" className="button secondary full">Consultar clientes</Link>
         </section>

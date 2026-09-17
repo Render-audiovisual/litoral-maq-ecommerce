@@ -33,7 +33,7 @@ describe("detalle histórico de pedidos", () => {
   });
 
   it("expone mensajes de seguimiento y distingue pedidos activos", () => {
-    expect(ORDER_STATUS_MESSAGES.pendiente).toMatch(/verificando stock/i);
+    expect(ORDER_STATUS_MESSAGES.pendiente).toMatch(/Mercado Pago acredita el pago/i);
     expect(isActiveOrder({ status: "preparando" } as Order)).toBe(true);
     expect(isActiveOrder({ status: "entregado" } as Order)).toBe(false);
   });
