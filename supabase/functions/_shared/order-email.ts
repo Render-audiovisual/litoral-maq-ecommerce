@@ -313,6 +313,23 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
   return copies[eventType];
 }
 
+function emailVisual(eventType: OrderEmailEvent) {
+  const visuals: Record<OrderEmailEvent, { emoji: string; label: string; color: string; soft: string }> = {
+    customer_order_received: { emoji: "🧾", label: "PEDIDO RECIBIDO", color: "#0b3c6f", soft: "#eaf4fb" },
+    team_new_order: { emoji: "📦", label: "NUEVO PEDIDO", color: "#0b3c6f", soft: "#eaf4fb" },
+    customer_payment_approved: { emoji: "✅", label: "PAGO CONFIRMADO", color: "#18794e", soft: "#eaf8f1" },
+    customer_payment_rejected: { emoji: "⚠️", label: "PAGO NO APROBADO", color: "#b54708", soft: "#fff4e8" },
+    customer_order_ready: { emoji: "🛠️", label: "PEDIDO PREPARADO", color: "#0b3c6f", soft: "#eaf4fb" },
+    customer_order_shipped: { emoji: "🚚", label: "PEDIDO EN CAMINO", color: "#0b3c6f", soft: "#eaf4fb" },
+    customer_order_delivered: { emoji: "🙌", label: "PEDIDO ENTREGADO", color: "#18794e", soft: "#eaf8f1" },
+  };
+  return visuals[eventType];
+}
+
+function firstName(order: OrderRecord) {
+  return String(order.customer_name || "").trim().split(/\s+/)[0] || "";
+}
+
 export function renderOrderEmail(
   eventType: OrderEmailEvent,
   order: OrderRecord,
@@ -321,6 +338,12 @@ export function renderOrderEmail(
   fotos: Record<string, string> = {},
 ) {
   const copy = emailCopy(eventType, order);
+  const visual = emailVisual(eventType);
+  const customerGreeting = eventType === "team_new_order"
+    ? ""
+    : `<p style="font-size:15px;line-height:1.5;margin:0 0 8px;color:#475467">${
+      firstName(order) ? `Hola, ${escapeHtml(firstName(order))} 👋` : "¡Hola! 👋"
+    }</p>`;
   const pagado = order.payment_status === "approved";
   const totalLabel = pagado ? "Total pagado" : "Total";
   const destination = order.delivery_method === "retiro"
@@ -341,11 +364,11 @@ export function renderOrderEmail(
   return {
     subject: copy.subject,
     html:
-      `<!doctype html><html><body style="margin:0;background:#f3f6fa;font-family:Arial,sans-serif;color:#15253a"><div style="display:none;max-height:0;overflow:hidden">${
+      `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>@media(max-width:640px){.email-shell{border-radius:0!important}.email-pad{padding:24px 18px!important}.email-title{font-size:24px!important}.email-button{display:block!important;text-align:center!important}}</style></head><body style="margin:0;background:#f3f6fa;font-family:Arial,sans-serif;color:#15253a"><div style="display:none;max-height:0;overflow:hidden">${
         escapeHtml(copy.subject)
-      }</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center" style="padding:28px 12px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(21,37,58,.08)"><tr><td style="background:#0b3c6f;padding:24px 30px;color:#fff"><strong style="font-size:21px">Litoral Maq</strong><div style="margin-top:4px;color:#bfe7ff;font-size:13px">Pedido ${
+      } · Te contamos claramente qué sigue.</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center" style="padding:28px 12px"><table class="email-shell" role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(21,37,58,.08)"><tr><td style="background:#0b3c6f;padding:24px 30px;color:#fff"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td><strong style="font-size:22px;letter-spacing:-.3px">litoral <span style="font-size:12px;font-weight:400">maq</span></strong><div style="margin-top:5px;color:#bfe7ff;font-size:13px">Herramientas para hacer realidad tus proyectos</div></td><td align="right" style="font-size:12px;color:#d9efff">Pedido<br><strong style="font-size:14px;color:#fff">${
         escapeHtml(order.id)
-      }</div></td></tr><tr><td style="padding:30px"><h1 style="font-size:25px;margin:0 0 12px">${copy.title}</h1><p style="font-size:16px;line-height:1.55;margin:0 0 22px">${copy.intro}</p><table role="presentation" width="100%" cellspacing="0" cellpadding="0">${
+      }</strong></td></tr></table></td></tr><tr><td class="email-pad" style="padding:30px"><div style="display:inline-block;background:${visual.soft};color:${visual.color};font-size:11px;font-weight:700;letter-spacing:.7px;padding:7px 10px;border-radius:999px">${visual.emoji} ${visual.label}</div><div style="height:18px"></div>${customerGreeting}<h1 class="email-title" style="font-size:27px;line-height:1.2;margin:0 0 12px;letter-spacing:-.4px">${copy.title}</h1><p style="font-size:16px;line-height:1.6;margin:0 0 24px;color:#344054">${copy.intro}</p><div style="font-size:13px;font-weight:700;color:#667085;margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px">Detalle de tu pedido</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0">${
         orderLinesHtml(order.lines, fotos)
       }</table><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:18px;background:#f6f8fb;border-radius:10px">${
         subtotalRowsHtml(order)
@@ -357,10 +380,10 @@ export function renderOrderEmail(
         nextStepsHtml(eventType, order)
       }<div style="text-align:center;margin-top:26px"><a href="${
         escapeHtml(buttonUrl)
-      }" style="display:inline-block;background:#f58220;color:#fff;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:9px">${
+      }" class="email-button" style="display:inline-block;background:#f58220;color:#fff;text-decoration:none;font-weight:700;padding:14px 24px;border-radius:9px">${
         copy.action || "Ver mi pedido"
       }</a></div>${customerWhatsAppButton}${
         eventType === "team_new_order" ? "" : localHtml()
-      }<p style="color:#667085;font-size:12px;line-height:1.5;margin:26px 0 0">Este correo fue generado automáticamente por Litoral Maq. No incluye datos de tarjeta ni solicita claves.</p></td></tr></table></td></tr></table></body></html>`,
+      }<p style="color:#667085;font-size:12px;line-height:1.5;margin:26px 0 0">¿Tenés alguna duda? Respondé por WhatsApp y te ayudamos. Este correo fue generado automáticamente por Litoral Maq; nunca te vamos a pedir claves ni datos completos de tu tarjeta.</p><p style="color:#98a2b3;font-size:11px;line-height:1.5;margin:14px 0 0;text-align:center">Gracias por elegir Litoral Maq 💙</p></td></tr></table></td></tr></table></body></html>`,
   };
 }
