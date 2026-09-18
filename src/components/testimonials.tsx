@@ -1,18 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
+import { useEffect, useRef, useState } from "react";
+import { useScaleCarousel } from "@/hooks/use-scale-carousel";
 
 type Testimonial = {
   id: string;
   type: "image" | "video";
-  src: string | null;
+  src: string;
   name: string;
 };
 
-// Los dos videos van separados por varias fotos (y lejos de las puntas de
-// la lista) para que no queden pegados ni entre si ni al saltar el loop.
+// Los dos videos van separados por varias fotos para que nunca queden
+// pegados al centrar uno u otro.
 const TESTIMONIALS: Testimonial[] = [
   { id: "clientes-confianza", type: "image", src: "/testimonios/clientes-confianza.jpg", name: "Clientes que confían en Litoral Maq" },
   { id: "nestor", type: "image", src: "/testimonios/nestor-escalera.jpg", name: "Néstor eligió Litoral Maq" },
@@ -31,98 +31,93 @@ const TESTIMONIALS: Testimonial[] = [
   { id: "cliente-equipado", type: "image", src: "/testimonios/cliente-equipado.jpg", name: "Cliente equipado en Litoral Maq" },
 ];
 
-// Lista duplicada para el loop infinito: cuando el scroll pasa la mitad, saltamos -mitad sin que se note.
-const TRACK_ITEMS = [...TESTIMONIALS, ...TESTIMONIALS];
-
-const AUTO_SCROLL_SPEED = 42; // px por segundo
-const MAX_FLING_SPEED = 1650;
+const AUTO_ADVANCE_MS = 4200;
 
 function TestimonialCard({
   item,
-  copyIndex,
+  index,
+  isActive,
+  registerCard,
+  onSelect,
   onVideoPlay,
   onVideoStop,
 }: {
   item: Testimonial;
-  copyIndex: number;
+  index: number;
+  isActive: boolean;
+  registerCard: (index: number, node: HTMLElement | null) => void;
+  onSelect: (index: number) => void;
   onVideoPlay: () => void;
   onVideoStop: () => void;
 }) {
-  if (!item.src) return null;
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Si el cliente arrastra mientras un video suena, el video se va del centro:
+  // que siga sonando desde una miniatura sería molesto.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || isActive || video.paused) return;
+    video.pause();
+  }, [isActive]);
 
   return (
-    <article className="testimonial-card" data-testimonial-card aria-hidden={copyIndex === 1}>
+    <figure
+      ref={(node) => registerCard(index, node)}
+      className={`testimonial-card${isActive ? " is-active" : ""}`}
+      aria-hidden={!isActive}
+    >
       {item.type === "video" ? (
         <video
+          ref={videoRef}
           src={item.src}
           className="testimonial-media"
-          controls
+          // Solo la central se maneja: en las chicas los controles no se
+          // podrían ni tocar, y el click sirve para traerla al centro.
+          controls={isActive}
           muted
           playsInline
           preload="metadata"
+          tabIndex={isActive ? 0 : -1}
           onPlay={onVideoPlay}
           onPause={onVideoStop}
           onEnded={onVideoStop}
         />
       ) : (
-        <Image src={item.src} alt={item.name} fill sizes="250px" className="testimonial-media" />
+        <Image
+          src={item.src}
+          alt={item.name}
+          fill
+          sizes="(max-width: 720px) 60vw, 33vw"
+          className="testimonial-media"
+          draggable={false}
+        />
       )}
-      <span className="testimonial-name">{item.name}</span>
-    </article>
+      {item.type === "video" && !isActive && <span className="testimonial-play" aria-hidden>▶</span>}
+      {!isActive && (
+        <button
+          type="button"
+          className="testimonial-reach"
+          onClick={() => onSelect(index)}
+          tabIndex={-1}
+        >
+          <span className="sr-only">Ver {item.name}</span>
+        </button>
+      )}
+    </figure>
   );
 }
 
 export function TestimonialsSection() {
   const [playingCount, setPlayingCount] = useState(0);
-  const { railRef, dragging, handlers } = useInfinitePointerMarquee({
-    itemCount: TESTIMONIALS.length,
-    autoSpeed: AUTO_SCROLL_SPEED,
-    maxFlingSpeed: MAX_FLING_SPEED,
-    paused: playingCount > 0,
-  });
-
-  const updateCardDepth = useCallback(() => {
-    const marquee = railRef.current;
-    if (!marquee) return;
-
-    const marqueeRect = marquee.getBoundingClientRect();
-    const center = marqueeRect.left + marqueeRect.width / 2;
-    const influence = Math.min(540, marqueeRect.width * 0.48);
-
-    marquee.querySelectorAll<HTMLElement>("[data-testimonial-card]").forEach((card) => {
-      const rect = card.getBoundingClientRect();
-      const distance = (rect.left + rect.width / 2 - center) / influence;
-      const clamped = Math.max(-1, Math.min(1, distance));
-      const strength = 1 - Math.abs(clamped);
-
-      card.style.setProperty("--card-scale", String(0.78 + strength * 0.22));
-      card.style.setProperty("--card-lift", `${(1 - strength) * 26}px`);
-      card.style.setProperty("--card-rotate", `${clamped * -11}deg`);
-      card.style.setProperty("--card-opacity", String(0.52 + strength * 0.48));
-      card.style.setProperty("--card-blur", `${(1 - strength) * 1.3}px`);
-      card.style.zIndex = String(Math.round(strength * 10));
+  const [hovering, setHovering] = useState(false);
+  const { stageRef, registerCard, activeIndex, dragging, goTo, next, previous, handlers } =
+    useScaleCarousel({
+      count: TESTIMONIALS.length,
+      autoAdvanceMs: AUTO_ADVANCE_MS,
+      paused: playingCount > 0 || hovering,
     });
-  }, [railRef]);
 
-  useEffect(() => {
-    const marquee = railRef.current;
-    if (!marquee) return;
-
-    let frame = 0;
-    const scheduleDepthUpdate = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(updateCardDepth);
-    };
-
-    scheduleDepthUpdate();
-    marquee.addEventListener("scroll", scheduleDepthUpdate, { passive: true });
-    window.addEventListener("resize", scheduleDepthUpdate);
-    return () => {
-      cancelAnimationFrame(frame);
-      marquee.removeEventListener("scroll", scheduleDepthUpdate);
-      window.removeEventListener("resize", scheduleDepthUpdate);
-    };
-  }, [railRef, updateCardDepth]);
+  const active = TESTIMONIALS[activeIndex];
 
   return (
     <section className="section testimonials-section">
@@ -135,21 +130,40 @@ export function TestimonialsSection() {
       </div>
 
       <div
-        ref={railRef}
-        className={`testimonial-marquee${dragging ? " is-dragging" : ""}`}
-        aria-label="Testimonios de clientes, se puede deslizar"
-        {...handlers}
+        className={`testimonial-carousel${dragging ? " is-dragging" : ""}`}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
       >
-        <div className="testimonial-track">
-          {TRACK_ITEMS.map((item, index) => (
+        <div
+          ref={stageRef}
+          className="testimonial-stage"
+          role="group"
+          aria-roledescription="carrusel"
+          aria-label="Testimonios de clientes"
+          {...handlers}
+        >
+          {TESTIMONIALS.map((item, index) => (
             <TestimonialCard
+              key={item.id}
               item={item}
-              copyIndex={Math.floor(index / TESTIMONIALS.length)}
-              key={`${item.id}-${index}`}
+              index={index}
+              isActive={index === activeIndex}
+              registerCard={registerCard}
+              onSelect={goTo}
               onVideoPlay={() => setPlayingCount((n) => n + 1)}
               onVideoStop={() => setPlayingCount((n) => Math.max(0, n - 1))}
             />
           ))}
+        </div>
+
+        <figcaption className="testimonial-caption" aria-live="polite">
+          {active?.name}
+        </figcaption>
+
+        <div className="testimonial-controls">
+          <button type="button" onClick={previous} aria-label="Testimonio anterior">←</button>
+          <span aria-hidden>{activeIndex + 1} / {TESTIMONIALS.length}</span>
+          <button type="button" onClick={next} aria-label="Testimonio siguiente">→</button>
         </div>
       </div>
     </section>

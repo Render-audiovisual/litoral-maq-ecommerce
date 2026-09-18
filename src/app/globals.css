@@ -153,7 +153,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .category-marquee::-webkit-scrollbar { display: none; }
 .category-marquee.is-dragging { cursor: grabbing; }
 .category-track { width: max-content; }
-.category-marquee img, .testimonial-marquee img { -webkit-user-drag: none; }
+.category-marquee img { -webkit-user-drag: none; }
 .winner-card { min-width: 0; overflow: hidden; display: grid; grid-template-rows: 255px auto; border-radius: 7px; background: #fff; box-shadow: 0 20px 55px rgba(0,20,36,.28); transition: transform .22s ease, box-shadow .22s ease; }
 .category-track .winner-card { width: clamp(310px, 29vw, 410px); flex: 0 0 auto; }
 .winner-card:hover { transform: translateY(-5px); box-shadow: 0 28px 65px rgba(0,15,28,.42); }
@@ -211,17 +211,28 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .home-products-section .section-heading p { margin: 9px 0 0; color: var(--muted); }
 .star-products-grid { width: 100%; max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .testimonials-section { overflow: hidden; }
-.testimonial-marquee { width: 100%; max-width: 1590px; margin: 0 auto; padding: 34px 0 42px; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-inline: contain; scrollbar-width: none; cursor: grab; user-select: none; touch-action: pan-x pan-y; perspective: 1200px; perspective-origin: 50% 45%; mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%); }
-.testimonial-marquee::-webkit-scrollbar { display: none; }
-.testimonial-marquee.is-dragging { cursor: grabbing; }
-.testimonial-track { width: max-content; display: flex; align-items: center; gap: clamp(8px, 1.2vw, 18px); transform-style: preserve-3d; }
-.testimonial-card { --card-scale: .78; --card-lift: 26px; --card-rotate: 0deg; --card-opacity: .55; --card-blur: 1px; width: clamp(220px, 18vw, 276px); aspect-ratio: 9 / 16; flex: 0 0 auto; position: relative; overflow: hidden; border: 4px solid rgba(255,255,255,.96); border-radius: 24px; background: var(--soft); opacity: var(--card-opacity); filter: blur(var(--card-blur)); transform: translateY(var(--card-lift)) rotateY(var(--card-rotate)) scale(var(--card-scale)); transform-origin: center center; transform-style: preserve-3d; box-shadow: 0 28px 70px rgba(0,42,73,.24), 0 7px 20px rgba(0,42,73,.12); transition: transform .18s cubic-bezier(.2,.8,.2,1), opacity .18s ease, filter .18s ease, box-shadow .18s ease; will-change: transform, opacity, filter; }
-.testimonial-card::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none; background: linear-gradient(180deg, transparent 52%, rgba(0,25,44,.72) 100%); }
-.testimonial-media { width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: auto; }
+/* Carrusel de escala: una tarjeta central grande y una cola de tarjetas cada
+   vez más chicas. El tamaño y la posición los calcula use-scale-carousel en
+   cada frame; acá sólo va lo que no depende de la distancia al centro. */
+.testimonial-carousel { width: 100%; max-width: 1590px; margin: 0 auto; }
+.testimonial-stage { position: relative; height: clamp(360px, 52vh, 580px); margin-top: 26px; overflow: hidden; cursor: grab; user-select: none; touch-action: pan-y; mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); }
+.testimonial-carousel.is-dragging .testimonial-stage { cursor: grabbing; }
+.testimonial-card { position: absolute; left: 50%; top: 50%; aspect-ratio: 9 / 16; margin: 0; overflow: hidden; border-radius: clamp(10px, 1.1vw, 18px); background: var(--navy-dark); transform: translate3d(-50%, -50%, 0); will-change: transform, width, opacity; }
+.testimonial-card.is-active { box-shadow: 0 30px 80px rgba(0,42,73,.22); }
+.testimonial-media { width: 100%; height: 100%; object-fit: cover; object-position: center; -webkit-user-drag: none; }
+/* Los videos son más angostos que la tarjeta: encajarlos completos evita
+   recortar al que habla, que es justamente lo que se quiere ver. */
 video.testimonial-media { object-fit: contain; background: #000; }
-.testimonial-name { position: absolute; left: 16px; right: 16px; bottom: 15px; z-index: 2; color: #fff; font-size: 12px; font-weight: 750; line-height: 1.3; text-align: center; text-shadow: 0 2px 12px rgba(0,0,0,.45); pointer-events: none; }
+.testimonial-play { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: clamp(14px, 2.2vw, 26px); text-shadow: 0 2px 14px rgba(0,0,0,.5); pointer-events: none; }
+.testimonial-reach { position: absolute; inset: 0; border: 0; padding: 0; background: none; cursor: pointer; }
+.testimonial-caption { margin: 22px auto 0; max-width: 620px; color: var(--navy); font-size: clamp(14px, 1.5vw, 17px); font-weight: 700; text-align: center; text-wrap: balance; }
+.testimonial-controls { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 14px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.testimonial-controls button { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid #dbe4ea; border-radius: 50%; background: #fff; color: var(--navy); font-size: 15px; cursor: pointer; transition: border-color .2s ease, color .2s ease; }
+.testimonial-controls button:hover { border-color: var(--orange); color: var(--orange); }
+.testimonial-controls button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   .testimonial-card { transition: none; }
+  .testimonial-controls button { transition: none; }
 }
 .cta-banner { margin: 90px 6vw; padding: 55px 6vw; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
 .cta-banner h2 { color: #fff; margin: 8px 0; }
@@ -819,9 +830,9 @@ td > small { margin-top: 4px; color: var(--muted); }
   .product-price { font-size: 16px; }
   .product-card .button { min-height: 40px; padding: 0 6px; font-size: 10px; }
   .testimonials-section { padding-bottom: 62px; }
-  .testimonial-track { gap: 12px; }
-  .testimonial-card { width: 210px; border-width: 3px; border-radius: 14px; box-shadow: 0 12px 30px rgba(0,42,73,.13); }
-  .testimonial-name { left: 8px; right: 8px; bottom: 8px; max-width: none; padding: 6px 9px; text-align: center; }
+  .testimonial-stage { height: clamp(340px, 56vh, 470px); margin-top: 18px; }
+  .testimonial-card.is-active { box-shadow: 0 16px 40px rgba(0,42,73,.18); }
+  .testimonial-caption { margin-top: 16px; }
   .cta-banner { margin: 55px 4vw; padding: 35px 25px; flex-direction: column; align-items: flex-start; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
   .product-detail-page, .standard-page { padding: 30px 4vw 70px; }
