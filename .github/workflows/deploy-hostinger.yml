@@ -16,6 +16,11 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  # Mismo proyecto que ya referencia NEXT_PUBLIC_SUPABASE_URL más abajo. No es
+  # secreto (es el ref público del proyecto, visible en su URL del dashboard).
+  SUPABASE_PROJECT_REF: bhtaecnzpuotlsenbdlz
+
 jobs:
   verify:
     name: Verificar, compilar y empaquetar
@@ -115,10 +120,307 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  # ---------------------------------------------------------------------
+  # Supabase: valida, planifica y despliega migraciones + Edge Functions.
+  #
+  # En PR solo valida y reporta (sin credenciales de producción). En main,
+  # forma parte de la MISMA corrida que publica Hostinger: el job "deploy"
+  # de más abajo no arranca hasta que "supabase_deploy_gate" confirme que
+  # el backend quedó en un estado compatible. Así el frontend nunca se
+  # publica antes (ni después) de lo que soporta el backend desplegado.
+  # ---------------------------------------------------------------------
+
+  supabase_check:
+    name: "Supabase · validar y detectar cambios"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      functions: ${{ steps.affected.outputs.functions }}
+      functions_count: ${{ steps.affected.outputs.functions_count }}
+      migrations_changed: ${{ steps.affected.outputs.migrations_changed }}
+      config_changed: ${{ steps.affected.outputs.config_changed }}
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # necesario para diffear contra la base del PR o el tag de último deploy
+          fetch-tags: true
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Preparar Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      # Sin esto, `deno check` no encuentra "@supabase/supabase-js" en un
+      # node_modules/: al ver el package.json de la raíz del repo, Deno
+      # asume resolución estilo Node y necesita el node_modules real (el
+      # mismo paquete que ya usa el frontend, misma versión fijada en
+      # supabase/functions/deno.json).
+      - name: Instalar dependencias (para que Deno resuelva los imports npm:)
+        run: npm ci
+
+      - name: Validar sintaxis de cada Edge Function
+        run: |
+          set -euo pipefail
+          for entry in supabase/functions/*/index.ts; do
+            echo "· deno check $entry"
+            deno check "$entry"
+          done
+
+      - name: Ejecutar pruebas de las funciones compartidas
+        run: deno test --permit-no-files supabase/functions/_shared
+
+      - name: Validar supabase/config.toml
+        run: node scripts/supabase-validate-config.mjs
+
+      - name: Detectar cambios en supabase/**
+        id: affected
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE="refs/tags/supabase-last-deploy"
+          fi
+          node scripts/supabase-affected-functions.mjs --base "$BASE"
+
+      - name: Resumen
+        run: |
+          {
+            echo "## Supabase — cambios detectados"
+            echo ""
+            echo "- Funciones afectadas: \`${{ steps.affected.outputs.functions }}\`"
+            echo "- Migraciones cambiadas: \`${{ steps.affected.outputs.migrations_changed }}\`"
+            echo "- config.toml cambiado: \`${{ steps.affected.outputs.config_changed }}\`"
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo ""
+              echo "_Solo se valida y se informa. Esta PR no despliega ni migra producción._"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  supabase_plan:
+    name: "Supabase · plan de migraciones"
+    if: github.event_name != 'pull_request'
+    needs: [verify, supabase_check]
+    runs-on: ubuntu-latest
+    environment: production
+    outputs:
+      has_pending_migrations: ${{ steps.plan.outputs.has_pending_migrations }}
+      pending_migration_files: ${{ steps.plan.outputs.pending_migration_files }}
+      has_destructive: ${{ steps.scan.outputs.has_destructive }}
+      destructive_summary: ${{ steps.scan.outputs.destructive_summary }}
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v6
+
+      - name: Listar migraciones (local vs. remoto)
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          npx --yes supabase@2.117.0 migration list \
+            --project-ref "$SUPABASE_PROJECT_REF" \
+            --password "${{ secrets.SUPABASE_DB_PASSWORD }}" \
+            --output-format json > migration-list.json
+
+      - name: Decidir si hay migraciones para aplicar
+        id: plan
+        run: node scripts/supabase-plan-migrations.mjs --migration-list migration-list.json
+
+      - name: Buscar operaciones destructivas en lo pendiente
+        id: scan
+        if: steps.plan.outputs.has_pending_migrations == 'true'
+        run: |
+          mapfile -t FILES < <(node -e "process.stdout.write(JSON.parse(process.argv[1]).join('\n'))" '${{ steps.plan.outputs.pending_migration_files }}')
+          node scripts/supabase-scan-destructive-sql.mjs "${FILES[@]}"
+
+      - name: Diff completo (solo lectura, no aplica nada)
+        if: steps.plan.outputs.has_pending_migrations == 'true'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          npx --yes supabase@2.117.0 db push --dry-run \
+            --project-ref "$SUPABASE_PROJECT_REF" \
+            --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+
+      - name: Resumen
+        if: always()
+        run: |
+          {
+            echo "## Supabase — plan de migraciones"
+            echo ""
+            echo "- Migraciones pendientes: \`${{ steps.plan.outputs.has_pending_migrations || 'false' }}\`"
+            echo "- Archivos: \`${{ steps.plan.outputs.pending_migration_files || '[]' }}\`"
+            echo "- Contiene operaciones destructivas: \`${{ steps.scan.outputs.has_destructive || 'false' }}\`"
+            if [ -n "${{ steps.scan.outputs.destructive_summary }}" ]; then
+              echo "- Detalle: ${{ steps.scan.outputs.destructive_summary }}"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # Gate manual: SOLO se activa cuando supabase_plan detecta DROP TABLE/COLUMN/
+  # SCHEMA/DATABASE o TRUNCATE en una migración pendiente. Requiere que el
+  # Environment "production-destructive-migration" exista en GitHub con
+  # "Required reviewers" configurado — ver el resumen de la PR para el detalle.
+  supabase_migrate_approval:
+    name: "Supabase · aprobación manual (migración destructiva)"
+    if: github.event_name != 'pull_request' && needs.supabase_plan.outputs.has_destructive == 'true'
+    needs: supabase_plan
+    runs-on: ubuntu-latest
+    environment: production-destructive-migration
+    steps:
+      - name: Confirmación
+        run: echo "Migración destructiva aprobada por un revisor humano en el Environment production-destructive-migration."
+
+  supabase_migrate_apply:
+    name: "Supabase · aplicar migraciones"
+    if: |
+      always() &&
+      github.event_name != 'pull_request' &&
+      needs.supabase_plan.result == 'success' &&
+      needs.supabase_plan.outputs.has_pending_migrations == 'true' &&
+      (needs.supabase_plan.outputs.has_destructive != 'true' || needs.supabase_migrate_approval.result == 'success')
+    needs: [supabase_plan, supabase_migrate_approval]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v6
+
+      - name: Aplicar migraciones con el mecanismo oficial de Supabase
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          npx --yes supabase@2.117.0 db push \
+            --project-ref "$SUPABASE_PROJECT_REF" \
+            --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+
+      - name: Resumen
+        run: |
+          {
+            echo "## Supabase — migraciones aplicadas"
+            echo ""
+            echo "\`\`\`"
+            echo '${{ needs.supabase_plan.outputs.pending_migration_files }}'
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  supabase_functions_deploy:
+    name: "Supabase · desplegar Edge Functions afectadas"
+    if: |
+      always() &&
+      github.event_name != 'pull_request' &&
+      needs.supabase_check.result == 'success' &&
+      needs.supabase_plan.result == 'success' &&
+      needs.supabase_check.outputs.functions_count != '0' &&
+      (needs.supabase_migrate_apply.result == 'success' || needs.supabase_migrate_apply.result == 'skipped')
+    needs: [supabase_check, supabase_plan, supabase_migrate_apply]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v6
+
+      - name: Desplegar solo las funciones afectadas
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          mapfile -t SLUGS < <(node -e "process.stdout.write(JSON.parse(process.argv[1]).join('\n'))" '${{ needs.supabase_check.outputs.functions }}')
+          if [ "${#SLUGS[@]}" -eq 0 ]; then
+            echo "Nada para desplegar."
+            exit 0
+          fi
+          echo "Desplegando: ${SLUGS[*]}"
+          # Nunca se pasa --no-verify-jwt: la CLI toma verify_jwt de config.toml.
+          npx --yes supabase@2.117.0 functions deploy "${SLUGS[@]}" --project-ref "$SUPABASE_PROJECT_REF"
+
+      - name: Confirmar verify_jwt y estado tras el deploy
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          npx --yes supabase@2.117.0 functions list --project-ref "$SUPABASE_PROJECT_REF" > deployed-functions.json
+          node scripts/supabase-verify-jwt-settings.mjs --deployed deployed-functions.json
+
+      - name: Resumen
+        if: always()
+        run: |
+          {
+            echo "## Supabase — Edge Functions desplegadas"
+            echo ""
+            echo "- Funciones: \`${{ needs.supabase_check.outputs.functions }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  supabase_deploy_gate:
+    name: "Supabase · confirmar backend compatible"
+    if: always() && github.event_name != 'pull_request'
+    needs:
+      - verify
+      - supabase_check
+      - supabase_plan
+      - supabase_migrate_approval
+      - supabase_migrate_apply
+      - supabase_functions_deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # para mover el tag supabase-last-deploy
+    steps:
+      - name: Confirmar que el backend quedó en un estado desplegable
+        run: |
+          set -euo pipefail
+          fail=0
+          check() {
+            local job="$1" result="$2"
+            case "$result" in
+              success|skipped) echo "OK    $job: $result" ;;
+              *) echo "FAIL  $job: $result"; fail=1 ;;
+            esac
+          }
+          check verify "${{ needs.verify.result }}"
+          check supabase_check "${{ needs.supabase_check.result }}"
+          check supabase_plan "${{ needs.supabase_plan.result }}"
+          check supabase_migrate_approval "${{ needs.supabase_migrate_approval.result }}"
+          check supabase_migrate_apply "${{ needs.supabase_migrate_apply.result }}"
+          check supabase_functions_deploy "${{ needs.supabase_functions_deploy.result }}"
+          if [ "$fail" -eq 1 ]; then
+            echo ""
+            echo "El backend de Supabase no quedó confirmado en este run: Hostinger NO se publica."
+            exit 1
+          fi
+          echo ""
+          echo "Backend de Supabase confirmado: Hostinger puede publicarse."
+
+      - name: Descargar el código
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Mover el tag de último deploy confirmado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f supabase-last-deploy "${{ github.sha }}"
+          git push origin supabase-last-deploy --force
+
+      - name: Resumen final
+        run: |
+          {
+            echo "## Supabase — resumen del deploy"
+            echo ""
+            echo "- Commit: \`${{ github.sha }}\`"
+            echo "- Migraciones aplicadas en este run: \`${{ needs.supabase_plan.outputs.has_pending_migrations || 'false' }}\`"
+            echo "- Migración destructiva (con aprobación manual): \`${{ needs.supabase_plan.outputs.has_destructive || 'false' }}\`"
+            echo "- Funciones desplegadas: \`${{ needs.supabase_check.outputs.functions || '[]' }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   deploy:
     name: Publicar con backup y rollback
     if: github.event_name != 'pull_request'
-    needs: verify
+    needs: [verify, supabase_deploy_gate]
     runs-on: ubuntu-latest
     environment: production
 
