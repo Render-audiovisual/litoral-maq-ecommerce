@@ -140,6 +140,7 @@ jobs:
       functions_count: ${{ steps.affected.outputs.functions_count }}
       migrations_changed: ${{ steps.affected.outputs.migrations_changed }}
       config_changed: ${{ steps.affected.outputs.config_changed }}
+      supabase_touched: ${{ steps.affected.outputs.supabase_touched }}
     steps:
       - name: Descargar el código
         uses: actions/checkout@v6
@@ -204,9 +205,12 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
+  # Solo corre cuando el push realmente tocó supabase/ (funciones, migraciones
+  # o config.toml). Un cambio de frontend no necesita credenciales de la base
+  # ni debe quedar bloqueado por ellas: no hay backend nuevo que confirmar.
   supabase_plan:
     name: "Supabase · plan de migraciones"
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && needs.supabase_check.outputs.supabase_touched == 'true'
     needs: [verify, supabase_check]
     runs-on: ubuntu-latest
     environment: production
@@ -315,7 +319,7 @@ jobs:
       always() &&
       github.event_name != 'pull_request' &&
       needs.supabase_check.result == 'success' &&
-      needs.supabase_plan.result == 'success' &&
+      (needs.supabase_plan.result == 'success' || needs.supabase_plan.result == 'skipped') &&
       needs.supabase_check.outputs.functions_count != '0' &&
       (needs.supabase_migrate_apply.result == 'success' || needs.supabase_migrate_apply.result == 'skipped')
     needs: [supabase_check, supabase_plan, supabase_migrate_apply]

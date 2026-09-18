@@ -135,11 +135,12 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .commerce-metrics { display: flex; gap: 34px; color: var(--muted); font-size: 11px; }
 .commerce-metrics span { display: flex; flex-direction: column; }
 .commerce-metrics strong { color: var(--navy); font-size: 23px; }
-.hero-promo-slider { min-width: 0; min-height: 570px; grid-area: promo; position: relative; isolation: isolate; overflow: hidden; user-select: none; touch-action: pan-y; cursor: grab; animation: hero-carousel-in .62s .12s cubic-bezier(.22, 1, .36, 1) both; }
+.hero-promo-slider { min-width: 0; min-height: 570px; grid-area: promo; display: flex; align-items: center; position: relative; isolation: isolate; overflow: hidden; user-select: none; touch-action: pan-y; cursor: grab; animation: hero-carousel-in .62s .12s cubic-bezier(.22, 1, .36, 1) both; }
 .hero-promo-slider.is-dragging { cursor: grabbing; }
-.hero-promo-card { width: min(50%, 330px); aspect-ratio: 9 / 16; position: absolute; left: 50%; top: 50%; overflow: hidden; border: 5px solid rgba(255,255,255,.96); border-radius: 22px; background: var(--navy-dark); box-shadow: 0 24px 64px rgba(0,42,73,.22); opacity: 0; transform: translate3d(-50%, -50%, 0); transform-origin: center; will-change: transform, opacity; transition: box-shadow .35s ease, filter .35s ease; }
-.hero-promo-card[aria-current="true"] { box-shadow: 0 31px 76px rgba(0,42,73,.29); filter: brightness(1) saturate(1); }
-.hero-promo-card:not([aria-current="true"]) { filter: brightness(.8) saturate(.86); }
+/* El riel se mueve entero con transform; las tarjetas no se transforman una
+   por una, así la cinta avanza pareja y se ve igual en móvil que en escritorio. */
+.hero-promo-track { display: flex; align-items: center; gap: clamp(12px, 1.2vw, 18px); width: max-content; will-change: transform; }
+.hero-promo-card { flex: 0 0 auto; width: clamp(196px, 20vw, 270px); aspect-ratio: 9 / 16; position: relative; overflow: hidden; border: 5px solid rgba(255,255,255,.96); border-radius: 22px; background: var(--navy-dark); box-shadow: 0 24px 64px rgba(0,42,73,.22); transition: box-shadow .35s ease; }
 .hero-promo-card:focus-visible { outline: 4px solid var(--cyan); outline-offset: -7px; }
 .hero-promo-card img { object-fit: cover; object-position: center; pointer-events: none; -webkit-user-drag: none; }
 .winner-section { padding: 78px 6vw 88px; background: var(--navy-dark); }
@@ -633,7 +634,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .product-grid .product-card:nth-child(n+7) { display: none; }
   .hero { grid-template-columns: 1fr .75fr; }
   .commerce-hero { grid-template-columns: .95fr 1.05fr; column-gap: 2vw; }
-  .hero-promo-card { width: min(56%, 320px); }
+  .hero-promo-card { width: clamp(180px, 22vw, 240px); }
   .hero-visual::before { width: 340px; height: 340px; }
   .hero-tool { font-size: 200px; }
   .orbit-one { width: 420px; height: 420px; }
@@ -671,8 +672,8 @@ td > small { margin-top: 4px; color: var(--muted); }
   .commerce-hero-actions { align-self: auto; margin-top: 24px; padding-left: 0; }
   .hero-buttons { justify-content: center; }
   .pickup-banner { margin-left: auto; margin-right: auto; }
-  .hero-promo-slider { width: 100%; min-height: 600px; margin-top: 18px; }
-  .hero-promo-card { width: min(50%, 330px); }
+  .hero-promo-slider { width: 100%; min-height: 430px; margin-top: 18px; }
+  .hero-promo-card { width: clamp(150px, 40vw, 210px); }
   .winner-grid .winner-card { flex-basis: 46%; }
   .category-track .winner-card { width: 46vw; flex: 0 0 46vw; }
   .star-products-grid { display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
@@ -767,8 +768,8 @@ td > small { margin-top: 4px; color: var(--muted); }
   .pickup-banner strong i { display: none; }
   .pickup-banner b { font-size: 18px; }
   .commerce-metrics { display: none; }
-  .hero-promo-slider { min-height: 430px; margin-top: 18px; }
-  .hero-promo-card { width: min(66%, 244px); border-width: 3px; border-radius: 16px; box-shadow: 0 18px 44px rgba(0,42,73,.2); }
+  .hero-promo-slider { min-height: 340px; margin-top: 18px; }
+  .hero-promo-card { width: clamp(132px, 44vw, 172px); border-width: 3px; border-radius: 16px; box-shadow: 0 18px 44px rgba(0,42,73,.2); }
   .winner-section { padding: 50px 16px 56px; }
   .winner-heading { align-items: flex-start; }
   .winner-heading h2 { font-size: 2rem; line-height: 1.06; }
@@ -831,6 +832,11 @@ td > small { margin-top: 4px; color: var(--muted); }
   .cart-line > strong { grid-column: 2; }
   .cart-line .quantity { grid-row: 2; grid-column: 3; }
   .form-grid, .delivery-options { grid-template-columns: 1fr; }
+  /* Safari amplía la página sola al enfocar un control de menos de 16 px.
+     Mantener ese tamaño evita el zoom sin bloquear el zoom manual. */
+  .checkout-page input,
+  .checkout-page select,
+  .checkout-page textarea { font-size: 16px; }
   .account-header { flex-direction: column; gap: 15px; }
   .order-card { grid-template-columns: 1fr; }
   .admin-content, .admin-topbar { padding-left: 16px; padding-right: 16px; }
