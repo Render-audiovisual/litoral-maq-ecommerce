@@ -72,41 +72,46 @@ for (const carousel of [
     expect(circularDelta(settled, await scrollLeft())).toBeGreaterThan(5);
   });
 
-  test(`el carrusel táctil de ${carousel.name} conserva la inercia`, async ({ page }) => {
+  test(`el carrusel táctil de ${carousel.name} deja el gesto horizontal al navegador`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
     const rail = page.locator(carousel.selector);
     await expect(rail).toBeVisible();
     await rail.scrollIntoViewIfNeeded();
 
-    const box = await rail.boundingBox();
-    if (!box) throw new Error(`No se pudo medir el carrusel táctil de ${carousel.name}`);
-    const startX = box.x + box.width * 0.8;
-    const y = box.y + Math.min(box.height * 0.5, 160);
+    const touchAction = await rail.evaluate((element) => getComputedStyle(element).touchAction);
+    expect(touchAction).toContain("pan-x");
+
+    await rail.evaluate((element) => { element.scrollLeft = 80; });
+    const beforeGesture = await rail.evaluate((element) => element.scrollLeft);
 
     await rail.dispatchEvent("pointerdown", {
       pointerId: 9,
       pointerType: "touch",
-      clientX: startX,
-      clientY: y,
+      clientX: 300,
+      clientY: 300,
     });
     await page.waitForTimeout(30);
     await rail.dispatchEvent("pointermove", {
       pointerId: 9,
       pointerType: "touch",
-      clientX: startX - 120,
-      clientY: y,
+      clientX: 180,
+      clientY: 300,
     });
-    const releasedAt = await rail.evaluate((element) => element.scrollLeft);
+    // Los eventos sintéticos no generan scroll nativo. Si el hook intentara
+    // capturar el dedo y mover el riel manualmente, scrollLeft cambiaría acá.
+    const afterSyntheticGesture = await rail.evaluate((element) => element.scrollLeft);
+    expect(Math.abs(afterSyntheticGesture - beforeGesture)).toBeLessThan(4);
     await rail.dispatchEvent("pointerup", {
       pointerId: 9,
       pointerType: "touch",
-      clientX: startX - 120,
-      clientY: y,
+      clientX: 180,
+      clientY: 300,
     });
 
-    await page.waitForTimeout(300);
-    const afterInertia = await rail.evaluate((element) => element.scrollLeft);
-    expect(afterInertia).toBeGreaterThan(releasedAt + 12);
+    // Al terminar el gesto, el movimiento automático retoma desde la
+    // posición que haya dejado el scroll nativo del navegador.
+    await page.waitForTimeout(500);
+    expect(await rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(beforeGesture + 8);
   });
 }
