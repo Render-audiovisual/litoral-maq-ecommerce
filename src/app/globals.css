@@ -215,10 +215,10 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
    vez más chicas. El tamaño y la posición los calcula use-scale-carousel en
    cada frame; acá sólo va lo que no depende de la distancia al centro. */
 .testimonial-carousel { width: 100%; max-width: 1590px; margin: 0 auto; }
-.testimonial-stage { position: relative; height: clamp(360px, 52vh, 580px); margin-top: 26px; overflow: hidden; cursor: grab; user-select: none; touch-action: pan-y; mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); }
+.testimonial-stage { position: relative; height: clamp(390px, 56vh, 620px); margin-top: 26px; overflow: hidden; cursor: grab; user-select: none; touch-action: pan-y; }
 .testimonial-carousel.is-dragging .testimonial-stage { cursor: grabbing; }
-.testimonial-card { position: absolute; left: 50%; top: 50%; aspect-ratio: 9 / 16; margin: 0; overflow: hidden; border-radius: clamp(10px, 1.1vw, 18px); background: var(--navy-dark); transform: translate3d(-50%, -50%, 0); will-change: transform, width, opacity; }
-.testimonial-card.is-active { box-shadow: 0 30px 80px rgba(0,42,73,.22); }
+.testimonial-card { position: absolute; left: 50%; top: 50%; aspect-ratio: 9 / 16; margin: 0; overflow: hidden; border: 1px solid rgba(0,42,73,.08); border-radius: clamp(10px, 1.1vw, 18px); background: var(--navy-dark); box-shadow: 0 16px 42px rgba(0,42,73,.14); transform: translate3d(-50%, -50%, 0); will-change: transform, width; }
+.testimonial-card.is-active { box-shadow: 0 30px 80px rgba(0,42,73,.24); }
 .testimonial-media { width: 100%; height: 100%; object-fit: cover; object-position: center; -webkit-user-drag: none; }
 /* Los videos son más angostos que la tarjeta: encajarlos completos evita
    recortar al que habla, que es justamente lo que se quiere ver. */
@@ -226,13 +226,8 @@ video.testimonial-media { object-fit: contain; background: #000; }
 .testimonial-play { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: clamp(14px, 2.2vw, 26px); text-shadow: 0 2px 14px rgba(0,0,0,.5); pointer-events: none; }
 .testimonial-reach { position: absolute; inset: 0; border: 0; padding: 0; background: none; cursor: pointer; }
 .testimonial-caption { margin: 22px auto 0; max-width: 620px; color: var(--navy); font-size: clamp(14px, 1.5vw, 17px); font-weight: 700; text-align: center; text-wrap: balance; }
-.testimonial-controls { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 14px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
-.testimonial-controls button { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid #dbe4ea; border-radius: 50%; background: #fff; color: var(--navy); font-size: 15px; cursor: pointer; transition: border-color .2s ease, color .2s ease; }
-.testimonial-controls button:hover { border-color: var(--orange); color: var(--orange); }
-.testimonial-controls button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   .testimonial-card { transition: none; }
-  .testimonial-controls button { transition: none; }
 }
 .cta-banner { margin: 90px 6vw; padding: 55px 6vw; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
 .cta-banner h2 { color: #fff; margin: 8px 0; }

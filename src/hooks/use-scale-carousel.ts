@@ -20,9 +20,8 @@ type ScaleCarouselOptions = {
 // Proporciones tomadas del carrusel de referencia: la central manda y las
 // laterales caen en progresión geométrica, que es lo que da la sensación de
 // profundidad sin usar 3D real.
-const SIDE_RATIO = 0.38; // primera vecina respecto de la central
-const DECAY = 0.78; // cada paso hacia afuera
-const OPACITY_DECAY = 0.7; // se aplica recién a partir de la segunda vecina
+const SIDE_RATIO = 0.7; // vecinas legibles aun con material vertical 9:16
+const DECAY = 0.84; // reducción gradual hacia los extremos
 const SNAP_RESPONSE = 7.5; // qué tan rápido encaja al soltar
 const DRAG_CLICK_THRESHOLD = 8;
 
@@ -33,11 +32,9 @@ export function scaleAtDistance(distance: number) {
   return SIDE_RATIO * DECAY ** (u - 1);
 }
 
-/** Opacidad según distancia: las dos del centro enteras, después cae. */
+/** Todas las tarjetas permanecen nítidas; el orden y la escala dan profundidad. */
 export function opacityAtDistance(distance: number) {
-  const u = Math.abs(distance);
-  if (u <= 1) return 1;
-  return Math.max(0, OPACITY_DECAY ** (u - 1));
+  return Number.isFinite(distance) ? 1 : 0;
 }
 
 /**
@@ -127,8 +124,8 @@ export function useScaleCarousel({ count, autoAdvanceMs = 0, paused = false }: S
           stageWidth * (stageWidth < 720 ? 0.62 : 0.3),
           stage.clientHeight * 0.5625,
         );
-        const gap = stageWidth < 720 ? 8 : 12;
-        stepRef.current = centerWidth * 0.69 + gap;
+        const gap = stageWidth < 720 ? 10 : 18;
+        stepRef.current = centerWidth * 0.82 + gap;
 
         for (let index = 0; index < count; index += 1) {
           const card = cardsRef.current[index];

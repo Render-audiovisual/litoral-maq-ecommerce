@@ -110,7 +110,7 @@ function TestimonialCard({
 export function TestimonialsSection() {
   const [playingCount, setPlayingCount] = useState(0);
   const [hovering, setHovering] = useState(false);
-  const { stageRef, registerCard, activeIndex, dragging, goTo, next, previous, handlers } =
+  const { stageRef, registerCard, activeIndex, dragging, goTo, handlers } =
     useScaleCarousel({
       count: TESTIMONIALS.length,
       autoAdvanceMs: AUTO_ADVANCE_MS,
@@ -160,11 +160,6 @@ export function TestimonialsSection() {
           {active?.name}
         </figcaption>
 
-        <div className="testimonial-controls">
-          <button type="button" onClick={previous} aria-label="Testimonio anterior">←</button>
-          <span aria-hidden>{activeIndex + 1} / {TESTIMONIALS.length}</span>
-          <button type="button" onClick={next} aria-label="Testimonio siguiente">→</button>
-        </div>
       </div>
     </section>
   );
