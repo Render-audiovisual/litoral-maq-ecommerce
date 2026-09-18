@@ -52,8 +52,13 @@ export function TableScroll({ children }: { children: ReactNode }) {
    * ningún flag.
    */
   const sincronizar = useCallback((desde: HTMLDivElement | null, hacia: HTMLDivElement | null) => {
-    if (!desde || !hacia || hacia.scrollLeft === desde.scrollLeft) return;
-    hacia.scrollLeft = desde.scrollLeft;
+    if (!desde || !hacia) return;
+    const recorridoOrigen = desde.scrollWidth - desde.clientWidth;
+    const recorridoDestino = hacia.scrollWidth - hacia.clientWidth;
+    const posicion = recorridoOrigen > 0 ? desde.scrollLeft / recorridoOrigen : 0;
+    const destino = posicion * Math.max(0, recorridoDestino);
+    if (Math.abs(hacia.scrollLeft - destino) < 1) return;
+    hacia.scrollLeft = destino;
   }, []);
 
   return (
