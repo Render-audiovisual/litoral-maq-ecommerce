@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
 
+// Testimonios dejó de ser un marquee de scroll: ahora es el carrusel de
+// escala, con su propia prueba en testimonials-carousel.spec.ts.
 for (const carousel of [
   { name: "categorías", selector: ".category-marquee", card: ".winner-card" },
-  { name: "clientes", selector: ".testimonial-marquee", card: ".testimonial-card" },
 ]) {
   test(`el carrusel móvil de ${carousel.name} avanza aunque el navegador redondee scrollLeft`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
