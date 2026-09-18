@@ -147,10 +147,24 @@ jobs:
           fetch-depth: 0 # necesario para diffear contra la base del PR o el tag de último deploy
           fetch-tags: true
 
+      - name: Preparar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
       - name: Preparar Deno
         uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
+
+      # Sin esto, `deno check` no encuentra "@supabase/supabase-js" en un
+      # node_modules/: al ver el package.json de la raíz del repo, Deno
+      # asume resolución estilo Node y necesita el node_modules real (el
+      # mismo paquete que ya usa el frontend, misma versión fijada en
+      # supabase/functions/deno.json).
+      - name: Instalar dependencias (para que Deno resuelva los imports npm:)
+        run: npm ci
 
       - name: Validar sintaxis de cada Edge Function
         run: |
