@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { ProductCard } from "@/components/product-card";
 import { TestimonialsSection } from "@/components/testimonials";
 import { formatCurrency } from "@/lib/utils";
 import {
   getLaunchFamilyCards,
 } from "@/lib/launch-catalog";
+import { useContinuousTicker } from "@/hooks/use-continuous-ticker";
 import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
@@ -72,173 +72,57 @@ const STAR_PRODUCTS = [
   { productId: "3542", image: "/products/catalog/3542-lo180-220.webp" },
 ] as const;
 
-const HERO_AUTO_SPEED = 0.18;
-const HERO_MAX_FLING_SPEED = 2.8;
-const HERO_INERTIA_RESPONSE = 1.5; // ~0,5 s más de envión que el ajuste anterior
+// Cinta continua: píxeles por segundo, no tarjetas por segundo. El ritmo es
+// el de un ticker —constante y parejo— en vez de saltar de tarjeta en tarjeta.
+const HERO_TICKER_SPEED = 46;
+const HERO_MAX_FLING_SPEED = 900;
 
 type PromoSlide = (typeof PROMO_SLIDES)[number];
 
-function wrapCarouselDelta(value: number, length: number) {
-  let wrapped = value;
-  if (wrapped > length / 2) wrapped -= length;
-  if (wrapped < -length / 2) wrapped += length;
-  return wrapped;
-}
-
 function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<Array<HTMLAnchorElement | null>>([]);
-  const positionRef = useRef(0);
-  const velocityRef = useRef(HERO_AUTO_SPEED);
-  const draggingRef = useRef(false);
-  const draggedRef = useRef(false);
-  const pointerRef = useRef({ pointerId: -1, x: 0, lastX: 0, lastTime: 0, position: 0 });
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [dragging, setDragging] = useState(false);
-
-  useEffect(() => {
-    let raf = 0;
-    let last = performance.now();
-    let renderedActive = 0;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    function render(now: number) {
-      const dt = Math.min((now - last) / 1000, 0.05);
-      last = now;
-
-      if (!draggingRef.current && !reducedMotion.matches) {
-        // Al soltar, el envión del gesto decae hasta el automático: nunca
-        // frena, sólo deja de correr.
-        velocityRef.current += (HERO_AUTO_SPEED - velocityRef.current) * Math.min(1, dt * HERO_INERTIA_RESPONSE);
-        positionRef.current = (positionRef.current + velocityRef.current * dt + slides.length) % slides.length;
-      }
-
-      const position = positionRef.current;
-      const nearest = Math.round(position) % slides.length;
-      if (nearest !== renderedActive) {
-        renderedActive = nearest;
-        setActiveIndex(nearest);
-      }
-
-      cardRefs.current.forEach((card, index) => {
-        if (!card) return;
-        const delta = wrapCarouselDelta(index - position, slides.length);
-        const distance = Math.abs(delta);
-        const scale = Math.max(0.76, 1 - Math.min(distance, 2.3) * 0.095);
-        const opacity = Math.max(0, 1 - Math.max(0, distance - 1.1) * 0.72);
-        const x = delta * 78;
-        card.style.transform = `translate3d(calc(-50% + ${x}%), -50%, 0) scale(${scale}) rotate(${delta * 1.65}deg)`;
-        card.style.opacity = `${opacity}`;
-        card.style.zIndex = `${Math.max(1, 20 - Math.round(distance * 6))}`;
-        card.style.pointerEvents = distance < 1.55 ? "auto" : "none";
-      });
-
-      raf = requestAnimationFrame(render);
-    }
-
-    raf = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(raf);
-  }, [slides.length]);
-
-  function startDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    draggingRef.current = true;
-    draggedRef.current = false;
-    velocityRef.current = 0;
-    setDragging(true);
-    pointerRef.current = {
-      pointerId: event.pointerId,
-      x: event.clientX,
-      lastX: event.clientX,
-      lastTime: performance.now(),
-      position: positionRef.current,
-    };
-  }
-
-  function moveDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (!draggingRef.current || pointerRef.current.pointerId !== event.pointerId) return;
-    const width = Math.max(210, Math.min(340, event.currentTarget.clientWidth * 0.68));
-    const dx = event.clientX - pointerRef.current.x;
-    const now = performance.now();
-    const segmentDx = event.clientX - pointerRef.current.lastX;
-    const elapsed = Math.max(16, now - pointerRef.current.lastTime);
-    if (Math.abs(dx) > 10) {
-      draggedRef.current = true;
-      if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
-        try {
-          event.currentTarget.setPointerCapture(event.pointerId);
-        } catch {
-          // El gesto conserva lo recorrido aunque el navegador cancele el
-          // puntero antes de que podamos capturarlo.
-        }
-      }
-    }
-    positionRef.current = (pointerRef.current.position - dx / width + slides.length) % slides.length;
-    velocityRef.current = Math.max(
-      -HERO_MAX_FLING_SPEED,
-      Math.min(HERO_MAX_FLING_SPEED, -(segmentDx / width) / (elapsed / 1000)),
-    );
-    pointerRef.current.lastX = event.clientX;
-    pointerRef.current.lastTime = now;
-  }
-
-  function endDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (!draggingRef.current || pointerRef.current.pointerId !== event.pointerId) return;
-    draggingRef.current = false;
-    setDragging(false);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-  }
+  // El juego de tarjetas va duplicado: cuando la cinta avanzó exactamente un
+  // juego vuelve a cero y el corte no se ve.
+  const trackItems = [...slides, ...slides];
+  const { trackRef, dragging, handlers } = useContinuousTicker({
+    itemCount: slides.length,
+    speed: HERO_TICKER_SPEED,
+    maxFlingSpeed: HERO_MAX_FLING_SPEED,
+  });
 
   if (slides.length === 0) return null;
 
   return (
     <div
-      ref={sliderRef}
       className={`hero-promo-slider${dragging ? " is-dragging" : ""}`}
       aria-label="Promociones destacadas"
       aria-roledescription="carrusel"
-      onPointerMove={moveDrag}
-      onPointerDown={startDrag}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-      onLostPointerCapture={endDrag}
-      // Sin esto el navegador arranca su propio arrastre nativo del enlace y
-      // el gesto del mouse se corta a mitad de camino.
-      onDragStart={(event) => event.preventDefault()}
-      onClickCapture={(event) => {
-        if (!draggedRef.current) return;
-        event.preventDefault();
-        event.stopPropagation();
-        draggedRef.current = false;
-      }}
+      {...handlers}
     >
-      <span className="sr-only" aria-live="polite">
-        {activeIndex + 1} de {slides.length}: {slides[activeIndex]?.label}
-      </span>
-      {slides.map((slide, index) => (
-        <Link
-          ref={(node) => { cardRefs.current[index] = node; }}
-          href={slide.href}
-          className="hero-promo-card"
-          aria-label={`Ver ${slide.label}`}
-          aria-current={activeIndex === index ? "true" : undefined}
-          tabIndex={activeIndex === index ? 0 : -1}
-          key={slide.id}
-        >
-          <Image
-            src={slide.image}
-            alt={slide.label}
-            fill
-            sizes="(max-width: 560px) 76vw, (max-width: 820px) 360px, 340px"
-            loading={index <= 1 || index === slides.length - 1 ? "eager" : "lazy"}
-            priority={index === 0}
-            draggable={false}
-          />
-        </Link>
-      ))}
+      <div className="hero-promo-track" ref={trackRef}>
+        {trackItems.map((slide, index) => {
+          const duplicate = index >= slides.length;
+          return (
+            <Link
+              href={slide.href}
+              className="hero-promo-card"
+              aria-label={`Ver ${slide.label}`}
+              aria-hidden={duplicate}
+              tabIndex={duplicate ? -1 : undefined}
+              key={`${slide.id}-${index}`}
+            >
+              <Image
+                src={slide.image}
+                alt={slide.label}
+                fill
+                sizes="(max-width: 430px) 46vw, (max-width: 820px) 42vw, 270px"
+                loading={index < slides.length ? "eager" : "lazy"}
+                priority={index === 0}
+                draggable={false}
+              />
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }
