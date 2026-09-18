@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
 
 type Testimonial = {
@@ -51,7 +51,7 @@ function TestimonialCard({
   if (!item.src) return null;
 
   return (
-    <article className="testimonial-card" aria-hidden={copyIndex === 1}>
+    <article className="testimonial-card" data-testimonial-card aria-hidden={copyIndex === 1}>
       {item.type === "video" ? (
         <video
           src={item.src}
@@ -80,6 +80,49 @@ export function TestimonialsSection() {
     maxFlingSpeed: MAX_FLING_SPEED,
     paused: playingCount > 0,
   });
+
+  const updateCardDepth = useCallback(() => {
+    const marquee = railRef.current;
+    if (!marquee) return;
+
+    const marqueeRect = marquee.getBoundingClientRect();
+    const center = marqueeRect.left + marqueeRect.width / 2;
+    const influence = Math.min(540, marqueeRect.width * 0.48);
+
+    marquee.querySelectorAll<HTMLElement>("[data-testimonial-card]").forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const distance = (rect.left + rect.width / 2 - center) / influence;
+      const clamped = Math.max(-1, Math.min(1, distance));
+      const strength = 1 - Math.abs(clamped);
+
+      card.style.setProperty("--card-scale", String(0.78 + strength * 0.22));
+      card.style.setProperty("--card-lift", `${(1 - strength) * 26}px`);
+      card.style.setProperty("--card-rotate", `${clamped * -11}deg`);
+      card.style.setProperty("--card-opacity", String(0.52 + strength * 0.48));
+      card.style.setProperty("--card-blur", `${(1 - strength) * 1.3}px`);
+      card.style.zIndex = String(Math.round(strength * 10));
+    });
+  }, [railRef]);
+
+  useEffect(() => {
+    const marquee = railRef.current;
+    if (!marquee) return;
+
+    let frame = 0;
+    const scheduleDepthUpdate = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(updateCardDepth);
+    };
+
+    scheduleDepthUpdate();
+    marquee.addEventListener("scroll", scheduleDepthUpdate, { passive: true });
+    window.addEventListener("resize", scheduleDepthUpdate);
+    return () => {
+      cancelAnimationFrame(frame);
+      marquee.removeEventListener("scroll", scheduleDepthUpdate);
+      window.removeEventListener("resize", scheduleDepthUpdate);
+    };
+  }, [railRef, updateCardDepth]);
 
   return (
     <section className="section testimonials-section">
