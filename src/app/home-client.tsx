@@ -100,12 +100,13 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
     let raf = 0;
     let last = performance.now();
     let renderedActive = 0;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     function render(now: number) {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
 
-      if (!draggingRef.current) {
+      if (!draggingRef.current && !reducedMotion.matches) {
         // Al soltar, el envión del gesto decae hasta el automático: nunca
         // frena, sólo deja de correr.
         velocityRef.current += (HERO_AUTO_SPEED - velocityRef.current) * Math.min(1, dt * HERO_INERTIA_RESPONSE);
@@ -140,6 +141,7 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
   }, [slides.length]);
 
   function startDrag(event: React.PointerEvent<HTMLDivElement>) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
     draggingRef.current = true;
     draggedRef.current = false;
