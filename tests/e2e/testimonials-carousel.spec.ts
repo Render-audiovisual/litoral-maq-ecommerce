@@ -12,8 +12,13 @@ async function widths(page: Page) {
   );
 }
 
-async function counter(page: Page) {
-  return (await page.locator(".testimonial-controls span").textContent()) ?? "";
+/** Posición de la tarjeta central dentro de la lista. Sin flechas ni contador,
+ *  esta es la forma de saber si el carrusel se movió. */
+async function activeIndex(page: Page) {
+  return page.evaluate(
+    (sel) => [...document.querySelectorAll<HTMLElement>(sel)].findIndex((el) => el.classList.contains("is-active")),
+    card,
+  );
 }
 
 async function openSection(page: Page) {
@@ -30,11 +35,13 @@ test("una tarjeta manda y el resto se escalona hacia los costados", async ({ pag
   // Las laterales vienen de a pares (una a cada lado), así que se comparan
   // los tamaños distintos, no la lista cruda.
   const escalones = [...new Set(await widths(page))];
-  // La central tiene que ser claramente la protagonista, no una más grande.
-  expect(escalones[0] / escalones[1]).toBeGreaterThan(2);
-  // Y las laterales caen de forma pareja, no todas del mismo tamaño.
-  expect(escalones[1] / escalones[2]).toBeGreaterThan(1.15);
-  expect(escalones[1] / escalones[2]).toBeLessThan(1.45);
+  // La central manda, pero las vecinas siguen siendo grandes y legibles:
+  // el material es vertical y de poco se vuelve ilegible.
+  expect(escalones[0] / escalones[1]).toBeGreaterThan(1.25);
+  expect(escalones[0] / escalones[1]).toBeLessThan(1.8);
+  // Y de ahí hacia afuera bajan de a poco, sin un corte brusco.
+  expect(escalones[1] / escalones[2]).toBeGreaterThan(1.08);
+  expect(escalones[1] / escalones[2]).toBeLessThan(1.35);
 
   // Todas comparten el eje vertical: es una cinta, no una escalera.
   const ejes = await page.evaluate(
@@ -47,46 +54,61 @@ test("una tarjeta manda y el resto se escalona hacia los costados", async ({ pag
   expect(ejes).toBe(1);
 });
 
+test("todas las tarjetas se ven nítidas, sin desenfoque ni transparencia", async ({ page }) => {
+  await openSection(page);
+  const efectos = await page.evaluate(
+    (sel) => [...document.querySelectorAll<HTMLElement>(sel)].map((el) => {
+      const s = getComputedStyle(el);
+      return { opacity: s.opacity, filter: s.filter };
+    }),
+    card,
+  );
+  expect(efectos.every((e) => e.opacity === "1")).toBe(true);
+  expect(efectos.every((e) => e.filter === "none")).toBe(true);
+});
+
 test("avanza sola, frena con el puntero encima y se puede arrastrar", async ({ page }) => {
   await openSection(page);
 
-  const inicial = await counter(page);
+  const inicial = await activeIndex(page);
   await page.waitForTimeout(5200);
-  const despues = await counter(page);
-  expect(despues).not.toBe(inicial);
+  expect(await activeIndex(page)).not.toBe(inicial);
 
   // Con el mouse encima queda quieta para poder mirar el testimonio.
   await page.locator(stage).hover();
-  const quieta = await counter(page);
+  const quieta = await activeIndex(page);
   await page.waitForTimeout(5200);
-  expect(await counter(page)).toBe(quieta);
+  expect(await activeIndex(page)).toBe(quieta);
 
   // El arrastre reparte el protagonismo entre dos tarjetas y al soltar
   // vuelve a haber una sola central.
   const box = await page.locator(stage).boundingBox();
   if (!box) throw new Error("No se pudo medir el carrusel");
   const y = box.y + box.height / 2;
+  // Medio paso: el objetivo es quedar entre dos tarjetas. Se calcula desde el
+  // ancho real de la central para que valga en cualquier pantalla.
+  const medioPaso = Math.round((await widths(page))[0] * 0.45);
   await page.mouse.move(box.x + box.width / 2, y);
   await page.mouse.down();
-  await page.mouse.move(box.x + box.width / 2 - 120, y);
-  await page.mouse.move(box.x + box.width / 2 - 250, y);
+  await page.mouse.move(box.x + box.width / 2 - medioPaso * 0.5, y);
+  await page.mouse.move(box.x + box.width / 2 - medioPaso, y);
   const durante = await widths(page);
-  expect(durante[0] / durante[1]).toBeLessThan(2);
+  expect(durante[0] / durante[1]).toBeLessThan(1.2);
   await page.mouse.up();
   await page.waitForTimeout(900);
   const final = await widths(page);
-  expect(final[0] / final[1]).toBeGreaterThan(2);
-  expect(await counter(page)).not.toBe(quieta);
+  expect(final[0] / final[1]).toBeGreaterThan(1.25);
+  expect(await activeIndex(page)).not.toBe(quieta);
 });
 
 test("tocar una tarjeta lateral la trae al centro", async ({ page }) => {
   await openSection(page);
   await page.locator(stage).hover(); // frena el automático para que la prueba sea estable
-  const antes = await counter(page);
+  const antes = await activeIndex(page);
 
   await page.locator(".testimonial-reach").first().click({ force: true });
   await page.waitForTimeout(900);
-  expect(await counter(page)).not.toBe(antes);
+  expect(await activeIndex(page)).not.toBe(antes);
 });
 
 test("el video se mira en la tarjeta central, con controles y sin que el carrusel siga girando", async ({ page }) => {
@@ -115,9 +137,9 @@ test("el video se mira en la tarjeta central, con controles y sin que el carruse
   expect(reproduciendo).toBe(true);
 
   // Mientras se reproduce, el carrusel no se mueve solo.
-  const durante = await counter(page);
+  const durante = await activeIndex(page);
   await page.waitForTimeout(5200);
-  expect(await counter(page)).toBe(durante);
+  expect(await activeIndex(page)).toBe(durante);
 });
 
 test("las laterales no tienen controles de video ni roban el foco", async ({ page }) => {

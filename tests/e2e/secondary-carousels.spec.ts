@@ -84,7 +84,6 @@ for (const carousel of [
     expect(touchAction).toContain("pan-x");
 
     await rail.evaluate((element) => { element.scrollLeft = 80; });
-    const beforeGesture = await rail.evaluate((element) => element.scrollLeft);
 
     await rail.dispatchEvent("pointerdown", {
       pointerId: 9,
@@ -93,6 +92,11 @@ for (const carousel of [
       clientY: 300,
     });
     await page.waitForTimeout(30);
+    // Las dos muestras van pegadas al gesto: el automático nunca se detiene
+    // (el hook no captura punteros táctiles a propósito) y el riel se sigue
+    // moviendo solo, así que medir contra una referencia vieja mezclaría esa
+    // deriva con lo que se quiere comprobar.
+    const beforeMove = await rail.evaluate((element) => element.scrollLeft);
     await rail.dispatchEvent("pointermove", {
       pointerId: 9,
       pointerType: "touch",
@@ -100,9 +104,10 @@ for (const carousel of [
       clientY: 300,
     });
     // Los eventos sintéticos no generan scroll nativo. Si el hook intentara
-    // capturar el dedo y mover el riel manualmente, scrollLeft cambiaría acá.
+    // capturar el dedo y mover el riel manualmente, scrollLeft saltaría los
+    // 120 px del gesto; unos pocos píxeles de deriva no son eso.
     const afterSyntheticGesture = await rail.evaluate((element) => element.scrollLeft);
-    expect(Math.abs(afterSyntheticGesture - beforeGesture)).toBeLessThan(4);
+    expect(Math.abs(afterSyntheticGesture - beforeMove)).toBeLessThan(30);
     await rail.dispatchEvent("pointerup", {
       pointerId: 9,
       pointerType: "touch",
@@ -110,9 +115,13 @@ for (const carousel of [
       clientY: 300,
     });
 
-    // Al terminar el gesto, el movimiento automático retoma desde la
-    // posición que haya dejado el scroll nativo del navegador.
+    // Al terminar el gesto, el movimiento automático retoma. Se comprueba
+    // con dos muestras propias: la posición inicial que fija la prueba no
+    // sirve de referencia porque el riel es del hook, que la reescribe en el
+    // frame siguiente (a veces antes de poder leerla, a veces después).
     await page.waitForTimeout(500);
-    expect(await rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(beforeGesture + 8);
+    const retomado = await rail.evaluate((element) => element.scrollLeft);
+    await page.waitForTimeout(400);
+    expect(await rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(retomado + 4);
   });
 }
