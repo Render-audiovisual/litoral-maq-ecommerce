@@ -423,7 +423,15 @@ jobs:
 
   deploy:
     name: Publicar con backup y rollback
-    if: github.event_name != 'pull_request'
+    # Explícito a propósito: cuando los jobs de Supabase se saltan por no tener
+    # nada que hacer, la condición implícita de GitHub arrastra ese "skipped"
+    # por la cadena y dejaba sin publicar un cambio de frontend perfectamente
+    # verificado. Acá sólo importan estas dos cosas, y se dicen con todas las letras.
+    if: |
+      always() &&
+      github.event_name != 'pull_request' &&
+      needs.verify.result == 'success' &&
+      needs.supabase_deploy_gate.result == 'success'
     needs: [verify, supabase_deploy_gate]
     runs-on: ubuntu-latest
     environment: production
