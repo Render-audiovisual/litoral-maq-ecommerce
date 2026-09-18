@@ -72,9 +72,9 @@ const STAR_PRODUCTS = [
   { productId: "3542", image: "/products/catalog/3542-lo180-220.webp" },
 ] as const;
 
-const HERO_AUTO_SPEED = 0.18;
-const HERO_MAX_FLING_SPEED = 2.8;
-const HERO_INERTIA_RESPONSE = 1.5; // ~0,5 s más de envión que el ajuste anterior
+const HERO_AUTO_SPEED = 0.14;
+const HERO_MAX_FLING_SPEED = 2.2;
+const HERO_INERTIA_RESPONSE = 1.15;
 
 type PromoSlide = (typeof PROMO_SLIDES)[number];
 
@@ -124,10 +124,13 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
         if (!card) return;
         const delta = wrapCarouselDelta(index - position, slides.length);
         const distance = Math.abs(delta);
-        const scale = Math.max(0.76, 1 - Math.min(distance, 2.3) * 0.095);
-        const opacity = Math.max(0, 1 - Math.max(0, distance - 1.1) * 0.72);
-        const x = delta * 78;
-        card.style.transform = `translate3d(calc(-50% + ${x}%), -50%, 0) scale(${scale}) rotate(${delta * 1.65}deg)`;
+        // Cinta horizontal continua: las tarjetas mantienen su eje y tamaño.
+        // El wrap de delta hace que la última reaparezca detrás de la primera
+        // sin un salto perceptible ni el giro orbital de la versión anterior.
+        const scale = Math.max(0.94, 1 - Math.min(distance, 2.5) * 0.018);
+        const opacity = Math.max(0, 1 - Math.max(0, distance - 2) * 0.8);
+        const x = delta * 92;
+        card.style.transform = `translate3d(calc(-50% + ${x}%), -50%, 0) scale(${scale})`;
         card.style.opacity = `${opacity}`;
         card.style.zIndex = `${Math.max(1, 20 - Math.round(distance * 6))}`;
         card.style.pointerEvents = distance < 1.55 ? "auto" : "none";
@@ -175,10 +178,11 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
       }
     }
     positionRef.current = (pointerRef.current.position - dx / width + slides.length) % slides.length;
-    velocityRef.current = Math.max(
+    const sampledVelocity = Math.max(
       -HERO_MAX_FLING_SPEED,
       Math.min(HERO_MAX_FLING_SPEED, -(segmentDx / width) / (elapsed / 1000)),
     );
+    velocityRef.current = velocityRef.current * 0.55 + sampledVelocity * 0.45;
     pointerRef.current.lastX = event.clientX;
     pointerRef.current.lastTime = now;
   }

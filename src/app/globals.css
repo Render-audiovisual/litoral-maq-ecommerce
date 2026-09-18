@@ -137,7 +137,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .commerce-metrics strong { color: var(--navy); font-size: 23px; }
 .hero-promo-slider { min-width: 0; min-height: 570px; grid-area: promo; position: relative; isolation: isolate; overflow: hidden; user-select: none; touch-action: pan-y; cursor: grab; animation: hero-carousel-in .62s .12s cubic-bezier(.22, 1, .36, 1) both; }
 .hero-promo-slider.is-dragging { cursor: grabbing; }
-.hero-promo-card { width: min(50%, 330px); aspect-ratio: 9 / 16; position: absolute; left: 50%; top: 50%; overflow: hidden; border: 5px solid rgba(255,255,255,.96); border-radius: 22px; background: var(--navy-dark); box-shadow: 0 24px 64px rgba(0,42,73,.22); opacity: 0; transform: translate3d(-50%, -50%, 0); transform-origin: center; will-change: transform, opacity; transition: box-shadow .35s ease, filter .35s ease; }
+.hero-promo-card { width: min(50%, 330px); aspect-ratio: 9 / 16; position: absolute; left: 50%; top: 50%; overflow: hidden; border: 5px solid rgba(255,255,255,.96); border-radius: 22px; background: var(--navy-dark); box-shadow: 0 24px 64px rgba(0,42,73,.22); opacity: 0; transform: translate3d(-50%, -50%, 0); transform-origin: center; will-change: transform, opacity; transition: box-shadow .25s ease, filter .25s ease; }
 .hero-promo-card[aria-current="true"] { box-shadow: 0 31px 76px rgba(0,42,73,.29); filter: brightness(1) saturate(1); }
 .hero-promo-card:not([aria-current="true"]) { filter: brightness(.8) saturate(.86); }
 .hero-promo-card:focus-visible { outline: 4px solid var(--cyan); outline-offset: -7px; }
@@ -831,6 +831,11 @@ td > small { margin-top: 4px; color: var(--muted); }
   .cart-line > strong { grid-column: 2; }
   .cart-line .quantity { grid-row: 2; grid-column: 3; }
   .form-grid, .delivery-options { grid-template-columns: 1fr; }
+  /* Safari amplía automáticamente la página al enfocar controles menores a
+     16 px. Mantener este tamaño evita el zoom sin bloquear el zoom manual. */
+  .checkout-page input,
+  .checkout-page select,
+  .checkout-page textarea { font-size: 16px; }
   .account-header { flex-direction: column; gap: 15px; }
   .order-card { grid-template-columns: 1fr; }
   .admin-content, .admin-topbar { padding-left: 16px; padding-right: 16px; }
