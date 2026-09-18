@@ -135,12 +135,14 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .commerce-metrics { display: flex; gap: 34px; color: var(--muted); font-size: 11px; }
 .commerce-metrics span { display: flex; flex-direction: column; }
 .commerce-metrics strong { color: var(--navy); font-size: 23px; }
-.hero-promo-slider { min-width: 0; min-height: 570px; grid-area: promo; display: flex; align-items: center; position: relative; isolation: isolate; overflow: hidden; user-select: none; touch-action: pan-y; cursor: grab; animation: hero-carousel-in .62s .12s cubic-bezier(.22, 1, .36, 1) both; }
+.hero-promo-slider { min-width: 0; min-height: 570px; grid-area: promo; position: relative; isolation: isolate; overflow: hidden; perspective: 1200px; user-select: none; touch-action: pan-y; cursor: grab; animation: hero-carousel-in .62s .12s cubic-bezier(.22, 1, .36, 1) both; }
+.hero-promo-slider::before { content: ""; position: absolute; inset: 9% 9% 7%; border-radius: 50%; background: radial-gradient(circle at 50% 44%, rgba(255,255,255,.98) 0 26%, rgba(89,202,211,.22) 57%, rgba(0,42,73,.08) 76%, transparent 77%); filter: blur(.2px); transform: translateZ(-220px); }
+.hero-promo-slider::after { content: ""; position: absolute; right: 7%; bottom: 8%; left: 7%; height: 16%; border-radius: 50%; background: rgba(0,42,73,.18); filter: blur(34px); transform: translateZ(-260px); }
 .hero-promo-slider.is-dragging { cursor: grabbing; }
-/* El riel se mueve entero con transform; las tarjetas no se transforman una
-   por una, así la cinta avanza pareja y se ve igual en móvil que en escritorio. */
-.hero-promo-track { display: flex; align-items: center; gap: clamp(12px, 1.2vw, 18px); width: max-content; will-change: transform; }
-.hero-promo-card { flex: 0 0 auto; width: clamp(196px, 20vw, 270px); aspect-ratio: 9 / 16; position: relative; overflow: hidden; border: 5px solid rgba(255,255,255,.96); border-radius: 22px; background: var(--navy-dark); box-shadow: 0 24px 64px rgba(0,42,73,.22); transition: box-shadow .35s ease; }
+.hero-promo-stage { position: absolute; inset: 0; transform-style: preserve-3d; }
+.hero-promo-card { width: clamp(220px, 24vw, 320px); aspect-ratio: 9 / 16; position: absolute; left: 50%; top: 50%; overflow: hidden; border: 5px solid rgba(255,255,255,.98); border-radius: 28px; background: var(--navy-dark); box-shadow: 0 30px 82px rgba(0,42,73,.3), 0 7px 18px rgba(0,42,73,.13); opacity: 0; transform: translate3d(-50%, -50%, 0); transform-origin: center; will-change: transform, opacity; transition: box-shadow .3s ease, filter .3s ease; backface-visibility: hidden; }
+.hero-promo-card:not([data-active]) { filter: brightness(.8) saturate(.82); }
+.hero-promo-card[data-active] { box-shadow: 0 38px 100px rgba(0,42,73,.38), 0 9px 24px rgba(0,42,73,.16); filter: brightness(1) saturate(1.04); }
 .hero-promo-card:focus-visible { outline: 4px solid var(--cyan); outline-offset: -7px; }
 .hero-promo-card img { object-fit: cover; object-position: center; pointer-events: none; -webkit-user-drag: none; }
 .winner-section { padding: 78px 6vw 88px; background: var(--navy-dark); }
@@ -149,14 +151,16 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .winner-heading p { margin: 9px 0 0; color: #a9c0cf; }
 .winner-heading .text-link { color: #fff; }
 .winner-grid { display: flex; gap: 16px; }
-.category-marquee { width: 100%; max-width: 1590px; margin: 0 auto; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-inline: contain; scrollbar-width: none; user-select: none; touch-action: pan-x pan-y; cursor: grab; }
+.category-marquee { width: 100%; max-width: 1590px; margin: 0 auto; position: relative; overflow: hidden; user-select: none; touch-action: pan-y; cursor: grab; mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%); }
 .category-marquee::-webkit-scrollbar { display: none; }
 .category-marquee.is-dragging { cursor: grabbing; }
-.category-track { width: max-content; }
+.category-track { width: max-content; padding: 12px 0 28px; will-change: transform; }
 .category-marquee img { -webkit-user-drag: none; }
-.winner-card { min-width: 0; overflow: hidden; display: grid; grid-template-rows: 255px auto; border-radius: 7px; background: #fff; box-shadow: 0 20px 55px rgba(0,20,36,.28); transition: transform .22s ease, box-shadow .22s ease; }
+.winner-card { min-width: 0; overflow: hidden; display: grid; grid-template-rows: 255px auto; border: 1px solid rgba(255,255,255,.16); border-radius: 20px; background: #fff; box-shadow: 0 20px 55px rgba(0,20,36,.28); transition: transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s ease; }
 .category-track .winner-card { width: clamp(310px, 29vw, 410px); flex: 0 0 auto; }
-.winner-card:hover { transform: translateY(-5px); box-shadow: 0 28px 65px rgba(0,15,28,.42); }
+.category-track .winner-card:nth-child(3n + 2) { transform: translateY(10px); }
+.category-track .winner-card:nth-child(3n) { transform: translateY(3px); }
+.winner-card:hover, .category-track .winner-card:hover { transform: translateY(-6px) scale(1.012); box-shadow: 0 31px 72px rgba(0,15,28,.48); }
 .winner-card-media { position: relative; overflow: hidden; background: #fff7f1; }
 .winner-card-media::after { content: ""; position: absolute; inset: auto 0 0; height: 38%; background: linear-gradient(transparent, rgba(0,42,73,.16)); }
 .winner-card-media img { object-fit: cover; object-position: center 43%; transition: transform .35s ease; }
