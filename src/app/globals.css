@@ -341,7 +341,7 @@ textarea { min-height: 100px; resize: vertical; }
 .order-summary > small { display: block; text-align: center; color: var(--muted); }
 .order-summary.sticky { position: sticky; top: 115px; }
 .checkout-steps { display: flex; flex-direction: column; gap: 18px; }
-.form-card, .admin-card { padding: 28px; background: #fff; border: 1px solid var(--line); }
+.form-card, .admin-card { min-width: 0; max-width: 100%; padding: 28px; background: #fff; border: 1px solid var(--line); }
 .form-card { position: relative; }
 .form-card, .order-summary { transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
 .form-card:focus-within { border-color: rgba(0,59,99,.3); box-shadow: 0 16px 38px rgba(0,42,73,.08); }
@@ -481,7 +481,7 @@ textarea { min-height: 100px; resize: vertical; }
 .admin-notification.active > span { color: var(--orange); }
 .nav-orders-link b { min-width: 18px; height: 18px; display: inline-grid; place-items: center; border-radius: 9px; background: var(--orange); color: #fff; font-size: 8px; }
 .admin-topbar span { color: var(--muted); font-size: 10px; }
-.admin-content { padding: 32px; }
+.admin-content { min-width: 0; max-width: 100%; padding: 32px; overflow-x: clip; }
 .admin-heading { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
 .admin-heading h1 { margin: 7px 0; font-size: 2.7rem; }
 .admin-heading p { margin: 0; color: var(--muted); }
@@ -500,7 +500,7 @@ textarea { min-height: 100px; resize: vertical; }
 .card-heading p { margin: 0; color: var(--muted); font-size: 11px; }
 .card-heading a { color: var(--orange); font-weight: 750; font-size: 11px; }
 .empty-inline { padding: 30px; text-align: center; color: var(--muted); background: var(--soft); }
-.table-wrap { overflow-x: auto; }
+.table-wrap { width: 100%; max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
 /* Segunda barra de scroll, arriba de la tabla y espejada con la de abajo
    (ver components/table-scroll.tsx). En una notebook de 15,6" las tablas del
    panel no entran, y la barra propia del contenedor queda al final de la
@@ -511,6 +511,8 @@ textarea { min-height: 100px; resize: vertical; }
    derecha. Con alto explícito para que no dependa de cómo cada navegador
    dimensione una barra superpuesta. */
 .table-scroll-top {
+  width: 100%;
+  max-width: 100%;
   height: 12px;
   overflow-x: scroll;
   overflow-y: hidden;
