@@ -77,6 +77,7 @@ function rowToProduct(row: ProductRow): Product {
     shippingWidthCm: row.shipping_width_cm,
     shippingLengthCm: row.shipping_length_cm,
     shippingEnabled: row.shipping_enabled,
+    updatedAt: row.updated_at,
   };
 }
 

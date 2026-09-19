@@ -29,6 +29,8 @@ export type Product = {
   shippingWidthCm?: number | null;
   shippingLengthCm?: number | null;
   shippingEnabled?: boolean;
+  /** Sólo disponible tras hidratar desde Supabase; el seed estático no lo trae. */
+  updatedAt?: string;
 };
 
 export type CartLine = {
