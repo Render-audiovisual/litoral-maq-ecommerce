@@ -651,9 +651,9 @@
     "source": "google-sheet",
     "sourceRow": 26,
     "incomplete": [
-      "image",
       "stock",
-      "description"
+      "description",
+      "image"
     ],
     "purchaseLimit": 3
   },
@@ -6757,20 +6757,21 @@
     "rawPrice": "$ 398.998,71",
     "category": "Herramientas manuales",
     "brand": "Sin marca informada",
-    "image": null,
-    "images": [],
+    "image": "/products/catalog/3622-li121600-20k18.webp",
+    "images": [
+      "/products/catalog/3622-li121600-20k18.webp",
+      "/products/catalog/3622-li121600-20k18-ficha.webp"
+    ],
     "stock": 0,
     "lowStockThreshold": 5,
     "active": false,
     "featured": false,
-    "description": null,
+    "description": "Llave de impacto recargable brushless, linea Brigada 20V. Torque 1600N/m, torque maximo breakaway 2000N/m. Encastre 3/4\". Cargador base 4/8A, bateria 20V 4/8Ah. Auto stop al remover tuercas, modo Eco (+30% autonomia). Contenido (K1-8): 1 llave de impacto, 1 mango auxiliar, 1 bateria 20V-8Ah, 1 cargador base 4A, 1 maletin plastico.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 259,
     "incomplete": [
-      "image",
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
