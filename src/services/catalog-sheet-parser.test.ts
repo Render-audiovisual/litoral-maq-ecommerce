@@ -20,9 +20,20 @@ describe("validador del Sheet ejecutado en servidor", () => {
     ]);
   });
 
-  it("rechaza filas inválidas y códigos duplicados antes de tocar la base", () => {
+  it("rechaza códigos duplicados antes de tocar la base", () => {
     expect(() => parseCatalogSheet("codigo,articulo,precio\n1,Uno,$100\n1,Dos,$200", 2)).toThrow(/duplicado/i);
-    expect(() => parseCatalogSheet("codigo,articulo,precio\n1,,$100", 1)).toThrow(/fila/i);
+  });
+
+  it("descarta filas incompletas sin cancelar el resto de la sincronización", () => {
+    const parsed = parseCatalogSheet("codigo,articulo,precio\n1,Uno,$100\n2,,$200", 1);
+    expect(parsed.rows).toEqual([expect.objectContaining({ code: "1", name: "Uno" })]);
+    expect(parsed.invalidRows).toEqual([3]);
+  });
+
+  it("conserva el código de filas con precio ilegible (celda '############') para no retirarlas", () => {
+    const parsed = parseCatalogSheet("codigo,articulo,precio\n1,Uno,$100\n2,Dos,############", 1);
+    expect(parsed.rows).toEqual([expect.objectContaining({ code: "1", name: "Uno" })]);
+    expect(parsed.unpriceable).toEqual([{ code: "2", sourceRow: 3 }]);
   });
 
   it("cancela respuestas parciales", () => {

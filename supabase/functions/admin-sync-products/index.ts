@@ -78,9 +78,36 @@ Deno.serve(async (request) => {
     const admin = await requireAdmin(request, db);
     adminId = admin.id;
     const parsed = parseCatalogSheet(await fetchSheetCsv());
+
+    // Filas con precio ilegible (p.ej. "############" por un formato de
+    // celda angosto en Sheets) igual traen código y nombre: se completan con
+    // el precio ya guardado para que la fila siga apareciendo en el Sheet a
+    // ojos de la sincronización y no se retire el producto por error.
+    const keptRows = [...parsed.rows];
+    if (parsed.unpriceable.length) {
+      const codes = parsed.unpriceable.map((item) => item.code);
+      const { data: existing } = await db
+        .from("products")
+        .select("code, name, price, raw_price, slug")
+        .in("code", codes);
+      const byCode = new Map((existing ?? []).map((item) => [item.code, item]));
+      for (const { code, sourceRow } of parsed.unpriceable) {
+        const current = byCode.get(code);
+        if (!current || current.price === null) continue;
+        keptRows.push({
+          code,
+          name: current.name,
+          price: current.price,
+          rawPrice: current.raw_price ?? String(current.price),
+          sourceRow,
+          slug: current.slug,
+        });
+      }
+    }
+
     const { data, error } = await db.rpc("sync_catalog_from_sheet", {
       p_admin_id: admin.id,
-      p_products: parsed.rows.map((row) => ({
+      p_products: keptRows.map((row) => ({
         code: row.code,
         name: row.name,
         price: row.price,
@@ -97,6 +124,13 @@ Deno.serve(async (request) => {
       warnings: [
         "El Sheet confirma disponibilidad comercial, pero todavía no informa cantidades físicas.",
         "Se conservaron imágenes, descripciones, categorías, marcas, logística y límites personalizados.",
+        ...(parsed.invalidRows.length
+          ? [
+              `Hay ${parsed.invalidRows.length} fila(s) con precio o datos ilegibles en el Sheet (fila ${
+                parsed.invalidRows.slice(0, 8).join(", fila ")
+              }${parsed.invalidRows.length > 8 ? "…" : ""}). Se mantuvo el precio anterior donde el producto ya existía; revisá esas celdas en el Sheet (formato de columna angosto suele mostrar "############").`,
+            ]
+          : []),
       ],
     });
   } catch (error) {
