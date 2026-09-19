@@ -31,7 +31,7 @@ const TESTIMONIALS: Testimonial[] = [
   { id: "cliente-equipado", type: "image", src: "/testimonios/cliente-equipado.jpg", name: "Cliente equipado en Litoral Maq" },
 ];
 
-const AUTO_ADVANCE_MS = 4200;
+const AUTO_ADVANCE_MS = 3600;
 
 function TestimonialCard({
   item,
