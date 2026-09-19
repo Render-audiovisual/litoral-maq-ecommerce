@@ -22,7 +22,10 @@ type ScaleCarouselOptions = {
 // profundidad sin usar 3D real.
 const SIDE_RATIO = 0.7; // vecinas legibles aun con material vertical 9:16
 const DECAY = 0.84; // reducción gradual hacia los extremos
-const SNAP_RESPONSE = 7.5; // qué tan rápido encaja al soltar
+// Al encajar tarda cerca de un segundo en vez de medio: el recambio se ve
+// deslizar en lugar de acomodarse de golpe, que es lo que hace que la cinta
+// se sienta viva entre paso y paso.
+const SNAP_RESPONSE = 3.2;
 const DRAG_CLICK_THRESHOLD = 8;
 
 /** Tamaño relativo de una tarjeta según su distancia continua al centro. */
@@ -90,14 +93,19 @@ export function useScaleCarousel({ count, autoAdvanceMs = 0, paused = false }: S
     let raf = 0;
     let last = performance.now();
     let nextAdvance = performance.now() + autoAdvanceMs;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+// Las cintas del inicio se mueven siempre, igual que la barra superior y el
+// carrusel de categorías, que nunca miraron esta preferencia. Cuando solo
+// estas dos la respetaban, en una máquina que pide "menos movimiento" el
+// inicio quedaba a medias —dos cintas corriendo y dos congeladas— y se leía
+// como que estaban rotas. Si alguna vez se decide honrar la preferencia,
+// tiene que hacerse en los cuatro lugares a la vez, no en dos.
 
     function frame(now: number) {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
 
       if (!draggingRef.current) {
-        if (autoAdvanceMs > 0 && !paused && !reducedMotion.matches && now >= nextAdvance) {
+        if (autoAdvanceMs > 0 && !paused && now >= nextAdvance) {
           targetRef.current = Math.round(targetRef.current) + 1;
           nextAdvance = now + autoAdvanceMs;
         }
