@@ -4,6 +4,7 @@ import {
   type OrderRecord,
   renderOrderEmail,
 } from "./order-email.ts";
+import { monitor } from "./monitoring.ts";
 
 type OutboxEvent = {
   id: string;
@@ -123,6 +124,12 @@ export async function processPendingOrderNotifications(
       sent += 1;
     } catch (error) {
       failed += 1;
+      monitor("error", "order_email_failed", {
+        order_id: event.order_id,
+        event_type: event.event_type,
+        attempt: event.attempts,
+        error: error instanceof Error ? error.message.slice(0, 300) : "Error desconocido",
+      });
       await markFailed(
         db,
         event,
@@ -130,5 +137,11 @@ export async function processPendingOrderNotifications(
       );
     }
   }
+  monitor(failed ? "warn" : "info", "order_email_batch_completed", {
+    order_id: orderId || undefined,
+    claimed: events.length,
+    sent,
+    failed,
+  });
   return { claimed: events.length, sent, failed };
 }

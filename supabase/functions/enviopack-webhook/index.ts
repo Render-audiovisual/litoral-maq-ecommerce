@@ -2,6 +2,7 @@ import { normalizeProviderStatus } from "../_shared/shipping/domain.ts";
 import { getShippingProvider } from "../_shared/shipping/factory.ts";
 import { serviceClient } from "../_shared/http.ts";
 import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
+import { monitor } from "../_shared/monitoring.ts";
 
 declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
 
@@ -90,6 +91,11 @@ Deno.serve((request) => {
   }
   EdgeRuntime.waitUntil(
     processNotification(type, shipmentId).catch(async (error) => {
+      monitor("error", "enviopack_webhook_failed", {
+        event_type: type,
+        shipment_id: shipmentId,
+        error: error instanceof Error ? error.message.slice(0, 300) : "Error desconocido",
+      });
       try {
         const db = serviceClient();
         await db.from("shipping_events").upsert({

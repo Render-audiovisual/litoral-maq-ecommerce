@@ -3,6 +3,7 @@ import {
   type SupabaseClient,
   type User,
 } from "npm:@supabase/supabase-js@2.111.0";
+import { monitor } from "./monitoring.ts";
 
 export class HttpError extends Error {
   constructor(readonly status: number, message: string) {
@@ -116,6 +117,12 @@ export function errorResponse(request: Request, error: unknown) {
     retryable?: unknown;
   };
   const status = typeof candidate?.status === "number" ? candidate.status : 500;
+  monitor(status >= 500 ? "error" : "warn", "edge_request_failed", {
+    function: new URL(request.url).pathname.split("/").filter(Boolean).at(-1),
+    method: request.method,
+    status,
+    error: error instanceof Error ? error.message.slice(0, 300) : "Error desconocido",
+  });
   const message = typeof candidate?.message === "string" && status < 500
     ? candidate.message
     : status === 503
