@@ -69,6 +69,16 @@ describe("catálogo inicial", () => {
     expect(item?.active).toBe(false);
   });
 
+  it("carga la ficha de 3622 (llave de impacto NEO) desde el catálogo oficial de GBS", () => {
+    const seed = productsSeed as Product[];
+    const item = seed.find((product) => product.id === "3622");
+    expect(item?.name).toContain("LI121600/20K18");
+    expect(item?.description).toContain("1600N/m");
+    expect(item?.image).toBe("/products/catalog/3622-li121600-20k18.webp");
+    expect(item?.images).toContain("/products/catalog/3622-li121600-20k18-ficha.webp");
+    expect(item?.active).toBe(true);
+  });
+
   it("publica únicamente fichas activas con imagen y descripción verificadas", () => {
     const seed = productsSeed as Product[];
     const selected = getLaunchProducts(seed);
