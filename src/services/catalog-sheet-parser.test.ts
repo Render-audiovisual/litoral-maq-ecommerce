@@ -13,6 +13,13 @@ describe("validador del Sheet ejecutado en servidor", () => {
     ]);
   });
 
+  it("acepta variantes del encabezado de precio como 'Precio con IVA'", () => {
+    const parsed = parseCatalogSheet("codigo,articulo,Precio con IVA\n1,Uno,$100", 1);
+    expect(parsed.rows).toEqual([
+      expect.objectContaining({ code: "1", name: "Uno", price: 100 }),
+    ]);
+  });
+
   it("rechaza filas inválidas y códigos duplicados antes de tocar la base", () => {
     expect(() => parseCatalogSheet("codigo,articulo,precio\n1,Uno,$100\n1,Dos,$200", 2)).toThrow(/duplicado/i);
     expect(() => parseCatalogSheet("codigo,articulo,precio\n1,,$100", 1)).toThrow(/fila/i);

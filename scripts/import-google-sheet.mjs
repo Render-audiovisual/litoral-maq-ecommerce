@@ -181,7 +181,9 @@ const normalizedHeaders = headers.map((header) =>
 const validHeaders =
   ["codigo", "cod", "sku"].includes(normalizedHeaders[0]) &&
   ["articulo", "producto", "nombre"].includes(normalizedHeaders[1]) &&
-  ["preciocon", "precio", "preciocontado"].includes(normalizedHeaders[2]);
+  // Prefijo, no lista exacta: cubre "precio", "preciocon" y variantes como
+  // "Precio con IVA" (normaliza a "precioconiva").
+  (normalizedHeaders[2] || "").startsWith("precio");
 if (!validHeaders) {
   throw new Error(`Encabezados inesperados: ${headers.join(", ")}`);
 }
