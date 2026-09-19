@@ -74,7 +74,13 @@ const STAR_PRODUCTS = [
 
 // Cinta continua: píxeles por segundo, no tarjetas por segundo. El ritmo es
 // el de un ticker —constante y parejo— en vez de saltar de tarjeta en tarjeta.
-const HERO_TICKER_SPEED = 46;
+//
+// La referencia (lewius.framer.website) corre a 70 px/s con tarjetas de
+// 160 px: una tarjeta cada 2,4 s. Las nuestras miden 270 px, así que a esa
+// misma velocidad el recambio se sentía la mitad de vivo y el carrusel
+// parecía quieto. 100 px/s deja una tarjeta cada 2,9 s: se ve moverse de
+// entrada y las promos siguen siendo legibles.
+const HERO_TICKER_SPEED = 100;
 const HERO_MAX_FLING_SPEED = 900;
 
 type PromoSlide = (typeof PROMO_SLIDES)[number];
@@ -181,7 +187,9 @@ function CategoryWinnerCard({
   );
 }
 
-const CATEGORY_AUTO_SCROLL_SPEED = 38;
+// Mismo criterio que el hero: a 38 px/s, con tarjetas de ~400 px, pasaba una
+// cada 11 segundos y la cinta parecía detenida.
+const CATEGORY_AUTO_SCROLL_SPEED = 75;
 const CATEGORY_MAX_FLING_SPEED = 1500;
 
 type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
