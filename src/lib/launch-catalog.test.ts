@@ -76,7 +76,7 @@ describe("catálogo inicial", () => {
     expect(item?.description).toContain("1600N/m");
     expect(item?.image).toBe("/products/catalog/3622-li121600-20k18.webp");
     expect(item?.images).toContain("/products/catalog/3622-li121600-20k18-ficha.webp");
-    expect(item?.active).toBe(false);
+    expect(item?.active).toBe(true);
   });
 
   it("publica únicamente fichas activas con imagen y descripción verificadas", () => {

@@ -6764,7 +6764,7 @@
     ],
     "stock": 0,
     "lowStockThreshold": 5,
-    "active": false,
+    "active": true,
     "featured": false,
     "description": "Llave de impacto recargable brushless, linea Brigada 20V. Torque 1600N/m, torque maximo breakaway 2000N/m. Encastre 3/4\". Cargador base 4/8A, bateria 20V 4/8Ah. Auto stop al remover tuercas, modo Eco (+30% autonomia). Contenido (K1-8): 1 llave de impacto, 1 mango auxiliar, 1 bateria 20V-8Ah, 1 cargador base 4A, 1 maletin plastico.",
     "variants": [],
