@@ -76,8 +76,7 @@ function AdminProductsContent() {
             !query ||
             product.name.toLowerCase().includes(query.toLowerCase()) ||
             product.code?.includes(query),
-        )
-        .slice(0, 100),
+        ),
     [products, query, category],
   );
 

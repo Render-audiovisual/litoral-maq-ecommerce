@@ -111,9 +111,9 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
   const headers = rawHeaders.map(normalizeHeader);
   const codeIndex = headers.findIndex((header) => ["codigo", "cod", "sku"].includes(header));
   const nameIndex = headers.findIndex((header) => ["articulo", "producto", "nombre"].includes(header));
-  const priceIndex = headers.findIndex((header) =>
-    ["preciocon", "precio", "preciocontado"].includes(header)
-  );
+  // "precio" con prefijo: cubre "precio", "preciocon", "preciocontado" y variantes como
+  // "Precio con IVA" (normaliza a "precioconiva"), que rompían el match exacto anterior.
+  const priceIndex = headers.findIndex((header) => header.startsWith("precio"));
   if ([codeIndex, nameIndex, priceIndex].some((index) => index < 0)) {
     throw new CatalogSheetValidationError(
       `Encabezados inválidos. Se esperaba código, artículo y precio; llegaron: ${rawHeaders.join(", ")}.`,
