@@ -57,6 +57,8 @@ function AdminProductsContent() {
     useSearchParams().get("categoria") ?? "",
   );
   const [query, setQuery] = useState("");
+  const [status, setStatus] = useState<"active" | "inactive" | "all">("active");
+  const [sortBy, setSortBy] = useState<"name" | "recent">("name");
   const [editing, setEditing] = useState<Product | null>(null);
   const [message, setMessage] = useState("");
   const [messageKind, setMessageKind] = useState<"success" | "error">(
@@ -67,17 +69,27 @@ function AdminProductsContent() {
   const sheetProductCount = products.filter(
     (product) => product.source === "google-sheet",
   ).length;
+  const activeCount = products.filter((product) => product.active).length;
+  const inactiveCount = products.length - activeCount;
   const filtered = useMemo(
     () =>
       products
         .filter((product) => !category || product.category === category)
+        .filter((product) =>
+          status === "all" ? true : status === "active" ? product.active : !product.active,
+        )
         .filter(
           (product) =>
             !query ||
             product.name.toLowerCase().includes(query.toLowerCase()) ||
             product.code?.includes(query),
+        )
+        .sort((a, b) =>
+          sortBy === "recent"
+            ? (b.updatedAt ?? "").localeCompare(a.updatedAt ?? "")
+            : a.name.localeCompare(b.name),
         ),
-    [products, query, category],
+    [products, query, category, status, sortBy],
   );
 
   async function submit(event: FormEvent) {
@@ -259,6 +271,29 @@ function AdminProductsContent() {
         </div>
       )}
       <section className="admin-card">
+        <div className="status-tabs">
+          <button
+            type="button"
+            className={status === "active" ? "status-tab selected" : "status-tab"}
+            onClick={() => setStatus("active")}
+          >
+            Activos ({activeCount})
+          </button>
+          <button
+            type="button"
+            className={status === "inactive" ? "status-tab selected" : "status-tab"}
+            onClick={() => setStatus("inactive")}
+          >
+            No activos ({inactiveCount})
+          </button>
+          <button
+            type="button"
+            className={status === "all" ? "status-tab selected" : "status-tab"}
+            onClick={() => setStatus("all")}
+          >
+            Todos ({products.length})
+          </button>
+        </div>
         <div className="table-toolbar">
           <input
             value={query}
@@ -275,6 +310,14 @@ function AdminProductsContent() {
               {category} ×
             </button>
           )}
+          <select
+            className="sort-select"
+            value={sortBy}
+            onChange={(event) => setSortBy(event.target.value as "name" | "recent")}
+          >
+            <option value="name">Ordenar: nombre (A-Z)</option>
+            <option value="recent">Ordenar: agregados/editados recientemente</option>
+          </select>
           <span>Mostrando {filtered.length} resultados</span>
         </div>
         <TableScroll>
