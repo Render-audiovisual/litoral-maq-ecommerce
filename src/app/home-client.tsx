@@ -70,6 +70,10 @@ const STAR_PRODUCTS = [
   { productId: "3506", image: "/products/MOTOSIERRA_.png" },
   { productId: "3499", image: "/products/catalog/3499-bwir150.webp" },
   { productId: "3542", image: "/products/catalog/3542-lo180-220.webp" },
+  // 3506 (motosierra Knock Out) está inactiva y no se cuenta acá abajo: este
+  // quinto producto es el que mantiene la fila en cuatro tarjetas mientras
+  // esa siga sin foto y descripción confirmadas.
+  { productId: "3216", image: "/products/catalog/3216-sk455-1.webp" },
 ] as const;
 
 // Cinta continua: píxeles por segundo, no tarjetas por segundo. El ritmo es
