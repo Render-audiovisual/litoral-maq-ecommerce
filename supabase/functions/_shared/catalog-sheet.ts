@@ -10,6 +10,11 @@ export type CatalogSheetRow = {
 export type ParsedCatalogSheet = {
   rows: CatalogSheetRow[];
   headers: string[];
+  invalidRows: number[];
+  // Filas con código y artículo, pero precio ilegible (p.ej. "############"
+  // por un formato de celda angosto en Sheets). El llamador puede optar por
+  // conservar el precio actual de estos códigos en vez de retirarlos.
+  unpriceable: { code: string; sourceRow: number }[];
 };
 
 export class CatalogSheetValidationError extends Error {
@@ -122,6 +127,7 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
 
   const seenCodes = new Set<string>();
   const invalidRows: number[] = [];
+  const unpriceable: { code: string; sourceRow: number }[] = [];
   const rows: CatalogSheetRow[] = [];
   for (let index = 1; index < parsedRows.length; index += 1) {
     const sourceRow = index + 1;
@@ -132,6 +138,7 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
     const price = parsePrice(rawPrice);
     if (!code || !name || price === null) {
       invalidRows.push(sourceRow);
+      if (code && name) unpriceable.push({ code, sourceRow });
       continue;
     }
     if (seenCodes.has(code)) {
@@ -148,18 +155,15 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
     });
   }
 
-  if (invalidRows.length) {
-    throw new CatalogSheetValidationError(
-      `Hay filas incompletas o con precio inválido: ${invalidRows.slice(0, 8).join(", ")}${
-        invalidRows.length > 8 ? "…" : ""
-      }.`,
-    );
-  }
+  // Filas incompletas o con precio ilegible (p.ej. "############" por un
+  // formato de celda angosto en Sheets) se descartan en vez de cancelar toda
+  // la sincronización: el resto del catálogo sí se actualiza, y el llamador
+  // decide qué avisar con `invalidRows`.
   if (rows.length < minimumRows) {
     throw new CatalogSheetValidationError(
-      `El Sheet devolvió solo ${rows.length} productos. Se canceló la sincronización por seguridad.`,
+      `El Sheet devolvió solo ${rows.length} productos válidos. Se canceló la sincronización por seguridad.`,
     );
   }
 
-  return { rows, headers: rawHeaders };
+  return { rows, headers: rawHeaders, invalidRows, unpriceable };
 }
