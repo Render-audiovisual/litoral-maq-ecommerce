@@ -6,6 +6,7 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useCaptcha } from "@/components/use-captcha";
 import { PasswordInput } from "@/components/password-input";
 import { isValidAdminSession } from "@/lib/auth";
+import { AUTH_ORIGINS } from "@/lib/auth-callbacks";
 import { getAuthAdapter } from "@/services/auth";
 import { useStore } from "@/store/store";
 
@@ -85,6 +86,11 @@ function AdminLoginForm() {
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Mínimo 4 caracteres"
             />
+            <p className="form-helper">
+              <a href={`${AUTH_ORIGINS.production}/recuperar-clave${email ? `?email=${encodeURIComponent(email)}` : ""}`}>
+                ¿Olvidaste tu contraseña?
+              </a>
+            </p>
             {captcha.field}
             {error && <div className="error-message" role="alert">{error}</div>}
             <button className="button primary large full" disabled={loading || !captcha.solved}>
