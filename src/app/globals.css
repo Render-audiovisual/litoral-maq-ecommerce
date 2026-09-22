@@ -330,6 +330,8 @@ textarea { min-height: 100px; resize: vertical; }
 .page-heading { margin-bottom: 35px; }
 .page-heading h1 { margin: 9px 0; font-size: 3.4rem; }
 .cart-layout, .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: 38px; align-items: start; }
+.checkout-page, .checkout-layout, .checkout-steps, .form-card, .order-summary, .form-grid, .form-grid > label { min-width: 0; }
+.checkout-page input, .checkout-page select, .checkout-page textarea { width: 100%; min-width: 0; }
 .checkout-page .page-heading { animation: checkout-heading-in .42s cubic-bezier(.22, 1, .36, 1) both; }
 .checkout-layout > .checkout-steps { animation: checkout-form-in .5s .06s cubic-bezier(.22, 1, .36, 1) both; }
 .checkout-layout > .order-summary { animation: checkout-summary-in .5s .12s cubic-bezier(.22, 1, .36, 1) both; }
@@ -787,6 +789,10 @@ td > small { margin-top: 4px; color: var(--muted); }
   .commerce-metrics { display: none; }
   .hero-promo-slider { min-height: 340px; margin-top: 18px; }
   .hero-promo-card { width: clamp(132px, 44vw, 172px); border-width: 3px; border-radius: 16px; box-shadow: 0 18px 44px rgba(0,42,73,.2); }
+  .standard-page.checkout-page { width: 100%; padding-inline: 16px; overflow: hidden; }
+  .checkout-layout { width: 100%; gap: 20px; }
+  .checkout-steps, .form-card, .order-summary { width: 100%; max-width: 100%; }
+  .form-card, .order-summary { padding: 20px 16px; }
   .winner-section { padding: 50px 16px 56px; }
   .winner-heading { align-items: flex-start; }
   .winner-heading h2 { font-size: 2rem; line-height: 1.06; }

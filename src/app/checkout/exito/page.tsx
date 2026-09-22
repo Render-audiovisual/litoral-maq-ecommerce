@@ -31,8 +31,11 @@ function SuccessContent() {
       <span className="eyebrow orange">{paymentEnabled ? approved ? "PAGO CONFIRMADO" : "CONFIRMANDO PAGO" : "SOLICITUD RECIBIDA"}</span>
       <h1>{paymentEnabled ? approved ? "Tu compra está confirmada" : "Estamos verificando tu pago" : "Recibimos tu pedido"}</h1>
       <p>Tu pedido <strong>{orderId}</strong> quedó registrado.</p>
+      {!approved && paymentEnabled && (
+        <p><strong>Tu pedido queda reservado durante 24 horas.</strong> Si el pago no se acredita dentro de ese plazo, se cancelará automáticamente.</p>
+      )}
       <p>{paymentEnabled ? approved ? (order?.deliveryMethod === "retiro" ? "Mercado Pago confirmó el pago. Preparamos tu pedido y te avisamos cuando puedas retirarlo en el local de Sáenz 1587." : order && isShippingToCoordinate(order) ? `Mercado Pago confirmó el pago de los productos. Mandanos el mensaje por WhatsApp y te pasamos el costo del envío${order.shippingCarrier ? ` por ${order.shippingCarrier}` : ""}.` : "Mercado Pago confirmó el pago. Preparamos tu pedido y te enviamos el seguimiento cuando se despache.") : "Mercado Pago nos está informando el pago. En unos instantes se actualiza el pedido y te llega el correo de confirmación." : "Todavía no se realizó ningún cobro. Vamos a confirmar disponibilidad, entrega y total final antes de coordinar el pago."}</p>
-      <div className="whatsapp-confirmation"><p>{approved && order && isShippingToCoordinate(order) ? "Pedí el costo de tu envío" : "¿Tenés alguna consulta?"}</p><a href={getOrderWhatsAppUrl(order, orderId)} className="button whatsapp-button" target="_blank" rel="noopener noreferrer">{approved ? "Escribirnos por WhatsApp" : "Avisar por WhatsApp"}</a><small>Se abre un mensaje ya armado con tu pedido, el pago y la entrega.</small></div>
+      <div className="whatsapp-confirmation"><p>{approved && order && isShippingToCoordinate(order) ? "Pedí el costo de tu envío" : "¿Necesitás ayuda para completar la compra?"}</p><a href={getOrderWhatsAppUrl(order, orderId)} className="button whatsapp-button" target="_blank" rel="noopener noreferrer">{approved ? "Escribirnos por WhatsApp" : "Continuar por WhatsApp"}</a><small>Se abre un mensaje ya armado con tu pedido, el pago y la entrega.</small></div>
       {hasAccount ? (
         <div className="success-actions">
           <Link href="/cuenta/pedidos" className="button primary">Ver mis pedidos</Link>

@@ -88,6 +88,7 @@ export type Order = {
   customerId: string;
   customerName: string;
   email: string;
+  dni?: string;
   lines: OrderLine[];
   total: number;
   shipping: number;
@@ -95,6 +96,8 @@ export type Order = {
   address?: string;
   status: OrderStatus;
   createdAt: string;
+  followUpAt?: string;
+  expiresAt?: string;
   paymentReference: string;
   paymentStatus?: PaymentStatus;
   paymentInstallments?: number;

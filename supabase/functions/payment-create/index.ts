@@ -66,7 +66,7 @@ Deno.serve(async (request) => {
     }
 
     const { data: order, error: orderError } = await db.from("orders").select(
-      "id,customer_id,customer_name,email,phone,street,street_number,postal_code,lines,total,shipping,delivery_method,payment_status,shipping_quote_id,shipping_status",
+      "id,customer_id,customer_name,email,dni,phone,street,street_number,postal_code,lines,total,shipping,delivery_method,payment_status,shipping_quote_id,shipping_status",
     ).eq("id", orderId).maybeSingle();
     if (orderError || !order) {
       throw new HttpError(404, "No encontramos el pedido.");
@@ -243,6 +243,7 @@ Deno.serve(async (request) => {
         email: order.email,
         name: nombre || undefined,
         surname: apellido.join(" ") || undefined,
+        dni: order.dni || undefined,
         phone: order.phone || undefined,
         street: order.street || undefined,
         streetNumber: order.street_number || undefined,

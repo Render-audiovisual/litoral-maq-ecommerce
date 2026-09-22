@@ -33,6 +33,30 @@ export function getWhatsAppUrl(message = "Hola, quiero consultar por los product
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
+function normalizeArgentineWhatsAppNumber(phone?: string) {
+  const digits = String(phone || "").replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("549")) return digits;
+  if (digits.startsWith("54")) return `549${digits.slice(2).replace(/^0/, "")}`;
+  return `549${digits.replace(/^0/, "")}`;
+}
+
+/** Enlace usado por el equipo para recuperar un pedido que todavía no se pagó. */
+export function getPendingOrderCustomerWhatsAppUrl(order: Order, phone?: string) {
+  const number = normalizeArgentineWhatsAppNumber(phone || order.phone);
+  if (!number) return "";
+  const products = order.lines
+    .map((line) => `${line.quantity} × ${line.productName || line.productCode || line.productId}`)
+    .join(", ");
+  const message = [
+    `Hola ${order.customerName || ""}, ¿cómo estás? Somos de Litoral Maq.`.replace("Hola ,", "Hola,"),
+    `Queríamos saber si pudiste avanzar con tu pedido ${order.id} por ${products}. Todavía tenemos el producto disponible y reservado para vos.`,
+    "Podés retirarlo en nuestro local de Corrientes Capital o te ayudamos a coordinar el envío.",
+    "¿Te interesa completar la compra? Estamos para asesorarte.",
+  ].join("\n\n");
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}
+
 export function getOrderWhatsAppUrl(order: Order | undefined, orderId: string) {
   if (!order) {
     return getWhatsAppUrl([
