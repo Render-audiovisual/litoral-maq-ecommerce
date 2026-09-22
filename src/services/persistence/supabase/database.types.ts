@@ -114,6 +114,7 @@ export type Database = {
           customer_id: string;
           customer_name: string;
           email: string;
+          dni: string | null;
           lines: Json;
           total: number;
           shipping: number;
@@ -128,6 +129,8 @@ export type Database = {
             | "entregado"
             | "cancelado";
           created_at: string;
+          follow_up_at: string | null;
+          expires_at: string | null;
           payment_reference: string | null;
           payment_status:
             | "pending"
@@ -176,6 +179,7 @@ export type Database = {
           customer_id: string;
           customer_name: string;
           email: string;
+          dni?: string | null;
           lines?: Json;
           total: number;
           shipping?: number;
@@ -190,6 +194,8 @@ export type Database = {
             | "entregado"
             | "cancelado";
           created_at?: string;
+          follow_up_at?: string | null;
+          expires_at?: string | null;
           payment_reference?: string | null;
           payment_status?:
             | "pending"

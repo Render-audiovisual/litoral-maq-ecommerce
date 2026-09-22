@@ -30,9 +30,16 @@ Deno.serve(async (request) => {
     const isCronRequest = cronSecret.length >= 24 &&
       providedCronSecret === cronSecret;
     if (isCronRequest) {
+      const { data: lifecycle, error: lifecycleError } = await db.rpc(
+        "process_pending_order_lifecycle",
+      );
+      if (lifecycleError) throw lifecycleError;
       return json(
         request,
-        await processPendingOrderNotifications(db, null, 25),
+        {
+          lifecycle: Array.isArray(lifecycle) ? lifecycle[0] ?? null : lifecycle,
+          notifications: await processPendingOrderNotifications(db, null, 25),
+        },
       );
     }
 

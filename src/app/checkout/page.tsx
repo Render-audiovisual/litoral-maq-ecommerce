@@ -82,6 +82,7 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({
     name: customerSession?.user.name || "",
     email: customerSession?.user.email || "",
+    dni: "",
     phone: "",
     province: "W",
     postalCode: "",
@@ -224,9 +225,10 @@ export default function CheckoutPage() {
     if (
       !form.name.trim() ||
       !form.email.includes("@") ||
+      !/^\d{7,8}$/.test(form.dni) ||
       form.phone.trim().length < 6
     ) {
-      setError("Completá nombre, email y teléfono.");
+      setError("Completá nombre, email, DNI y teléfono. El DNI debe tener 7 u 8 números.");
       return;
     }
     if (method === "envio") {
@@ -273,6 +275,7 @@ export default function CheckoutPage() {
         customerId: identity.customerId,
         customerName: form.name.trim(),
         email: normalizedEmail,
+        dni: form.dni,
         phone: form.phone.trim(),
         lines: snapshotOrderLines(cart, products),
         total: cartSubtotal + shipping,
@@ -406,6 +409,20 @@ export default function CheckoutPage() {
                   value={form.phone}
                   onChange={(event) =>
                     setForm({ ...form, phone: event.target.value })
+                  }
+                />
+              </label>
+              <label>
+                DNI
+                <input
+                  required
+                  inputMode="numeric"
+                  autoComplete="off"
+                  minLength={7}
+                  maxLength={8}
+                  value={form.dni}
+                  onChange={(event) =>
+                    setForm({ ...form, dni: event.target.value.replace(/\D/g, "") })
                   }
                 />
               </label>

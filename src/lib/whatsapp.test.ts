@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Order } from "./types";
-import { getOrderWhatsAppUrl } from "./whatsapp";
+import { getOrderWhatsAppUrl, getPendingOrderCustomerWhatsAppUrl } from "./whatsapp";
 
 describe("confirmación de pedido por WhatsApp", () => {
   it("arma un mensaje comercial con pedido, productos, total y entrega", () => {
@@ -38,5 +38,19 @@ describe("confirmación de pedido por WhatsApp", () => {
 
   it("ofrece un mensaje mínimo si el pedido todavía no cargó", () => {
     expect(decodeURIComponent(getOrderWhatsAppUrl(undefined, "LM-999"))).toContain("LM-999");
+  });
+
+  it("abre el WhatsApp del cliente con el pedido pendiente y la reserva", () => {
+    const order = {
+      id: "LM-125",
+      customerName: "Ana",
+      phone: "+54 9 3794 11-2233",
+      lines: [{ productId: "p1", productName: "Taladro", quantity: 1 }],
+    } as Order;
+    const url = new URL(getPendingOrderCustomerWhatsAppUrl(order));
+    expect(url.pathname).toBe("/5493794112233");
+    expect(url.searchParams.get("text")).toContain("pedido LM-125");
+    expect(url.searchParams.get("text")).toContain("Todavía tenemos el producto disponible y reservado");
+    expect(url.searchParams.get("text")).toContain("Corrientes Capital");
   });
 });

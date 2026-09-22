@@ -28,6 +28,7 @@ type PreferencePayer = {
   email: string;
   name?: string;
   surname?: string;
+  dni?: string;
   phone?: string;
   street?: string;
   streetNumber?: string;
@@ -69,6 +70,9 @@ function buildPayer(input: PreferenceInput) {
     email: payer.email || input.payerEmail,
     name: payer.name?.slice(0, 80) || undefined,
     surname: payer.surname?.slice(0, 80) || undefined,
+    identification: payer.dni
+      ? { type: "DNI", number: payer.dni.replace(/\D/g, "") }
+      : undefined,
     phone,
     address: payer.street
       ? {
@@ -195,6 +199,10 @@ export class MercadoPagoClient {
           method: "POST",
           headers: { "x-idempotency-key": `litoral-${input.orderId}` },
           body: JSON.stringify({
+            expires: true,
+            expiration_date_from: new Date().toISOString(),
+            expiration_date_to: new Date(Date.now() + 24 * 60 * 60 * 1000)
+              .toISOString(),
             items,
             payer: buildPayer(input),
             external_reference: input.orderId,

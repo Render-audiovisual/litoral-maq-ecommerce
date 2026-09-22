@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
-import { paymentMethodLabel } from "@/lib/whatsapp";
+import { getPendingOrderCustomerWhatsAppUrl, paymentMethodLabel } from "@/lib/whatsapp";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   adminOrderStatusLabel,
@@ -52,6 +52,21 @@ const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   charged_back: "Contracargo",
 };
 
+type CommercialFilter = "active" | "followup" | "paid" | "expired" | "all";
+
+function matchesCommercialFilter(order: Order, filter: CommercialFilter) {
+  const payment = order.paymentStatus || "pending";
+  if (filter === "all") return true;
+  if (filter === "followup") {
+    return payment === "pending" && order.status === "pendiente" && !!order.followUpAt;
+  }
+  if (filter === "paid") return payment === "approved";
+  if (filter === "expired") {
+    return payment === "cancelled" && order.status === "cancelado";
+  }
+  return order.status !== "cancelado" && payment !== "cancelled";
+}
+
 export default function AdminOrdersPage() {
   const {
     orders,
@@ -63,6 +78,7 @@ export default function AdminOrdersPage() {
   } = useStore();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<Order["status"] | "">("");
+  const [commercialFilter, setCommercialFilter] = useState<CommercialFilter>("active");
   const [selected, setSelected] = useState<Order | null>(null);
   const [updatingId, setUpdatingId] = useState("");
   const [message, setMessage] = useState("");
@@ -76,13 +92,14 @@ export default function AdminOrdersPage() {
     const normalized = query.trim().toLowerCase();
     return orders.filter(
       (order) =>
+        matchesCommercialFilter(order, commercialFilter) &&
         (!status || order.status === status) &&
         (!normalized ||
           [order.id, order.customerName, order.email, order.address].some(
             (value) => value?.toLowerCase().includes(normalized),
           )),
     );
-  }, [orders, query, status]);
+  }, [orders, query, status, commercialFilter]);
 
   /**
    * Resumen de productos por fila. Antes la columna decía "1 unidades · 1
@@ -101,7 +118,11 @@ export default function AdminOrdersPage() {
   );
 
   const pendingCount = orders.filter((order) =>
-    ["pendiente", "pago_simulado"].includes(order.status),
+    ["pendiente", "pago_simulado"].includes(order.status) &&
+    (order.paymentStatus || "pending") === "pending",
+  ).length;
+  const followUpCount = orders.filter((order) =>
+    matchesCommercialFilter(order, "followup")
   ).length;
   const preparingCount = orders.filter(
     (order) => order.status === "preparando",
@@ -236,6 +257,10 @@ export default function AdminOrdersPage() {
   const selectedCustomer = selected
     ? customers.find((customer) => customer.id === selected.customerId)
     : null;
+  const selectedPhone = selected?.phone || selectedCustomer?.phone || "";
+  const recoveryWhatsAppUrl = selected && selected.paymentStatus !== "approved"
+    ? getPendingOrderCustomerWhatsAppUrl(selected, selectedPhone)
+    : "";
 
   return (
     <main className="admin-content">
@@ -265,7 +290,7 @@ export default function AdminOrdersPage() {
         <article className="warning">
           <span>Paso 0 · Pedido recibido</span>
           <strong>{pendingCount}</strong>
-          <small>Esperan confirmación del equipo</small>
+          <small>{followUpCount} listos para seguimiento comercial</small>
         </article>
         <article>
           <span>Paso 1 · Preparando</span>
@@ -320,6 +345,19 @@ export default function AdminOrdersPage() {
                 {ADMIN_ORDER_STATUS_LABELS[item]}
               </option>
             ))}
+          </select>
+          <select
+            value={commercialFilter}
+            onChange={(event) =>
+              setCommercialFilter(event.target.value as CommercialFilter)
+            }
+            aria-label="Circuito comercial"
+          >
+            <option value="active">Activos</option>
+            <option value="followup">Seguimiento comercial</option>
+            <option value="paid">Pagados</option>
+            <option value="expired">Vencidos</option>
+            <option value="all">Todos</option>
           </select>
           <span>
             {filtered.length} de {orders.length} pedidos
@@ -395,6 +433,9 @@ export default function AdminOrdersPage() {
                       >
                         {PAYMENT_LABELS[order.paymentStatus || "pending"]}
                       </span>
+                      {matchesCommercialFilter(order, "followup") && (
+                        <small>Contactar al cliente</small>
+                      )}
                     </td>
                     <td>
                       <select
@@ -456,9 +497,20 @@ export default function AdminOrdersPage() {
                 <span>Cliente</span>
                 <strong>{selected.customerName}</strong>
                 <small>{selected.email}</small>
+                <small>DNI {selected.dni || "no disponible"}</small>
                 <small>
-                  {selectedCustomer?.phone || "Teléfono no disponible"}
+                  {selectedPhone || "Teléfono no disponible"}
                 </small>
+                {recoveryWhatsAppUrl && (
+                  <a
+                    href={recoveryWhatsAppUrl}
+                    className="button whatsapp-button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Contactar al cliente
+                  </a>
+                )}
               </div>
               <div>
                 <span>Entrega</span>
