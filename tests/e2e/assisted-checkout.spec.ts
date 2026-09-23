@@ -30,7 +30,7 @@ test("el checkout registra el pedido y no inventa un costo de envío", async ({ 
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
   await expect(page.getByText(/Todavía no se realizó ningún cobro/)).toBeVisible();
   await expect(page.getByText(/pago.*aprobado/i)).toHaveCount(0);
-  const whatsapp = page.getByRole("link", { name: "Avisar por WhatsApp" });
+  const whatsapp = page.getByRole("link", { name: "Continuar por WhatsApp" });
   await expect(whatsapp).toHaveAttribute("href", /wa\.me\/5493794215065/);
   await expect(whatsapp).toHaveAttribute("href", /LM-/);
   await expect(whatsapp).toHaveAttribute("href", /Eleg%C3%AD%20el%20env%C3%ADo%20por%20Andreani/);
