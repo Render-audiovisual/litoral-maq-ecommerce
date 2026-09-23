@@ -14,6 +14,7 @@ test("el checkout registra el pedido y no inventa un costo de envío", async ({ 
   await page.getByLabel("Nombre y apellido").fill("Cliente Envío E2E");
   await page.getByLabel("Email").fill("envio.e2e@example.com");
   await page.getByLabel("Teléfono").fill("3794111111");
+  await page.getByLabel("DNI").fill("31234567");
   await page.getByLabel("Código postal").fill("3400");
   await page.getByLabel("Localidad").fill("Corrientes");
   await page.getByLabel("Calle").fill("San Juan");

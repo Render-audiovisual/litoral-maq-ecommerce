@@ -31,6 +31,7 @@ test("se puede comprar como invitado, sin contraseña, y después se ofrece la c
   await page.getByLabel("Nombre y apellido").fill("Invitada E2E");
   await page.getByLabel("Email").fill("invitada.e2e@example.com");
   await page.getByLabel("Teléfono").fill("3794222222");
+  await page.getByLabel("DNI").fill("32345678");
   await page.getByRole("radio").nth(1).check();
   await page.getByRole("button", { name: "Confirmar retiro" }).click();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
