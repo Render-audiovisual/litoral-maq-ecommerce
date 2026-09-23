@@ -7,7 +7,8 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await card.getByRole("button", { name: "Agregar al carrito" }).click();
 
   await page.goto("/checkout");
-  await page.getByLabel("Nombre y apellido").fill("Cliente Pedido E2E");
+  await page.getByLabel("Nombre", { exact: true }).fill("Cliente");
+  await page.getByLabel("Apellido", { exact: true }).fill("Pedido E2E");
   await page.getByLabel("Email").fill("pedido.e2e@example.com");
   await page.getByLabel("Teléfono").fill("3794000000");
   await page.getByLabel("DNI").fill("30123456");

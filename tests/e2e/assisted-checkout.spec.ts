@@ -11,7 +11,8 @@ test("el checkout registra el pedido y no inventa un costo de envío", async ({ 
   await expect(page.getByText(/\bMercado Pago\b|\bpago simulado\b|\bDEMO\b/i)).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Confirmá la entrega para continuar" })).toBeDisabled();
 
-  await page.getByLabel("Nombre y apellido").fill("Cliente Envío E2E");
+  await page.getByLabel("Nombre", { exact: true }).fill("Cliente");
+  await page.getByLabel("Apellido", { exact: true }).fill("Envío E2E");
   await page.getByLabel("Email").fill("envio.e2e@example.com");
   await page.getByLabel("Teléfono").fill("3794111111");
   await page.getByLabel("DNI").fill("31234567");

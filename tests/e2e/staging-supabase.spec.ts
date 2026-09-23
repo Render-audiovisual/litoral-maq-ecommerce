@@ -42,9 +42,11 @@ test.describe("@staging", () => {
     await card.getByRole("button", { name: "Agregar al carrito" }).click();
 
     await page.goto("/checkout");
-    await page.getByLabel("Nombre y apellido").fill(customerName);
+    await page.getByLabel("Nombre", { exact: true }).fill("Cliente");
+    await page.getByLabel("Apellido", { exact: true }).fill(`Staging ${runId}`);
     await page.getByLabel("Email").fill(`pedido.${runId}@e2e.litoralmaq.test`);
     await page.getByLabel("Teléfono").fill("3794000000");
+    await page.getByLabel("DNI").fill("30123456");
     await page.getByText("Retiro en Sáenz 1587").click();
     await page.getByRole("button", { name: "Confirmar retiro" }).click();
     await expect(page.getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();

@@ -48,6 +48,11 @@ const PROVINCES = [
   ["T", "Tucumán"],
 ] as const;
 
+function splitCustomerName(fullName = "") {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  return { firstName: parts.shift() || "", lastName: parts.join(" ") };
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const {
@@ -79,8 +84,10 @@ export default function CheckoutPage() {
   // crea ninguna identidad nueva.
   const captcha = useCaptcha();
   const needsGuestSession = !customerSession;
+  const sessionName = splitCustomerName(customerSession?.user.name);
   const [form, setForm] = useState({
-    name: customerSession?.user.name || "",
+    firstName: sessionName.firstName,
+    lastName: sessionName.lastName,
     email: customerSession?.user.email || "",
     dni: "",
     phone: "",
@@ -223,12 +230,13 @@ export default function CheckoutPage() {
     event.preventDefault();
     setError("");
     if (
-      !form.name.trim() ||
+      !form.firstName.trim() ||
+      !form.lastName.trim() ||
       !form.email.includes("@") ||
       !/^\d{7,8}$/.test(form.dni) ||
       form.phone.trim().length < 6
     ) {
-      setError("Completá nombre, email, DNI y teléfono. El DNI debe tener 7 u 8 números.");
+      setError("Completá nombre, apellido, email, teléfono y DNI. El DNI debe tener 7 u 8 números.");
       return;
     }
     if (method === "envio") {
@@ -273,7 +281,7 @@ export default function CheckoutPage() {
       const order: Order = {
         id,
         customerId: identity.customerId,
-        customerName: form.name.trim(),
+        customerName: `${form.firstName.trim()} ${form.lastName.trim()}`,
         email: normalizedEmail,
         dni: form.dni,
         phone: form.phone.trim(),
@@ -382,12 +390,24 @@ export default function CheckoutPage() {
             <h2>Datos de contacto</h2>
             <div className="form-grid">
               <label>
-                Nombre y apellido
+                Nombre
                 <input
                   required
-                  value={form.name}
+                  autoComplete="given-name"
+                  value={form.firstName}
                   onChange={(event) =>
-                    setForm({ ...form, name: event.target.value })
+                    setForm({ ...form, firstName: event.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Apellido
+                <input
+                  required
+                  autoComplete="family-name"
+                  value={form.lastName}
+                  onChange={(event) =>
+                    setForm({ ...form, lastName: event.target.value })
                   }
                 />
               </label>
@@ -396,6 +416,7 @@ export default function CheckoutPage() {
                 <input
                   required
                   type="email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={(event) =>
                     setForm({ ...form, email: event.target.value })
@@ -406,6 +427,8 @@ export default function CheckoutPage() {
                 Teléfono
                 <input
                   required
+                  type="tel"
+                  autoComplete="tel"
                   value={form.phone}
                   onChange={(event) =>
                     setForm({ ...form, phone: event.target.value })
