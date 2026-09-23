@@ -223,14 +223,25 @@ jobs:
       - name: Descargar el código
         uses: actions/checkout@v6
 
+      - name: Preparar conexión a la base (pooler IPv4)
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: node scripts/supabase-db-url.mjs
+
       - name: Listar migraciones (local vs. remoto)
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          npx --yes supabase@2.117.0 migration list \
-            --project-ref "$SUPABASE_PROJECT_REF" \
-            --password "${{ secrets.SUPABASE_DB_PASSWORD }}" \
-            --output-format json > migration-list.json
+          # En modo json la CLI escribe sus errores a stdout: sin este cat el
+          # motivo real quedaba dentro de migration-list.json y el log solo
+          # decía "exit code 1".
+          if ! npx --yes supabase@2.117.0 migration list \
+            --db-url "$DB_URL" \
+            --output-format json > migration-list.json; then
+            echo "::error::migration list falló. Respuesta de la CLI:"
+            cat migration-list.json
+            exit 1
+          fi
 
       - name: Decidir si hay migraciones para aplicar
         id: plan
@@ -248,9 +259,7 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          npx --yes supabase@2.117.0 db push --dry-run \
-            --project-ref "$SUPABASE_PROJECT_REF" \
-            --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+          npx --yes supabase@2.117.0 db push --dry-run --db-url "$DB_URL"
 
       - name: Resumen
         if: always()
@@ -295,13 +304,16 @@ jobs:
       - name: Descargar el código
         uses: actions/checkout@v6
 
+      - name: Preparar conexión a la base (pooler IPv4)
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: node scripts/supabase-db-url.mjs
+
       - name: Aplicar migraciones con el mecanismo oficial de Supabase
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          npx --yes supabase@2.117.0 db push \
-            --project-ref "$SUPABASE_PROJECT_REF" \
-            --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
+          npx --yes supabase@2.117.0 db push --db-url "$DB_URL"
 
       - name: Resumen
         run: |
