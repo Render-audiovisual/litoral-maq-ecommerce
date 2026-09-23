@@ -23,14 +23,17 @@ test("se puede comprar como invitado, sin contraseña, y después se ofrece la c
   await page.goto("/checkout");
 
   // El checkout pide contacto, nunca una contraseña.
-  await expect(page.getByLabel("Nombre y apellido")).toBeVisible();
+  await expect(page.getByLabel("Nombre", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Apellido", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Email")).toBeVisible();
   await expect(page.getByLabel("Teléfono")).toBeVisible();
   await expect(page.locator('input[type="password"]')).toHaveCount(0);
 
-  await page.getByLabel("Nombre y apellido").fill("Invitada E2E");
+  await page.getByLabel("Nombre", { exact: true }).fill("Invitada");
+  await page.getByLabel("Apellido", { exact: true }).fill("E2E");
   await page.getByLabel("Email").fill("invitada.e2e@example.com");
   await page.getByLabel("Teléfono").fill("3794222222");
+  await page.getByLabel("DNI").fill("32345678");
   await page.getByRole("radio").nth(1).check();
   await page.getByRole("button", { name: "Confirmar retiro" }).click();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();

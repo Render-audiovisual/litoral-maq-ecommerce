@@ -11,9 +11,11 @@ test("el checkout registra el pedido y no inventa un costo de envío", async ({ 
   await expect(page.getByText(/\bMercado Pago\b|\bpago simulado\b|\bDEMO\b/i)).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Confirmá la entrega para continuar" })).toBeDisabled();
 
-  await page.getByLabel("Nombre y apellido").fill("Cliente Envío E2E");
+  await page.getByLabel("Nombre", { exact: true }).fill("Cliente");
+  await page.getByLabel("Apellido", { exact: true }).fill("Envío E2E");
   await page.getByLabel("Email").fill("envio.e2e@example.com");
   await page.getByLabel("Teléfono").fill("3794111111");
+  await page.getByLabel("DNI").fill("31234567");
   await page.getByLabel("Código postal").fill("3400");
   await page.getByLabel("Localidad").fill("Corrientes");
   await page.getByLabel("Calle").fill("San Juan");
@@ -28,7 +30,7 @@ test("el checkout registra el pedido y no inventa un costo de envío", async ({ 
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
   await expect(page.getByText(/Todavía no se realizó ningún cobro/)).toBeVisible();
   await expect(page.getByText(/pago.*aprobado/i)).toHaveCount(0);
-  const whatsapp = page.getByRole("link", { name: "Avisar por WhatsApp" });
+  const whatsapp = page.getByRole("link", { name: "Continuar por WhatsApp" });
   await expect(whatsapp).toHaveAttribute("href", /wa\.me\/5493794215065/);
   await expect(whatsapp).toHaveAttribute("href", /LM-/);
   await expect(whatsapp).toHaveAttribute("href", /Eleg%C3%AD%20el%20env%C3%ADo%20por%20Andreani/);
