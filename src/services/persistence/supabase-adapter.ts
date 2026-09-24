@@ -140,6 +140,7 @@ function rowToOrder(row: OrderRow): Order {
     createdAt: row.created_at,
     followUpAt: row.follow_up_at ?? undefined,
     expiresAt: row.expires_at ?? undefined,
+    statusChangedAt: row.status_changed_at ?? undefined,
     paymentReference: row.payment_reference ?? "",
     paymentStatus: row.payment_status ?? "pending",
     paymentInstallments: row.payment_installments ?? undefined,

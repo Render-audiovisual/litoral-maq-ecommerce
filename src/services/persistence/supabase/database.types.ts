@@ -131,6 +131,7 @@ export type Database = {
           created_at: string;
           follow_up_at: string | null;
           expires_at: string | null;
+          status_changed_at: string | null;
           payment_reference: string | null;
           payment_status:
             | "pending"
@@ -196,6 +197,7 @@ export type Database = {
           created_at?: string;
           follow_up_at?: string | null;
           expires_at?: string | null;
+          status_changed_at?: string | null;
           payment_reference?: string | null;
           payment_status?:
             | "pending"
