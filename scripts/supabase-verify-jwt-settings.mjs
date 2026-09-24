@@ -36,9 +36,11 @@ function main() {
     process.exitCode = 1;
     return;
   }
-  const functions = Array.isArray(parsed.functions) ? parsed.functions : null;
+  // La CLI envuelve la lista de distinta forma según el modo de salida.
+  const candidates = [parsed, parsed?.functions, parsed?.data, parsed?.data?.functions];
+  const functions = candidates.find(Array.isArray) ?? null;
   if (!functions) {
-    console.error(`FAIL  ${deployed} no tiene la forma esperada ({"functions":[...]}).`);
+    console.error(`FAIL  ${deployed} no tiene la forma esperada (lista de funciones); claves: ${Object.keys(parsed ?? {}).join(", ")}.`);
     process.exitCode = 1;
     return;
   }

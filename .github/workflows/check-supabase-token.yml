@@ -30,8 +30,12 @@ jobs:
             echo "::error::SUPABASE_ACCESS_TOKEN está vacío en el Environment production."
             exit 1
           fi
-          npx --yes supabase@2.117.0 functions list --project-ref "$SUPABASE_PROJECT_REF" | tee deployed-functions.txt
-          npx --yes supabase@2.117.0 functions list --project-ref "$SUPABASE_PROJECT_REF" --output json > deployed-functions.json
+          if ! npx --yes supabase@2.117.0 functions list --project-ref "$SUPABASE_PROJECT_REF" --output-format json > deployed-functions.json; then
+            echo "::error::La CLI rechazó el token. Respuesta:"
+            cat deployed-functions.json
+            exit 1
+          fi
+          cat deployed-functions.json
 
       - name: Comparar verify_jwt con supabase/config.toml
         run: node scripts/supabase-verify-jwt-settings.mjs --deployed deployed-functions.json
