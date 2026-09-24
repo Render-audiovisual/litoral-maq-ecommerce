@@ -628,10 +628,9 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 .whatsapp-button:hover { background: #188b46; }
 .auth-page { min-height: calc(100vh - 114px); display: grid; grid-template-columns: 1fr 1fr; }
 .admin-auth-page { min-height: 100vh; min-height: 100dvh; }
+.auth-card .auth-card-logo { display: none; }
 .auth-panel { padding: 7vw; display: flex; flex-direction: column; justify-content: center; }
 .auth-panel.visual { background: var(--soft); }
-.auth-panel.visual h1 { margin: 60px 0 20px; font-size: clamp(3rem, 5vw, 5.5rem); text-transform: uppercase; }
-.auth-panel.visual p { color: var(--muted); font-size: 17px; }
 .auth-panel.form { align-items: center; }
 .auth-card { width: min(100%, 460px); padding: 34px; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow); }
 .auth-card h1, .auth-card h2 { margin: 10px 0; }
@@ -640,7 +639,7 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 .auth-card form + p, .auth-card > p:last-child { margin: 20px 0 0; text-align: center; }
 .auth-card a { color: var(--orange); font-weight: 700; }
 /* Ingreso de clientes (AuthLayout): login, registro, recuperación y
-   confirmaciones. El login del panel sigue con las reglas base de arriba. */
+   confirmaciones. El login del panel usa el mismo marco (.admin-auth-page). */
 .customer-auth { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
 .customer-auth .auth-panel { padding: 64px clamp(32px, 5vw, 80px); }
 .customer-auth .auth-panel.visual { align-items: flex-start; border-right: 1px solid var(--line); }
@@ -1269,6 +1268,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .account-nav { display: none; }
   .customer-auth { min-height: 0; }
   .customer-auth .auth-panel.form { justify-content: flex-start; }
+  .auth-card .auth-card-logo { display: block; margin-bottom: 28px; }
   .admin-grid, .settings-grid { grid-template-columns: 1fr; }
 }
 
