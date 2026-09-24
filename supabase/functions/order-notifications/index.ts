@@ -10,6 +10,8 @@ import {
 import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
 import { maybeRunAutoCatalogSync } from "../_shared/catalog-auto-sync.ts";
 
+declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void } | undefined;
+
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object"
     ? value as Record<string, unknown>
@@ -49,16 +51,23 @@ Deno.serve(async (request) => {
         25,
       );
       // Después de los correos, para que una sincronización lenta no los demore.
-      let catalogSync: unknown;
-      try {
-        catalogSync = await maybeRunAutoCatalogSync(db);
-      } catch (error) {
+      // En Supabase corre en segundo plano (EdgeRuntime.waitUntil): el cron
+      // corta la espera a los 15 s y la sincronización puede tardar más. Su
+      // resultado queda en catalog_sync_runs.
+      const syncRun = maybeRunAutoCatalogSync(db).catch((error) => {
         console.error(JSON.stringify({
           scope: "order-notifications",
           step: "catalog_auto_sync",
           error: error instanceof Error ? error.message : "Error desconocido",
         }));
-        catalogSync = { status: "failed" };
+        return { status: "failed" as const };
+      });
+      let catalogSync: unknown;
+      if (typeof EdgeRuntime !== "undefined" && EdgeRuntime) {
+        EdgeRuntime.waitUntil(syncRun);
+        catalogSync = { status: "background" };
+      } else {
+        catalogSync = await syncRun;
       }
       return json(
         request,
