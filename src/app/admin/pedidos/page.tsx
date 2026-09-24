@@ -409,31 +409,33 @@ export default function AdminOrdersPage() {
           <TableScroll>
             {/* Cada fila es una grilla (ver .orders-table en globals.css):
                 pedido y cliente, productos y entrega, total y pago, y las
-                acciones. Entra entera en una notebook sin scroll lateral. */}
-            <table className="orders-table">
-              <thead>
-                <tr>
-                  <th className="cell-order">Pedido</th>
-                  <th className="cell-customer">Cliente</th>
-                  <th className="cell-products">Productos</th>
-                  <th className="cell-delivery">Entrega</th>
-                  <th className="cell-total">Total</th>
-                  <th className="cell-payment">Pago</th>
-                  <th className="cell-actions">Estado</th>
+                acciones. Entra entera en una notebook sin scroll lateral.
+                Los roles explícitos conservan la semántica de tabla para los
+                lectores de pantalla aunque el CSS cambie el display. */}
+            <table className="orders-table" role="table">
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader" className="cell-order">Pedido</th>
+                  <th role="columnheader" className="cell-customer">Cliente</th>
+                  <th role="columnheader" className="cell-products">Productos</th>
+                  <th role="columnheader" className="cell-delivery">Entrega</th>
+                  <th role="columnheader" className="cell-total">Total</th>
+                  <th role="columnheader" className="cell-payment">Pago</th>
+                  <th role="columnheader" className="cell-actions">Estado</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody role="rowgroup">
                 {rows.map(({ order, first, extra, units }) => (
-                  <tr key={order.id}>
-                    <td className="cell-order">
+                  <tr role="row" key={order.id}>
+                    <td role="cell" className="cell-order">
                       <strong>{order.id}</strong>
                       <small>{formatDate(order.createdAt)}</small>
                     </td>
-                    <td className="cell-customer">
+                    <td role="cell" className="cell-customer">
                       <span>{order.customerName}</span>
                       <small title={order.email}>{order.email}</small>
                     </td>
-                    <td className="cell-products order-products">
+                    <td role="cell" className="cell-products order-products">
                       <strong title={first?.productName}>
                         {first?.productName ?? "Sin productos"}
                       </strong>
@@ -445,7 +447,7 @@ export default function AdminOrdersPage() {
                           : ""}
                       </small>
                     </td>
-                    <td className="cell-delivery">
+                    <td role="cell" className="cell-delivery">
                       <span>
                         {order.deliveryMethod === "retiro"
                           ? "Retiro en local"
@@ -457,11 +459,11 @@ export default function AdminOrdersPage() {
                         {order.address || "Sáenz 1587"}
                       </small>
                     </td>
-                    <td className="cell-total">
+                    <td role="cell" className="cell-total">
                       <strong>{formatCurrency(order.total)}</strong>
                       <small>Entrega {deliveryAmountLabel(order)}</small>
                     </td>
-                    <td className="cell-payment">
+                    <td role="cell" className="cell-payment">
                       <span
                         className={`payment-status payment-${order.paymentStatus || "pending"}`}
                       >
@@ -471,7 +473,7 @@ export default function AdminOrdersPage() {
                         <small>Contactar al cliente</small>
                       )}
                     </td>
-                    <td className="cell-actions">
+                    <td role="cell" className="cell-actions">
                       <select
                         aria-label={`Estado de ${order.id}`}
                         className={`status-select status-${order.status}`}
