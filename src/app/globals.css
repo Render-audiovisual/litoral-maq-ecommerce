@@ -636,7 +636,7 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 .auth-card { width: min(100%, 460px); padding: 34px; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow); }
 .auth-card h1, .auth-card h2 { margin: 10px 0; }
 .auth-card > p { color: var(--muted); }
-.auth-card form, .settings-grid form { display: flex; flex-direction: column; gap: 16px; }
+.auth-card form { display: flex; flex-direction: column; gap: 16px; }
 .auth-card form + p, .auth-card > p:last-child { margin: 20px 0 0; text-align: center; }
 .auth-card a { color: var(--orange); font-weight: 700; }
 /* Ingreso de clientes (AuthLayout): login, registro, recuperación y
@@ -1110,16 +1110,31 @@ td > small { margin-top: 4px; color: var(--muted); }
 .product-form .modal-actions { position: sticky; bottom: 0; z-index: 1; margin: 24px -28px 0; padding: 16px 28px; border-top: 1px solid var(--line); background: #fff; }
 .product-form .modal-actions .button:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 .product-form .modal-actions .button:hover { transform: none; }
-.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
-.settings-grid h2 { margin-bottom: 25px; }
-.operational-mode > div { padding: 14px 0; display: flex; flex-direction: column; gap: 5px; border-bottom: 1px solid var(--line); }
-.operational-mode > div:last-child { border-bottom: 0; }
-.operational-mode span, .operational-mode small { color: var(--muted); font-size: 10px; }
-.integrations > div { padding: 14px 0; display: grid; grid-template-columns: 12px 1fr auto; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); }
-.integrations code { padding: 4px 7px; background: #f1f4f5; color: var(--navy); font-size: 10px; }
-.integrations small { grid-column: 2; color: var(--muted); }
-.integration-dot { width: 9px; height: 9px; border-radius: 50%; background: #d0d6da; }
-.integration-dot.ready { background: var(--success); }
+/* Configuración: operación vigente como lista de definición e integraciones
+   con estado (icono + texto). La variable técnica va como texto de apoyo. */
+.settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.settings-facts { margin: 0; }
+.settings-facts > div { padding: 14px 0; display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--line); }
+.settings-facts > div:last-child { padding-bottom: 0; }
+.settings-facts dt { color: #566472; font-size: 13px; font-weight: 600; line-height: 1.45; }
+.settings-facts dd { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.settings-facts strong { color: var(--navy-dark); font-size: 14px; font-weight: 700; line-height: 1.45; }
+.settings-facts span { color: #566472; font-size: 13px; line-height: 1.5; text-wrap: pretty; }
+.integration-list { margin: 0; padding: 0; list-style: none; }
+.integration-list li { padding: 12px 0; display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: start; gap: 12px; border-top: 1px solid var(--line); }
+.integration-list li:last-child { padding-bottom: 0; }
+.integration-list li > div { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.integration-list strong { color: var(--ink); font-size: 14px; font-weight: 700; line-height: 1.45; }
+.integration-list li > div > span { color: #566472; font-size: 13px; line-height: 1.5; text-wrap: pretty; }
+.integration-list code { margin-top: 2px; color: #566472; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.integration-icon { margin-top: 1px; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.integration-icon.ok { stroke: var(--success); }
+.integration-icon.off { stroke: #8e9ba5; }
+.integration-icon.warn { stroke: #b76e00; }
+.integration-state { font-size: 13px; font-weight: 650; line-height: 1.45; white-space: nowrap; }
+.integration-state.ok { color: #146c3f; }
+.integration-state.off { color: #566472; }
+.integration-state.warn { color: #8a5415; }
 /* Listas simples del panel (Categorías, Clientes, actividad): tabla real con
    el encabezado de 12 px de Pedidos y Productos; en una tarjeta angosta cada
    fila pasa a ser una ficha. */
