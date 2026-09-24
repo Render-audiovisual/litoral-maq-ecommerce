@@ -315,6 +315,7 @@ textarea { min-height: 100px; resize: vertical; }
 .floating-whatsapp:hover { background: #1fb95a; transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 34px rgba(0,47,79,.34); }
 .floating-whatsapp:focus-visible { outline: 3px solid #fff; box-shadow: 0 0 0 6px rgba(37,211,102,.45); }
 .floating-whatsapp svg { width: 31px; height: 31px; display: block; fill: #fff; }
+@media (max-width: 820px) { .floating-whatsapp.hide-on-mobile { display: none; } }
 .spinner { width: 34px; height: 34px; border: 3px solid #dce4e8; border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .product-detail-page, .standard-page { max-width: 1320px; min-height: 650px; margin: auto; padding: 45px 5vw 90px; }
