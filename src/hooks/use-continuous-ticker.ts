@@ -14,6 +14,10 @@ type ContinuousTickerOptions = {
   speed: number;
   /** Tope del envión al soltar, en píxeles por segundo. */
   maxFlingSpeed: number;
+  /** Frena el avance automático (puntero encima, video sonando). El arrastre sigue andando. */
+  paused?: boolean;
+  /** Se llama en cada frame con el desplazamiento actual, después de mover el riel. */
+  onFrame?: (offset: number) => void;
 };
 
 const INERTIA_RESPONSE = 1.5; // el envión del gesto decae hasta el automático
@@ -34,7 +38,16 @@ export function useContinuousTicker({
   itemCount,
   speed,
   maxFlingSpeed,
+  paused = false,
+  onFrame,
 }: ContinuousTickerOptions) {
+  // En refs para que pausar o cambiar el callback no reinicie el loop.
+  const pausedRef = useRef(paused);
+  const onFrameRef = useRef(onFrame);
+  useEffect(() => {
+    pausedRef.current = paused;
+    onFrameRef.current = onFrame;
+  });
   const trackRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const velocityRef = useRef(speed);
@@ -80,7 +93,7 @@ export function useContinuousTicker({
       const track = trackRef.current;
 
       if (track) {
-        if (!draggingRef.current) {
+        if (!draggingRef.current && !pausedRef.current) {
           velocityRef.current += (speed - velocityRef.current) * Math.min(1, dt * INERTIA_RESPONSE);
           offsetRef.current += velocityRef.current * dt;
         }
@@ -90,6 +103,7 @@ export function useContinuousTicker({
           if (offsetRef.current < 0) offsetRef.current += loop;
         }
         track.style.transform = `translate3d(${-offsetRef.current}px, 0, 0)`;
+        onFrameRef.current?.(offsetRef.current);
       }
 
       raf = requestAnimationFrame(frame);
@@ -101,6 +115,8 @@ export function useContinuousTicker({
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType === "mouse" && event.button !== 0) return;
+    // Los controles del video se usan con el mismo puntero que el arrastre.
+    if ((event.target as HTMLElement).closest("video")) return;
     draggingRef.current = true;
     draggedRef.current = false;
     velocityRef.current = 0;
