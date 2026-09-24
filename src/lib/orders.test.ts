@@ -46,6 +46,17 @@ describe("selectOwnOrders", () => {
     const mine = selectOwnOrders(orders, sessionB);
     expect(mine.map((o) => o.id)).toEqual(["o3"]);
   });
+
+  it("no muestra al cliente los pedidos vencidos sin pago, pero sí los cancelados con pago", () => {
+    const own = { customerId: "customer-a@test.com", customerName: "A", email: "a@test.com" };
+    const withExpired: Order[] = [
+      { ...baseOrder, ...own, id: "vivo", status: "pendiente", paymentStatus: "pending" },
+      { ...baseOrder, ...own, id: "vencido", status: "cancelado", paymentStatus: "cancelled" },
+      { ...baseOrder, ...own, id: "vencido-legado", status: "cancelado" },
+      { ...baseOrder, ...own, id: "reintegrado", status: "cancelado", paymentStatus: "refunded" },
+    ];
+    expect(selectOwnOrders(withExpired, sessionA).map((o) => o.id).sort()).toEqual(["reintegrado", "vivo"]);
+  });
 });
 
 describe("aislamiento con sesión de invitado", () => {
