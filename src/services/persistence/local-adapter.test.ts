@@ -108,6 +108,14 @@ describe("local persistence adapter", () => {
     expect(updated).toBeNull();
   });
 
+  it("cancelar un pedido sin pago también cancela el pago; uno pagado lo conserva", async () => {
+    const adapter = createLocalPersistenceAdapter();
+    await adapter.createOrder({ ...order, paymentStatus: undefined });
+    await adapter.createOrder({ ...order, id: "o2", paymentStatus: "approved" });
+    expect((await adapter.updateOrderStatus("o1", "cancelado"))?.paymentStatus).toBe("cancelled");
+    expect((await adapter.updateOrderStatus("o2", "cancelado"))?.paymentStatus).toBe("approved");
+  });
+
   it("updateOrderPaymentStatus persiste la confirmación administrativa", async () => {
     const adapter = createLocalPersistenceAdapter();
     await adapter.createOrder(order);

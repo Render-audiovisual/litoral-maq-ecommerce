@@ -105,7 +105,15 @@ export function createLocalPersistenceAdapter(): PersistenceAdapter {
         if (order.id !== id) return order;
         updated = order.status === status
           ? order
-          : { ...order, status, statusChangedAt: new Date().toISOString() };
+          : {
+            ...order,
+            status,
+            // Igual que en Supabase: cancelar un pedido sin pago cancela el pago.
+            paymentStatus: status === "cancelado" && (order.paymentStatus ?? "pending") === "pending"
+              ? "cancelled"
+              : order.paymentStatus,
+            statusChangedAt: new Date().toISOString(),
+          };
         return updated;
       });
       write(KEYS.orders, next);

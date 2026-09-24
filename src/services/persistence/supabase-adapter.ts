@@ -285,6 +285,21 @@ export function createSupabasePersistenceAdapter(
         .select()
         .maybeSingle();
       if (error) throw error;
+      // Cancelar a mano un pedido que nunca se pagó lo deja igual que uno
+      // vencido (pago cancelado). El filtro por 'pending' no pisa un pago que
+      // haya entrado entre medio. Un empleado sin rol admin no puede cambiar
+      // el pago (trigger restrict_employee_order_update): queda pendiente.
+      if (data && status === "cancelado" && data.payment_status === "pending") {
+        const cancelled = await client
+          .from("orders")
+          .update({ payment_status: "cancelled" })
+          .eq("id", id)
+          .eq("payment_status", "pending")
+          .select()
+          .maybeSingle();
+        if (cancelled.error) throw cancelled.error;
+        if (cancelled.data) return rowToOrder(cancelled.data);
+      }
       return data ? rowToOrder(data) : null;
     },
     async updateOrderPaymentStatus(id, paymentStatus) {
