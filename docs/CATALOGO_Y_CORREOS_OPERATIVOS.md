@@ -43,6 +43,23 @@ Si Google no responde, cambian los encabezados, hay filas inválidas/duplicadas 
 
 La migración agrega el límite por compra, el estado `listo`, una outbox privada y triggers idempotentes. No envía correos por sí sola hasta desplegar la función y cargar el secreto.
 
+### Sincronización automática del catálogo
+
+Cada 3 horas, el mismo cron de 5 minutos que procesa los correos (`order-notifications`, ver "Reintento automático") lee el Sheet público y sincroniza el catálogo solo, después de despachar los correos de ese tick. Aplica las mismas reglas que el botón **Actualizar desde Sheet**: el Sheet manda en código, nombre, precio y qué productos siguen; el panel conserva visibilidad, ficha, logística y límite por compra. Las 3 horas se cuentan desde la última corrida registrada, manual o automática, exitosa o fallida.
+
+No hace falta migración, secreto ni cron nuevo. La corrida queda a nombre del primer administrador (el más antiguo en `profiles`); si no hay ninguno, se saltea.
+
+Freno de seguridad: la corrida automática no escribe nada y queda registrada como fallida ("Sincronización automática detenida: …") cuando el Sheet parece cortado (menos del 80 % de los productos del Sheet que hoy siguen vigentes, con 20 o más conocidos) o cuando más del 10 % de sus filas son ilegibles. En esos casos hay que revisar el Sheet y, si está bien, apretar el botón manual, que sigue funcionando igual.
+
+Cada corrida queda en `catalog_sync_runs`; las automáticas tienen una fuente que termina en "(automática)". Para ver las últimas:
+
+```sql
+select started_at, status, source, total, created, updated, unchanged, retired, error_detail
+from public.catalog_sync_runs
+order by started_at desc
+limit 10;
+```
+
 ## 3. Correos operativos
 
 Eventos cubiertos:

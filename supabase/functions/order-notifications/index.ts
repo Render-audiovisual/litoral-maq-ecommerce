@@ -8,6 +8,7 @@ import {
   serviceClient,
 } from "../_shared/http.ts";
 import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
+import { maybeRunAutoCatalogSync } from "../_shared/catalog-auto-sync.ts";
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object"
@@ -42,6 +43,23 @@ Deno.serve(async (request) => {
           code: lifecycleError.code,
         }));
       }
+      const notifications = await processPendingOrderNotifications(
+        db,
+        null,
+        25,
+      );
+      // Después de los correos, para que una sincronización lenta no los demore.
+      let catalogSync: unknown;
+      try {
+        catalogSync = await maybeRunAutoCatalogSync(db);
+      } catch (error) {
+        console.error(JSON.stringify({
+          scope: "order-notifications",
+          step: "catalog_auto_sync",
+          error: error instanceof Error ? error.message : "Error desconocido",
+        }));
+        catalogSync = { status: "failed" };
+      }
       return json(
         request,
         {
@@ -51,7 +69,8 @@ Deno.serve(async (request) => {
             ? lifecycle[0] ?? null
             : lifecycle,
           ...(lifecycleError ? { lifecycleError: lifecycleError.message } : {}),
-          notifications: await processPendingOrderNotifications(db, null, 25),
+          notifications,
+          catalogSync,
         },
       );
     }
