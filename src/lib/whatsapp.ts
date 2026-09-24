@@ -33,6 +33,16 @@ export function getWhatsAppUrl(message = "Hola, quiero consultar por los product
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
+/** Ayuda desde el checkout: todavía no hay pedido, se comparte lo que hay en el carrito. */
+export function getCheckoutHelpWhatsAppUrl(items: { name: string; quantity: number }[]) {
+  const products = items.map((item) => `• ${item.quantity} × ${item.name}`).join("\n");
+  return getWhatsAppUrl([
+    "👋 ¡Hola! Estoy en la web de Litoral Maq y necesito ayuda para completar mi compra.",
+    products && `🛒 *Mi carrito:*\n${products}`,
+    "¿Me pueden dar una mano? ¡Gracias! 😊",
+  ].filter(Boolean).join("\n\n"));
+}
+
 function normalizeArgentineWhatsAppNumber(phone?: string) {
   const digits = String(phone || "").replace(/\D/g, "");
   if (!digits) return "";

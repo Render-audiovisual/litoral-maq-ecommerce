@@ -35,3 +35,12 @@ test("al terminar la animación el cuadro no queda con transform y sigue pegado 
   await page.evaluate(() => window.scrollTo(0, 500));
   await expect.poll(async () => Math.round((await summary.boundingBox())!.y)).toBe(115);
 });
+
+test("el checkout ofrece WhatsApp con el carrito ya armado", async ({ page }) => {
+  await openCheckout(page);
+  const link = page.getByRole("link", { name: /Escribinos por WhatsApp/ });
+  await expect(link).toBeVisible();
+  const href = (await link.getAttribute("href")) ?? "";
+  expect(href).toContain("https://wa.me/5493794215065?text=");
+  expect(decodeURIComponent(href)).toContain("Mi carrito");
+});

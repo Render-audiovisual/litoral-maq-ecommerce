@@ -425,6 +425,7 @@ textarea { min-height: 100px; resize: vertical; }
 .whatsapp-confirmation small { color: var(--muted); }
 .whatsapp-button { background: #1fa855; color: #fff; }
 .whatsapp-button:hover { background: #188b46; }
+.order-summary .whatsapp-button { margin: 14px 0 0; }
 .auth-page { min-height: calc(100vh - 114px); display: grid; grid-template-columns: 1fr 1fr; }
 .admin-auth-page { min-height: 100vh; min-height: 100dvh; }
 .auth-panel { padding: 7vw; display: flex; flex-direction: column; justify-content: center; }
