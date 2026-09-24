@@ -13,6 +13,7 @@ import {
   orderStatusOptions,
   resolveOrderLines,
 } from "@/lib/order-details";
+import { getOrderDelay } from "@/lib/order-delays";
 import type { Order, PaymentStatus } from "@/lib/types";
 import { createShipping, downloadShippingLabel } from "@/services/shipping";
 import { flushOrderNotifications } from "@/services/order-notifications";
@@ -52,11 +53,18 @@ const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   charged_back: "Contracargo",
 };
 
-type CommercialFilter = "active" | "followup" | "paid" | "expired" | "all";
+type CommercialFilter = "active" | "followup" | "delayed" | "paid" | "expired" | "all";
 
-function matchesCommercialFilter(order: Order, filter: CommercialFilter) {
+/** Filtros que se pueden pedir por URL (?filtro=…), p. ej. desde el Resumen. */
+const URL_FILTERS: Record<string, CommercialFilter> = {
+  demorados: "delayed",
+  seguimiento: "followup",
+};
+
+function matchesCommercialFilter(order: Order, filter: CommercialFilter, now: Date) {
   const payment = order.paymentStatus || "pending";
   if (filter === "all") return true;
+  if (filter === "delayed") return getOrderDelay(order, now) !== null;
   if (filter === "followup") {
     return payment === "pending" && order.status === "pendiente" && !!order.followUpAt;
   }
@@ -100,19 +108,30 @@ export default function AdminOrdersPage() {
     }, 0);
     return () => window.clearTimeout(timer);
   }, [orders]);
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("filtro");
+    const filter = requested ? URL_FILTERS[requested] : undefined;
+    if (!filter) return;
+    const timer = window.setTimeout(() => setCommercialFilter(filter), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // Hora de referencia fijada al abrir la página: las demoras se miden en
+  // horas, no hace falta un reloj en vivo.
+  const [now] = useState(() => new Date());
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return orders.filter(
       (order) =>
-        matchesCommercialFilter(order, commercialFilter) &&
+        matchesCommercialFilter(order, commercialFilter, now) &&
         (!status || order.status === status) &&
         (!normalized ||
           [order.id, order.customerName, order.email, order.address].some(
             (value) => value?.toLowerCase().includes(normalized),
           )),
     );
-  }, [orders, query, status, commercialFilter]);
+  }, [orders, query, status, commercialFilter, now]);
 
   /**
    * Resumen de productos por fila. Antes la columna decía "1 unidades · 1
@@ -125,9 +144,15 @@ export default function AdminOrdersPage() {
       filtered.map((order) => {
         const lines = resolveOrderLines(order, products);
         const units = lines.reduce((sum, line) => sum + line.quantity, 0);
-        return { order, first: lines[0], extra: lines.length - 1, units };
+        return {
+          order,
+          first: lines[0],
+          extra: lines.length - 1,
+          units,
+          delay: getOrderDelay(order, now),
+        };
       }),
-    [filtered, products],
+    [filtered, products, now],
   );
 
   const pendingCount = orders.filter((order) =>
@@ -135,7 +160,10 @@ export default function AdminOrdersPage() {
     (order.paymentStatus || "pending") === "pending",
   ).length;
   const followUpCount = orders.filter((order) =>
-    matchesCommercialFilter(order, "followup")
+    matchesCommercialFilter(order, "followup", now)
+  ).length;
+  const delayedCount = orders.filter((order) =>
+    matchesCommercialFilter(order, "delayed", now)
   ).length;
   const preparingCount = orders.filter(
     (order) => order.status === "preparando",
@@ -370,10 +398,20 @@ export default function AdminOrdersPage() {
           >
             <option value="active">Activos</option>
             <option value="followup">Seguimiento comercial</option>
+            <option value="delayed">Demorados</option>
             <option value="paid">Pagados</option>
             <option value="expired">Vencidos</option>
             <option value="all">Todos</option>
           </select>
+          {delayedCount > 0 && commercialFilter !== "delayed" && (
+            <button
+              type="button"
+              className="payment-status delay-shortcut"
+              onClick={() => setCommercialFilter("delayed")}
+            >
+              {delayedCount} {delayedCount === 1 ? "demorado" : "demorados"}
+            </button>
+          )}
           <span className="order-filters-count" aria-live="polite">
             {filtered.length} de {orders.length} pedidos
           </span>
@@ -425,11 +463,17 @@ export default function AdminOrdersPage() {
                 </tr>
               </thead>
               <tbody role="rowgroup">
-                {rows.map(({ order, first, extra, units }) => (
+                {rows.map(({ order, first, extra, units, delay }) => (
                   <tr role="row" key={order.id}>
                     <td role="cell" className="cell-order">
                       <strong>{order.id}</strong>
                       <small>{formatDate(order.createdAt)}</small>
+                      {delay && (
+                        <span className="payment-status delay-pill" title={delay.label}>
+                          Demorado
+                        </span>
+                      )}
+                      {delay && <small className="delay-note">{delay.label}</small>}
                     </td>
                     <td role="cell" className="cell-customer">
                       <span>{order.customerName}</span>
@@ -469,7 +513,7 @@ export default function AdminOrdersPage() {
                       >
                         {PAYMENT_LABELS[order.paymentStatus || "pending"]}
                       </span>
-                      {matchesCommercialFilter(order, "followup") && (
+                      {matchesCommercialFilter(order, "followup", now) && (
                         <small>Contactar al cliente</small>
                       )}
                     </td>

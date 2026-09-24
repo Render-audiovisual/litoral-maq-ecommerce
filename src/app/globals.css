@@ -868,6 +868,18 @@ td > small { margin-top: 4px; color: var(--muted); }
 .customer-list span { color: var(--ink); font-size: 14px; font-weight: 600; }
 .customer-list small { color: #566472; font-size: 13px; overflow-wrap: anywhere; }
 .customers-card > .empty-inline { margin-bottom: 20px; }
+.attention-list { margin: 0 0 16px; padding: 0; list-style: none; }
+.attention-list li { padding: 12px 0; display: grid; grid-template-columns: minmax(110px, auto) minmax(0, 1fr) auto; align-items: center; gap: 4px 16px; border-top: 1px solid var(--line); font-size: 14px; }
+.attention-list li > span { overflow: hidden; color: var(--ink); text-overflow: ellipsis; white-space: nowrap; }
+.attention-list .payment-status { justify-self: end; }
+.attention-card > .empty-inline:not(:last-child) { margin-bottom: 16px; }
+.attention-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.attention-actions .button { min-height: 40px; }
+.attention-actions .order-link { font-size: 14px; font-weight: 600; }
+@media (max-width: 560px) {
+  .attention-list li { grid-template-columns: minmax(0, 1fr) auto; }
+  .attention-list li > span { grid-column: 1 / -1; grid-row: 2; }
+}
 .customers-card > .button { min-height: 40px; margin-top: auto; align-self: flex-start; }
 .table-toolbar { margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .table-toolbar input { width: min(420px, 100%); }
@@ -916,6 +928,11 @@ td > small { margin-top: 4px; color: var(--muted); }
 .orders-table .order-products strong { display: -webkit-box; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
 .orders-table .cell-payment > .payment-status { display: inline-flex; }
 .orders-table .cell-payment > small { margin-top: 6px; color: #8a3c00; font-weight: 600; }
+.orders-table .cell-order > .delay-pill { margin-top: 6px; display: inline-flex; }
+.orders-table .cell-order > .delay-note { margin-top: 4px; color: #8a3c00; font-weight: 600; white-space: normal; }
+.delay-shortcut { min-height: 32px; padding: 0 12px; display: inline-flex; flex: none; align-items: center; border: 0; font-family: inherit; cursor: pointer; transition: background-color .18s ease; }
+.delay-shortcut:hover { background: #ffe8c2; }
+.delay-shortcut:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 .orders-table .cell-actions { display: flex; align-items: center; gap: 8px; }
 .orders-table .status-select { width: 220px; min-height: 40px; padding: 0 8px 0 12px; border: 1px solid #bfcbd3; border-radius: 6px; background-color: #fff; color: var(--navy-dark); font-size: 14px; font-weight: 600; text-transform: none; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
 .orders-table .status-select:hover { border-color: #93a4b0; }

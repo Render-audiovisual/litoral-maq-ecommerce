@@ -5,6 +5,8 @@ import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { orderStatusLabel } from "@/lib/order-details";
+import { getOrderDelay, type OrderDelay } from "@/lib/order-delays";
+import type { Order } from "@/lib/types";
 
 type QualityItem = { label: string; pending: number; detail: string };
 
@@ -31,6 +33,15 @@ export default function AdminDashboardPage() {
     { label: "Descripciones", pending: products.filter((product) => !product.description).length, detail: "sin descripción" },
   ];
   const recentCustomers = customers.slice(0, 5);
+  // Una sola referencia por render: las demoras se miden en horas.
+  const now = new Date();
+  const delayed = orders
+    .map((order) => ({ order, delay: getOrderDelay(order, now) }))
+    .filter((item): item is { order: Order; delay: OrderDelay } => item.delay !== null)
+    .sort((a, b) => b.delay.hours - a.delay.hours);
+  const followUpCount = orders.filter(
+    (order) => (order.paymentStatus || "pending") === "pending" && order.status === "pendiente" && !!order.followUpAt,
+  ).length;
   return (
     <main className="admin-content">
       <div className="admin-heading">
@@ -47,6 +58,30 @@ export default function AdminDashboardPage() {
         <article className={lowStock.length ? "warning" : ""}><span>Stock bajo</span><strong>{lowStock.length}</strong><small>{lowStock.length ? "Requieren revisión" : "Sin alertas de stock"}</small></article>
       </div>
       <div className="admin-grid">
+        <section className="admin-card wide attention-card">
+          <div className="card-heading"><div><h2>Requieren atención</h2><p>Pedidos que llevan demasiado tiempo en el mismo paso</p></div></div>
+          {delayed.length ? (
+            <ul className="attention-list">
+              {delayed.slice(0, 5).map(({ order, delay }) => (
+                <li key={order.id}>
+                  <Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link" aria-label={`Ver detalle del pedido ${order.id}`}>{order.id}</Link>
+                  <span>{order.customerName}</span>
+                  <span className="payment-status">{delay.label}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="empty-inline">Todo al día: no hay pedidos demorados.</p>
+          )}
+          {(delayed.length > 0 || followUpCount > 0) && <div className="attention-actions">
+            {delayed.length > 0 && <Link href="/admin/pedidos?filtro=demorados" className="button secondary">Ver todos los demorados</Link>}
+            {followUpCount > 0 && (
+              <Link href="/admin/pedidos?filtro=seguimiento" className="order-link">
+                {followUpCount} {followUpCount === 1 ? "pedido sin pago" : "pedidos sin pago"} para seguimiento
+              </Link>
+            )}
+          </div>}
+        </section>
         <section className="admin-card wide recent-orders">
           <div className="card-heading">
             <div><h2>Pedidos recientes</h2><p>Últimos movimientos de la tienda</p></div>
