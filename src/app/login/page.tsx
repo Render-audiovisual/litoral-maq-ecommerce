@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
+import { AuthLayout } from "@/components/auth-layout";
 import { GoogleSignInButton } from "@/components/google-button";
 import { PasswordInput } from "@/components/password-input";
 import { useCaptcha } from "@/components/use-captcha";
@@ -38,31 +38,28 @@ function LoginForm() {
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-panel visual">
-        <Image src="/brand/AZUL.png" alt="Litoral Maq" width={210} height={78} />
-        <h1>Todo tu taller,<br />en un solo lugar.</h1>
-        <p>Guardá pedidos, seguí tus compras y comprá más rápido.</p>
-      </section>
-      <section className="auth-panel form">
-        <div className="auth-card">
-          <span className="eyebrow orange">BIENVENIDO</span><h2>Ingresá a tu cuenta</h2>
-          {confirmed && <div className="success-message">Email confirmado. Ya podés ingresar.</div>}
-          {passwordChanged && <div className="success-message">Contraseña actualizada. Ingresá con la nueva clave.</div>}
-          <GoogleSignInButton />
-          <p className="auth-divider"><span>o con tu email</span></p>
-          <form onSubmit={signIn}>
-            <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@email.com" /></label>
-            <PasswordInput id="customer-password" label="Contraseña" required autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Tu contraseña" />
-            <p className="form-helper"><Link href={`/recuperar-clave${email ? `?email=${encodeURIComponent(email)}` : ""}`}>¿Olvidaste tu contraseña?</Link></p>
-            {captcha.field}
-            {error && <div className="error-message" role="alert">{error}</div>}
-            <button className="button primary large full" disabled={loading || !captcha.solved}>{loading ? "Ingresando…" : "Ingresar"}</button>
-          </form>
-          <p>¿No tenés cuenta? <Link href="/registro">Creala gratis</Link><br /><Link href={`/confirmar-cuenta${email ? `?email=${encodeURIComponent(email)}` : ""}`}>Reenviar confirmación</Link></p>
+    <AuthLayout>
+      <h1>Ingresá a tu cuenta</h1>
+      <p className="auth-intro">Mirá tus pedidos y comprá con tus datos guardados.</p>
+      {confirmed && <div className="success-message">Email confirmado. Ya podés ingresar.</div>}
+      {passwordChanged && <div className="success-message">Contraseña actualizada. Ingresá con la nueva clave.</div>}
+      <div className="auth-social"><GoogleSignInButton /></div>
+      <p className="auth-divider"><span>o con tu email</span></p>
+      <form onSubmit={signIn}>
+        <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@email.com" /></label>
+        <div className="auth-password">
+          <PasswordInput id="customer-password" label="Contraseña" required autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Tu contraseña" />
+          <Link className="auth-forgot" href={`/recuperar-clave${email ? `?email=${encodeURIComponent(email)}` : ""}`}>¿Olvidaste tu contraseña?</Link>
         </div>
-      </section>
-    </main>
+        {captcha.field}
+        {error && <div className="error-message" role="alert">{error}</div>}
+        <button className="button primary large full" disabled={loading || !captcha.solved}>{loading ? "Ingresando…" : "Ingresar"}</button>
+      </form>
+      <div className="auth-alt">
+        <p>¿No tenés cuenta? <Link href="/registro">Creala gratis</Link></p>
+        <p className="auth-alt-minor">¿No recibiste el email? <Link href={`/confirmar-cuenta${email ? `?email=${encodeURIComponent(email)}` : ""}`}>Reenviar confirmación</Link></p>
+      </div>
+    </AuthLayout>
   );
 }
 

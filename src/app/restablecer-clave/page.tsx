@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AuthLayout } from "@/components/auth-layout";
 import { PasswordInput } from "@/components/password-input";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState, useSyncExternalStore } from "react";
@@ -59,23 +60,23 @@ export default function ResetPasswordPage() {
   }
 
   if (!fromRecovery) {
-    return <main className="simple-auth-page"><section className="auth-card">
-      <span className="eyebrow orange">NUEVA CONTRASEÑA</span><h1>Necesitás el enlace del email</h1>
+    return <AuthLayout>
+      <h1>Necesitás el enlace del email</h1>
       <div className="error-message">{RECOVERY_REQUIRED_ERROR}</div>
-      <Link className="button primary large full" href="/recuperar-clave">Pedir un enlace</Link>
-      <p><Link href="/login">Volver a ingresar</Link></p>
-    </section></main>;
+      <Link className="button primary large full auth-action" href="/recuperar-clave">Pedir un enlace</Link>
+      <div className="auth-alt"><p><Link href="/login">Volver a ingresar</Link></p></div>
+    </AuthLayout>;
   }
 
-  return <main className="simple-auth-page"><section className="auth-card">
-    <span className="eyebrow orange">NUEVA CONTRASEÑA</span><h1>Elegí una nueva clave</h1>
-    <p>Debe tener al menos 6 caracteres.</p>
+  return <AuthLayout>
+    <h1>Elegí una nueva clave</h1>
+    <p className="auth-intro">Debe tener al menos 6 caracteres.</p>
     <form onSubmit={submit}>
       <PasswordInput id="reset-password" label="Nueva contraseña" required autoComplete="new-password" minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} />
       <PasswordInput id="reset-password-confirmation" label="Repetir contraseña" required autoComplete="new-password" minLength={6} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} />
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="error-message" role="alert">{error}</div>}
       <button className="button primary large full" disabled={loading}>{loading ? "Guardando…" : "Guardar contraseña"}</button>
     </form>
-    <p><Link href="/recuperar-clave">Pedir otro enlace</Link></p>
-  </section></main>;
+    <div className="auth-alt"><p>¿Venció el enlace? <Link href="/recuperar-clave">Pedir otro enlace</Link></p></div>
+  </AuthLayout>;
 }
