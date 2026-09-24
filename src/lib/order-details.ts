@@ -24,6 +24,72 @@ export const ORDER_STATUS_LABELS: Record<Order["status"], string> = {
  */
 export const SHIPPING_CARRIER_OPTIONS = ["Vía Cargo", "OCA", "Andreani"] as const;
 
+/** Provincias con el código que usan los correos (el que guarda el pedido). */
+export const PROVINCES = [
+  ["B", "Buenos Aires"],
+  ["C", "Ciudad Autónoma de Buenos Aires"],
+  ["K", "Catamarca"],
+  ["H", "Chaco"],
+  ["U", "Chubut"],
+  ["W", "Corrientes"],
+  ["X", "Córdoba"],
+  ["E", "Entre Ríos"],
+  ["P", "Formosa"],
+  ["Y", "Jujuy"],
+  ["L", "La Pampa"],
+  ["F", "La Rioja"],
+  ["M", "Mendoza"],
+  ["N", "Misiones"],
+  ["Q", "Neuquén"],
+  ["R", "Río Negro"],
+  ["A", "Salta"],
+  ["J", "San Juan"],
+  ["D", "San Luis"],
+  ["Z", "Santa Cruz"],
+  ["S", "Santa Fe"],
+  ["G", "Santiago del Estero"],
+  ["V", "Tierra del Fuego"],
+  ["T", "Tucumán"],
+] as const;
+
+/** "W" → "Corrientes". Un valor que no es código (pedidos viejos) queda igual. */
+export function provinceName(province?: string) {
+  return PROVINCES.find(([code]) => code === province)?.[1] ?? province ?? "";
+}
+
+/**
+ * Dirección que se guarda en el pedido. A sucursal sin cotización automática
+ * todavía no hay sucursal elegida: se guarda el destino (localidad y CP), nunca
+ * la calle del domicilio.
+ */
+export function buildOrderAddress(input: {
+  deliveryType: "domicilio" | "sucursal";
+  branchName?: string | null;
+  branchAddress?: string | null;
+  street: string;
+  streetNumber: string;
+  floor?: string;
+  apartment?: string;
+  locality: string;
+  postalCode: string;
+}) {
+  const locality = input.locality.trim();
+  if (input.deliveryType === "sucursal") {
+    return input.branchName || input.branchAddress
+      ? `${input.branchName || "Sucursal"} · ${input.branchAddress || locality}`
+      : `Sucursal del correo a coordinar · ${locality} · CP ${input.postalCode}`;
+  }
+  const floor = input.floor?.trim();
+  const apartment = input.apartment?.trim();
+  return `${input.street.trim()} ${input.streetNumber.trim()}${floor ? ` · Piso ${floor}` : ""}${apartment ? ` · Depto ${apartment}` : ""} · ${locality} · CP ${input.postalCode}`;
+}
+
+/** Texto de la forma de entrega para el panel, Mis pedidos y los mensajes. */
+export function deliveryLabel(order: Pick<Order, "deliveryMethod" | "shippingDeliveryType">) {
+  if (order.deliveryMethod === "retiro") return "Retiro en Sáenz 1587";
+  return order.shippingDeliveryType === "sucursal" ? "Envío a sucursal del correo" : "Envío a domicilio";
+}
+
 /**
  * Envío a coordinar: el cliente paga los productos y el envío se arregla aparte.
  * Pasa cuando no hubo cotización automática (por ejemplo, otra provincia).
@@ -101,6 +167,9 @@ export function orderStatusLabel(order: Order) {
 }
 
 export function orderStatusMessage(order: Order) {
+  if (order.status === "pendiente" && process.env.NEXT_PUBLIC_MERCADO_PAGO_ENABLED !== "true") {
+    return "Recibimos tu pedido. Te contactamos para coordinar el pago.";
+  }
   if (order.deliveryMethod === "retiro") {
     if (order.status === "listo") {
       return "Tu pedido está preparado. Ya podés retirarlo en Sáenz 1587.";

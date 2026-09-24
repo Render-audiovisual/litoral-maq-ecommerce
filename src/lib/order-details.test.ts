@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import type { Order, Product } from "./types";
 import {
   adminOrderStatusLabel,
+  buildOrderAddress,
+  deliveryLabel,
+  provinceName,
   ADMIN_ORDER_STATUS_LABELS,
   isActiveOrder,
   ORDER_STATUS_MESSAGES,
@@ -86,5 +89,40 @@ describe("detalle histórico de pedidos", () => {
     expect(adminOrderStatusLabel("listo", "envio")).toBe(
       "Paso 2 · Listo para despachar",
     );
+  });
+});
+
+describe("pedidos a sucursal del correo", () => {
+  const form = {
+    street: "San Juan", streetNumber: "1234", floor: "2", apartment: "B",
+    locality: " La Plata ", postalCode: "1900",
+  };
+
+  it("sin cotización guarda el destino, nunca la calle del domicilio", () => {
+    expect(buildOrderAddress({ ...form, deliveryType: "sucursal" }))
+      .toBe("Sucursal del correo a coordinar · La Plata · CP 1900");
+  });
+
+  it("con sucursal cotizada guarda la sucursal", () => {
+    expect(buildOrderAddress({ ...form, deliveryType: "sucursal", branchName: "OCA Centro", branchAddress: "Calle 7 100" }))
+      .toBe("OCA Centro · Calle 7 100");
+  });
+
+  it("a domicilio guarda calle, piso y depto", () => {
+    expect(buildOrderAddress({ ...form, deliveryType: "domicilio" }))
+      .toBe("San Juan 1234 · Piso 2 · Depto B · La Plata · CP 1900");
+  });
+
+  it("la etiqueta de entrega distingue sucursal, domicilio y retiro", () => {
+    expect(deliveryLabel({ deliveryMethod: "envio", shippingDeliveryType: "sucursal" })).toBe("Envío a sucursal del correo");
+    expect(deliveryLabel({ deliveryMethod: "envio", shippingDeliveryType: "domicilio" })).toBe("Envío a domicilio");
+    expect(deliveryLabel({ deliveryMethod: "envio" })).toBe("Envío a domicilio");
+    expect(deliveryLabel({ deliveryMethod: "retiro" })).toBe("Retiro en Sáenz 1587");
+  });
+
+  it("muestra el nombre de la provincia en vez del código", () => {
+    expect(provinceName("W")).toBe("Corrientes");
+    expect(provinceName("Chaco")).toBe("Chaco");
+    expect(provinceName(undefined)).toBe("");
   });
 });

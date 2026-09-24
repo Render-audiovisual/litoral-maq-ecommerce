@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { Order } from "./types";
-import { getOrderWhatsAppUrl, getPendingOrderCustomerWhatsAppUrl } from "./whatsapp";
+import {
+  getOrderWhatsAppUrl,
+  getPendingOrderCustomerWhatsAppUrl,
+  isValidArgentinePhone,
+  normalizeArgentineWhatsAppNumber,
+} from "./whatsapp";
 
 describe("confirmación de pedido por WhatsApp", () => {
   it("arma un mensaje comercial con pedido, productos, total y entrega", () => {
@@ -101,4 +106,80 @@ describe("confirmación de pedido por WhatsApp", () => {
     const order = { id: "LM-127", lines: [] } as unknown as Order;
     expect(getPendingOrderCustomerWhatsAppUrl(order)).toBe("");
   });
+
+  it("con un teléfono que no se puede normalizar no arma enlace", () => {
+    const order = { id: "LM-130", phone: "0379 15 453", status: "pendiente", lines: [] } as unknown as Order;
+    expect(getPendingOrderCustomerWhatsAppUrl(order)).toBe("");
+  });
+});
+
+describe("pedido sin pago: el mensaje no da por hecho un pago", () => {
+  const base = {
+    id: "LM-200", lines: [{ productId: "p1", productName: "Taladro", quantity: 1 }],
+    total: 50000, customerName: "Ana",
+  };
+
+  it("sin pago pide coordinar pago y entrega", () => {
+    const order = { ...base, deliveryMethod: "retiro", paymentStatus: "pending" } as Order;
+    const text = new URL(getOrderWhatsAppUrl(order, order.id)).searchParams.get("text") || "";
+    expect(text).toContain("🙌 Les escribo por mi pedido en la web. Les comparto el detalle:");
+    expect(text).toContain("Quiero coordinar el pago y la entrega, ¿me ayudan? ");
+    expect(text).not.toContain("Gracias por recibir mi compra");
+    expect(text).not.toContain("les llegó el pago");
+  });
+
+  it("pagado mantiene el texto de siempre", () => {
+    const order = { ...base, deliveryMethod: "retiro", paymentStatus: "approved" } as Order;
+    const text = new URL(getOrderWhatsAppUrl(order, order.id)).searchParams.get("text") || "";
+    expect(text).toContain("✅ Gracias por recibir mi compra. Les comparto el detalle:");
+    expect(text).toContain("¿Me avisan cuándo puedo pasar a retirarlo?");
+  });
+
+  it("el destino muestra el nombre de la provincia, no el código", () => {
+    const order = {
+      ...base, deliveryMethod: "envio", shippingStatus: "manual_quote", shippingCarrier: "OCA",
+      address: "San Juan 1234 · Corrientes · CP 3400", province: "W", paymentStatus: "pending",
+    } as Order;
+    const text = new URL(getOrderWhatsAppUrl(order, order.id)).searchParams.get("text") || "";
+    expect(text).toContain("Elegí el envío por OCA · San Juan 1234 · Corrientes · CP 3400 · Corrientes");
+    expect(text).not.toContain("· W");
+  });
+
+  it("envío a sucursal lo dice en la entrega", () => {
+    const order = {
+      ...base, deliveryMethod: "envio", shippingStatus: "manual_quote", shippingCarrier: "OCA",
+      shippingDeliveryType: "sucursal", paymentStatus: "pending",
+      address: "Sucursal del correo a coordinar · La Plata · CP 1900", province: "B",
+    } as Order;
+    const text = new URL(getOrderWhatsAppUrl(order, order.id)).searchParams.get("text") || "";
+    expect(text).toContain("Envío a sucursal del correo por OCA · Sucursal del correo a coordinar · La Plata · CP 1900 · Buenos Aires");
+  });
+});
+
+describe("normalización de celulares argentinos", () => {
+  it.each([
+    ["3794530578", "5493794530578"],
+    ["+54 9 3794 53-0578", "5493794530578"],
+    ["03794530578", "5493794530578"],
+    ["5493794530578", "5493794530578"],
+    ["(379) 4530578", "5493794530578"],
+    ["379 15 4530578", "5493794530578"],
+    ["0379 15 4530578", "5493794530578"],
+    ["54 379 15 4530578", "5493794530578"],
+    ["+54 379 4530578", "5493794530578"],
+    ["011 15 5555 1234", "5491155551234"],
+    ["+54 11 5555-1234", "5491155551234"],
+    ["2966 15 123456", "5492966123456"],
+  ])("%s → %s", (raw, expected) => {
+    expect(normalizeArgentineWhatsAppNumber(raw)).toBe(expected);
+    expect(isValidArgentinePhone(raw)).toBe(true);
+  });
+
+  it.each(["", "abcdef", "4530578", "379453", "37945305781234", "549379453057812", "0379 15 453"])(
+    "%s no se puede normalizar",
+    (raw) => {
+      expect(normalizeArgentineWhatsAppNumber(raw)).toBe("");
+      expect(isValidArgentinePhone(raw)).toBe(false);
+    },
+  );
 });
