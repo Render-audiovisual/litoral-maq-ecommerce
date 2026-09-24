@@ -778,6 +778,9 @@ export default function CheckoutPage() {
                   ? "Continuar a Mercado Pago"
                   : "Enviar solicitud de compra"}
           </button>
+          <p className="reservation-note">
+            Reservamos tu pedido por 24 horas. Si en ese plazo no se acredita el pago, se cancela solo.
+          </p>
           <small>
             {paymentEnabled
               ? manualReason

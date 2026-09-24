@@ -353,6 +353,7 @@ textarea { min-height: 100px; resize: vertical; }
 .order-summary .summary-total strong { color: var(--orange); font-size: 22px; }
 .order-summary .button { margin: 22px 0 12px; }
 .order-summary > small { display: block; text-align: center; color: var(--muted); }
+.order-summary .reservation-note { margin: 0 0 12px; text-align: center; color: var(--navy); font-size: 14px; font-weight: 650; }
 .order-summary.sticky { position: sticky; top: 115px; }
 .checkout-steps { display: flex; flex-direction: column; gap: 18px; }
 .form-card, .admin-card { min-width: 0; max-width: 100%; padding: 28px; background: #fff; border: 1px solid var(--line); }

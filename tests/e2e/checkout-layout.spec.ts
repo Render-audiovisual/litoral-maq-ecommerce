@@ -44,3 +44,8 @@ test("el checkout ofrece WhatsApp con el carrito ya armado", async ({ page }) =>
   expect(href).toContain("https://wa.me/5493794215065?text=");
   expect(decodeURIComponent(href)).toContain("Mi carrito");
 });
+
+test("el checkout avisa que el pedido se reserva 24 horas", async ({ page }) => {
+  await openCheckout(page);
+  await expect(page.locator(".order-summary .reservation-note")).toContainText("24 horas");
+});
