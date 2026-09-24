@@ -23,7 +23,8 @@ set search_path = public
 as $$
 begin
   if tg_op = 'INSERT' then
-    new.status_changed_at := coalesce(new.status_changed_at, now());
+    -- Siempre now(): el cliente no puede fechar su propio pedido hacia atrás.
+    new.status_changed_at := now();
   elsif new.status is distinct from old.status
      or new.payment_status is distinct from old.payment_status then
     new.status_changed_at := now();
