@@ -62,11 +62,11 @@ test("no cotiza el envío sin todos los datos de contacto y avisa junto al botó
   // Falta apellido, email, teléfono y DNI.
   await page.getByRole("button", { name: "Calcular opciones de envío" }).click();
 
-  const alert = page.getByRole("alert");
+  // El aviso vive dentro de la tarjeta de Entrega, no al final del formulario.
+  // (Se acota a la tarjeta porque Next agrega su propio role="alert" al documento.)
+  const alert = page.locator("section.form-card").nth(1).getByRole("alert");
   await expect(alert).toContainText("Completá nombre, apellido, email, teléfono y DNI");
   await expect(page.getByText("Envío a coordinar", { exact: true })).toHaveCount(0);
-  // El aviso vive dentro de la tarjeta de Entrega, no al final del formulario.
-  await expect(page.locator("section.form-card").nth(1).getByRole("alert")).toBeVisible();
 });
 
 test("las opciones de entrega son tarjetas con el radio junto al texto", async ({ page }) => {
