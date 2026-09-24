@@ -57,7 +57,7 @@ describe("confirmación de pedido por WhatsApp", () => {
     expect(text).toContain("👋 ¡Hola Franco! ¿Cómo estás? Te escribimos de *Litoral Maq*.");
     expect(text).toContain("🧾 Vimos que solicitaste el pedido *LM-125*:\n• 1 × Taladro\n• 2 × Amoladora");
     expect(text).toContain("¿Querés seguir con tu compra?");
-    expect(text).toContain("te asesoramos personalmente");
+    expect(text).toContain("te ayudamos a elegir las mejores máquinas para vos");
     expect(text).toContain("📍 Lo podés retirar en nuestro local de Corrientes Capital");
     expect(text).toContain("¡Quedamos atentos! 😊");
     expect(text).not.toContain("ya venció");

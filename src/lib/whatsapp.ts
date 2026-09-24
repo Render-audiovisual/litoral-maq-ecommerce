@@ -66,7 +66,7 @@ export function getPendingOrderCustomerWhatsAppUrl(order: Order, phone?: string)
     `🧾 Vimos que solicitaste el pedido *${order.id}*:\n${products}`,
     expired
       ? "⏰ Ese pedido ya venció, pero no hay problema: si querés seguir con tu compra lo resolvemos juntos por acá y te asesoramos personalmente."
-      : "🛠️ ¿Querés seguir con tu compra? Contá con nosotros: te asesoramos personalmente para que elijas lo mejor para tu trabajo.",
+      : "🛠️ ¿Querés seguir con tu compra? Contá con nosotros: te ayudamos a elegir las mejores máquinas para vos.",
     "📍 Lo podés retirar en nuestro local de Corrientes Capital o te ayudamos a coordinar el envío 🚚.",
     expired ? "¿Lo retomamos? 😊" : "¡Quedamos atentos! 😊",
   ].join("\n\n");
