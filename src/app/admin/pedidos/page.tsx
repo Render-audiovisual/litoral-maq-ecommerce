@@ -279,7 +279,6 @@ export default function AdminOrdersPage() {
     <main className="admin-content">
       <div className="admin-heading">
         <div>
-          <span className="eyebrow orange">VENTAS</span>
           <h1>Pedidos</h1>
           <p>
             Consultá cada pedido y avanzá su preparación.
@@ -300,7 +299,7 @@ export default function AdminOrdersPage() {
       </div>
 
       <section className="stats-grid order-stats">
-        <article className="warning">
+        <article className={pendingCount ? "warning" : undefined}>
           <span>Paso 0 · Pedido recibido</span>
           <strong>{pendingCount}</strong>
           <small>{followUpCount} listos para seguimiento comercial</small>
@@ -339,14 +338,17 @@ export default function AdminOrdersPage() {
         </div>
       )}
 
-      <section className="admin-card">
+      <section className="admin-card orders-card">
         <div className="table-toolbar order-filters">
           <input
+            type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Buscar pedido, cliente, email o domicilio…"
+            aria-label="Buscar pedidos"
           />
           <select
+            aria-label="Filtrar por estado"
             value={status}
             onChange={(event) =>
               setStatus(event.target.value as Order["status"] | "")
@@ -372,49 +374,66 @@ export default function AdminOrdersPage() {
             <option value="expired">Vencidos</option>
             <option value="all">Todos</option>
           </select>
-          <span>
+          <span className="order-filters-count" aria-live="polite">
             {filtered.length} de {orders.length} pedidos
           </span>
         </div>
         {!orders.length ? (
-          <div className="empty-state">
-            <span>▤</span>
-            <h2>No hay pedidos todavía</h2>
-            <p>Los pedidos confirmados desde la tienda van a aparecer acá.</p>
+          <div className="orders-empty">
+            <h2>Todavía no hay pedidos</h2>
+            <p>
+              Cuando un cliente envíe una solicitud desde la tienda, aparece
+              acá para que la prepares.
+            </p>
           </div>
         ) : !filtered.length ? (
-          <div className="empty-state">
-            <span>⌕</span>
-            <h2>No hay coincidencias</h2>
-            <p>Probá otro término o limpiá el filtro de estado.</p>
+          <div className="orders-empty">
+            <h2>Ningún pedido coincide con estos filtros</h2>
+            <p>
+              Probá con otro número, nombre o email, o mirá todos los pedidos
+              sin filtrar.
+            </p>
+            <button
+              type="button"
+              className="button secondary"
+              onClick={() => {
+                setQuery("");
+                setStatus("");
+                setCommercialFilter("all");
+              }}
+            >
+              Limpiar filtros
+            </button>
           </div>
         ) : (
           <TableScroll>
-            <table>
+            {/* Cada fila es una grilla (ver .orders-table en globals.css):
+                pedido y cliente, productos y entrega, total y pago, y las
+                acciones. Entra entera en una notebook sin scroll lateral. */}
+            <table className="orders-table">
               <thead>
                 <tr>
-                  <th>Pedido</th>
-                  <th>Cliente</th>
-                  <th>Productos</th>
-                  <th>Entrega</th>
-                  <th>Total</th>
-                  <th>Pago</th>
-                  <th>Estado</th>
-                  <th />
+                  <th className="cell-order">Pedido</th>
+                  <th className="cell-customer">Cliente</th>
+                  <th className="cell-products">Productos</th>
+                  <th className="cell-delivery">Entrega</th>
+                  <th className="cell-total">Total</th>
+                  <th className="cell-payment">Pago</th>
+                  <th className="cell-actions">Estado</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map(({ order, first, extra, units }) => (
                   <tr key={order.id}>
-                    <td>
+                    <td className="cell-order">
                       <strong>{order.id}</strong>
                       <small>{formatDate(order.createdAt)}</small>
                     </td>
-                    <td>
-                      {order.customerName}
-                      <small>{order.email}</small>
+                    <td className="cell-customer">
+                      <span>{order.customerName}</span>
+                      <small title={order.email}>{order.email}</small>
                     </td>
-                    <td className="order-products">
+                    <td className="cell-products order-products">
                       <strong title={first?.productName}>
                         {first?.productName ?? "Sin productos"}
                       </strong>
@@ -426,21 +445,23 @@ export default function AdminOrdersPage() {
                           : ""}
                       </small>
                     </td>
-                    <td>
-                      {order.deliveryMethod === "retiro"
-                        ? "Retiro en local"
-                        : isShippingToCoordinate(order)
-                          ? `Envío a coordinar${order.shippingCarrier ? ` · ${order.shippingCarrier}` : ""}`
-                          : order.shippingCarrier || "Envío"}
-                      <small>
+                    <td className="cell-delivery">
+                      <span>
+                        {order.deliveryMethod === "retiro"
+                          ? "Retiro en local"
+                          : isShippingToCoordinate(order)
+                            ? `Envío a coordinar${order.shippingCarrier ? ` · ${order.shippingCarrier}` : ""}`
+                            : order.shippingCarrier || "Envío"}
+                      </span>
+                      <small title={order.address || "Sáenz 1587"}>
                         {order.address || "Sáenz 1587"}
                       </small>
                     </td>
-                    <td>
-                      {formatCurrency(order.total)}
+                    <td className="cell-total">
+                      <strong>{formatCurrency(order.total)}</strong>
                       <small>Entrega {deliveryAmountLabel(order)}</small>
                     </td>
-                    <td>
+                    <td className="cell-payment">
                       <span
                         className={`payment-status payment-${order.paymentStatus || "pending"}`}
                       >
@@ -450,7 +471,7 @@ export default function AdminOrdersPage() {
                         <small>Contactar al cliente</small>
                       )}
                     </td>
-                    <td>
+                    <td className="cell-actions">
                       <select
                         aria-label={`Estado de ${order.id}`}
                         className={`status-select status-${order.status}`}
@@ -469,11 +490,9 @@ export default function AdminOrdersPage() {
                           </option>
                         ))}
                       </select>
-                    </td>
-                    <td>
                       <button
                         type="button"
-                        className="table-detail-button"
+                        className="button secondary table-detail-button"
                         onClick={() => setSelected(order)}
                       >
                         Ver detalle

@@ -844,18 +844,9 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
   background: #fff;
 }
 .table-wrap th:last-child { background: #f8fafb; }
-/* El nombre del producto es texto libre y puede ser largo: se recorta en vez
-   de empujar el resto de las columnas fuera de la pantalla. El nombre
-   completo queda en el title y en el detalle del pedido. */
-.order-products strong {
-  max-width: 24ch;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 13px 11px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
-th { color: var(--muted); background: #f8fafb; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+th { color: #566472; background: #f8fafb; font-size: 12px; font-weight: 600; }
 td { font-size: 12px; }
 td > small, td > strong { display: block; }
 td > small { margin-top: 4px; color: var(--muted); }
@@ -889,13 +880,78 @@ td > small { margin-top: 4px; color: var(--muted); }
 .customers-card > .button { min-height: 40px; margin-top: auto; align-self: flex-start; }
 .table-toolbar { margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .table-toolbar input { width: min(420px, 100%); }
-.table-toolbar span { color: var(--muted); font-size: 11px; }
-.order-filters { justify-content: flex-start; }
-.order-filters input { flex: 1; }
-.order-filters select { min-width: 190px; }
-.order-filters span { margin-left: auto; }
-.table-detail-button { padding: 7px 9px; border: 1px solid var(--line); background: #fff; color: var(--navy); font-size: 10px; font-weight: 750; white-space: nowrap; }
-.table-detail-button:hover { border-color: var(--orange); color: var(--orange); }
+.table-toolbar span { color: #566472; font-size: 13px; }
+/* Lista de pedidos. Filtros con los controles comunes del panel (40 px, borde
+   visible, foco azul) y tabla donde cada fila es una grilla: pedido y
+   cliente, productos y entrega, total y pago, y las acciones. Así entra
+   entera en una notebook sin scroll lateral; el ancho de la tarjeta (no el
+   de la ventana) decide cómo se acomoda. */
+.orders-card { container: orders / inline-size; }
+.order-filters { flex-wrap: wrap; justify-content: flex-start; gap: 12px; margin-bottom: 16px; }
+.order-filters input, .order-filters select { min-height: 40px; padding: 0 12px; border-color: #bfcbd3; border-radius: 6px; color: var(--ink); font-size: 14px; transition: border-color .15s ease, box-shadow .15s ease; }
+.order-filters input { flex: 1 1 260px; min-width: 0; }
+.order-filters input::placeholder { color: #66737f; }
+.order-filters select { flex: 0 1 220px; min-width: 180px; padding-right: 8px; font-weight: 600; }
+.order-filters input:hover, .order-filters select:hover { border-color: #93a4b0; }
+.orders-card input:focus, .orders-card select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(0,59,99,.16); }
+.orders-card .button:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.order-filters .order-filters-count { margin-left: auto; color: #566472; font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.orders-empty { padding: 48px 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; border-radius: 6px; background: var(--soft); text-align: center; }
+.orders-empty h2 { margin: 0; color: var(--navy-dark); font-size: 18px; letter-spacing: -0.01em; text-wrap: balance; }
+.orders-empty p { max-width: 46ch; margin: 0; color: #566472; font-size: 14px; line-height: 1.5; }
+.orders-empty .button { min-height: 40px; margin-top: 12px; }
+.orders-table, .orders-table thead, .orders-table tbody { display: block; }
+.orders-table tr { display: grid; grid-template-columns: minmax(160px, 1fr) minmax(0, 1.5fr) minmax(130px, .8fr) 344px; column-gap: 20px; grid-template-areas: "order products total actions" "customer delivery payment actions"; row-gap: 10px; padding: 16px; border-bottom: 1px solid var(--line); transition: background-color .15s ease; }
+.orders-table thead tr { grid-template-areas: "order products total actions"; padding-block: 10px; border-radius: 6px 6px 0 0; background: #f8fafb; }
+.orders-table tbody tr:hover { background: #f3f7fa; }
+.orders-table tbody tr:last-child { border-bottom: 0; }
+.table-wrap .orders-table th, .table-wrap .orders-table td { min-width: 0; padding: 0; position: static; border: 0; background: none; white-space: normal; }
+.orders-table th.cell-customer, .orders-table th.cell-delivery, .orders-table th.cell-payment { width: 1px; height: 1px; position: absolute; overflow: hidden; clip: rect(0, 0, 0, 0); }
+.orders-table .cell-order { grid-area: order; }
+.orders-table .cell-customer { grid-area: customer; }
+.orders-table .cell-products { grid-area: products; }
+.orders-table .cell-delivery { grid-area: delivery; }
+.orders-table .cell-total { grid-area: total; }
+.orders-table .cell-payment { grid-area: payment; }
+.orders-table .cell-actions { grid-area: actions; }
+.orders-table td { color: var(--ink); font-size: 14px; line-height: 1.4; }
+.orders-table td > span, .orders-table td > strong, .orders-table td > small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.orders-table td > strong { color: var(--navy-dark); font-weight: 700; }
+.orders-table .order-products strong { font-weight: 600; }
+.orders-table td > small { margin-top: 2px; color: #566472; font-size: 13px; }
+.orders-table .cell-order strong, .orders-table .cell-total strong { font-variant-numeric: tabular-nums; }
+/* El nombre del producto es texto libre y puede ser largo: hasta dos líneas y
+   se recorta. El nombre completo queda en el title y en el detalle. */
+.orders-table .order-products strong { display: -webkit-box; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
+.orders-table .cell-payment > .payment-status { display: inline-flex; }
+.orders-table .cell-payment > small { margin-top: 6px; color: #8a3c00; font-weight: 600; }
+.orders-table .cell-actions { display: flex; align-items: center; gap: 8px; }
+.orders-table .status-select { width: 220px; min-height: 40px; padding: 0 8px 0 12px; border: 1px solid #bfcbd3; border-radius: 6px; background-color: #fff; color: var(--navy-dark); font-size: 14px; font-weight: 600; text-transform: none; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
+.orders-table .status-select:hover { border-color: #93a4b0; }
+.orders-table .status-select:disabled { opacity: .6; cursor: progress; }
+.orders-table .status-select.status-cancelado { border-color: #efc2be; }
+.orders-table .status-select.status-entregado { border-color: #b9dfc9; }
+.table-detail-button { flex: none; white-space: nowrap; }
+.orders-table .table-detail-button { width: 116px; min-height: 40px; padding: 0 12px; font-size: 14px; }
+.orders-table .table-detail-button:hover { transform: none; border-color: var(--navy); background: #f2f7fb; }
+/* Tarjeta más angosta (tablet o notebook chica con el menú abierto): las
+   acciones bajan a su propia línea. */
+@container orders (max-width: 820px) {
+  .orders-table tr { grid-template-columns: minmax(150px, 1fr) minmax(0, 1.5fr) minmax(110px, .8fr); grid-template-areas: "order products total" "customer delivery payment" "actions actions actions"; }
+  .orders-table thead tr { grid-template-areas: "order products total"; }
+  .orders-table th.cell-actions { display: none; }
+}
+/* Celular: una ficha por pedido. Número y pago arriba, los datos en el medio
+   y el estado con "Ver detalle" al pie, del ancho completo. */
+@container orders (max-width: 560px) {
+  .orders-table thead { display: none; }
+  .orders-table tr { padding: 16px 0; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "order payment" "customer customer" "products products" "delivery total" "actions actions"; column-gap: 16px; }
+  .orders-table tbody tr:first-child { padding-top: 4px; }
+  .orders-table tbody tr:hover { background: none; }
+  .orders-table .cell-payment, .orders-table .cell-total { text-align: right; }
+  .orders-table .status-select { width: auto; min-width: 0; flex: 1 1 auto; padding-left: 10px; font-size: 13px; }
+  .orders-table .table-detail-button { width: auto; }
+}
 .toggle { width: 40px; height: 22px; padding: 2px; border: 0; background: #cfd7dc; border-radius: 12px; }
 .toggle span { width: 18px; height: 18px; display: block; border-radius: 50%; background: #fff; transition: .2s; }
 .toggle.active { background: var(--success); }
@@ -918,7 +974,7 @@ td > small { margin-top: 4px; color: var(--muted); }
 .modal-heading h2 { margin: 7px 0 25px; }
 .modal-heading > button { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border: 0; border-radius: 6px; background: none; color: var(--navy); font-size: 26px; line-height: 1; cursor: pointer; transition: background-color .15s ease; }
 .modal-heading > button:hover { background: var(--soft); }
-.order-detail-created-at { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+.order-detail-created-at { display: block; margin-top: 4px; color: #566472; font-size: 13px; }
 .modal-actions { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; }
 .order-detail-modal { width: min(900px, 100%); }
 /* Cliente y Entrega arriba; Pago y Estado abajo. Dos columnas para que cada dato
@@ -932,8 +988,8 @@ td > small { margin-top: 4px; color: var(--muted); }
 .detail-action { margin-top: 10px; padding-top: 14px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; border-top: 1px solid var(--line); }
 .detail-action .whatsapp-button { min-height: 42px; padding: 0 18px; background: #178a45; font-size: 14px; }
 .detail-action .whatsapp-button:hover { background: #12723a; }
-.payment-status { width: max-content; padding: 5px 8px; border-radius: 12px; background: #fff3df; color: #8a5415; font-size: 10px; font-weight: 800; }
-.payment-approved { background: #e8f7ef; color: var(--success); }
+.payment-status { width: max-content; padding: 3px 10px; border-radius: 999px; background: #fff3df; color: #8a5415; font-size: 12px; font-weight: 700; line-height: 18px; }
+.payment-approved { background: #e8f7ef; color: #146c3f; }
 .payment-rejected, .payment-cancelled, .payment-refunded, .payment-charged_back { background: #fff0ef; color: #a12b23; }
 .shipping-operation { margin-top: 20px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border: 1px solid #bedee3; background: #f2fbfc; }
 .shipping-operation > div:first-child { display: flex; flex-direction: column; gap: 4px; }
@@ -1215,8 +1271,9 @@ td > small { margin-top: 4px; color: var(--muted); }
   .admin-card { padding: 20px 16px; }
   .category-admin-grid { grid-template-columns: 1fr; }
   .table-toolbar { align-items: flex-start; flex-direction: column; }
-  .order-filters input, .order-filters select { width: 100%; min-width: 0; }
-  .order-filters span { margin-left: 0; }
+  .table-toolbar.order-filters { flex-direction: row; }
+  .order-filters input, .order-filters select { flex: 1 1 100%; width: 100%; min-width: 0; }
+  .order-filters .order-filters-count { margin-left: 0; }
   .order-detail-grid { grid-template-columns: 1fr; }
   .shipping-operation { flex-direction: column; align-items: flex-start; }
   .shipping-actions { align-items: flex-start; }
