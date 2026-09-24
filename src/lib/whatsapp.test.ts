@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Order } from "./types";
-import { getCheckoutHelpWhatsAppUrl, getOrderWhatsAppUrl, getPendingOrderCustomerWhatsAppUrl } from "./whatsapp";
+import { getOrderWhatsAppUrl, getPendingOrderCustomerWhatsAppUrl } from "./whatsapp";
 
 describe("confirmación de pedido por WhatsApp", () => {
   it("arma un mensaje comercial con pedido, productos, total y entrega", () => {
@@ -52,25 +52,5 @@ describe("confirmación de pedido por WhatsApp", () => {
     expect(url.searchParams.get("text")).toContain("pedido LM-125");
     expect(url.searchParams.get("text")).toContain("Todavía tenemos el producto disponible y reservado");
     expect(url.searchParams.get("text")).toContain("Corrientes Capital");
-  });
-});
-
-describe("ayuda por WhatsApp desde el checkout", () => {
-  it("arma el mensaje con los productos del carrito", () => {
-    const url = new URL(getCheckoutHelpWhatsAppUrl([
-      { name: "Taladro", quantity: 2 },
-      { name: "Amoladora", quantity: 1 },
-    ]));
-    expect(url.pathname).toBe("/5493794215065");
-    const text = url.searchParams.get("text") || "";
-    expect(text).toContain("necesito ayuda para completar mi compra");
-    expect(text).toContain("• 2 × Taladro");
-    expect(text).toContain("• 1 × Amoladora");
-  });
-
-  it("sin productos manda una consulta genérica", () => {
-    const text = new URL(getCheckoutHelpWhatsAppUrl([])).searchParams.get("text") || "";
-    expect(text).toContain("necesito ayuda para completar mi compra");
-    expect(text).not.toContain("•");
   });
 });

@@ -6,7 +6,6 @@ import { FormEvent, useState } from "react";
 import { useCaptcha } from "@/components/use-captcha";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
-import { getCheckoutHelpWhatsAppUrl } from "@/lib/whatsapp";
 import { guestIdFromEmail, normalizeEmail } from "@/lib/auth";
 import { getAuthAdapter, supportsGuestSessions } from "@/services/auth";
 import {
@@ -372,11 +371,6 @@ export default function CheckoutPage() {
       </main>
     );
   }
-
-  const helpItems = snapshotOrderLines(cart, products).map((line) => ({
-    name: line.productName ?? line.productId,
-    quantity: line.quantity,
-  }));
 
   return (
     <main className="standard-page checkout-page">
@@ -790,14 +784,6 @@ export default function CheckoutPage() {
                 : "Te contactamos para coordinar el pago."
               : "No se realizará ningún cobro en este paso."}
           </small>
-          <a
-            className="button whatsapp-button full"
-            href={getCheckoutHelpWhatsAppUrl(helpItems)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            ¿Dudas? Escribinos por WhatsApp
-          </a>
         </aside>
       </form>
     </main>
