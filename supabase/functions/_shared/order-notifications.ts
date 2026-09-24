@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.111.0";
 import {
+  orderEmailStillApplies,
   type OrderEmailEvent,
   type OrderRecord,
   renderOrderEmail,
@@ -39,6 +40,8 @@ export async function processPendingOrderNotifications(
     "https://litoralmaq.com";
   const adminUrl = Deno.env.get("ADMIN_PUBLIC_URL") ||
     "https://admin.litoralmaq.com";
+  // La misma variable con la que payment-create habilita el cobro.
+  const mercadoPagoEnabled = Deno.env.get("MP_CHECKOUT_ENABLED") === "true";
   if (!apiKey) throw new Error("Falta configurar RESEND_API_KEY.");
   if (!from) throw new Error("Falta configurar RESEND_FROM_EMAIL.");
 
@@ -59,6 +62,17 @@ export async function processPendingOrderNotifications(
         throw new Error("No se encontró el pedido del evento.");
       }
       const order = rawOrder as OrderRecord;
+      if (!orderEmailStillApplies(event.event_type, order)) {
+        // Omitido a propósito (p. ej. recordatorio de pago de un pedido que ya
+        // se pagó). Queda como 'sent' para que no se reintente; last_error y
+        // sent_at nulo dejan ver que no salió ningún correo.
+        await db.from("order_notification_outbox").update({
+          status: "sent",
+          last_error: "omitido: ya no aplica",
+          updated_at: new Date().toISOString(),
+        }).eq("id", event.id);
+        continue;
+      }
       const recipient = event.event_type === "team_new_order"
         ? teamEmail
         : order.email;
@@ -89,6 +103,7 @@ export async function processPendingOrderNotifications(
         order,
         event.event_type === "team_new_order" ? adminUrl : storeUrl,
         fotos,
+        { mercadoPago: mercadoPagoEnabled },
       );
       const response = await fetch("https://api.resend.com/emails", {
         method: "POST",

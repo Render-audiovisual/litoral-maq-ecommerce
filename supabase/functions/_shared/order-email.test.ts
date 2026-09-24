@@ -1,4 +1,4 @@
-import { type OrderRecord, renderOrderEmail } from "./order-email.ts";
+import { orderEmailStillApplies, type OrderRecord, renderOrderEmail } from "./order-email.ts";
 
 function assert(value: unknown, message: string) {
   if (!value) throw new Error(message);
@@ -60,4 +60,47 @@ Deno.test("aviso de pedido vencido", () => {
   assert(html.includes("Volver a la tienda"), "texto del botón");
   assert(!html.includes("Pendiente de pago"), "no dice pendiente de pago");
   checkCommon(html);
+});
+
+function whatsappText(html: string) {
+  const href = html.match(/href="(https:\/\/wa\.me\/[^"]+)"/)?.[1] || "";
+  return new URL(href.replace(/&amp;/g, "&")).searchParams.get("text") || "";
+}
+
+Deno.test("WhatsApp de un pedido sin pago no da por hecho el pago", () => {
+  const text = whatsappText(renderOrderEmail("customer_order_received", order(), STORE).html);
+  assert(text.includes("Quiero coordinar el pago y la entrega, ¿me ayudan?"), text);
+  assert(!text.includes("les llegó el pago"), text);
+});
+
+Deno.test("WhatsApp de un pedido pagado mantiene el cierre de siempre", () => {
+  const text = whatsappText(
+    renderOrderEmail("customer_payment_approved", order({ payment_status: "approved", status: "preparando" }), STORE).html,
+  );
+  assert(text.includes("¿Me avisan cuándo puedo pasar a retirarlo?"), text);
+});
+
+Deno.test("con Mercado Pago apagado los correos no lo mencionan", () => {
+  for (const event of ["customer_order_received", "team_new_order", "customer_payment_reminder"] as const) {
+    const { html } = renderOrderEmail(event, order(), STORE, {}, { mercadoPago: false });
+    assert(!html.includes("Mercado Pago"), `${event} menciona Mercado Pago`);
+  }
+  const { html } = renderOrderEmail("customer_order_received", order(), STORE);
+  assert(html.includes("Mercado Pago"), "por defecto (producción) sigue mencionando Mercado Pago");
+});
+
+Deno.test("un correo encolado se omite si ya no aplica al estado actual", () => {
+  const pendiente = order();
+  const pagado = order({ payment_status: "approved", status: "preparando" });
+  const vencido = order({ status: "cancelado", payment_status: "cancelled" });
+  assert(orderEmailStillApplies("customer_payment_reminder", pendiente), "recordatorio a pedido pendiente");
+  assert(!orderEmailStillApplies("customer_payment_reminder", pagado), "recordatorio a pedido pagado");
+  assert(!orderEmailStillApplies("customer_payment_reminder", vencido), "recordatorio a pedido vencido");
+  assert(orderEmailStillApplies("customer_order_expired", vencido), "vencido a pedido cancelado");
+  assert(!orderEmailStillApplies("customer_order_expired", pagado), "vencido a pedido que se pagó tarde");
+  assert(
+    !orderEmailStillApplies("customer_order_expired", order({ status: "cancelado", payment_status: "approved" })),
+    "vencido a pedido cancelado con pago",
+  );
+  assert(orderEmailStillApplies("customer_payment_approved", pagado), "los demás eventos no cambian");
 });
