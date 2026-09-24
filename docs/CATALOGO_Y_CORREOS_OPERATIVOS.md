@@ -21,6 +21,16 @@ npm run validate:catalog
 
 Resultado esperado del validador: `verdict: PASS`, sin códigos duplicados, filas inválidas ni diferencias de nombre/precio.
 
+### Descripción del producto (ficha técnica)
+
+La ficha del producto arma sola la tabla "Ficha técnica" a partir de la descripción. Formato recomendado:
+
+1. Primera línea: nombre y modelo (`Set de puntas de 25 piezas GLADIATOR SPP825.`).
+2. Una línea `Datos técnicos:` y debajo una viñeta por dato: `• Clave: valor` (`• Material: S2`).
+3. Al final, `Contenido: …` con lo que trae la caja (también se aceptan `Contiene.` e `Incluye.`).
+
+Marca, Categoría y Código aparecen siempre en la ficha, aunque no haya descripción. Lo que no siga este formato se muestra igual, como descripción común: nunca se pierde texto.
+
 ## 2. Activación en Supabase
 
 1. Ejecutar completa la migración `supabase/migrations/0010_catalog_limits_order_notifications.sql` en SQL Editor.

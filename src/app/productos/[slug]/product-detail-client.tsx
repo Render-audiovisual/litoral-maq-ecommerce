@@ -6,10 +6,58 @@ import { useState } from "react";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { getPurchaseLimit } from "@/lib/purchase-limits";
+import { parseProductDescription } from "@/lib/product-description";
 import {
   canAddProductToCart,
   getProductAvailability,
 } from "@/lib/product-availability";
+
+const icon = {
+  width: 20,
+  height: 20,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.75,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  "aria-hidden": true,
+};
+
+const TRUST = [
+  {
+    title: "Envíos a todo el país",
+    text: "Por Vía Cargo, OCA o Andreani",
+    icon: (
+      <svg {...icon}>
+        <path d="M2.5 6.5h11v9.5h-11z" />
+        <path d="M13.5 9.5h4l3.5 3.5v3h-7.5" />
+        <circle cx="6.5" cy="17.5" r="1.75" />
+        <circle cx="17" cy="17.5" r="1.75" />
+      </svg>
+    ),
+  },
+  {
+    title: "Retiro gratis",
+    text: "Sáenz 1587, Corrientes",
+    icon: (
+      <svg {...icon}>
+        <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" />
+        <circle cx="12" cy="10" r="2.25" />
+      </svg>
+    ),
+  },
+  {
+    title: "Pago seguro",
+    text: "Mercado Pago: cuotas o débito",
+    icon: (
+      <svg {...icon}>
+        <path d="M12 3 19 6v5.5c0 4.3-2.9 7.7-7 9.5-4.1-1.8-7-5.2-7-9.5V6z" />
+        <path d="m9 12 2.2 2.2L15.5 10" />
+      </svg>
+    ),
+  },
+];
 
 export function ProductDetailClient({ slug }: { slug: string }) {
   const { products, addToCart } = useStore();
@@ -35,27 +83,42 @@ export function ProductDetailClient({ slug }: { slug: string }) {
       : [];
   const availability = getProductAvailability(product);
   const purchaseLimit = getPurchaseLimit(product);
+  const inStock = availability === "available" || availability === "sheet-managed";
   const availabilityText =
     availability === "unknown"
       ? "Consultar disponibilidad"
-      : availability === "available" || availability === "sheet-managed"
+      : inStock
         ? "Disponible"
         : "Agotado";
+  const details = parseProductDescription(product.description);
+  const description = details.intro || product.description?.trim() || "";
+  // "1 Amoladora. 1 Mango lateral." se lee mejor como lista; una sola frase queda en párrafo.
+  const contentItems = details.contents
+    .split(/\.\s+(?=\d)/)
+    .map((item) => item.trim().replace(/\.$/, ""))
+    .filter(Boolean);
+  const specRows = [
+    { label: "Marca", value: product.brand },
+    { label: "Categoría", value: product.category },
+    { label: "Código", value: product.code },
+  ]
+    .filter((row) => row.value?.trim())
+    .concat(details.specs);
   return (
     <main className="product-detail-page">
-      <div className="breadcrumbs">
+      <nav className="breadcrumbs" aria-label="Ruta de navegación">
         <Link href="/">Inicio</Link> / <Link href="/productos">Productos</Link>{" "}
         / <span>{product.name}</span>
-      </div>
-      <section className="product-detail">
-        <div className="detail-gallery">
-          <div className="detail-image">
+      </nav>
+      <section className="pdp">
+        <div className="pdp-gallery">
+          <div className="pdp-image">
             {gallery.length ? (
               <Image
                 src={gallery[Math.min(activeImage, gallery.length - 1)]}
                 alt={product.name}
                 fill
-                sizes="50vw"
+                sizes="(max-width: 900px) 100vw, 50vw"
                 priority
               />
             ) : (
@@ -66,7 +129,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
             )}
           </div>
           {gallery.length > 1 && (
-            <div className="detail-thumbs">
+            <div className="pdp-thumbs">
               {gallery.map((src, index) => (
                 <button
                   key={src}
@@ -76,49 +139,48 @@ export function ProductDetailClient({ slug }: { slug: string }) {
                   aria-pressed={index === activeImage}
                   onClick={() => setActiveImage(index)}
                 >
-                  <Image src={src} alt="" fill sizes="120px" />
+                  <Image src={src} alt="" fill sizes="72px" />
                 </button>
               ))}
             </div>
           )}
         </div>
-        <div className="detail-info">
-          <span className="eyebrow orange">{product.brand}</span>
+        <div className="pdp-info">
+          {product.brand && <p className="pdp-brand">{product.brand}</p>}
           <h1>{product.name}</h1>
-          <span className="detail-code">
-            Código de producto: <strong>{product.code}</strong>
-          </span>
-          <strong className="detail-price">
-            {formatCurrency(product.price)}
-          </strong>
-          <div className="availability">
-            <span
-              className={`dot ${availability === "available" || availability === "sheet-managed" ? "green" : availability === "unknown" ? "orange" : "red"}`}
-            />
-            {availabilityText}
-            <small>
+          <p className="pdp-meta">
+            <span>
+              Código <strong>{product.code}</strong>
+            </span>
+            <span className="pdp-stock">
+              <span
+                className={`dot ${inStock ? "green" : availability === "unknown" ? "orange" : "red"}`}
+              />
+              <span>{availabilityText}</span>
+            </span>
+            <span>
               {availability === "unknown"
                 ? "Confirmamos las unidades antes de cerrar la compra"
                 : availability === "sheet-managed"
                   ? "Stock gestionado por Litoral"
                   : `${product.stock} unidades confirmadas`}
-            </small>
-          </div>
-          <p className="detail-description">
-            {product.description ||
-              "Información técnica y descripción comercial pendientes de completar desde el panel."}
+            </span>
           </p>
-          <div className="buy-row">
-            <div className="quantity">
+          <strong className="pdp-price">{formatCurrency(product.price)}</strong>
+          <div className="pdp-buy">
+            <div className="pdp-qty" role="group" aria-label="Cantidad">
               <button
                 type="button"
+                aria-label="Restar una unidad"
+                disabled={quantity <= 1}
                 onClick={() => setQuantity((value) => Math.max(1, value - 1))}
               >
                 −
               </button>
-              <span>{quantity}</span>
+              <output aria-live="polite">{quantity}</output>
               <button
                 type="button"
+                aria-label="Sumar una unidad"
                 disabled={quantity >= purchaseLimit}
                 onClick={() =>
                   setQuantity((value) => Math.min(purchaseLimit, value + 1))
@@ -129,43 +191,80 @@ export function ProductDetailClient({ slug }: { slug: string }) {
             </div>
             <button
               type="button"
-              className="button primary large"
+              className="button primary"
               disabled={!canAddProductToCart(product)}
               onClick={() => {
                 addToCart(product.id, quantity);
                 setAdded(true);
               }}
             >
-              {added ? "Agregado ✓" : "Agregar al carrito"}
+              {added ? "Agregado al carrito" : "Agregar al carrito"}
             </button>
           </div>
-          <small className="purchase-limit-note">
+          <p className="pdp-note">
             Máximo {purchaseLimit} unidades por producto en cada compra.
-          </small>
-          {added && (
-            <Link href="/carrito" className="text-link">
-              Ir al carrito →
-            </Link>
-          )}
-          <div className="purchase-benefits">
-            <div>
-              <span>🚚</span>
-              <strong>Envíos a todo el país</strong>
-              <small>Por Vía Cargo, OCA o Andreani</small>
-            </div>
-            <div>
-              <span>📍</span>
-              <strong>Retiro gratis</strong>
-              <small>Sáenz 1587, Corrientes</small>
-            </div>
-            <div>
-              <span>✓</span>
-              <strong>Pago seguro</strong>
-              <small>Mercado Pago: cuotas o débito</small>
-            </div>
-          </div>
+            {added && (
+              <>
+                {" "}
+                <Link href="/carrito">Ir al carrito →</Link>
+              </>
+            )}
+          </p>
+          <ul className="pdp-trust">
+            {TRUST.map((item) => (
+              <li key={item.title}>
+                {item.icon}
+                <span>
+                  <strong>{item.title}</strong>
+                  <small>{item.text}</small>
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
+      <div className="pdp-details">
+        <section aria-labelledby="pdp-specs-title">
+          <h2 id="pdp-specs-title">Ficha técnica</h2>
+          <table className="pdp-specs">
+            <tbody>
+              {specRows.map((row, index) => (
+                <tr key={`${row.label}-${index}`}>
+                  <th scope="row">{row.label}</th>
+                  <td>{row.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+        {(description || details.extras.length > 0) && (
+          <section aria-labelledby="pdp-description-title">
+            <h2 id="pdp-description-title">Descripción</h2>
+            {description && <p>{description}</p>}
+            {details.intro && details.extras.length > 0 && (
+              <ul>
+                {details.extras.map((extra, index) => (
+                  <li key={`${extra}-${index}`}>{extra}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+        {details.contents && (
+          <section aria-labelledby="pdp-contents-title">
+            <h2 id="pdp-contents-title">Qué incluye</h2>
+            {contentItems.length > 1 ? (
+              <ul>
+                {contentItems.map((item, index) => (
+                  <li key={`${item}-${index}`}>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>{details.contents}</p>
+            )}
+          </section>
+        )}
+      </div>
     </main>
   );
 }

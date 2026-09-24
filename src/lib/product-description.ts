@@ -6,7 +6,7 @@ export type ParsedProductDescription = {
   contents: string;
 };
 
-const CONTENTS = /^(?:contenido|contiene)\s*(?:[.:]\s*(.*))?$/i;
+const CONTENTS = /^(?:contenido|contiene|incluye)\s*(?:[.:]\s*(.*))?$/i;
 const HEADING = /^datos t[eé]cnicos\s*:?$/i;
 const BULLET = /^[•\-*]\s*/;
 const SENTENCE_SPLIT = /(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ0-9¿¡])/; // un punto pegado (1.8m) nunca corta

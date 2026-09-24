@@ -60,6 +60,15 @@ describe("parseProductDescription", () => {
     expect(r.contents).toBe("");
   });
 
+  it("toma \"Incluye.\" como marcador de contenido (3381)", () => {
+    const r = parseProductDescription(
+      "Amoladora Angular Gladiator 180mm 1600w + 5 Discos AA518/220PLUS. Potencia: 1600W. Peso: 3Kg. Incluye. 1 Amoladora. 1 Mango lateral. 5 Discos abrasivos.",
+    );
+    expect(r.specs).toHaveLength(2);
+    expect(r.extras).toEqual([]);
+    expect(r.contents).toBe("1 Amoladora. 1 Mango lateral. 5 Discos abrasivos.");
+  });
+
   it("acepta solo la introducción", () => {
     expect(parseProductDescription("Cutter ENERGY CT7.")).toEqual({ ...EMPTY, intro: "Cutter ENERGY CT7." });
   });
