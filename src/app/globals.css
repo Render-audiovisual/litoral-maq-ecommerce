@@ -146,9 +146,9 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .winner-heading p { margin: 9px 0 0; color: #a9c0cf; }
 .winner-heading .text-link { color: #fff; }
 .winner-grid { display: flex; gap: 16px; }
-/* La cinta va de borde a borde de la pantalla y se funde en los extremos: una
-   tarjeta a medio pasar se desvanece en lugar de mostrar el texto cortado. */
-.category-marquee { --marquee-fade: 10vw; width: auto; margin: 0 -6vw; overflow-x: auto; -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--marquee-fade), #000 calc(100% - var(--marquee-fade)), transparent); mask-image: linear-gradient(90deg, transparent, #000 var(--marquee-fade), #000 calc(100% - var(--marquee-fade)), transparent); overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-inline: contain; scrollbar-width: none; user-select: none; touch-action: pan-x pan-y; cursor: grab; }
+/* La cinta va de borde a borde de la pantalla, sin fundido en los extremos
+   (decisión del dueño): la tarjeta que entra o sale se corta con el borde. */
+.category-marquee { width: auto; margin: 0 -6vw; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-inline: contain; scrollbar-width: none; user-select: none; touch-action: pan-x pan-y; cursor: grab; }
 .category-marquee::-webkit-scrollbar { display: none; }
 .category-marquee.is-dragging { cursor: grabbing; }
 .category-track { width: max-content; }
@@ -1399,7 +1399,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .checkout-steps, .form-card, .order-summary { width: 100%; max-width: 100%; }
   .form-card, .order-summary { padding: 20px 16px; }
   .winner-section { padding: 50px 16px 56px; }
-  .category-marquee { --marquee-fade: 40px; margin: 0 -16px; }
+  .category-marquee { margin: 0 -16px; }
   .winner-heading { align-items: flex-start; }
   .winner-heading h2 { font-size: 2rem; line-height: 1.06; }
   .winner-heading p { max-width: 330px; line-height: 1.45; }
