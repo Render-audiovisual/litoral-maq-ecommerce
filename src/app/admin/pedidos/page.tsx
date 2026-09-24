@@ -479,7 +479,12 @@ export default function AdminOrdersPage() {
                     </td>
                     <td role="cell" className="cell-customer">
                       <span>{order.customerName}</span>
-                      <small title={order.email}>{order.email}</small>
+                      <small title={order.email}>
+                        {/* Si no entra, se parte primero antes de la arroba. */}
+                        {order.email.replace(/@.*/, "")}
+                        <wbr />
+                        {order.email.replace(/^[^@]*/, "")}
+                      </small>
                     </td>
                     <td role="cell" className="cell-products order-products">
                       <strong title={first?.productName}>
@@ -562,7 +567,7 @@ export default function AdminOrdersPage() {
           >
             <div className="modal-heading">
               <div>
-                <span className="eyebrow orange">PEDIDO {selected.id}</span>
+                <span className="eyebrow">PEDIDO {selected.id}</span>
                 <small className="order-detail-created-at">
                   {formatDate(selected.createdAt)}
                 </small>
@@ -633,7 +638,11 @@ export default function AdminOrdersPage() {
                   {paymentSummary && (
                     <>
                       <br />
-                      💳 {paymentSummary}
+                      <svg className="inline-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+                        <rect x="3" y="5.5" width="18" height="13" rx="2" />
+                        <path d="M3 10h18" />
+                      </svg>{" "}
+                      {paymentSummary}
                     </>
                   )}
                 </small>

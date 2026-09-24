@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, Suspense, useMemo, useRef, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { TableScroll } from "@/components/table-scroll";
 import type { Product } from "@/lib/types";
@@ -79,6 +79,14 @@ function AdminProductsContent() {
   // o eliminar se conserva (paginate la acota si la última queda vacía).
   const [page, setPage] = useState(1);
   const listRef = useRef<HTMLElement>(null);
+  // En celular la nota arranca plegada: ocupaba media pantalla antes del
+  // primer producto. En escritorio queda abierta.
+  const sourceNoteRef = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    if (sourceNoteRef.current && window.matchMedia("(max-width: 560px)").matches) {
+      sourceNoteRef.current.open = false;
+    }
+  }, []);
   const [editing, setEditing] = useState<Product | null>(null);
   const [message, setMessage] = useState("");
   const [messageKind, setMessageKind] = useState<"success" | "error">(
@@ -292,15 +300,18 @@ function AdminProductsContent() {
           </button>
         </div>
       </div>
-      <p className="source-of-truth-note">
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
-        <span>
+      <details className="source-of-truth-note" open ref={sourceNoteRef}>
+        <summary>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+          Cómo se actualiza el catálogo
+        </summary>
+        <p>
           <strong>Fuente de verdad:</strong> el Google Sheet controla código,
           nombre, precio y qué productos siguen en catálogo. El panel controla
           visibilidad, ficha, logística y límite por compra. Sin stock numérico,
           el límite predeterminado es 3 unidades por producto.
-        </span>
-      </p>
+        </p>
+      </details>
       {message && (
         <div
           className={`${messageKind === "error" ? "error-message" : "success-message"} dismissible`}

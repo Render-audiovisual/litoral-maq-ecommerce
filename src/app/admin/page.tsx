@@ -97,11 +97,11 @@ export default function AdminDashboardPage() {
                 <tbody>
                   {orders.slice(0, 6).map((order) => (
                     <tr key={order.id}>
-                      <td><Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link" aria-label={`Ver detalle del pedido ${order.id}`}>{order.id}</Link></td>
-                      <td>{order.customerName}</td>
-                      <td>{formatDate(order.createdAt)}</td>
-                      <td className="numeric">{formatCurrency(order.total)}</td>
-                      <td><span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span></td>
+                      <td className="rc-id"><Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link" aria-label={`Ver detalle del pedido ${order.id}`}>{order.id}</Link></td>
+                      <td className="rc-customer">{order.customerName}</td>
+                      <td className="rc-date">{formatDate(order.createdAt)}</td>
+                      <td className="numeric rc-total">{formatCurrency(order.total)}</td>
+                      <td className="rc-status"><span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span></td>
                     </tr>
                   ))}
                 </tbody>
