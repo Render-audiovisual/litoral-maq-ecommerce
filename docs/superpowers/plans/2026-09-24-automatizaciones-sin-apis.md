@@ -16,7 +16,7 @@
 
 ## Tareas
 1. **T1 Recordatorio a la hora + aviso de vencimiento por email.** Migración `20260924150000_pending_order_notifications.sql`, plantillas en `supabase/functions/_shared/order-email.ts`, tolerancia a errores en `order-notifications`, tests Deno.
-2. **T2 Sincronización automática del catálogo.** Módulo compartido `_shared/catalog-sync.ts`, ejecución periódica (cada 3 h) dentro del tick del cron, con freno de seguridad si el Sheet viene incompleto; migración `20260924153000_catalog_auto_sync.sql`.
+2. **T2 Sincronización automática del catálogo.** Módulo compartido `_shared/catalog-sync.ts` (lo usa también el botón manual) y `_shared/catalog-auto-sync.ts`: cada 3 h, dentro del tick del cron de `order-notifications`, con freno de seguridad si el Sheet viene incompleto o con demasiadas filas ilegibles. Sin migración ni funciones/cron nuevos: la corrida automática se registra en `catalog_sync_runs` a nombre del primer administrador y con la fuente "(automática)".
 3. **T3 Indicadores de demora en el panel.** Migración `20260924160000_order_status_changed_at.sql` (columna `status_changed_at` + trigger), helper puro `src/lib/order-delays.ts` con tests, etiqueta "Demorado" y filtro en Pedidos, bloque "Requieren atención" en Resumen.
 
 ## Cierre
