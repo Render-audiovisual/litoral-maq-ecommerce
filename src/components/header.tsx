@@ -277,7 +277,10 @@ export function Header() {
             className="icon-link"
             aria-label={account ? "Mi cuenta" : "Ingresar"}
           >
-            <span aria-hidden>◎</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" />
+            </svg>
             <span className="desktop-only">
               {account ? account.user.name.split(" ")[0] || "Mi cuenta" : "Ingresar"}
             </span>
@@ -293,7 +296,9 @@ export function Header() {
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
           >
-            ☰
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+            </svg>
           </button>
         </div>
       </header>

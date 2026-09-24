@@ -92,7 +92,9 @@ function TestimonialCard({
           draggable={false}
         />
       )}
-      {item.type === "video" && !isActive && <span className="testimonial-play" aria-hidden>▶</span>}
+      {item.type === "video" && !isActive && <span className="testimonial-play" aria-hidden>
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M9 7.5v9l7.5-4.5z" /></svg>
+      </span>}
       {!isActive && (
         <button
           type="button"

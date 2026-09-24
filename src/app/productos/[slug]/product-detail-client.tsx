@@ -70,11 +70,19 @@ export function ProductDetailClient({ slug }: { slug: string }) {
   if (!product || !product.active) {
     return (
       <main className="center-state">
-        <span className="state-icon">?</span>
-        <h1>Producto no encontrado</h1>
-        <Link href="/productos" className="button primary">
-          Volver al catálogo
-        </Link>
+        <div className="cart-empty">
+          <span className="cart-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="m20 20-4.4-4.4" />
+            </svg>
+          </span>
+          <h1>Producto no encontrado</h1>
+          <p>Puede que ya no esté a la venta o que el enlace haya cambiado. Buscalo en el catálogo.</p>
+          <Link href="/productos" className="button primary">
+            Volver al catálogo
+          </Link>
+        </div>
       </main>
     );
   }

@@ -263,7 +263,7 @@ export function HomeClient() {
           <div className="pickup-banner">
             <span>RETIRO GRATIS</span>
             <div className="pickup-banner-copy">
-              <strong><i aria-hidden="true">📍</i> Retirá gratis en Sáenz 1587, Corrientes Capital</strong>
+              <strong>Retirá gratis en Sáenz 1587, Corrientes Capital</strong>
               <small>Abrí y probá tu producto antes de llevártelo, sin compromiso.</small>
             </div>
             <b aria-hidden="true">→</b>

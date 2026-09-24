@@ -9,8 +9,10 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <main className="legal-page">
+      <nav className="breadcrumbs" aria-label="Ruta de navegación">
+        <Link href="/">Inicio</Link> / <span>Información legal</span>
+      </nav>
       <header>
-        <span className="eyebrow orange">INFORMACIÓN LEGAL</span>
         <h1>Términos y condiciones</h1>
         <p>Última actualización: 28 de agosto de 2026.</p>
       </header>

@@ -375,11 +375,20 @@ export default function CheckoutPage() {
   if (!cart.length) {
     return (
       <main className="center-state">
-        <span className="state-icon">🛒</span>
-        <h1>No hay productos para comprar</h1>
-        <Link href="/productos" className="button primary">
-          Ir al catálogo
-        </Link>
+        <div className="cart-empty">
+          <span className="cart-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="9" cy="20" r="1.5" />
+              <circle cx="18" cy="20" r="1.5" />
+              <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2" />
+            </svg>
+          </span>
+          <h1>No hay productos para comprar</h1>
+          <p>Agregá al carrito lo que necesitás y volvé para terminar la compra.</p>
+          <Link href="/productos" className="button primary">
+            Ir al catálogo
+          </Link>
+        </div>
       </main>
     );
   }
