@@ -40,23 +40,33 @@ describe("confirmación de pedido por WhatsApp", () => {
     expect(decodeURIComponent(getOrderWhatsAppUrl(undefined, "LM-999"))).toContain("LM-999");
   });
 
-  it("recontacta al cliente con el pedido pendiente y le ofrece asesoría", () => {
+  it("recontacta al cliente con un mensaje amistoso, con el pedido y asesoría", () => {
     const order = {
       id: "LM-125",
-      customerName: "Ana",
+      customerName: "franco romero",
       phone: "+54 9 3794 11-2233",
       status: "pendiente",
-      lines: [{ productId: "p1", productName: "Taladro", quantity: 1 }],
+      lines: [
+        { productId: "p1", productName: "Taladro", quantity: 1 },
+        { productId: "p2", productName: "Amoladora", quantity: 2 },
+      ],
     } as Order;
     const url = new URL(getPendingOrderCustomerWhatsAppUrl(order));
     expect(url.pathname).toBe("/5493794112233");
     const text = url.searchParams.get("text") || "";
-    expect(text).toContain("Hola Ana");
-    expect(text).toContain("Vimos que solicitaste el pedido LM-125 por 1 × Taladro");
-    expect(text).toContain("querés continuar con tu compra");
-    expect(text).toContain("asesorar");
-    expect(text).toContain("Corrientes Capital");
+    expect(text).toContain("👋 ¡Hola Franco! ¿Cómo estás? Te escribimos de *Litoral Maq*.");
+    expect(text).toContain("🧾 Vimos que solicitaste el pedido *LM-125*:\n• 1 × Taladro\n• 2 × Amoladora");
+    expect(text).toContain("¿Querés seguir con tu compra?");
+    expect(text).toContain("te asesoramos personalmente");
+    expect(text).toContain("📍 Lo podés retirar en nuestro local de Corrientes Capital");
+    expect(text).toContain("¡Quedamos atentos! 😊");
     expect(text).not.toContain("ya venció");
+  });
+
+  it("sin nombre igual saluda", () => {
+    const order = { id: "LM-129", phone: "3794112233", status: "pendiente", lines: [] } as unknown as Order;
+    const text = new URL(getPendingOrderCustomerWhatsAppUrl(order)).searchParams.get("text") || "";
+    expect(text).toContain("👋 ¡Hola! ¿Cómo estás?");
   });
 
   it("si el pedido venció, el mensaje no promete reserva y ofrece retomar la compra", () => {
@@ -68,10 +78,10 @@ describe("confirmación de pedido por WhatsApp", () => {
       lines: [{ productId: "p1", productName: "Taladro", quantity: 1 }],
     } as Order;
     const text = new URL(getPendingOrderCustomerWhatsAppUrl(order)).searchParams.get("text") || "";
-    expect(text).toContain("Vimos que solicitaste el pedido LM-126");
-    expect(text).toContain("ya venció");
-    expect(text).not.toContain("continuar con tu compra");
-    expect(text).toContain("retomemos");
+    expect(text).toContain("🧾 Vimos que solicitaste el pedido *LM-126*");
+    expect(text).toContain("⏰ Ese pedido ya venció");
+    expect(text).not.toContain("¿Querés seguir con tu compra?");
+    expect(text).toContain("¿Lo retomamos? 😊");
   });
 
   it("un pedido cancelado que sí se pagó no recibe el texto de pedido vencido", () => {

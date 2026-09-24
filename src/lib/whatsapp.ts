@@ -42,22 +42,33 @@ function normalizeArgentineWhatsAppNumber(phone?: string) {
   return `549${digits.replace(/^0/, "")}`;
 }
 
-/** Enlace usado por el equipo para recuperar un pedido que todavía no se pagó. */
+/** Primer nombre con la inicial en mayúscula: "franco romero" → "Franco". */
+function greetingName(fullName?: string) {
+  const first = String(fullName || "").trim().split(/\s+/)[0];
+  return first ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase() : "";
+}
+
+/**
+ * Enlace que usa el equipo, desde el detalle del pedido en el panel, para
+ * recontactar a quien pidió y todavía no pagó. Si el pedido ya venció (se
+ * canceló a las 24 h sin pago) el mensaje no promete reserva ni stock.
+ */
 export function getPendingOrderCustomerWhatsAppUrl(order: Order, phone?: string) {
   const number = normalizeArgentineWhatsAppNumber(phone || order.phone);
   if (!number) return "";
   const products = order.lines
-    .map((line) => `${line.quantity} × ${line.productName || line.productCode || line.productId}`)
-    .join(", ");
-  // Un pedido cancelado ya perdió la reserva de 24 h: no se le promete stock.
+    .map((line) => `• ${line.quantity} × ${line.productName || line.productCode || line.productId}`)
+    .join("\n");
   const expired = isExpiredUnpaidOrder(order);
+  const name = greetingName(order.customerName);
   const message = [
-    `Hola ${order.customerName || ""}, ¿cómo estás? Somos de Litoral Maq.`.replace("Hola ,", "Hola,"),
+    `👋 ¡Hola${name ? ` ${name}` : ""}! ¿Cómo estás? Te escribimos de *Litoral Maq*.`,
+    `🧾 Vimos que solicitaste el pedido *${order.id}*:\n${products}`,
     expired
-      ? `Vimos que solicitaste el pedido ${order.id} por ${products}. Ese pedido ya venció, pero si querés seguir con tu compra te asesoramos personalmente y lo resolvemos por acá.`
-      : `Vimos que solicitaste el pedido ${order.id} por ${products} y queríamos ver si querés continuar con tu compra. Te podemos asesorar personalmente con lo que necesites.`,
-    "Podés retirarlo en nuestro local de Corrientes Capital o te ayudamos a coordinar el envío.",
-    expired ? "¿Querés que lo retomemos?" : "¿Seguimos con tu compra?",
+      ? "⏰ Ese pedido ya venció, pero no hay problema: si querés seguir con tu compra lo resolvemos juntos por acá y te asesoramos personalmente."
+      : "🛠️ ¿Querés seguir con tu compra? Contá con nosotros: te asesoramos personalmente para que elijas lo mejor para tu trabajo.",
+    "📍 Lo podés retirar en nuestro local de Corrientes Capital o te ayudamos a coordinar el envío 🚚.",
+    expired ? "¿Lo retomamos? 😊" : "¡Quedamos atentos! 😊",
   ].join("\n\n");
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }

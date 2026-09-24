@@ -488,7 +488,11 @@ export default function AdminOrdersPage() {
                 </small>
                 <h2>Detalle operativo</h2>
               </div>
-              <button type="button" onClick={() => setSelected(null)}>
+              <button
+                type="button"
+                aria-label="Cerrar detalle"
+                onClick={() => setSelected(null)}
+              >
                 ×
               </button>
             </div>
@@ -497,19 +501,22 @@ export default function AdminOrdersPage() {
                 <span>Cliente</span>
                 <strong>{selected.customerName}</strong>
                 <small>{selected.email}</small>
-                <small>DNI {selected.dni || "no disponible"}</small>
                 <small>
                   {selectedPhone || "Teléfono no disponible"}
                 </small>
+                <small>DNI {selected.dni || "no disponible"}</small>
                 {recoveryWhatsAppUrl && (
-                  <a
-                    href={recoveryWhatsAppUrl}
-                    className="button whatsapp-button"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Contactar por WhatsApp
-                  </a>
+                  <div className="detail-action">
+                    <a
+                      href={recoveryWhatsAppUrl}
+                      className="button whatsapp-button"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Contactar por WhatsApp
+                    </a>
+                    <small>Se abre un mensaje ya armado con el pedido.</small>
+                  </div>
                 )}
               </div>
               <div>
@@ -590,7 +597,10 @@ export default function AdminOrdersPage() {
                       : selected.address}
                   </small>
                   <small>
-                    Estado: {selected.shippingStatus || "pendiente"}
+                    Estado:{" "}
+                    {selected.shippingStatus === "manual_quote"
+                      ? "cotización manual"
+                      : (selected.shippingStatus || "pendiente").replace(/_/g, " ")}
                     {selected.shippingTrackingNumber
                       ? ` · Tracking ${selected.shippingTrackingNumber}`
                       : ""}
@@ -642,7 +652,9 @@ export default function AdminOrdersPage() {
                 <strong>Productos</strong>
                 <span>
                   {selected.lines.reduce((sum, line) => sum + line.quantity, 0)}{" "}
-                  unidades
+                  {selected.lines.reduce((sum, line) => sum + line.quantity, 0) === 1
+                    ? "unidad"
+                    : "unidades"}
                 </span>
               </div>
               {selectedLines.map((line) => (
