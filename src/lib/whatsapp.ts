@@ -1,6 +1,7 @@
 import type { Order } from "./types";
 import { isShippingToCoordinate } from "./order-details";
 import { formatCurrency } from "./utils";
+import { isExpiredUnpaidOrder } from "./orders";
 
 const WHATSAPP_NUMBER = "5493794215065";
 
@@ -49,7 +50,7 @@ export function getPendingOrderCustomerWhatsAppUrl(order: Order, phone?: string)
     .map((line) => `${line.quantity} × ${line.productName || line.productCode || line.productId}`)
     .join(", ");
   // Un pedido cancelado ya perdió la reserva de 24 h: no se le promete stock.
-  const expired = order.status === "cancelado";
+  const expired = isExpiredUnpaidOrder(order);
   const message = [
     `Hola ${order.customerName || ""}, ¿cómo estás? Somos de Litoral Maq.`.replace("Hola ,", "Hola,"),
     expired

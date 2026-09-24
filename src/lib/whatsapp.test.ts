@@ -56,6 +56,7 @@ describe("confirmación de pedido por WhatsApp", () => {
     expect(text).toContain("querés continuar con tu compra");
     expect(text).toContain("asesorar");
     expect(text).toContain("Corrientes Capital");
+    expect(text).not.toContain("ya venció");
   });
 
   it("si el pedido venció, el mensaje no promete reserva y ofrece retomar la compra", () => {
@@ -69,8 +70,21 @@ describe("confirmación de pedido por WhatsApp", () => {
     const text = new URL(getPendingOrderCustomerWhatsAppUrl(order)).searchParams.get("text") || "";
     expect(text).toContain("Vimos que solicitaste el pedido LM-126");
     expect(text).toContain("ya venció");
-    expect(text).not.toContain("reservado");
+    expect(text).not.toContain("continuar con tu compra");
     expect(text).toContain("retomemos");
+  });
+
+  it("un pedido cancelado que sí se pagó no recibe el texto de pedido vencido", () => {
+    const order = {
+      id: "LM-128",
+      customerName: "Ana",
+      phone: "3794112233",
+      status: "cancelado",
+      paymentStatus: "refunded",
+      lines: [{ productId: "p1", productName: "Taladro", quantity: 1 }],
+    } as Order;
+    const text = new URL(getPendingOrderCustomerWhatsAppUrl(order)).searchParams.get("text") || "";
+    expect(text).not.toContain("ya venció");
   });
 
   it("sin teléfono no arma enlace", () => {

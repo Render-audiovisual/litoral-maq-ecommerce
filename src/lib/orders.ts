@@ -20,7 +20,7 @@ export function selectOwnOrders(orders: Order[], session: Session): Order[] {
  * sirve verlo en su historial: si quiere seguir, hace un pedido nuevo. El panel
  * sí lo sigue mostrando para recontactar por WhatsApp.
  */
-function isExpiredUnpaidOrder(order: Order) {
+export function isExpiredUnpaidOrder(order: Order) {
   const payment = order.paymentStatus ?? "pending";
   return order.status === "cancelado" && (payment === "pending" || payment === "cancelled");
 }
