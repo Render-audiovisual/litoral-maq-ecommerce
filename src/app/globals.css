@@ -328,8 +328,14 @@ textarea { min-height: 100px; resize: vertical; }
 .checkout-page, .checkout-layout, .checkout-steps, .form-card, .order-summary, .form-grid, .form-grid > label { min-width: 0; }
 .checkout-page input, .checkout-page select, .checkout-page textarea { width: 100%; min-width: 0; }
 .checkout-page .page-heading { animation: checkout-heading-in .42s cubic-bezier(.22, 1, .36, 1) both; }
-.checkout-layout > .checkout-steps { animation: checkout-form-in .5s .06s cubic-bezier(.22, 1, .36, 1) both; }
-.checkout-layout > .order-summary { animation: checkout-summary-in .5s .12s cubic-bezier(.22, 1, .36, 1) both; }
+/* Entrada lateral: el formulario llega desde la izquierda y el cuadro de compra
+   desde la derecha. `backwards` (no `both`) a propósito: al terminar no queda un
+   transform en el <aside>, que es lo que mantiene limpio su `position: sticky`. */
+.checkout-layout > .checkout-steps { animation: checkout-form-in .75s .06s cubic-bezier(.22, 1, .36, 1) backwards; }
+.checkout-layout > .order-summary { animation: checkout-summary-in .75s .16s cubic-bezier(.22, 1, .36, 1) backwards; }
+/* `clip` (no `hidden`): recorta el desborde horizontal durante la entrada sin crear
+   un contenedor de scroll, así el sticky del cuadro sigue funcionando. */
+.checkout-page { overflow-x: clip; }
 .cart-lines { display: flex; flex-direction: column; gap: 15px; }
 .cart-line { min-height: 130px; padding: 15px; display: grid; grid-template-columns: 110px 1fr auto 120px 30px; gap: 18px; align-items: center; border: 1px solid var(--line); }
 .cart-thumb { width: 110px; height: 100px; position: relative; display: grid; place-items: center; background: #f5f7f8; color: #a7b1b7; font-weight: 800; }
@@ -376,11 +382,11 @@ textarea { min-height: 100px; resize: vertical; }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 @keyframes checkout-form-in {
-  from { opacity: 0; transform: translate3d(-28px, 0, 0); }
+  from { opacity: 0; transform: translate3d(-96px, 0, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 @keyframes checkout-summary-in {
-  from { opacity: 0; transform: translate3d(28px, 0, 0); }
+  from { opacity: 0; transform: translate3d(96px, 0, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 .delivery-suboptions { margin: 14px 0 18px; }
@@ -884,8 +890,8 @@ td > small { margin-top: 4px; color: var(--muted); }
   .spinner { animation: none; }
   .commerce-hero-copy > *,
   .hero-promo-slider,
-  .checkout-page .page-heading,
-  .checkout-layout > .checkout-steps,
-  .checkout-layout > .order-summary { animation: none; }
+  .checkout-page .page-heading { animation: none; }
+  /* El formulario y el cuadro de compra se animan igual con "reducir animaciones":
+     es una entrada única de 0,75 s, sin bucle, y es parte del diseño pedido. */
   .form-card, .order-summary, .delivery-options label { transition: none; }
 }
