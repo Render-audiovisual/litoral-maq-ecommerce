@@ -41,6 +41,8 @@ type PreferenceInput = {
   items: PreferenceItem[];
   shippingAmount: number;
   payer?: PreferencePayer;
+  /** orders.expires_at: hasta cuándo se puede pagar. */
+  expiresAt?: string | null;
 };
 
 type MercadoPagoConfig = {
@@ -81,6 +83,27 @@ function buildPayer(input: PreferenceInput) {
         zip_code: payer.postalCode?.slice(0, 20) || undefined,
       }
       : undefined,
+  };
+}
+
+/**
+ * Vencimiento de la preferencia: el link de pago deja de servir cuando vence
+ * la reserva del pedido (orders.expires_at, 24 h). Así nadie empieza a pagar
+ * un pedido que el ciclo de vida ya canceló. Pedidos viejos sin expires_at:
+ * 24 h desde ahora, como siempre.
+ * ponytail: no frena un pago ya iniciado antes del vencimiento que se acredita
+ * después (cupón en efectivo, tarjeta en revisión); eso lo resolvería
+ * date_of_expiration o excluir ticket/atm, sin probar todavía con MP real.
+ */
+export function preferenceExpiration(expiresAt: string | null | undefined, now = new Date()) {
+  const reservation = expiresAt ? new Date(expiresAt) : null;
+  const to = reservation && !Number.isNaN(reservation.getTime())
+    ? reservation
+    : new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  return {
+    expires: true as const,
+    expiration_date_from: now.toISOString(),
+    expiration_date_to: to.toISOString(),
   };
 }
 
@@ -199,10 +222,7 @@ export class MercadoPagoClient {
           method: "POST",
           headers: { "x-idempotency-key": `litoral-${input.orderId}` },
           body: JSON.stringify({
-            expires: true,
-            expiration_date_from: new Date().toISOString(),
-            expiration_date_to: new Date(Date.now() + 24 * 60 * 60 * 1000)
-              .toISOString(),
+            ...preferenceExpiration(input.expiresAt),
             items,
             payer: buildPayer(input),
             external_reference: input.orderId,

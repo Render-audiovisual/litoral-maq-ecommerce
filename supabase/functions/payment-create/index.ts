@@ -66,7 +66,7 @@ Deno.serve(async (request) => {
     }
 
     const { data: order, error: orderError } = await db.from("orders").select(
-      "id,customer_id,customer_name,email,dni,phone,street,street_number,postal_code,lines,total,shipping,delivery_method,payment_status,shipping_quote_id,shipping_status",
+      "id,customer_id,customer_name,email,dni,phone,street,street_number,postal_code,lines,total,shipping,delivery_method,status,expires_at,payment_status,shipping_quote_id,shipping_status",
     ).eq("id", orderId).maybeSingle();
     if (orderError || !order) {
       throw new HttpError(404, "No encontramos el pedido.");
@@ -76,6 +76,17 @@ Deno.serve(async (request) => {
     }
     if (order.payment_status === "approved") {
       throw new HttpError(409, "Este pedido ya figura pagado.");
+    }
+    // Un pedido vencido o cancelado no se puede pagar: el ciclo de vida ya
+    // liberó la reserva y le avisó al cliente que no se le cobró nada.
+    if (
+      order.status === "cancelado" ||
+      (order.expires_at && new Date(order.expires_at).getTime() <= Date.now())
+    ) {
+      throw new HttpError(
+        409,
+        "Este pedido venció. Hacé un pedido nuevo o escribinos por WhatsApp y te ayudamos.",
+      );
     }
     if (["refunded", "charged_back"].includes(order.payment_status)) {
       throw new HttpError(
@@ -239,6 +250,7 @@ Deno.serve(async (request) => {
         pictureUrl: fotoDe(line.productId),
       })),
       shippingAmount,
+      expiresAt: order.expires_at,
       payer: {
         email: order.email,
         name: nombre || undefined,
