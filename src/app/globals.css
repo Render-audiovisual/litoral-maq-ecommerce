@@ -272,7 +272,12 @@ video.testimonial-media { object-fit: contain; background: #000; }
 .legal-page a { color: var(--orange); font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
 .catalog-layout { max-width: 1460px; margin: auto; padding: 32px 4vw 90px; display: grid; grid-template-columns: 264px 1fr; gap: 32px; align-items: start; }
 .filters { padding: 20px; border: 1px solid var(--line); border-radius: 6px; position: sticky; top: 110px; display: flex; flex-direction: column; gap: 16px; }
-.filters > strong { color: var(--navy-dark); font-size: 16px; font-weight: 750; }
+.filters-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.filters-head > strong { color: var(--navy-dark); font-size: 16px; font-weight: 750; }
+.filters-toggle { display: none; min-height: 40px; padding: 0 16px; border: 1px solid #bfcbd3; border-radius: 5px; background: #fff; color: var(--navy); font: inherit; font-size: 14px; font-weight: 750; cursor: pointer; }
+.filters-toggle[aria-expanded="true"] { border-color: var(--navy); box-shadow: 0 0 0 1px var(--navy); }
+.filters-toggle:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.filters-more { display: flex; flex-direction: column; gap: 16px; }
 .filters input:not([type="checkbox"]), .filters select, .catalog-sort select { min-height: 42px; border-color: #bfcbd3; border-radius: 5px; }
 .filters input::placeholder { color: #5f6c78; }
 .catalog-page input:focus, .catalog-page select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(0,59,99,.14); }
@@ -808,8 +813,12 @@ td > small { margin-top: 4px; color: var(--muted); }
   .product-grid .product-card:nth-child(n+7) { display: flex; }
   .catalog-layout { grid-template-columns: 1fr; }
   .filters { position: static; padding: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .filters > strong, .filters .catalog-search, .filters > .button, .filters .check-row { grid-column: 1 / -1; }
-  .filters .price-filter-grid { grid-column: 1 / -1; }
+  .filters-head, .filters .catalog-search { grid-column: 1 / -1; }
+  /* En celular solo la búsqueda queda a la vista; el resto de los filtros se abre con "Filtros". */
+  .filters-toggle { display: inline-flex; align-items: center; }
+  .filters-more { display: none; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .filters-more.open { display: grid; }
+  .filters-more > .button, .filters-more .check-row, .filters-more .price-filter-grid { grid-column: 1 / -1; }
   .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cart-layout, .checkout-layout { grid-template-columns: 1fr; }
   .checkout-layout > .checkout-steps,

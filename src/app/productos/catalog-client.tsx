@@ -22,6 +22,7 @@ export function CatalogClient() {
   const offersOnly = initialCategory === "Ofertas";
   const { products } = useStore();
   const [query, setQuery] = useState(initialQuery);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [category, setCategory] = useState(
     initialCategory === "Ofertas" ? "" : initialCategory,
   );
@@ -78,6 +79,9 @@ export function CatalogClient() {
     setVisibleCount(PAGE_SIZE);
   }
 
+  // Cuántos filtros (además de la búsqueda) hay aplicados: se muestra en el botón "Filtros" del celular.
+  const activeFilterCount = [family, brand, minimumPrice, maximumPrice, onlyAvailable ? "1" : ""].filter(Boolean).length;
+
   function clearFilters() {
     setQuery(""); setFamily(""); setBrand(""); setMinimumPrice(""); setMaximumPrice(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
   }
@@ -90,10 +94,22 @@ export function CatalogClient() {
       </div>
       <div className="catalog-layout">
         <aside className="filters">
-          <strong>Filtrar productos</strong>
+          <div className="filters-head">
+            <strong>Filtrar productos</strong>
+            <button
+              type="button"
+              className="filters-toggle"
+              aria-expanded={filtersOpen}
+              aria-controls="catalog-more-filters"
+              onClick={() => setFiltersOpen((open) => !open)}
+            >
+              Filtros{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+            </button>
+          </div>
           <label className="catalog-search">Buscar
             <input value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="Producto, marca o código" />
           </label>
+          <div id="catalog-more-filters" className={filtersOpen ? "filters-more open" : "filters-more"}>
           <label>Categoría
             <select value={family} onChange={(event) => { setFamily(event.target.value); setBrand(""); resetVisibleCount(); }}>
               <option value="">Todas las categorías</option>
@@ -119,6 +135,7 @@ export function CatalogClient() {
             Solo con stock confirmado
           </label>
           <button type="button" className="button secondary full" onClick={clearFilters}>Limpiar filtros</button>
+          </div>
         </aside>
         <section>
           <div className="catalog-toolbar">
