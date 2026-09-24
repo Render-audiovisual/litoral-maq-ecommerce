@@ -78,12 +78,15 @@ export function CatalogClient() {
     setVisibleCount(PAGE_SIZE);
   }
 
+  function clearFilters() {
+    setQuery(""); setFamily(""); setBrand(""); setMinimumPrice(""); setMaximumPrice(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
+  }
+
   return (
     <main className="catalog-page">
       <div className="page-hero compact">
-        <span className="eyebrow orange">CATÁLOGO COMPLETO</span>
         <h1>Máquinas y herramientas</h1>
-        <p>Precios y códigos importados desde la lista comercial de Litoral Maq.</p>
+        <p>Precio, código y disponibilidad de cada producto, a la vista.</p>
       </div>
       <div className="catalog-layout">
         <aside className="filters">
@@ -115,19 +118,19 @@ export function CatalogClient() {
             <input type="checkbox" checked={onlyAvailable} onChange={(event) => { setOnlyAvailable(event.target.checked); resetVisibleCount(); }} />
             Solo con stock confirmado
           </label>
-          <button type="button" className="button secondary full" onClick={() => {
-            setQuery(""); setFamily(""); setBrand(""); setMinimumPrice(""); setMaximumPrice(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
-          }}>Limpiar filtros</button>
+          <button type="button" className="button secondary full" onClick={clearFilters}>Limpiar filtros</button>
         </aside>
         <section>
           <div className="catalog-toolbar">
             <span><strong>{filtered.length}</strong> productos encontrados</span>
-            <select value={sort} onChange={(event) => { setSort(event.target.value); resetVisibleCount(); }}>
-              <option value="featured">Destacados primero</option>
-              <option value="price-asc">Menor precio</option>
-              <option value="price-desc">Mayor precio</option>
-              <option value="name">Nombre A–Z</option>
-            </select>
+            <label className="catalog-sort">Ordenar por
+              <select value={sort} onChange={(event) => { setSort(event.target.value); resetVisibleCount(); }}>
+                <option value="featured">Destacados primero</option>
+                <option value="price-asc">Menor precio</option>
+                <option value="price-desc">Mayor precio</option>
+                <option value="name">Nombre A–Z</option>
+              </select>
+            </label>
           </div>
           {filtered.length ? (
             <div className="product-grid catalog-grid">
@@ -137,7 +140,11 @@ export function CatalogClient() {
               })}
             </div>
           ) : (
-            <div className="empty-state"><span>⌕</span><h2>No encontramos productos</h2><p>Probá con otro término o limpiá los filtros.</p></div>
+            <div className="catalog-empty">
+              <h2>No encontramos productos</h2>
+              <p>Probá con otra palabra, buscá por marca o código, o quitá algún filtro.</p>
+              <button type="button" className="button secondary" onClick={clearFilters}>Limpiar filtros</button>
+            </div>
           )}
           {filtered.length > visibleCount && (
             <button
