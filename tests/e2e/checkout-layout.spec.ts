@@ -12,16 +12,24 @@ test("el formulario entra por la izquierda y el cuadro por la derecha, aun con r
   await page.setViewportSize({ width: 1440, height: 900 });
   await openCheckout(page);
 
-  const from = (selector: string) =>
-    page.locator(selector).evaluate((el) => {
-      const animation = el.getAnimations()[0];
-      const frames = (animation?.effect as KeyframeEffect | undefined)?.getKeyframes() ?? [];
-      return String(frames[0]?.transform ?? "");
-    });
+  // Se lee del CSS y no de `getAnimations()`: la animación dura ~0.9 s y en un runner
+  // lento podría ya no estar activa (o no haber empezado). `animationName` no cambia.
+  const check = (selector: string, keyframes: string) =>
+    page.locator(selector).evaluate((el, name) => {
+      const rule = Array.from(document.styleSheets)
+        .flatMap((sheet) => Array.from(sheet.cssRules))
+        .find((r): r is CSSKeyframesRule => r instanceof CSSKeyframesRule && r.name === name);
+      const from = rule?.findRule("from") as CSSKeyframeRule | null | undefined;
+      return { transform: from?.style.transform ?? "", animationName: getComputedStyle(el).animationName };
+    }, keyframes);
 
   // translate3d(-Npx, 0, 0) → sale de la izquierda; translate3d(Npx, 0, 0) → sale de la derecha.
-  expect(await from(".checkout-layout > .checkout-steps")).toMatch(/translate3d\(-\d+px/);
-  expect(await from(".checkout-layout > .order-summary")).toMatch(/translate3d\(\d+px/);
+  const form = await check(".checkout-layout > .checkout-steps", "checkout-form-in");
+  expect(form.animationName).toBe("checkout-form-in");
+  expect(form.transform).toMatch(/^translate3d\(-\d+px/);
+  const summary = await check(".checkout-layout > .order-summary", "checkout-summary-in");
+  expect(summary.animationName).toBe("checkout-summary-in");
+  expect(summary.transform).toMatch(/^translate3d\(\d+px/);
 });
 
 test("al terminar la animación el cuadro no queda con transform y sigue pegado al hacer scroll", async ({ page }) => {
@@ -48,4 +56,7 @@ test("el checkout ofrece WhatsApp con el carrito ya armado", async ({ page }) =>
 test("el checkout avisa que el pedido se reserva 24 horas", async ({ page }) => {
   await openCheckout(page);
   await expect(page.locator(".order-summary .reservation-note")).toContainText("24 horas");
+  // El servidor de e2e no define NEXT_PUBLIC_MERCADO_PAGO_ENABLED: modo "Confirmación por WhatsApp".
+  await expect(page.locator(".order-summary .reservation-note")).toContainText("Reservamos tu solicitud por 24 horas");
+  await expect(page.locator(".order-summary .reservation-note")).toContainText("no confirmamos el pago con vos");
 });

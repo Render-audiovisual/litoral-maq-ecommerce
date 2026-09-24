@@ -779,7 +779,9 @@ export default function CheckoutPage() {
                   : "Enviar solicitud de compra"}
           </button>
           <p className="reservation-note">
-            Reservamos tu pedido por 24 horas. Si en ese plazo no se acredita el pago, se cancela solo.
+            {paymentEnabled
+              ? "Reservamos tu pedido por 24 horas. Si en ese plazo no se acredita el pago, se cancela solo."
+              : "Reservamos tu solicitud por 24 horas. Si en ese plazo no confirmamos el pago con vos, se cancela sola."}
           </p>
           <small>
             {paymentEnabled
