@@ -1,6 +1,7 @@
 /** Local de retiro. El enlace de Google Maps se arma desde la dirección. */
 export const STORE_ADDRESS = "Sáenz 1587, Corrientes";
-export const STORE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${STORE_ADDRESS}, Argentina`)}`;
+// Ficha del negocio en Google Maps (la que administra el dueño: reseñas, fotos y cómo llegar).
+export const STORE_MAPS_URL = "https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8";
 export const STORE_HOURS = ["Lun a Vie 8 a 17 hs", "Sáb 8:30 a 12:30 hs"] as const;
 
 /** `maximumFractionDigits: 0` para precios orientativos ("Desde $ 88.999"). */
