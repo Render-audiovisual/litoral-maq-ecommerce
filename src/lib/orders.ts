@@ -20,6 +20,16 @@ export function selectOwnOrders(orders: Order[], session: Session): Order[] {
  * sirve verlo en su historial: si quiere seguir, hace un pedido nuevo. El panel
  * sí lo sigue mostrando para recontactar por WhatsApp.
  */
+/**
+ * El botón "Contactar por WhatsApp" del panel es para retomar una venta que
+ * nunca se pagó. No aplica a pedidos pagados, reintegrados, con contracargo
+ * ni ya entregados.
+ */
+export function canRecontactUnpaidOrder(order: Order) {
+  const payment = order.paymentStatus ?? "pending";
+  return ["pending", "cancelled", "rejected"].includes(payment) && order.status !== "entregado";
+}
+
 export function isExpiredUnpaidOrder(order: Order) {
   const payment = order.paymentStatus ?? "pending";
   return order.status === "cancelado" && (payment === "pending" || payment === "cancelled");

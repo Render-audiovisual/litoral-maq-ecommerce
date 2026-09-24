@@ -7,6 +7,7 @@ import { getPendingOrderCustomerWhatsAppUrl, paymentMethodLabel } from "@/lib/wh
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   adminOrderStatusLabel,
+  deliveryLabel,
   isShippingToCoordinate,
   ADMIN_ORDER_STATUS_LABELS,
   ORDER_STATUS_LABELS,
@@ -14,6 +15,7 @@ import {
   resolveOrderLines,
 } from "@/lib/order-details";
 import { getOrderDelay } from "@/lib/order-delays";
+import { canRecontactUnpaidOrder } from "@/lib/orders";
 import type { Order, PaymentStatus } from "@/lib/types";
 import { createShipping, downloadShippingLabel } from "@/services/shipping";
 import { flushOrderNotifications } from "@/services/order-notifications";
@@ -299,7 +301,7 @@ export default function AdminOrdersPage() {
     ? customers.find((customer) => customer.id === selected.customerId)
     : null;
   const selectedPhone = selected?.phone || selectedCustomer?.phone || "";
-  const recoveryWhatsAppUrl = selected && selected.paymentStatus !== "approved"
+  const recoveryWhatsAppUrl = selected && canRecontactUnpaidOrder(selected)
     ? getPendingOrderCustomerWhatsAppUrl(selected, selectedPhone)
     : "";
 
@@ -599,11 +601,7 @@ export default function AdminOrdersPage() {
               </div>
               <div>
                 <span>Entrega</span>
-                <strong>
-                  {selected.deliveryMethod === "envio"
-                    ? "Envío a domicilio"
-                    : "Retiro en sucursal"}
-                </strong>
+                <strong>{deliveryLabel(selected)}</strong>
                 <small>{selected.address || "Sáenz 1587"}</small>
               </div>
               <label>
@@ -670,8 +668,8 @@ export default function AdminOrdersPage() {
                     {selected.shippingCarrier || "Cotización manual"}
                   </strong>
                   <small>
-                    {selected.shippingDeliveryType === "sucursal"
-                      ? `${selected.shippingBranchName || "Sucursal"} · ${selected.shippingBranchAddress || ""}`
+                    {selected.shippingDeliveryType === "sucursal" && selected.shippingBranchName
+                      ? [selected.shippingBranchName, selected.shippingBranchAddress].filter(Boolean).join(" · ")
                       : selected.address}
                   </small>
                   <small>

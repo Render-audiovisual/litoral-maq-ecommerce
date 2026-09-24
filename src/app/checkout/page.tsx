@@ -18,35 +18,14 @@ import {
   isMercadoPagoEnabled,
 } from "@/services/payments";
 import type { Order, Session, ShippingDeliveryType } from "@/lib/types";
-import { SHIPPING_CARRIER_OPTIONS, snapshotOrderLines } from "@/lib/order-details";
+import {
+  buildOrderAddress,
+  PROVINCES,
+  SHIPPING_CARRIER_OPTIONS,
+  snapshotOrderLines,
+} from "@/lib/order-details";
 import { validateCartPurchaseLimits } from "@/lib/purchase-limits";
-
-const PROVINCES = [
-  ["B", "Buenos Aires"],
-  ["C", "Ciudad Autónoma de Buenos Aires"],
-  ["K", "Catamarca"],
-  ["H", "Chaco"],
-  ["U", "Chubut"],
-  ["W", "Corrientes"],
-  ["X", "Córdoba"],
-  ["E", "Entre Ríos"],
-  ["P", "Formosa"],
-  ["Y", "Jujuy"],
-  ["L", "La Pampa"],
-  ["F", "La Rioja"],
-  ["M", "Mendoza"],
-  ["N", "Misiones"],
-  ["Q", "Neuquén"],
-  ["R", "Río Negro"],
-  ["A", "Salta"],
-  ["J", "San Juan"],
-  ["D", "San Luis"],
-  ["Z", "Santa Cruz"],
-  ["S", "Santa Fe"],
-  ["G", "Santiago del Estero"],
-  ["V", "Tierra del Fuego"],
-  ["T", "Tucumán"],
-] as const;
+import { isValidArgentinePhone } from "@/lib/whatsapp";
 
 function splitCustomerName(fullName = "") {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
@@ -120,11 +99,11 @@ export default function CheckoutPage() {
     if (
       !form.firstName.trim() ||
       !form.lastName.trim() ||
-      !form.email.includes("@") ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim()) ||
       !/^\d{7,8}$/.test(form.dni) ||
-      form.phone.trim().length < 6
+      !isValidArgentinePhone(form.phone)
     ) {
-      return "Completá nombre, apellido, email, teléfono y DNI. El DNI debe tener 7 u 8 números.";
+      return "Completá nombre, apellido, email, teléfono y DNI. El teléfono tiene que ser un celular argentino con código de área (ej.: 379 4530578) y el DNI 7 u 8 números.";
     }
     return "";
   }
@@ -284,12 +263,19 @@ export default function CheckoutPage() {
         (option) => option.id === selectedQuoteId,
       );
       const id = `LM-${Date.now().toString().slice(-8)}`;
+      // Sin cotización automática no hay sucursal elegida: manda lo que eligió
+      // el cliente (domicilio o sucursal), nunca la calle si pidió sucursal.
+      const orderDeliveryType = selectedQuote?.deliveryType ?? deliveryType;
+      const toHome = method === "envio" && orderDeliveryType === "domicilio";
       const address =
         method === "retiro"
           ? undefined
-          : selectedQuote?.deliveryType === "sucursal"
-            ? `${selectedQuote.branchName || "Sucursal"} · ${selectedQuote.branchAddress || form.locality.trim()}`
-            : `${form.street.trim()} ${form.streetNumber.trim()}${form.floor ? ` · Piso ${form.floor}` : ""}${form.apartment ? ` · Depto ${form.apartment}` : ""} · ${form.locality.trim()} · CP ${form.postalCode}`;
+          : buildOrderAddress({
+            ...form,
+            deliveryType: orderDeliveryType,
+            branchName: selectedQuote?.branchName,
+            branchAddress: selectedQuote?.branchAddress,
+          });
       const order: Order = {
         id,
         customerId: identity.customerId,
@@ -309,23 +295,17 @@ export default function CheckoutPage() {
         postalCode: method === "envio" ? form.postalCode : undefined,
         province: method === "envio" ? form.province : undefined,
         locality: method === "envio" ? form.locality.trim() : undefined,
-        street:
-          method === "envio" && deliveryType === "domicilio"
-            ? form.street.trim()
-            : undefined,
-        streetNumber:
-          method === "envio" && deliveryType === "domicilio"
-            ? form.streetNumber.trim()
-            : undefined,
-        floor: form.floor.trim() || undefined,
-        apartment: form.apartment.trim() || undefined,
+        street: toHome ? form.street.trim() : undefined,
+        streetNumber: toHome ? form.streetNumber.trim() : undefined,
+        floor: (toHome && form.floor.trim()) || undefined,
+        apartment: (toHome && form.apartment.trim()) || undefined,
         addressReference: form.reference.trim() || undefined,
         shippingQuoteId: selectedQuote?.id,
         shippingProvider: selectedQuote?.provider,
         shippingCarrier: selectedQuote?.carrierName ??
           (method === "envio" && manualReason ? preferredCarrier : undefined),
         shippingService: selectedQuote?.service,
-        shippingDeliveryType: method === "envio" ? deliveryType : undefined,
+        shippingDeliveryType: method === "envio" ? orderDeliveryType : undefined,
         shippingBranchId: selectedQuote?.branchId || undefined,
         shippingBranchName: selectedQuote?.branchName || undefined,
         shippingBranchAddress: selectedQuote?.branchAddress || undefined,
