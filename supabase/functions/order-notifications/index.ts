@@ -33,11 +33,24 @@ Deno.serve(async (request) => {
       const { data: lifecycle, error: lifecycleError } = await db.rpc(
         "process_pending_order_lifecycle",
       );
-      if (lifecycleError) throw lifecycleError;
+      // Un fallo del ciclo de vida no puede frenar el resto de los correos.
+      if (lifecycleError) {
+        console.error(JSON.stringify({
+          scope: "order-notifications",
+          step: "process_pending_order_lifecycle",
+          error: lifecycleError.message,
+          code: lifecycleError.code,
+        }));
+      }
       return json(
         request,
         {
-          lifecycle: Array.isArray(lifecycle) ? lifecycle[0] ?? null : lifecycle,
+          lifecycle: lifecycleError
+            ? null
+            : Array.isArray(lifecycle)
+            ? lifecycle[0] ?? null
+            : lifecycle,
+          ...(lifecycleError ? { lifecycleError: lifecycleError.message } : {}),
           notifications: await processPendingOrderNotifications(db, null, 25),
         },
       );

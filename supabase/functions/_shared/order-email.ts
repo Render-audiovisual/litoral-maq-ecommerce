@@ -49,7 +49,9 @@ export type OrderEmailEvent =
   | "customer_payment_rejected"
   | "customer_order_ready"
   | "customer_order_shipped"
-  | "customer_order_delivered";
+  | "customer_order_delivered"
+  | "customer_payment_reminder"
+  | "customer_order_expired";
 
 function escapeHtml(value: unknown) {
   return String(value ?? "")
@@ -222,7 +224,9 @@ function whatsappUrl(order: OrderRecord) {
     : coordinar
     ? `Elegí el envío por ${order.shipping_carrier || "la empresa que me recomienden"}${hacia}.`
     : `Elegí el envío por ${order.shipping_carrier || "correo"}${hacia}.`;
-  const cierre = !pagado
+  const cierre = order.payment_status === "cancelled"
+    ? "Se me venció el pedido y quiero retomar la compra."
+    : !pagado
     ? "Quiero confirmar que les llegó el pago."
     : order.delivery_method === "retiro"
     ? "¿Me avisan cuándo puedo pasar a retirarlo?"
@@ -309,6 +313,19 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
         ? "El pedido figura como retirado de la sucursal. Si necesitás ayuda, comunicate con Litoral Maq."
         : "El pedido figura como entregado. Si necesitás ayuda, comunicate con Litoral Maq.",
     },
+    customer_payment_reminder: {
+      subject: `Tu pedido ${order.id} te está esperando`,
+      title: "¡Tu pedido sigue reservado!",
+      intro:
+        "Vimos que el pago todavía no se acreditó. Te guardamos los productos durante 24 horas desde que hiciste el pedido, así que estás a tiempo. Si algo falló con el pago o necesitás ayuda para elegir, escribinos por WhatsApp y te ayudamos personalmente.",
+    },
+    customer_order_expired: {
+      subject: `Tu pedido ${order.id} venció`,
+      title: "Tu pedido venció",
+      intro:
+        "Pasaron 24 horas sin que se acreditara el pago, así que cancelamos el pedido para liberar el stock. No se te cobró nada. Si todavía querés los productos, podés hacer un pedido nuevo en la tienda o escribirnos por WhatsApp y te ayudamos a cerrar la compra.",
+      action: "Volver a la tienda",
+    },
   };
   return copies[eventType];
 }
@@ -322,6 +339,8 @@ function emailVisual(eventType: OrderEmailEvent) {
     customer_order_ready: { emoji: "🛠️", label: "PEDIDO PREPARADO", color: "#0b3c6f", soft: "#eaf4fb" },
     customer_order_shipped: { emoji: "🚚", label: "PEDIDO EN CAMINO", color: "#0b3c6f", soft: "#eaf4fb" },
     customer_order_delivered: { emoji: "🙌", label: "PEDIDO ENTREGADO", color: "#18794e", soft: "#eaf8f1" },
+    customer_payment_reminder: { emoji: "⏳", label: "PAGO PENDIENTE", color: "#b54708", soft: "#fff4e8" },
+    customer_order_expired: { emoji: "🕓", label: "PEDIDO VENCIDO", color: "#667085", soft: "#f2f4f7" },
   };
   return visuals[eventType];
 }
@@ -353,12 +372,16 @@ export function renderOrderEmail(
     }`;
   const buttonUrl = eventType === "team_new_order"
     ? `${publicUrl.replace(/\/$/, "")}/admin/pedidos`
+    : eventType === "customer_order_expired"
+    ? `${publicUrl.replace(/\/$/, "")}/`
     : `${publicUrl.replace(/\/$/, "")}/cuenta/pedidos`;
   const customerWhatsAppButton = eventType === "team_new_order"
     ? ""
     : `<div style="text-align:center;margin-top:12px"><a href="${escapeHtml(whatsappUrl(order))}" style="display:inline-block;background:#1fa855;color:#fff;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:9px">Hablar con Litoral Maq por WhatsApp</a></div>`;
   const totalNote = pagado
     ? "Pago acreditado por Mercado Pago."
+    : order.payment_status === "cancelled"
+    ? "Pedido cancelado, sin cobro."
     : "Pendiente de pago en Mercado Pago.";
 
   return {
