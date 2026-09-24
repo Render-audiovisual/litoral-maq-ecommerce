@@ -392,6 +392,8 @@ textarea { min-height: 100px; resize: vertical; }
 }
 .delivery-suboptions { margin: 14px 0 18px; }
 .delivery-suboptions label { padding: 12px 15px; }
+/* Separa el botón de confirmar entrega del último campo del formulario. */
+.delivery-confirm { margin-top: 22px; }
 .shipping-quotes { margin-top: 16px; display: grid; gap: 10px; }
 .shipping-quote { width: 100%; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border: 1px solid var(--line); background: #fff; color: var(--ink); text-align: left; }
 .shipping-quote:hover, .shipping-quote.selected { border-color: var(--orange); background: var(--orange-soft); }

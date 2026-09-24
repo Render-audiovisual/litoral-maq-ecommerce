@@ -614,7 +614,7 @@ export default function CheckoutPage() {
             )}
             <button
               type="button"
-              className="button secondary"
+              className="button secondary delivery-confirm"
               onClick={confirmDelivery}
               disabled={
                 quoting ||
