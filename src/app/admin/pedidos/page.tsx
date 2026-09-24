@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
 import { getPendingOrderCustomerWhatsAppUrl, paymentMethodLabel } from "@/lib/whatsapp";
@@ -87,6 +87,19 @@ export default function AdminOrdersPage() {
   const [processingEmails, setProcessingEmails] = useState(false);
   const paymentAutomatic =
     process.env.NEXT_PUBLIC_MERCADO_PAGO_ENABLED === "true";
+  // Enlace directo desde el Resumen: /admin/pedidos?pedido=LM-… abre el
+  // detalle de ese pedido una sola vez, cuando la lista ya cargó.
+  const deepLinkHandled = useRef(false);
+  useEffect(() => {
+    if (deepLinkHandled.current || !orders.length) return;
+    const requested = new URLSearchParams(window.location.search).get("pedido");
+    const match = requested ? orders.find((order) => order.id === requested) : undefined;
+    const timer = window.setTimeout(() => {
+      deepLinkHandled.current = true;
+      if (match) setSelected(match);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [orders]);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
