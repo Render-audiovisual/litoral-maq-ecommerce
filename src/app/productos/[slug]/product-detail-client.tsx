@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/image-lightbox";
+import { isMercadoPagoEnabled } from "@/services/payments";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { getPurchaseLimit } from "@/lib/purchase-limits";
@@ -49,8 +50,10 @@ const TRUST = [
     ),
   },
   {
-    title: "Pago seguro",
-    text: "Mercado Pago: cuotas o débito",
+    title: isMercadoPagoEnabled() ? "Pago seguro" : "Pago a coordinar",
+    text: isMercadoPagoEnabled()
+      ? "Mercado Pago: cuotas o débito"
+      : "Te confirmamos el pago por WhatsApp",
     icon: (
       <svg {...icon}>
         <path d="M12 3 19 6v5.5c0 4.3-2.9 7.7-7 9.5-4.1-1.8-7-5.2-7-9.5V6z" />

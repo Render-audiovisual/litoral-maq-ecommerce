@@ -67,6 +67,17 @@ test("no cotiza el envío sin todos los datos de contacto y avisa junto al botó
   const alert = page.locator("section.form-card").nth(1).getByRole("alert");
   await expect(alert).toContainText("Completá nombre, apellido, email, teléfono y DNI");
   await expect(page.getByText("Envío a coordinar", { exact: true })).toHaveCount(0);
+
+  // Cada campo que falta queda marcado y el foco va al primero.
+  const lastName = page.getByLabel("Apellido", { exact: true });
+  await expect(lastName).toBeFocused();
+  for (const label of ["Apellido", "Email", "Teléfono", "DNI"]) {
+    await expect(page.getByLabel(label, { exact: true })).toHaveAttribute("aria-invalid", "true");
+  }
+  await expect(page.getByLabel("Nombre", { exact: true })).not.toHaveAttribute("aria-invalid", "true");
+  // Al editarlo se desmarca.
+  await lastName.fill("Prueba");
+  await expect(lastName).not.toHaveAttribute("aria-invalid", "true");
 });
 
 test("las opciones de entrega son tarjetas con el radio junto al texto", async ({ page }) => {
