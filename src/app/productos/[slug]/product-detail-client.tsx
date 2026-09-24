@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { ImageLightbox } from "@/components/image-lightbox";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { getPurchaseLimit } from "@/lib/purchase-limits";
@@ -64,6 +65,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const product = products.find((item) => item.slug === slug);
   if (!product || !product.active) {
     return (
@@ -81,6 +83,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
     : product.image
       ? [product.image]
       : [];
+  const shownImage = Math.min(activeImage, Math.max(0, gallery.length - 1));
   const availability = getProductAvailability(product);
   const purchaseLimit = getPurchaseLimit(product);
   const inStock = availability === "available" || availability === "sheet-managed";
@@ -112,22 +115,36 @@ export function ProductDetailClient({ slug }: { slug: string }) {
       </nav>
       <section className="pdp">
         <div className="pdp-gallery">
-          <div className="pdp-image">
-            {gallery.length ? (
+          {gallery.length ? (
+            <button
+              type="button"
+              className="pdp-image"
+              aria-label="Ampliar imagen"
+              onClick={() => setLightboxOpen(true)}
+            >
               <Image
-                src={gallery[Math.min(activeImage, gallery.length - 1)]}
+                src={gallery[shownImage]}
                 alt={product.name}
                 fill
                 sizes="(max-width: 900px) 100vw, 50vw"
                 priority
               />
-            ) : (
+              <span className="pdp-zoom-hint" aria-hidden="true">
+                <svg {...icon}>
+                  <circle cx="11" cy="11" r="6.5" />
+                  <path d="m20 20-4.4-4.4" />
+                  <path d="M8.5 11h5M11 8.5v5" />
+                </svg>
+              </span>
+            </button>
+          ) : (
+            <div className="pdp-image">
               <div className="product-placeholder large">
                 <span>LM</span>
                 <small>Imagen pendiente de carga</small>
               </div>
-            )}
-          </div>
+            </div>
+          )}
           {gallery.length > 1 && (
             <div className="pdp-thumbs">
               {gallery.map((src, index) => (
@@ -143,6 +160,18 @@ export function ProductDetailClient({ slug }: { slug: string }) {
                 </button>
               ))}
             </div>
+          )}
+          {gallery.length > 0 && (
+            <ImageLightbox
+              images={gallery.map((src, index) => ({
+                src,
+                alt: `${product.name} — imagen ${index + 1}`,
+              }))}
+              index={shownImage}
+              open={lightboxOpen}
+              onIndexChange={setActiveImage}
+              onClose={() => setLightboxOpen(false)}
+            />
           )}
         </div>
         <div className="pdp-info">
