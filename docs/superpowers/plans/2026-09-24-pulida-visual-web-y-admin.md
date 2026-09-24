@@ -66,19 +66,34 @@ Sale de lo que ya gustó en el checkout y en el detalle del pedido. Cada tarea l
 
 ## Fase A — La web
 
-### Task A1: Ficha del producto y ficha técnica
+### Task A1: Ficha del producto y ficha técnica (misma plantilla para todos los productos)
 
-**Entregable:**
-- Título en escala fija de 28–32 px (no más de 2 líneas en escritorio), marca como texto de apoyo, código y disponibilidad en una línea.
-- Imagen con fondo neutro y `object-fit: contain` sin franjas de otro color; miniaturas si hay varias; sin altura fija de 650 px que deje vacío.
-- **Ficha técnica**: si la descripción trae pares "Clave: valor." (por ejemplo `Peso: 1Kg. Tipo: E71T-GS. Diámetro: 0,8mm.`) se muestran en una tabla de dos columnas debajo de "Descripción"; si no hay pares, queda el párrafo. Función pura `parseSpecs(description)` en `src/lib/` con test unitario (casos: con pares, sin pares, con valores que llevan `:` o `.` internos).
-- Las 3 tarjetas de confianza pasan a una franja de tres ítems de 13 px con iconos SVG propios (sin emojis).
-- Botón "Agregar al carrito" y selector de cantidad con la altura común (42 px); leyenda "Máximo 3 unidades…" a 13 px.
-- Celular: imagen arriba, título, precio y botón antes del scroll; tabla de ficha en una columna.
+**Datos reales (producción, 2026-09-24):** 86 productos activos; 78 tienen descripción; los 86 tienen imagen y marca; 74 tienen más de una imagen; ninguno tiene peso cargado. Las descripciones vienen en tres formatos: (1) bloque `Datos técnicos:` con viñetas `• Clave: valor` y una línea `Contenido: …`; (2) frases seguidas `Clave: valor. Clave: valor. Contiene. 1 x …`; (3) solo una frase de introducción.
 
-**Verificación:** capturas antes/después con 2 productos (uno con pares, uno sin); `tests/e2e/product-availability.spec.ts`, `home.spec.ts`, `catalog-mobile.spec.ts`, `mobile-layout.spec.ts`.
+**Principio:** la plantilla visual es **la misma para los 86 productos y para los que se carguen después**. Nunca depende de que la descripción esté completa: la tarjeta "Ficha técnica" siempre muestra Marca, Categoría y Código (datos que todo producto tiene) y, cuando la descripción trae más, suma las especificaciones debajo; "Descripción" y "Qué incluye" aparecen solo si hay texto. Un producto sin ficha detallada se ve prolijo, no roto ni vacío.
 
-- [ ] Pasos: (1) capturas "antes"; (2) test unitario de `parseSpecs` en rojo; (3) implementarlo; (4) rediseño con Impeccable (`layout` + `typeset` + `polish`); (5) capturas "después" y aprobación de Franco; (6) commit.
+**Entregable, en dos partes:**
+
+**A1a — Lectura de la descripción (lógica pura, con TDD).** `src/lib/product-description.ts` exporta `parseProductDescription(raw?: string | null): { intro: string; specs: { label: string; value: string }[]; extras: string[]; contents: string }`.
+- Formato con saltos de línea: el primer párrafo es `intro`; las viñetas (`•`, `-`, `*`) con `Clave: valor` son `specs`; las viñetas sin dos puntos son `extras`; la línea o sección `Contenido:` / `Contiene:` es `contents`.
+- Formato en frases: se corta en frases (punto + espacio + mayúscula o dígito); la primera es `intro`; las frases `Clave: valor` son `specs`; las demás antes de `Contiene`/`Contenido` son `extras`; todo lo posterior a `Contiene.` / `Contenido.` es `contents`.
+- Etiqueta = texto hasta el primer `: ` (máx. 45 caracteres, sin punto). Valores con decimales (`1.8m`, `10.3 bar`), fracciones (`1/2"`) y símbolos (`°`, `~`, `&`) se conservan intactos. Se quita el punto final del valor.
+- Sin descripción o vacía: todo vacío, sin errores. Los tests usan textos reales de productos (3535, 3569, 3387, 3499, 3653, 3540).
+
+**A1b — Rediseño de la ficha** (`src/app/productos/[slug]/product-detail-client.tsx` y bloque `.detail-*` de `globals.css`):
+- Título en escala fija de 28–32 px (máximo 2 líneas en escritorio), marca como texto de apoyo, código y disponibilidad en una línea.
+- Galería con fondo neutro y `object-fit: contain`, sin franjas de otro color ni altura fija que deje vacío; miniaturas cuando hay varias.
+- Debajo del bloque de compra: "Ficha técnica" (tabla de dos columnas, siempre), "Descripción" (intro + `extras` como lista) y "Qué incluye" (`contents`), en ese orden, con encabezados de 16–18 px y filas de 14 px.
+- Las 3 tarjetas de confianza pasan a una franja de tres ítems de 13 px con iconos SVG propios, sin emojis.
+- "Agregar al carrito" y selector de cantidad con la altura común de 42 px; leyenda de máximo por compra a 13 px.
+- Celular: galería, título, precio y botón antes del scroll; ficha técnica en una columna.
+
+**Verificación:** capturas antes/después con 3 productos (uno con `Datos técnicos:`, uno con frases, uno sin descripción); `product-description.test.ts`; `tests/e2e/product-availability.spec.ts`, `home.spec.ts`, `catalog-mobile.spec.ts`, `mobile-layout.spec.ts`.
+
+**Para los productos nuevos:** cuanto más estructurada esté la descripción en el Sheet (bloque `Datos técnicos:` con `• Clave: valor` y `Contenido: …`), más completa sale la ficha. Se deja una nota de una línea en `docs/CATALOGO_Y_CORREOS_OPERATIVOS.md` con el formato recomendado.
+
+- [ ] A1a: tests en rojo con textos reales → implementar `parseProductDescription` → verde → commit.
+- [ ] A1b: capturas "antes" → rediseño con Impeccable (`layout` + `typeset` + `polish`) → capturas "después" y aprobación de Franco → commit.
 
 ### Task A2: Catálogo y tarjetas de producto
 **Entregable:** piso tipográfico de 12 px en tarjetas y filtros, precio y disponibilidad con jerarquía clara, encabezado azul más compacto, orden y contador con los mismos controles del resto. No cambia la estructura de `.product-card`.
@@ -147,4 +162,4 @@ Igual que en los planes anteriores: al activarse `order-notifications` actualiza
 
 - Cobertura del pedido: web primero (ficha técnica y demás: A1–A4), panel sección por sección (pedidos, resumen y demás: B1–B5), un deploy al final, texto del mensaje de WhatsApp corregido.
 - Cada tarea tiene entregable concreto, archivos, verificación y aprobación de Franco.
-- Riesgo: `parseSpecs` depende de que las descripciones vengan como "Clave: valor."; si el catálogo real tiene otro formato, la ficha muestra el párrafo actual (sin regresión).
+- Riesgo: `parseProductDescription` depende del formato "Clave: valor"; si una descripción no lo respeta, sus datos van a `intro`/`extras` y la ficha igual muestra Marca, Categoría y Código (sin regresión visual).
