@@ -9,7 +9,7 @@ import { isPermanentCustomerSession, isValidCustomerSession } from "@/lib/auth";
 import { selectOwnOrders } from "@/lib/orders";
 import { isActiveOrder } from "@/lib/order-details";
 import { searchProducts } from "@/lib/search";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, STORE_ADDRESS, STORE_HOURS } from "@/lib/utils";
 import { availabilityLabel, getProductAvailability } from "@/lib/product-availability";
 import { isAdminSurface } from "@/lib/site-surface";
 
@@ -121,10 +121,11 @@ export function Header() {
   return (
     <>
       <div className="announcement">
-        {/* ponytail: 8 copias cubren hasta ~2900px de ancho; si aparece un hueco en pantallas mas grandes, subir el numero */}
-        {Array.from({ length: 8 }).map((_, i) => (
+        {/* ponytail: 4 copias de ~1000px cubren hasta ~4000px de ancho; si aparece un hueco en pantallas mas grandes, subir el numero */}
+        {Array.from({ length: 4 }).map((_, i) => (
           <span key={i} aria-hidden={i > 0}>
-            Envíos a todo el país · Compra segura · Atención personalizada
+            Retiro gratis en {STORE_ADDRESS} · Envíos a todo el país por Vía Cargo, OCA y Andreani ·{" "}
+            {STORE_HOURS.join(", ")} · Pagá con Mercado Pago, en cuotas
           </span>
         ))}
       </div>
@@ -156,7 +157,7 @@ export function Header() {
             }}
             onFocus={() => setSuggestionsOpen(true)}
             onKeyDown={handleSearchKeyDown}
-            placeholder="Buscar productos, marcas o categorías"
+            placeholder="Buscar productos o marcas"
             autoComplete="off"
             role="combobox"
             aria-expanded={showSuggestions}
@@ -258,16 +259,21 @@ export function Header() {
           )}
         </form>
         <nav className={open ? "nav open" : "nav"} aria-label="Navegación principal">
-          <Link href="/" onClick={() => setOpen(false)}>
+          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} onClick={() => setOpen(false)}>
             Inicio
           </Link>
-          <Link href="/productos" onClick={() => setOpen(false)}>
+          <Link href="/productos" aria-current={pathname === "/productos" ? "page" : undefined} onClick={() => setOpen(false)}>
             Productos
           </Link>
           <Link href="/#productos-estrella" onClick={() => setOpen(false)}>
-            Ofertas
+            Destacados
           </Link>
-          <Link href="/cuenta/pedidos" className="nav-orders-link" onClick={() => setOpen(false)}>
+          <Link
+            href="/cuenta/pedidos"
+            className="nav-orders-link"
+            aria-current={pathname === "/cuenta/pedidos" ? "page" : undefined}
+            onClick={() => setOpen(false)}
+          >
             Mis pedidos {activeOrderCount > 0 && <b>{activeOrderCount}</b>}
           </Link>
         </nav>

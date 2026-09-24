@@ -17,7 +17,8 @@ export function ProductCard({
   imageOverride,
 }: {
   product: Product;
-  badge?: string;
+  /** `null` apaga también el "Destacado" automático (p. ej. dentro de una sección de destacados). */
+  badge?: string | null;
   imageOverride?: string;
 }) {
   const { addToCart } = useStore();
@@ -40,7 +41,7 @@ export function ProductCard({
             <small>Imagen pendiente</small>
           </div>
         )}
-        {(badge || product.featured) && <span className="product-badge">{badge || "Destacado"}</span>}
+        {badge !== null && (badge || product.featured) && <span className="product-badge">{badge || "Destacado"}</span>}
       </Link>
       <div className="product-card-body">
         <span className="eyebrow">{product.brand}</span>

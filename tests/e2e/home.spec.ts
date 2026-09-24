@@ -17,17 +17,17 @@ test('la página principal carga correctamente', async ({ page }) => {
   );
 });
 
-test('ofertas funciona como acceso directo a productos estrella', async ({ page }) => {
+test('destacados funciona como acceso directo a productos estrella', async ({ page }) => {
   await page.goto('/');
 
   const starProducts = page.locator('#productos-estrella');
   await expect(starProducts).toBeVisible();
-  await expect(page.getByRole('navigation').getByRole('link', { name: 'Ofertas' })).toHaveAttribute(
+  await expect(page.getByRole('navigation').getByRole('link', { name: 'Destacados' })).toHaveAttribute(
     'href',
     '/#productos-estrella',
   );
 
-  await page.getByRole('link', { name: 'Ver ofertas', exact: true }).click();
+  await page.getByRole('link', { name: 'Ver destacados', exact: true }).click();
   await expect(page).toHaveURL(/#productos-estrella$/);
   await expect(starProducts).toBeInViewport();
 });

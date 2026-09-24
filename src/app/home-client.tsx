@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { TestimonialsSection } from "@/components/testimonials";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, STORE_ADDRESS, STORE_MAPS_URL } from "@/lib/utils";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 import {
   getLaunchFamilyCards,
 } from "@/lib/launch-catalog";
@@ -67,14 +68,15 @@ const PROMO_SLIDES = [
 
 const STAR_PRODUCTS = [
   { productId: "3381", image: "/products/catalog/3381-aa518-220plus.webp" },
-  { productId: "3506", image: "/products/MOTOSIERRA_.png" },
   { productId: "3499", image: "/products/catalog/3499-bwir150.webp" },
   { productId: "3542", image: "/products/catalog/3542-lo180-220.webp" },
-  // 3506 (motosierra Knock Out) está inactiva y no se cuenta acá abajo: este
-  // quinto producto es el que mantiene la fila en cuatro tarjetas mientras
-  // esa siga sin foto y descripción confirmadas.
+  // 3506 (motosierra Knock Out) queda afuera hasta tener una foto de producto
+  // real: su imagen es un arte de marca y desentonaba con las otras tres.
   { productId: "3216", image: "/products/catalog/3216-sk455-1.webp" },
+  // Reserva: si alguno de arriba está inactivo, la fila sigue en cuatro.
+  { productId: "3588", image: "/products/catalog/3588-ai1014-12c1.webp" },
 ] as const;
+const STAR_PRODUCTS_SHOWN = 4;
 
 // Cinta continua: píxeles por segundo, no tarjetas por segundo. El ritmo es
 // el de un ticker —constante y parejo— en vez de saltar de tarjeta en tarjeta.
@@ -181,10 +183,12 @@ function CategoryWinnerCard({
         )}
       </div>
       <div className="winner-card-copy">
-        <span>{productCount} {productCount === 1 ? "producto" : "productos"}</span>
         <h3>{label}</h3>
         <small>{description}</small>
-        <strong>{priceFrom === null ? "Consultar" : `Desde ${formatCurrency(priceFrom)}`}</strong>
+        {/* Precio "desde" sin centavos: es orientativo. El conteo solo suma
+            cuando hay variedad; "1 producto" le restaba a la categoría. */}
+        <strong>{priceFrom === null ? "Consultar" : `Desde ${formatCurrency(Math.floor(priceFrom), 0)}`}</strong>
+        {productCount >= 3 && <span className="winner-card-count">{productCount} productos</span>}
         <b>Ver {label.toLowerCase()} <span aria-hidden>→</span></b>
       </div>
     </Link>
@@ -240,16 +244,15 @@ export function HomeClient() {
   const starProducts = STAR_PRODUCTS.flatMap((item) => {
     const product = activeProducts.find((candidate) => candidate.id === item.productId);
     return product ? [{ product, image: item.image }] : [];
-  });
+  }).slice(0, STAR_PRODUCTS_SHOWN);
   return (
     <main>
       <section className="commerce-hero">
         <div className="commerce-hero-copy">
-          <span className="hero-pill">PRODUCTOS Y PRECIOS REALES</span>
           <h1>Armá tu <em>taller.</em></h1>
           <p>
-            Máquinas y herramientas con precios reales, envíos a todo el país
-            y retiro gratis en nuestro local.
+            Máquinas y herramientas para obra, taller y campo, con envío a
+            todo el país.
           </p>
         </div>
 
@@ -259,18 +262,21 @@ export function HomeClient() {
           <div className="hero-buttons">
             <Link href="/productos" className="button primary large">Explorar catálogo</Link>
             <Link href="#productos-estrella" className="button ghost large hero-offers-link">
-              <span className="hero-offers-desktop">Ver ofertas</span>
-              <span className="hero-offers-mobile">Ver ofertas destacadas →</span>
+              <span className="hero-offers-desktop">Ver destacados</span>
+              <span className="hero-offers-mobile">Ver productos destacados →</span>
             </Link>
           </div>
-          <div className="pickup-banner">
-            <span>RETIRO GRATIS</span>
-            <div className="pickup-banner-copy">
-              <strong>Retirá gratis en Sáenz 1587, Corrientes Capital</strong>
-              <small>Abrí y probá tu producto antes de llevártelo, sin compromiso.</small>
-            </div>
-            <b aria-hidden="true">→</b>
-          </div>
+          <a className="pickup-banner" href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
+              <circle cx="12" cy="10" r="2.4" />
+            </svg>
+            <span className="pickup-banner-copy">
+              <strong>Retiro gratis en {STORE_ADDRESS}</strong>
+              <small>Abrí y probá tu producto antes de llevártelo.</small>
+            </span>
+            <b>Cómo llegar</b>
+          </a>
         </div>
       </section>
 
@@ -278,9 +284,8 @@ export function HomeClient() {
         <div className="section-heading winner-heading">
           <div>
             <h2>Encontrá la máquina que necesitás</h2>
-            <p>Ocho accesos directos con stock real y precios para comparar.</p>
           </div>
-          <Link href="/productos" className="text-link">Ver todos los productos →</Link>
+          <Link href="/productos" className="text-link">Ver catálogo →</Link>
         </div>
         <CategoryMarquee categories={categories} />
       </section>
@@ -289,23 +294,32 @@ export function HomeClient() {
         <div className="section-heading">
           <div>
             <h2>Los elegidos de Litoral Maq</h2>
-            <p>Cuatro productos con buen precio, stock y salida.</p>
           </div>
-          <Link href="/productos" className="text-link">Ver catálogo completo →</Link>
+          <Link href="/productos" className="text-link">Ver catálogo →</Link>
         </div>
-        <div className="star-products-grid" aria-label="Cuatro productos estrella">
+        <div className="star-products-grid" aria-label="Productos destacados">
           {starProducts.map(({ product, image }) => (
-            <ProductCard
-              product={product}
-              imageOverride={image}
-              badge="Producto estrella"
-              key={product.id}
-            />
+            <ProductCard product={product} imageOverride={image} badge={null} key={product.id} />
           ))}
         </div>
       </section>
 
       <TestimonialsSection speed={TESTIMONIALS_TICKER_SPEED} />
+
+      <section className="help-band" aria-labelledby="help-band-title">
+        <div>
+          <h2 id="help-band-title">¿Necesitás asesoramiento?</h2>
+          <p>Contanos para qué trabajo es y te recomendamos la máquina.</p>
+        </div>
+        <div className="help-band-actions">
+          <a className="button whatsapp-button" href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
+            Escribinos por WhatsApp
+          </a>
+          <a className="text-link" href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer">
+            Cómo llegar a {STORE_ADDRESS}
+          </a>
+        </div>
+      </section>
     </main>
   );
 }
