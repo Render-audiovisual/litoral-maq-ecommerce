@@ -41,6 +41,11 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await expect(modal).toContainText("Cód. 3403");
   await expect(modal).toContainText("3794000000");
   await expect(modal).toContainText("Pago pendiente");
+  // Recontacto: el detalle ofrece WhatsApp con el pedido ya armado.
+  const whatsapp = modal.getByRole("link", { name: "Contactar por WhatsApp" });
+  const href = (await whatsapp.getAttribute("href")) ?? "";
+  expect(href).toContain("https://wa.me/5493794000000?text=");
+  expect(decodeURIComponent(href)).toContain("Vimos que solicitaste el pedido");
 
   const rowStatus = row.locator(".status-select");
   await expect(rowStatus.locator('option[value="listo"]')).toHaveText(

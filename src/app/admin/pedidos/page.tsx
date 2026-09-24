@@ -508,7 +508,7 @@ export default function AdminOrdersPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Contactar al cliente
+                    Contactar por WhatsApp
                   </a>
                 )}
               </div>

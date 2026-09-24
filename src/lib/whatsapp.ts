@@ -48,11 +48,15 @@ export function getPendingOrderCustomerWhatsAppUrl(order: Order, phone?: string)
   const products = order.lines
     .map((line) => `${line.quantity} × ${line.productName || line.productCode || line.productId}`)
     .join(", ");
+  // Un pedido cancelado ya perdió la reserva de 24 h: no se le promete stock.
+  const expired = order.status === "cancelado";
   const message = [
     `Hola ${order.customerName || ""}, ¿cómo estás? Somos de Litoral Maq.`.replace("Hola ,", "Hola,"),
-    `Queríamos saber si pudiste avanzar con tu pedido ${order.id} por ${products}. Todavía tenemos el producto disponible y reservado para vos.`,
+    expired
+      ? `Vimos que solicitaste el pedido ${order.id} por ${products}. Ese pedido ya venció, pero si querés seguir con tu compra te asesoramos personalmente y lo resolvemos por acá.`
+      : `Vimos que solicitaste el pedido ${order.id} por ${products} y queríamos ver si querés continuar con tu compra. Te podemos asesorar personalmente con lo que necesites.`,
     "Podés retirarlo en nuestro local de Corrientes Capital o te ayudamos a coordinar el envío.",
-    "¿Te interesa completar la compra? Estamos para asesorarte.",
+    expired ? "¿Querés que lo retomemos?" : "¿Seguimos con tu compra?",
   ].join("\n\n");
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }

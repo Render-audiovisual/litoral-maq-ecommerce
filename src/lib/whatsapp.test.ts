@@ -40,17 +40,41 @@ describe("confirmación de pedido por WhatsApp", () => {
     expect(decodeURIComponent(getOrderWhatsAppUrl(undefined, "LM-999"))).toContain("LM-999");
   });
 
-  it("abre el WhatsApp del cliente con el pedido pendiente y la reserva", () => {
+  it("recontacta al cliente con el pedido pendiente y le ofrece asesoría", () => {
     const order = {
       id: "LM-125",
       customerName: "Ana",
       phone: "+54 9 3794 11-2233",
+      status: "pendiente",
       lines: [{ productId: "p1", productName: "Taladro", quantity: 1 }],
     } as Order;
     const url = new URL(getPendingOrderCustomerWhatsAppUrl(order));
     expect(url.pathname).toBe("/5493794112233");
-    expect(url.searchParams.get("text")).toContain("pedido LM-125");
-    expect(url.searchParams.get("text")).toContain("Todavía tenemos el producto disponible y reservado");
-    expect(url.searchParams.get("text")).toContain("Corrientes Capital");
+    const text = url.searchParams.get("text") || "";
+    expect(text).toContain("Hola Ana");
+    expect(text).toContain("Vimos que solicitaste el pedido LM-125 por 1 × Taladro");
+    expect(text).toContain("querés continuar con tu compra");
+    expect(text).toContain("asesorar");
+    expect(text).toContain("Corrientes Capital");
+  });
+
+  it("si el pedido venció, el mensaje no promete reserva y ofrece retomar la compra", () => {
+    const order = {
+      id: "LM-126",
+      customerName: "Ana",
+      phone: "3794112233",
+      status: "cancelado",
+      lines: [{ productId: "p1", productName: "Taladro", quantity: 1 }],
+    } as Order;
+    const text = new URL(getPendingOrderCustomerWhatsAppUrl(order)).searchParams.get("text") || "";
+    expect(text).toContain("Vimos que solicitaste el pedido LM-126");
+    expect(text).toContain("ya venció");
+    expect(text).not.toContain("reservado");
+    expect(text).toContain("retomemos");
+  });
+
+  it("sin teléfono no arma enlace", () => {
+    const order = { id: "LM-127", lines: [] } as unknown as Order;
+    expect(getPendingOrderCustomerWhatsAppUrl(order)).toBe("");
   });
 });
