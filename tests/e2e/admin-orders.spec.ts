@@ -14,7 +14,7 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await page.getByLabel("DNI").fill("30123456");
   await page.getByText("Retiro en Sáenz 1587").click();
   await page.getByRole("button", { name: "Confirmar retiro" }).click();
-  await expect(page.getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
+  await expect(page.locator("main").getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
   // getByText coincide también con el anunciador de rutas de Next
   // (#__next-route-announcer__), que repite el título de la página. El rol

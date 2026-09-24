@@ -72,7 +72,7 @@ test("el checkout pide un celular argentino y un email completo", async ({ page 
 
   await page.getByLabel("Email").fill("cliente.telefono@example.com");
   await page.getByRole("button", { name: "Confirmar retiro" }).click();
-  await expect(page.getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
+  await expect(page.locator("main").getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
 

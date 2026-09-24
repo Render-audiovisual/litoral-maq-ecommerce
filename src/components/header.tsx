@@ -12,6 +12,7 @@ import { searchProducts } from "@/lib/search";
 import { formatCurrency, STORE_ADDRESS, STORE_HOURS } from "@/lib/utils";
 import { availabilityLabel, getProductAvailability } from "@/lib/product-availability";
 import { isAdminSurface } from "@/lib/site-surface";
+import { isMercadoPagoEnabled } from "@/services/payments";
 
 /** Desde cuántas letras vale la pena sugerir: con una sola, medio catálogo
  * coincide y el cartel no ayuda. */
@@ -120,12 +121,14 @@ export function Header() {
 
   return (
     <>
-      <div className="announcement">
+      <div className={isMercadoPagoEnabled() ? "announcement" : "announcement no-payments"}>
         {/* ponytail: 4 copias de ~1000px cubren hasta ~4000px de ancho; si aparece un hueco en pantallas mas grandes, subir el numero */}
         {Array.from({ length: 4 }).map((_, i) => (
           <span key={i} aria-hidden={i > 0}>
             Retiro gratis en {STORE_ADDRESS} · Envíos a todo el país por Vía Cargo, OCA y Andreani ·{" "}
-            {STORE_HOURS.join(", ")} · Pagá con Mercado Pago, en cuotas
+            {STORE_HOURS.join(", ")}
+            {/* Igual que el carrito: sin Mercado Pago el pago se coordina y no hay cuotas que prometer. */}
+            {isMercadoPagoEnabled() && " · Pagá con Mercado Pago, en cuotas"}
           </span>
         ))}
       </div>
