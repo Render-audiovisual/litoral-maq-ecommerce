@@ -331,6 +331,14 @@ textarea { min-height: 100px; resize: vertical; }
 .pdp-trust strong { color: var(--navy); font-weight: 700; }
 .pdp-trust small { color: #566472; }
 .pdp-details { max-width: 720px; margin-top: 64px; display: grid; gap: 40px; }
+/* Escritorio: descripción y contenido a la izquierda (lo que se lee primero), ficha
+   técnica a la derecha. Sin descripción, la ficha ocupa sola una columna cómoda. */
+@media (min-width: 900px) {
+  .pdp-details { max-width: none; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 64px; grid-template-rows: max-content 1fr; align-items: start; }
+  .pdp-details > section:first-child { grid-column: 2; grid-row: 1 / span 2; }
+  .pdp-details > section:not(:first-child) { grid-column: 1; }
+  .pdp-details > section:first-child:only-child { grid-column: 1 / -1; max-width: 720px; }
+}
 .pdp-details h2 { margin: 0 0 14px; font-size: 18px; line-height: 1.3; letter-spacing: -.01em; }
 .pdp-details p { margin: 0 0 12px; max-width: 70ch; font-size: 15px; line-height: 1.65; text-wrap: pretty; }
 .pdp-details p:last-child { margin-bottom: 0; }
