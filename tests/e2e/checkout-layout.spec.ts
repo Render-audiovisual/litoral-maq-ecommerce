@@ -51,3 +51,33 @@ test("el checkout avisa que el pedido se reserva 24 horas", async ({ page }) => 
   await expect(page.locator(".order-summary .reservation-note")).toContainText("Reservamos tu solicitud por 24 horas");
   await expect(page.locator(".order-summary .reservation-note")).toContainText("no confirmamos el pago con vos");
 });
+
+test("no cotiza el envío sin todos los datos de contacto y avisa junto al botón", async ({ page }) => {
+  await openCheckout(page);
+  await page.getByLabel("Código postal").fill("3400");
+  await page.getByLabel("Localidad").fill("Corrientes");
+  await page.getByLabel("Calle").fill("San Juan");
+  await page.getByLabel("Número").fill("1234");
+  await page.getByLabel("Nombre", { exact: true }).fill("Cliente");
+  // Falta apellido, email, teléfono y DNI.
+  await page.getByRole("button", { name: "Calcular opciones de envío" }).click();
+
+  const alert = page.getByRole("alert");
+  await expect(alert).toContainText("Completá nombre, apellido, email, teléfono y DNI");
+  await expect(page.getByText("Envío a coordinar", { exact: true })).toHaveCount(0);
+  // El aviso vive dentro de la tarjeta de Entrega, no al final del formulario.
+  await expect(page.locator("section.form-card").nth(1).getByRole("alert")).toBeVisible();
+});
+
+test("las opciones de entrega son tarjetas con el radio junto al texto", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await openCheckout(page);
+  const envio = page.locator(".delivery-options .choice").first();
+  await expect(envio).toHaveClass(/selected/);
+  const radio = await envio.locator("input").boundingBox();
+  const title = await envio.locator("strong").boundingBox();
+  // El radio es chico (no se estira) y queda a la izquierda del título.
+  expect(radio!.width).toBeLessThanOrEqual(20);
+  expect(radio!.x + radio!.width).toBeLessThan(title!.x);
+});
+

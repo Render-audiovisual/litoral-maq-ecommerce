@@ -78,6 +78,8 @@ export default function CheckoutPage() {
   const [quoting, setQuoting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Errores de la sección Entrega: se muestran pegados al botón que los causó.
+  const [deliveryError, setDeliveryError] = useState("");
   // La compra como invitado crea un usuario REAL en Supabase Auth
   // (signInAnonymously), así que ese endpoint necesita la misma protección
   // antiabuso que un registro. Con sesión ya iniciada no hace falta: no se
@@ -112,6 +114,19 @@ export default function CheckoutPage() {
   function updateForm(patch: Partial<typeof form>) {
     setForm((current) => ({ ...current, ...patch }));
     resetQuote();
+  }
+
+  function validateContact() {
+    if (
+      !form.firstName.trim() ||
+      !form.lastName.trim() ||
+      !form.email.includes("@") ||
+      !/^\d{7,8}$/.test(form.dni) ||
+      form.phone.trim().length < 6
+    ) {
+      return "Completá nombre, apellido, email, teléfono y DNI. El DNI debe tener 7 u 8 números.";
+    }
+    return "";
   }
 
   function validateDestination() {
@@ -156,7 +171,13 @@ export default function CheckoutPage() {
 
   async function confirmDelivery() {
     setError("");
+    setDeliveryError("");
     setManualReason("");
+    const contactError = validateContact();
+    if (contactError) {
+      setDeliveryError(contactError);
+      return;
+    }
     if (method === "retiro") {
       setQuoteOptions([]);
       setSelectedQuoteId("");
@@ -165,11 +186,7 @@ export default function CheckoutPage() {
     }
     const destinationError = validateDestination();
     if (destinationError) {
-      setError(destinationError);
-      return;
-    }
-    if (!form.email.includes("@")) {
-      setError("Completá un email válido antes de cotizar.");
+      setDeliveryError(destinationError);
       return;
     }
     setQuoting(true);
@@ -209,7 +226,7 @@ export default function CheckoutPage() {
         );
         setShipping(0);
       } else {
-        setError(
+        setDeliveryError(
           caught instanceof Error
             ? caught.message
             : "No se pudo cotizar el envío.",
@@ -229,14 +246,9 @@ export default function CheckoutPage() {
   async function submit(event: FormEvent) {
     event.preventDefault();
     setError("");
-    if (
-      !form.firstName.trim() ||
-      !form.lastName.trim() ||
-      !form.email.includes("@") ||
-      !/^\d{7,8}$/.test(form.dni) ||
-      form.phone.trim().length < 6
-    ) {
-      setError("Completá nombre, apellido, email, teléfono y DNI. El DNI debe tener 7 u 8 números.");
+    const contactError = validateContact();
+    if (contactError) {
+      setError(contactError);
       return;
     }
     if (method === "envio") {
@@ -464,58 +476,74 @@ export default function CheckoutPage() {
           <section className="form-card">
             <div className="step-number">2</div>
             <h2>Entrega</h2>
-            <div className="delivery-options">
-              <label className={method === "envio" ? "selected" : ""}>
+            <div className="delivery-options" role="radiogroup" aria-label="Forma de entrega">
+              <label className={method === "envio" ? "choice selected" : "choice"}>
                 <input
                   type="radio"
+                  name="delivery-method"
                   checked={method === "envio"}
                   onChange={() => {
                     setMethod("envio");
                     resetQuote();
                   }}
                 />
-                🚚 Envío
+                <span className="choice-text">
+                  <strong>Envío</strong>
+                  <small>Lo recibís en tu domicilio o en el correo</small>
+                </span>
               </label>
-              <label className={method === "retiro" ? "selected" : ""}>
+              <label className={method === "retiro" ? "choice selected" : "choice"}>
                 <input
                   type="radio"
+                  name="delivery-method"
                   checked={method === "retiro"}
                   onChange={() => {
                     setMethod("retiro");
                     resetQuote();
                   }}
                 />
-                📍 Retiro en Sáenz 1587
+                <span className="choice-text">
+                  <strong>Retiro en Sáenz 1587</strong>
+                  <small>Sin costo de envío</small>
+                </span>
               </label>
             </div>
             {method === "envio" && (
               <>
-                <div className="delivery-options delivery-suboptions">
+                <div className="delivery-options delivery-suboptions" role="radiogroup" aria-label="Tipo de envío">
                   <label
-                    className={deliveryType === "domicilio" ? "selected" : ""}
+                    className={deliveryType === "domicilio" ? "choice selected" : "choice"}
                   >
                     <input
                       type="radio"
+                      name="delivery-type"
                       checked={deliveryType === "domicilio"}
                       onChange={() => {
                         setDeliveryType("domicilio");
                         resetQuote();
                       }}
                     />
-                    A domicilio
+                    <span className="choice-text">
+                      <strong>A domicilio</strong>
+                      <small>Te lo llevan a tu dirección</small>
+                    </span>
                   </label>
                   <label
-                    className={deliveryType === "sucursal" ? "selected" : ""}
+                    className={deliveryType === "sucursal" ? "choice selected" : "choice"}
                   >
                     <input
                       type="radio"
+                      name="delivery-type"
                       checked={deliveryType === "sucursal"}
                       onChange={() => {
                         setDeliveryType("sucursal");
                         resetQuote();
                       }}
                     />
-                    A sucursal del correo
+                    <span className="choice-text">
+                      <strong>A sucursal del correo</strong>
+                      <small>Lo retirás en la sucursal</small>
+                    </span>
                   </label>
                 </div>
                 <div className="form-grid">
@@ -627,6 +655,11 @@ export default function CheckoutPage() {
                   ? "Calcular opciones de envío"
                   : "Confirmar retiro"}
             </button>
+            {deliveryError && (
+              <div className="error-message" role="alert">
+                {deliveryError}
+              </div>
+            )}
             {quoteOptions.length > 0 && (
               <div
                 className="shipping-quotes"
