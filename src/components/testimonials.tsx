@@ -125,7 +125,6 @@ export function TestimonialsSection() {
     <section className="section testimonials-section">
       <div className="section-heading">
         <div>
-          <span className="eyebrow orange">CLIENTES</span>
           <h2>Lo que dicen nuestros clientes</h2>
           <p>Fotos y videos reales de clientes que ya equiparon su taller.</p>
         </div>

@@ -274,7 +274,6 @@ export function HomeClient() {
       <section className="winner-section" id="categorias-mas-vendidas">
         <div className="section-heading winner-heading">
           <div>
-            <span className="eyebrow orange">COMPRÁ POR CATEGORÍA</span>
             <h2>Encontrá la máquina que necesitás</h2>
             <p>Ocho accesos directos con stock real y precios para comparar.</p>
           </div>
@@ -286,7 +285,6 @@ export function HomeClient() {
       <section className="section soft home-products-section" id="productos-estrella">
         <div className="section-heading">
           <div>
-            <span className="eyebrow orange">PRODUCTOS ESTRELLA</span>
             <h2>Los elegidos de Litoral Maq</h2>
             <p>Cuatro productos con buen precio, stock y salida.</p>
           </div>
