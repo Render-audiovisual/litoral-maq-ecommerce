@@ -162,7 +162,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             un segundo enlace comercial (ver punto 8 del pedido). */}
         <div className="admin-brand">
           <Link href="/admin" className="admin-logo">
-            <Image src="/brand/BLANCO-horizontal.png" alt="Litoral Maq" width={785} height={265} priority />
+            <Image src="/brand/AZUL.png" alt="Litoral Maq" width={155} height={56} priority />
           </Link>
           <span className="admin-kicker">Panel de administración</span>
         </div>
