@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { TestimonialsSection } from "@/components/testimonials";
+import { selectStarProducts } from "@/lib/star-products";
 import { formatCurrency, STORE_MAPS_URL } from "@/lib/utils";
 import {
   getLaunchFamilyCards,
@@ -64,18 +65,6 @@ const PROMO_SLIDES = [
     href: "/productos/llave-de-impacto-20v-650-n-m-neo-li1065-20c1-3732",
   },
 ] as const;
-
-const STAR_PRODUCTS = [
-  { productId: "3381", image: "/products/catalog/3381-aa518-220plus.webp" },
-  { productId: "3499", image: "/products/catalog/3499-bwir150.webp" },
-  { productId: "3542", image: "/products/catalog/3542-lo180-220.webp" },
-  // 3506 (motosierra Knock Out) queda afuera hasta tener una foto de producto
-  // real: su imagen es un arte de marca y desentonaba con las otras tres.
-  { productId: "3216", image: "/products/catalog/3216-sk455-1.webp" },
-  // Reserva: si alguno de arriba está inactivo, la fila sigue en cuatro.
-  { productId: "3588", image: "/products/catalog/3588-ai1014-12c1.webp" },
-] as const;
-const STAR_PRODUCTS_SHOWN = 4;
 
 // Cinta continua: píxeles por segundo, no tarjetas por segundo. El ritmo es
 // el de un ticker —constante y parejo— en vez de saltar de tarjeta en tarjeta.
@@ -237,10 +226,7 @@ export function HomeClient() {
   const promoSlides = PROMO_SLIDES.filter((slide) =>
     activeProducts.some((product) => product.id === slide.productId),
   );
-  const starProducts = STAR_PRODUCTS.flatMap((item) => {
-    const product = activeProducts.find((candidate) => candidate.id === item.productId);
-    return product ? [{ product, image: item.image }] : [];
-  }).slice(0, STAR_PRODUCTS_SHOWN);
+  const starProducts = selectStarProducts(activeProducts);
   return (
     <main>
       <section className="commerce-hero">
@@ -292,21 +278,23 @@ export function HomeClient() {
         <CategoryMarquee categories={categories} />
       </section>
 
-      <section className="section soft home-products-section" id="productos-estrella">
-        <div className="section-heading">
-          <div>
-            <span className="eyebrow orange">PRODUCTOS ESTRELLA</span>
-            <h2>Los elegidos de Litoral Maq</h2>
-            <p>Productos que recomendamos por precio y rendimiento, con stock y precio actualizado. Comprá online o retiralos en el local.</p>
+      {starProducts.length > 0 && (
+        <section className="section soft home-products-section" id="productos-estrella">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow orange">PRODUCTOS ESTRELLA</span>
+              <h2>Los elegidos de Litoral Maq</h2>
+              <p>Productos que recomendamos por precio y rendimiento, con stock y precio actualizado. Comprá online o retiralos en el local.</p>
+            </div>
+            <Link href="/productos" className="text-link">Ver catálogo →</Link>
           </div>
-          <Link href="/productos" className="text-link">Ver catálogo →</Link>
-        </div>
-        <div className="star-products-grid" aria-label="Productos destacados">
-          {starProducts.map(({ product, image }) => (
-            <ProductCard product={product} imageOverride={image} badge={null} key={product.id} />
-          ))}
-        </div>
-      </section>
+          <div className="star-products-grid" aria-label="Productos destacados">
+            {starProducts.map(({ product, image }) => (
+              <ProductCard product={product} imageOverride={image} badge={null} key={product.id} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <TestimonialsSection />
     </main>
