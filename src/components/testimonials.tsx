@@ -120,6 +120,7 @@ export function TestimonialsSection({ speed }: { speed: number }) {
     <section className="section testimonials-section">
       <div className="section-heading">
         <div>
+          <span className="eyebrow orange">CLIENTES</span>
           <h2>Clientes que ya se llevaron lo suyo</h2>
           <p>
             Fotos y videos de clientes reales con su compra: retiros en el local de Sáenz 1587,

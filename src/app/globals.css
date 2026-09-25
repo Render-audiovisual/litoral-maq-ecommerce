@@ -93,6 +93,8 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .menu-button { display: none; background: none; border: 0; color: var(--navy); }
 .hero-pill, .eyebrow { display: inline-block; font-weight: 800; font-size: 12px; letter-spacing: .12em; }
 .hero-pill { padding: 8px 12px; color: var(--navy); background: #e7f7f7; border-radius: 4px; }
+.eyebrow.orange { color: var(--orange); text-transform: uppercase; }
+.eyebrow.orange + h2 { margin-top: 8px; }
 .hero-actions { display: flex; gap: 12px; margin: 30px 0 36px; flex-wrap: wrap; }
 .button { min-height: 42px; padding: 0 18px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 5px; font-weight: 750; transition: .18s ease; }
 .button:hover { transform: translateY(-1px); }
@@ -1407,6 +1409,9 @@ td > small { margin-top: 4px; color: var(--muted); }
   .winner-card-copy b { padding-top: 10px; }
   .section { padding: 54px 16px; }
   .section-heading { margin-bottom: 24px; align-items: flex-start; flex-direction: column; gap: 10px; }
+  .eyebrow.orange { color: var(--orange-contrast); }
+  /* Sobre el azul oscuro el naranja oscuro no llega a 4,5:1; el de marca sí. */
+  .winner-section .eyebrow.orange { color: var(--orange); }
   .category-grid { grid-template-columns: 1fr; }
   .product-grid, .catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .page-hero.compact { padding: 22px 16px; }
