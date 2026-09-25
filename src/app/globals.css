@@ -179,7 +179,9 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .product-placeholder.large span { font-size: 80px; }
 .product-badge { position: absolute; left: 10px; top: 10px; z-index: 1; padding: 4px 8px; border-radius: 4px; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; line-height: 1.35; }
 .product-card-body { flex: 1; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; }
-.product-card-body .eyebrow { min-height: 16px; color: #566472; font-size: 12px; font-weight: 700; letter-spacing: .06em; line-height: 1.35; text-transform: uppercase; }
+/* Marca en el naranja de la tienda, en su versión de contraste: el #ff6500
+   a 12 px sobre blanco da 2,9:1; el #c94f00 da 4,6:1. */
+.product-card-body .eyebrow { min-height: 16px; color: var(--orange-contrast); font-size: 12px; font-weight: 700; letter-spacing: .06em; line-height: 1.35; text-transform: uppercase; }
 .product-name { margin: 6px 0 8px; min-height: calc(3 * 1.35em); color: var(--navy-dark); font-size: 15px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .product-name:hover { color: var(--navy); text-decoration: underline; text-underline-offset: 3px; }
 .product-code { color: #566472; font-size: 12px; }
