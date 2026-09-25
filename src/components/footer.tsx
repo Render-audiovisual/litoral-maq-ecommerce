@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { isAdminSurface } from "@/lib/site-surface";
-import { STORE_ADDRESS, STORE_HOURS, STORE_MAPS_URL } from "@/lib/utils";
 
 export function Footer() {
   const pathname = usePathname();
@@ -20,7 +19,6 @@ export function Footer() {
       <div className="footer-brand">
         <Link
           href="/"
-          className="footer-logo"
           aria-label="Ir al inicio"
           onClick={
             pathname === "/"
@@ -33,34 +31,25 @@ export function Footer() {
         >
           <Image src="/brand/GRIS.png" alt="Litoral Maq" width={240} height={87} />
         </Link>
-        <address className="footer-address">
-          {STORE_ADDRESS} Capital
-          <a href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer">Cómo llegar</a>
-        </address>
+        <p>Máquinas y herramientas para tu casa, obra o taller.</p>
       </div>
 
-      <div className="footer-col">
-        <p className="footer-title">Horario del local</p>
-        {STORE_HOURS.map((line) => <p key={line}>{line}</p>)}
-      </div>
-
-      <nav className="footer-col" aria-label="Tienda">
-        <p className="footer-title">Tienda</p>
+      <nav className="footer-nav">
+        <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
+          Ubicación
+        </a>
+        <span>Lun a Vie 8 a 17 hs · Sáb 8:30 a 12:30 hs</span>
         <Link href="/productos">Productos</Link>
-        <Link href="/cuenta/pedidos">Seguimiento de pedidos</Link>
+        <Link href="/cuenta/pedidos">Seguimiento</Link>
+        <Link href="/politica-de-privacidad">Privacidad</Link>
+        <Link href="/terminos-y-condiciones">Términos</Link>
         <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
           WhatsApp comercial
         </a>
       </nav>
 
-      <nav className="footer-col" aria-label="Legales">
-        <p className="footer-title">Legales</p>
-        <Link href="/politica-de-privacidad">Privacidad</Link>
-        <Link href="/terminos-y-condiciones">Términos</Link>
-      </nav>
-
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} Litoral Maq · Design by Render</span>
+        <span>Design by Render</span>
         <div className="footer-social">
           <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>

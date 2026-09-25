@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { TestimonialsSection } from "@/components/testimonials";
 import { formatCurrency, STORE_ADDRESS, STORE_MAPS_URL } from "@/lib/utils";
-import { getWhatsAppUrl } from "@/lib/whatsapp";
 import {
   getLaunchFamilyCards,
 } from "@/lib/launch-catalog";
@@ -305,21 +304,6 @@ export function HomeClient() {
       </section>
 
       <TestimonialsSection speed={TESTIMONIALS_TICKER_SPEED} />
-
-      <section className="help-band" aria-labelledby="help-band-title">
-        <div>
-          <h2 id="help-band-title">¿Necesitás asesoramiento?</h2>
-          <p>Contanos para qué trabajo es y te recomendamos la máquina.</p>
-        </div>
-        <div className="help-band-actions">
-          <a className="button whatsapp-button" href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
-            Escribinos por WhatsApp
-          </a>
-          <a className="text-link" href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-            Cómo llegar a {STORE_ADDRESS}
-          </a>
-        </div>
-      </section>
     </main>
   );
 }

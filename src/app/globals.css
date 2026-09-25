@@ -221,31 +221,18 @@ video.testimonial-media { object-fit: contain; background: #000; }
 .testimonial-play svg { width: clamp(44px, 4vw, 56px); height: auto; padding: 10px; border-radius: 50%; background: rgba(0,42,73,.72); fill: #fff; }
 .testimonial-play:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
 .testimonial-card figcaption { margin-top: 12px; color: #566472; font-size: 14px; font-weight: 600; line-height: 1.35; text-align: center; text-wrap: balance; }
-/* Cierre antes del footer: fondo claro (no navy, para no pegarse al footer)
-   y sin naranja: la acción de la página sigue siendo el catálogo. */
-.help-band { width: min(1320px, 88vw); margin: 0 auto 72px; padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px 32px; flex-wrap: wrap; border-radius: 8px; background: var(--soft); }
-.help-band h2 { margin: 0 0 6px; font-size: clamp(1.4rem, 2vw, 1.75rem); font-weight: 800; letter-spacing: -.02em; }
-.help-band p { margin: 0; color: #566472; font-size: 15px; }
-.help-band-actions { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; }
-.help-band .whatsapp-button { min-height: 46px; background: #178a45; }
-.help-band .whatsapp-button:hover { background: #12723a; }
-.footer { padding: 56px 6vw 28px; display: grid; grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr)); gap: 32px; align-items: start; background: var(--navy-dark); color: #c5d4de; font-size: 14px; }
+.footer { padding: 56px 6vw 30px; display: flex; flex-direction: column; align-items: center; gap: 26px; background: var(--navy-dark); color: #c5d4de; }
 .footer img { filter: brightness(0) invert(1); }
-.footer-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
-/* GRIS.png es un cuadrado de 1080 px con el logo en (155, 415)-(924, 664):
-   se recorta al contenido, igual que el logo del header. */
-.footer-logo { width: 150px; height: 49px; position: relative; display: block; overflow: hidden; }
-.footer-logo img { width: 211px; max-width: none; height: 211px; position: absolute; left: -30px; top: -81px; }
-.footer-address { display: grid; gap: 4px; font-style: normal; line-height: 1.5; }
-.footer-col { display: grid; justify-items: start; gap: 8px; line-height: 1.5; }
-.footer-col p { margin: 0; }
-.footer .footer-title { margin: 0 0 4px; color: #fff; font-size: 14px; font-weight: 700; }
-.footer a { color: #c5d4de; transition: color .15s ease; }
-.footer a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
-.footer-bottom { grid-column: 1 / -1; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.12); display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 13px; color: #93a9b8; }
+.footer-brand { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.footer-brand p { margin: 0; max-width: 320px; color: #93a9b8; font-size: 16px; }
+.footer-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 28px; font-size: 16px; }
+.footer-nav a { color: #c5d4de; transition: color .15s ease; }
+.footer-nav a:hover { color: #fff; }
+.footer-nav span { color: #7f96a6; }
+.footer-bottom { width: 100%; max-width: 980px; padding-top: 22px; border-top: 1px dashed rgba(255,255,255,.14); display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 15px; color: #7f96a6; }
 .footer-social { display: flex; gap: 14px; }
 .footer-social a { color: #93a9b8; transition: color .15s ease; }
-.footer-social a:hover { color: #fff; text-decoration: none; }
+.footer-social a:hover { color: #fff; }
 .footer-social svg { width: 18px; height: 18px; display: block; }
 .page-hero { padding: 70px 6vw; background: var(--navy-dark); color: #fff; }
 .page-hero h1 { color: #fff; margin: 10px 0; }
@@ -1285,9 +1272,6 @@ td > small { margin-top: 4px; color: var(--muted); }
   .star-products-grid { display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
   .star-products-grid::-webkit-scrollbar { display: none; }
   .star-products-grid .product-card { flex: 0 0 46%; scroll-snap-align: start; }
-  .footer { grid-template-columns: 1fr 1fr; }
-  .footer-brand { grid-column: 1 / -1; }
-  .help-band { margin-bottom: 56px; padding: 28px 24px; }
   .category-grid, .product-grid { grid-template-columns: repeat(2, 1fr); }
   .product-grid .product-card:nth-child(n+7) { display: flex; }
   .catalog-layout { grid-template-columns: 1fr; }
@@ -1420,12 +1404,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .testimonials-section { padding-bottom: 62px; }
   .testimonial-belt { margin: 8px -16px 0; padding-top: 28px; }
   .testimonial-card { width: 46vw; }
-  .help-band { width: auto; margin: 0 16px 48px; padding: 24px 18px; flex-direction: column; align-items: flex-start; }
-  .help-band-actions { width: 100%; }
-  .help-band .whatsapp-button { width: 100%; }
-  .footer { grid-template-columns: 1fr; gap: 24px; padding: 40px 16px 24px; }
-  .footer-brand { grid-column: auto; }
-  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
   .product-detail-page, .standard-page { padding: 30px 4vw 70px; }
   .auth-page { width: 100%; min-width: 0; }
   .auth-panel.form { padding: 28px 16px 48px; }
