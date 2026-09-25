@@ -150,3 +150,23 @@ test("las laterales no tienen controles de video ni roban el foco", async ({ pag
   );
   expect(inactivos.every((c) => c === false)).toBe(true);
 });
+
+test('la barra de navegación queda por encima de las fotos al bajar a los testimonios', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 700 });
+  await page.goto('/');
+  const stage = page.locator('.testimonial-stage');
+  await stage.scrollIntoViewIfNeeded();
+  await expect(page.locator('.testimonial-card.is-active')).toBeVisible();
+  // Se sube el carrusel hasta que la foto central pase por debajo de la barra fija.
+  await page.evaluate(() => {
+    const card = document.querySelector('.testimonial-card.is-active') as HTMLElement;
+    window.scrollBy(0, card.getBoundingClientRect().top - 20);
+  });
+  const topElementIsHeader = await page.evaluate(() => {
+    const card = document.querySelector('.testimonial-card.is-active') as HTMLElement;
+    const rect = card.getBoundingClientRect();
+    const hit = document.elementFromPoint(rect.left + rect.width / 2, 20);
+    return !!hit?.closest('.site-header');
+  });
+  expect(topElementIsHeader).toBe(true);
+});
