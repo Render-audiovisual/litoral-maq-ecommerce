@@ -142,6 +142,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .winner-heading { align-items: flex-end; }
 .winner-heading h2 { color: #fff; }
 .winner-heading .text-link { color: #fff; }
+.winner-heading p { color: #c5d4de; }
 .winner-grid { display: flex; gap: 16px; }
 /* La cinta va de borde a borde de la pantalla, sin fundido en los extremos
    (decisión del dueño): la tarjeta que entra o sale se corta con el borde. */
@@ -169,7 +170,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .section.soft { background: var(--soft); }
 .section-heading { max-width: 1320px; margin: 0 auto 36px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
 .section-heading h2 { margin: 0; font-size: clamp(1.75rem, 2.6vw, 2.5rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.08; text-wrap: balance; }
-.section-heading p { margin: 9px 0 0; color: #566472; font-size: 15px; }
+.section-heading p { max-width: 62ch; margin: 9px 0 0; color: #566472; font-size: 15px; line-height: 1.5; text-wrap: pretty; }
 .section-heading.small { margin: 0 0 24px; }
 .text-link { color: var(--navy); font-weight: 700; text-underline-offset: 3px; }
 .text-link:hover { text-decoration: underline; }

@@ -283,6 +283,7 @@ export function HomeClient() {
         <div className="section-heading winner-heading">
           <div>
             <h2>Encontrá la máquina que necesitás</h2>
+            <p>Elegí una categoría para ver sus productos con precio desde; deslizá para ver todas.</p>
           </div>
           <Link href="/productos" className="text-link">Ver catálogo →</Link>
         </div>
@@ -293,6 +294,7 @@ export function HomeClient() {
         <div className="section-heading">
           <div>
             <h2>Los elegidos de Litoral Maq</h2>
+            <p>Productos que recomendamos por precio y rendimiento, con stock y precio actualizado. Comprá online o retiralos en el local.</p>
           </div>
           <Link href="/productos" className="text-link">Ver catálogo →</Link>
         </div>

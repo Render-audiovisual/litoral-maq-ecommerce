@@ -167,7 +167,10 @@ export function TestimonialsSection({ speed }: { speed: number }) {
       <div className="section-heading">
         <div>
           <h2>Clientes que ya se llevaron lo suyo</h2>
-          <p>De Corrientes, Resistencia, Formosa e Itatí, con su compra.</p>
+          <p>
+            Fotos y videos de clientes reales con su compra: retiros en el local de Sáenz 1587,
+            entregas en Corrientes y pedidos enviados a Formosa. También vienen desde Resistencia e Itatí.
+          </p>
         </div>
       </div>
 
