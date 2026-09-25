@@ -55,7 +55,7 @@ const TRUST = [
   {
     // Mercado Pago es la forma de pago de la tienda: el cliente no tiene que coordinar nada.
     title: "Pagá con Mercado Pago",
-    text: "Elegí tu financiación y pagá con cualquier tarjeta. El cobro lo hace Mercado Pago.",
+    text: "Elegí tu financiación y pagá con cualquier tarjeta.",
     icon: (
       <svg {...icon}>
         <path d="M12 3 19 6v5.5c0 4.3-2.9 7.7-7 9.5-4.1-1.8-7-5.2-7-9.5V6z" />
