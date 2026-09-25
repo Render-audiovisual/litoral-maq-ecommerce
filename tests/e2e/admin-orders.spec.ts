@@ -14,7 +14,7 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await page.getByLabel("DNI").fill("30123456");
   await page.getByText("Retiro en Sáenz 1587").click();
   await page.getByRole("button", { name: "Confirmar retiro" }).click();
-  await expect(page.getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
+  await expect(page.locator("main").getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
   // getByText coincide también con el anunciador de rutas de Next
   // (#__next-route-announcer__), que repite el título de la página. El rol
@@ -41,6 +41,11 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await expect(modal).toContainText("Cód. 3403");
   await expect(modal).toContainText("3794000000");
   await expect(modal).toContainText("Pago pendiente");
+  // Recontacto: el detalle ofrece WhatsApp con el pedido ya armado.
+  const whatsapp = modal.getByRole("link", { name: "Contactar por WhatsApp" });
+  const href = (await whatsapp.getAttribute("href")) ?? "";
+  expect(href).toContain("https://wa.me/5493794000000?text=");
+  expect(decodeURIComponent(href)).toContain("Vimos que solicitaste el pedido");
 
   const rowStatus = row.locator(".status-select");
   await expect(rowStatus.locator('option[value="listo"]')).toHaveText(

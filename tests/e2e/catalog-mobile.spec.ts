@@ -8,6 +8,9 @@ test('el catálogo móvil es compacto, filtrable y carga de a 24 productos', asy
   await expect(cards).toHaveCount(24);
   const catalogSearch = page.getByRole('textbox', { name: 'Buscar', exact: true });
   await expect(catalogSearch).toBeVisible();
+  // En celular la búsqueda queda a la vista y el resto de los filtros se abre con el botón "Filtros".
+  await expect(page.getByLabel('Categoría')).toBeHidden();
+  await page.getByRole('button', { name: 'Filtros' }).click();
   await expect(page.getByLabel('Categoría')).toBeVisible();
 
   await catalogSearch.fill('amoladora');

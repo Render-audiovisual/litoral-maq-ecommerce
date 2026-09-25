@@ -1,4 +1,4 @@
-import { verifyMercadoPagoSignature } from "./mercadopago.ts";
+import { preferenceExpiration, verifyMercadoPagoSignature } from "./mercadopago.ts";
 
 function assert(value: unknown, message: string) {
   if (!value) throw new Error(message);
@@ -52,4 +52,20 @@ Deno.test("rechaza una firma modificada", async () => {
     })),
     "la firma inválida fue aceptada",
   );
+});
+
+Deno.test("la preferencia vence cuando vence la reserva del pedido", () => {
+  const now = new Date("2026-09-24T12:00:00.000Z");
+  const fields = preferenceExpiration("2026-09-25T09:30:00-03:00", now);
+  assert(fields.expires === true, "expires");
+  assert(fields.expiration_date_from === "2026-09-24T12:00:00.000Z", fields.expiration_date_from);
+  assert(fields.expiration_date_to === "2026-09-25T12:30:00.000Z", fields.expiration_date_to);
+});
+
+Deno.test("pedido viejo sin expires_at: la preferencia vence a las 24 h como antes", () => {
+  const now = new Date("2026-09-24T12:00:00.000Z");
+  const fields = preferenceExpiration(null, now);
+  assert(fields.expiration_date_to === "2026-09-25T12:00:00.000Z", fields.expiration_date_to);
+  const invalid = preferenceExpiration("no es fecha", now);
+  assert(invalid.expiration_date_to === "2026-09-25T12:00:00.000Z", invalid.expiration_date_to);
 });

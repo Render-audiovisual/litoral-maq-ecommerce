@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
+import { AuthLayout } from "@/components/auth-layout";
 import { authCallbackUrl } from "@/lib/auth-callbacks";
 import { friendlyAuthError, RESEND_COOLDOWN_SECONDS } from "@/lib/auth-errors";
 import { useCooldown } from "@/components/use-cooldown";
@@ -41,19 +42,19 @@ function RecoveryForm() {
   const disabled = loading || cooldown.active || !captcha.solved;
   const label = loading ? "Enviando…" : cooldown.active ? `Esperá ${cooldown.remaining}s` : "Enviar enlace";
 
-  return <main className="simple-auth-page"><section className="auth-card">
-    <span className="eyebrow orange">RECUPERAR ACCESO</span><h1>Restablecé tu contraseña</h1>
-    <p>Ingresá tu email y te enviaremos un enlace seguro para crear una nueva clave.</p>
+  return <AuthLayout>
+    <h1>Restablecé tu contraseña</h1>
+    <p className="auth-intro">Ingresá tu email y te enviaremos un enlace seguro para crear una nueva clave.</p>
     {sent && <div className="success-message">{NEUTRAL_NOTICE}</div>}
     <form onSubmit={submit}>
-      <label>Email<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
+      <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
       {captcha.field}
       {error && <div className="error-message" role="alert">{error}</div>}
       <button className="button primary large full" disabled={disabled}>{label}</button>
       {cooldown.active && <p className="form-helper">Podés pedir otro enlace en {cooldown.remaining} segundos.</p>}
     </form>
-    <p><Link href="/login">Volver a ingresar</Link></p>
-  </section></main>;
+    <div className="auth-alt"><p><Link href="/login">Volver a ingresar</Link></p></div>
+  </AuthLayout>;
 }
 
 export default function RecoveryPage() {

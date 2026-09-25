@@ -22,6 +22,7 @@ export function CatalogClient() {
   const offersOnly = initialCategory === "Ofertas";
   const { products } = useStore();
   const [query, setQuery] = useState(initialQuery);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [category, setCategory] = useState(
     initialCategory === "Ofertas" ? "" : initialCategory,
   );
@@ -78,19 +79,37 @@ export function CatalogClient() {
     setVisibleCount(PAGE_SIZE);
   }
 
+  // Cuántos filtros (además de la búsqueda) hay aplicados: se muestra en el botón "Filtros" del celular.
+  const activeFilterCount = [family, brand, minimumPrice, maximumPrice, onlyAvailable ? "1" : ""].filter(Boolean).length;
+
+  function clearFilters() {
+    setQuery(""); setFamily(""); setBrand(""); setMinimumPrice(""); setMaximumPrice(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
+  }
+
   return (
     <main className="catalog-page">
       <div className="page-hero compact">
-        <span className="eyebrow orange">CATÁLOGO COMPLETO</span>
         <h1>Máquinas y herramientas</h1>
-        <p>Precios y códigos importados desde la lista comercial de Litoral Maq.</p>
+        <p>Precio, código y disponibilidad de cada producto, a la vista.</p>
       </div>
       <div className="catalog-layout">
         <aside className="filters">
-          <strong>Filtrar productos</strong>
+          <div className="filters-head">
+            <strong>Filtrar productos</strong>
+            <button
+              type="button"
+              className="filters-toggle"
+              aria-expanded={filtersOpen}
+              aria-controls="catalog-more-filters"
+              onClick={() => setFiltersOpen((open) => !open)}
+            >
+              Filtros{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+            </button>
+          </div>
           <label className="catalog-search">Buscar
             <input value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="Producto, marca o código" />
           </label>
+          <div id="catalog-more-filters" className={filtersOpen ? "filters-more open" : "filters-more"}>
           <label>Categoría
             <select value={family} onChange={(event) => { setFamily(event.target.value); setBrand(""); resetVisibleCount(); }}>
               <option value="">Todas las categorías</option>
@@ -115,19 +134,20 @@ export function CatalogClient() {
             <input type="checkbox" checked={onlyAvailable} onChange={(event) => { setOnlyAvailable(event.target.checked); resetVisibleCount(); }} />
             Solo con stock confirmado
           </label>
-          <button type="button" className="button secondary full" onClick={() => {
-            setQuery(""); setFamily(""); setBrand(""); setMinimumPrice(""); setMaximumPrice(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
-          }}>Limpiar filtros</button>
+          <button type="button" className="button secondary full" onClick={clearFilters}>Limpiar filtros</button>
+          </div>
         </aside>
         <section>
           <div className="catalog-toolbar">
             <span><strong>{filtered.length}</strong> productos encontrados</span>
-            <select value={sort} onChange={(event) => { setSort(event.target.value); resetVisibleCount(); }}>
-              <option value="featured">Destacados primero</option>
-              <option value="price-asc">Menor precio</option>
-              <option value="price-desc">Mayor precio</option>
-              <option value="name">Nombre A–Z</option>
-            </select>
+            <label className="catalog-sort">Ordenar por
+              <select value={sort} onChange={(event) => { setSort(event.target.value); resetVisibleCount(); }}>
+                <option value="featured">Destacados primero</option>
+                <option value="price-asc">Menor precio</option>
+                <option value="price-desc">Mayor precio</option>
+                <option value="name">Nombre A–Z</option>
+              </select>
+            </label>
           </div>
           {filtered.length ? (
             <div className="product-grid catalog-grid">
@@ -137,7 +157,11 @@ export function CatalogClient() {
               })}
             </div>
           ) : (
-            <div className="empty-state"><span>⌕</span><h2>No encontramos productos</h2><p>Probá con otro término o limpiá los filtros.</p></div>
+            <div className="catalog-empty">
+              <h2>No encontramos productos</h2>
+              <p>Probá con otra palabra, buscá por marca o código, o quitá algún filtro.</p>
+              <button type="button" className="button secondary" onClick={clearFilters}>Limpiar filtros</button>
+            </div>
           )}
           {filtered.length > visibleCount && (
             <button

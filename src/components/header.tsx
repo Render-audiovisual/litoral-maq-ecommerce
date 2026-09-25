@@ -156,7 +156,7 @@ export function Header() {
             }}
             onFocus={() => setSuggestionsOpen(true)}
             onKeyDown={handleSearchKeyDown}
-            placeholder="Buscar productos, marcas o categorías"
+            placeholder="Buscar productos o marcas"
             autoComplete="off"
             role="combobox"
             aria-expanded={showSuggestions}
@@ -258,16 +258,21 @@ export function Header() {
           )}
         </form>
         <nav className={open ? "nav open" : "nav"} aria-label="Navegación principal">
-          <Link href="/" onClick={() => setOpen(false)}>
+          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} onClick={() => setOpen(false)}>
             Inicio
           </Link>
-          <Link href="/productos" onClick={() => setOpen(false)}>
+          <Link href="/productos" aria-current={pathname === "/productos" ? "page" : undefined} onClick={() => setOpen(false)}>
             Productos
           </Link>
           <Link href="/#productos-estrella" onClick={() => setOpen(false)}>
             Ofertas
           </Link>
-          <Link href="/cuenta/pedidos" className="nav-orders-link" onClick={() => setOpen(false)}>
+          <Link
+            href="/cuenta/pedidos"
+            className="nav-orders-link"
+            aria-current={pathname === "/cuenta/pedidos" ? "page" : undefined}
+            onClick={() => setOpen(false)}
+          >
             Mis pedidos {activeOrderCount > 0 && <b>{activeOrderCount}</b>}
           </Link>
         </nav>
@@ -277,7 +282,10 @@ export function Header() {
             className="icon-link"
             aria-label={account ? "Mi cuenta" : "Ingresar"}
           >
-            <span aria-hidden>◎</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" />
+            </svg>
             <span className="desktop-only">
               {account ? account.user.name.split(" ")[0] || "Mi cuenta" : "Ingresar"}
             </span>
@@ -293,7 +301,9 @@ export function Header() {
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
           >
-            ☰
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+            </svg>
           </button>
         </div>
       </header>

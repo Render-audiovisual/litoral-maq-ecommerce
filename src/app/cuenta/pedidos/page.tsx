@@ -47,7 +47,13 @@ export default function CustomerOrdersPage() {
   const guest = isAnonymousSession(customerSession);
   return (
     <main className="standard-page account-page">
-      <div className="account-header"><div><span className="eyebrow orange">{guest ? "COMPRA COMO INVITADO" : "MI CUENTA"}</span><h1>{guest ? "Tus pedidos" : `Hola, ${customerSession.user.name || "cliente"}`}</h1><p>Consultá tus compras y su estado.</p></div><button type="button" className="button secondary" onClick={logout}>{guest ? "Salir" : "Cerrar sesión"}</button></div>
+      <div className="account-header">
+        <div>
+          <h1>{guest ? "Tus pedidos" : `Hola, ${customerSession.user.name || "cliente"}`}</h1>
+          <p>{guest ? "Compraste como invitado. Acá ves tus compras y su estado." : "Consultá tus compras y su estado."}</p>
+        </div>
+        <button type="button" className="button secondary" onClick={logout}>{guest ? "Salir" : "Cerrar sesión"}</button>
+      </div>
       {guest && (
         <section className="account-upsell">
           <h2>Creá tu cuenta para no perder este historial</h2>
@@ -62,10 +68,50 @@ export default function CustomerOrdersPage() {
       <div className="account-layout">
         <aside className="account-nav"><strong>Mi cuenta</strong><span className="active">Mis pedidos</span></aside>
         <section>
-          <div className="section-heading small"><h2>Mis pedidos</h2><Link href="/productos" className="button primary">Nueva compra</Link></div>
+          <div className="section-heading small"><h2>Mis pedidos</h2>{ownOrders.length > 0 && <Link href="/productos" className="button secondary">Nueva compra</Link>}</div>
           {activeOrders.length > 0 && <div className="account-order-notice"><strong>{activeOrders.length} {activeOrders.length === 1 ? "pedido activo" : "pedidos activos"}</strong><span>Acá vas a ver cada cambio de estado confirmado por Litoral Maq.</span></div>}
-          {!ownOrders.length ? <div className="empty-state"><span>▤</span><h2>Todavía no tenés pedidos</h2><p>Cuando confirmes un pedido desde la tienda va a aparecer acá.</p><Link href="/productos" className="button primary">Explorar productos</Link></div> : (
-            <div className="order-list">{ownOrders.map((order) => <article className="order-card" key={order.id}><div><span>Pedido</span><strong>{order.id}</strong><small>{formatDate(order.createdAt)}</small></div><div><span>{isShippingToCoordinate(order) ? "Total productos" : "Total"}</span><strong>{formatCurrency(order.total)}</strong><small>{order.lines.reduce((sum, line) => sum + line.quantity, 0)} unidades</small></div><div><span>Entrega</span><strong>{order.deliveryMethod === "envio" ? order.shippingCarrier || "A cotizar" : "Retiro"}</strong><small>{order.address || "Sáenz 1587"}</small></div><div><span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span><small>{order.paymentReference}</small></div><p className="order-status-message">{isShippingToCoordinate(order) && order.paymentStatus === "approved" ? `Pago acreditado. Envío${order.shippingCarrier ? ` por ${order.shippingCarrier}` : ""}: te pasamos el costo por WhatsApp y lo despachamos.` : isShippingToCoordinate(order) ? `Envío${order.shippingCarrier ? ` por ${order.shippingCarrier}` : ""}: después del pago te pasamos el costo del envío.` : orderStatusMessage(order)}{order.shippingTrackingNumber ? ` Seguimiento: ${order.shippingTrackingNumber}.` : ""}</p><details className="customer-order-lines"><summary>Ver productos</summary>{resolveOrderLines(order, products).map((line) => <div key={`${line.productId}-${line.productCode}`}><span>{line.quantity} × {line.productName}</span><strong>{formatCurrency(line.lineTotal)}</strong></div>)}</details></article>)}</div>
+          {!ownOrders.length ? (
+            <div className="cart-empty account-empty">
+              <span className="cart-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9ZM4 7.5l8 4.5 8-4.5M12 12v9" />
+                </svg>
+              </span>
+              <h2>Todavía no tenés pedidos</h2>
+              <p>Cuando confirmes una compra en la tienda, la vas a ver acá con su estado y el detalle de los productos.</p>
+              <Link href="/productos" className="button primary">Ver productos</Link>
+            </div>
+          ) : (
+            <div className="order-list">
+              {ownOrders.map((order) => {
+                const units = order.lines.reduce((sum, line) => sum + line.quantity, 0);
+                return (
+                  <article className="order-card" key={order.id}>
+                    <header className="order-card-head">
+                      <div>
+                        <h3>Pedido {order.id}</h3>
+                        <small>{formatDate(order.createdAt)}{order.paymentReference ? ` · ${order.paymentReference}` : ""}</small>
+                      </div>
+                      <span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span>
+                    </header>
+                    <dl className="order-card-facts">
+                      <div><dt>{isShippingToCoordinate(order) ? "Total productos" : "Total"}</dt><dd><strong>{formatCurrency(order.total)}</strong><small>{units} {units === 1 ? "unidad" : "unidades"}</small></dd></div>
+                      <div><dt>Entrega</dt><dd><strong>{order.deliveryMethod === "envio" ? order.shippingCarrier || "A cotizar" : "Retiro"}</strong><small>{order.address || "Sáenz 1587"}</small></dd></div>
+                    </dl>
+                    <p className="order-status-message">{isShippingToCoordinate(order) && order.paymentStatus === "approved" ? `Pago acreditado. Envío${order.shippingCarrier ? ` por ${order.shippingCarrier}` : ""}: te pasamos el costo por WhatsApp y lo despachamos.` : isShippingToCoordinate(order) ? `Envío${order.shippingCarrier ? ` por ${order.shippingCarrier}` : ""}: después del pago te pasamos el costo del envío.` : orderStatusMessage(order)}{order.shippingTrackingNumber ? ` Seguimiento: ${order.shippingTrackingNumber}.` : ""}</p>
+                    <details className="customer-order-lines">
+                      <summary>
+                        Ver productos
+                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" /></svg>
+                      </summary>
+                      <ul>
+                        {resolveOrderLines(order, products).map((line) => <li key={`${line.productId}-${line.productCode}`}><span>{line.quantity} × {line.productName}</span><strong>{formatCurrency(line.lineTotal)}</strong></li>)}
+                      </ul>
+                    </details>
+                  </article>
+                );
+              })}
+            </div>
           )}
         </section>
       </div>

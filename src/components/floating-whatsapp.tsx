@@ -4,6 +4,11 @@ import { usePathname } from "next/navigation";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { isAdminSurface } from "@/lib/site-surface";
 
+// Pantallas de compra y de cuenta: en celular el botón tapaba el total y los
+// botones principales, y la mayoría ya tiene su propio acceso a WhatsApp.
+const TRANSACTIONAL_ROUTE =
+  /^\/(carrito|checkout|cuenta|login|registro|recuperar-clave|restablecer-clave|confirmar-[^/]+|crear-clave)(\/|$)/;
+
 export function FloatingWhatsApp() {
   const pathname = usePathname();
   if (isAdminSurface(pathname, typeof window === "undefined" ? undefined : window.location.hostname)) {
@@ -12,7 +17,11 @@ export function FloatingWhatsApp() {
 
   return (
     <a
-      className="floating-whatsapp"
+      className={
+        TRANSACTIONAL_ROUTE.test(pathname ?? "")
+          ? "floating-whatsapp hide-on-mobile"
+          : "floating-whatsapp"
+      }
       href={getWhatsAppUrl("Hola, tengo una consulta sobre Litoral Maq.")}
       target="_blank"
       rel="noopener noreferrer"

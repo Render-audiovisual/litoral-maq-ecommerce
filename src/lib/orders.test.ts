@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Order, Session } from "@/lib/types";
-import { selectOwnOrders } from "./orders";
+import { canRecontactUnpaidOrder, selectOwnOrders } from "./orders";
 
 const sessionA: Session = {
   user: { id: "customer-a@test.com", name: "A", email: "a@test.com", role: "customer" },
@@ -46,6 +46,17 @@ describe("selectOwnOrders", () => {
     const mine = selectOwnOrders(orders, sessionB);
     expect(mine.map((o) => o.id)).toEqual(["o3"]);
   });
+
+  it("no muestra al cliente los pedidos vencidos sin pago, pero sí los cancelados con pago", () => {
+    const own = { customerId: "customer-a@test.com", customerName: "A", email: "a@test.com" };
+    const withExpired: Order[] = [
+      { ...baseOrder, ...own, id: "vivo", status: "pendiente", paymentStatus: "pending" },
+      { ...baseOrder, ...own, id: "vencido", status: "cancelado", paymentStatus: "cancelled" },
+      { ...baseOrder, ...own, id: "vencido-legado", status: "cancelado" },
+      { ...baseOrder, ...own, id: "reintegrado", status: "cancelado", paymentStatus: "refunded" },
+    ];
+    expect(selectOwnOrders(withExpired, sessionA).map((o) => o.id).sort()).toEqual(["reintegrado", "vivo"]);
+  });
 });
 
 describe("aislamiento con sesión de invitado", () => {
@@ -71,5 +82,24 @@ describe("aislamiento con sesión de invitado", () => {
       email: "invitado@test.com",
     };
     expect(selectOwnOrders([...orders, own], guest).map((order) => order.id)).toEqual(["o5"]);
+  });
+});
+
+describe("canRecontactUnpaidOrder", () => {
+  const order = (status: Order["status"], paymentStatus?: Order["paymentStatus"]) =>
+    ({ ...baseOrder, id: "x", customerId: "c", customerName: "C", email: "c@test.com", status, paymentStatus }) as Order;
+
+  it("ofrece recontactar solo pedidos que nunca se pagaron", () => {
+    expect(canRecontactUnpaidOrder(order("pendiente"))).toBe(true);
+    expect(canRecontactUnpaidOrder(order("pendiente", "pending"))).toBe(true);
+    expect(canRecontactUnpaidOrder(order("cancelado", "cancelled"))).toBe(true);
+    expect(canRecontactUnpaidOrder(order("pendiente", "rejected"))).toBe(true);
+  });
+
+  it("no lo ofrece a pagados, reintegrados, contracargos ni entregados", () => {
+    expect(canRecontactUnpaidOrder(order("preparando", "approved"))).toBe(false);
+    expect(canRecontactUnpaidOrder(order("cancelado", "refunded"))).toBe(false);
+    expect(canRecontactUnpaidOrder(order("entregado", "charged_back"))).toBe(false);
+    expect(canRecontactUnpaidOrder(order("entregado", "pending"))).toBe(false);
   });
 });

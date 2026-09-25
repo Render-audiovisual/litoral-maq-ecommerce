@@ -88,16 +88,32 @@ export function createLocalPersistenceAdapter(): PersistenceAdapter {
       return read<Order[]>(KEYS.orders, []);
     },
     async createOrder(order) {
+      // Igual que el trigger de Supabase: el adaptador marca cuándo cambió el
+      // estado o el pago, para que el panel calcule demoras también en local.
+      const created = {
+        ...order,
+        statusChangedAt: order.statusChangedAt ?? new Date().toISOString(),
+      };
       const orders = read<Order[]>(KEYS.orders, []);
-      write(KEYS.orders, [order, ...orders]);
-      return order;
+      write(KEYS.orders, [created, ...orders]);
+      return created;
     },
     async updateOrderStatus(id, status) {
       const orders = read<Order[]>(KEYS.orders, []);
       let updated: Order | null = null;
       const next = orders.map((order) => {
         if (order.id !== id) return order;
-        updated = { ...order, status };
+        updated = order.status === status
+          ? order
+          : {
+            ...order,
+            status,
+            // Igual que en Supabase: cancelar un pedido sin pago cancela el pago.
+            paymentStatus: status === "cancelado" && (order.paymentStatus ?? "pending") === "pending"
+              ? "cancelled"
+              : order.paymentStatus,
+            statusChangedAt: new Date().toISOString(),
+          };
         return updated;
       });
       write(KEYS.orders, next);
@@ -108,7 +124,9 @@ export function createLocalPersistenceAdapter(): PersistenceAdapter {
       let updated: Order | null = null;
       const next = orders.map((order) => {
         if (order.id !== id) return order;
-        updated = { ...order, paymentStatus };
+        updated = order.paymentStatus === paymentStatus
+          ? order
+          : { ...order, paymentStatus, statusChangedAt: new Date().toISOString() };
         return updated;
       });
       write(KEYS.orders, next);

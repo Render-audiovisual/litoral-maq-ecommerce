@@ -92,7 +92,9 @@ function TestimonialCard({
           draggable={false}
         />
       )}
-      {item.type === "video" && !isActive && <span className="testimonial-play" aria-hidden>▶</span>}
+      {item.type === "video" && !isActive && <span className="testimonial-play" aria-hidden>
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M9 7.5v9l7.5-4.5z" /></svg>
+      </span>}
       {!isActive && (
         <button
           type="button"
@@ -124,8 +126,11 @@ export function TestimonialsSection() {
       <div className="section-heading">
         <div>
           <span className="eyebrow orange">CLIENTES</span>
-          <h2>Lo que dicen nuestros clientes</h2>
-          <p>Fotos y videos reales de clientes que ya equiparon su taller.</p>
+          <h2>Clientes que ya se llevaron lo suyo</h2>
+          <p>
+            Fotos y videos de clientes reales con su compra: retiros en el local de Sáenz 1587,
+            entregas en Corrientes y pedidos enviados a Formosa. También vienen desde Resistencia e Itatí.
+          </p>
         </div>
       </div>
 

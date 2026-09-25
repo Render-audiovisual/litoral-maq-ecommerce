@@ -1,9 +1,30 @@
 "use client";
 
 import { useStore } from "@/store/store";
-import { TableScroll } from "@/components/table-scroll";
 import { formatDate } from "@/lib/utils";
+import { SHIPPING_CARRIER_OPTIONS } from "@/lib/order-details";
 import { resolveRequestedProvider } from "@/services/provider";
+
+type IntegrationState = "ok" | "off" | "warn";
+
+const STATE_LABEL: Record<IntegrationState, string> = {
+  ok: "Activa",
+  off: "No activa",
+  warn: "Requiere atención",
+};
+
+// "Vía Cargo, OCA o Andreani": las mismas empresas que ofrece el checkout.
+const CARRIERS = `${SHIPPING_CARRIER_OPTIONS.slice(0, -1).join(", ")} o ${SHIPPING_CARRIER_OPTIONS.at(-1)}`;
+
+function StateIcon({ state }: { state: IntegrationState }) {
+  return (
+    <svg className={`integration-icon ${state}`} viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+      {state === "ok" && <><circle cx="12" cy="12" r="9" /><path d="m8 12.5 2.7 2.7L16 9.8" /></>}
+      {state === "off" && <><circle cx="12" cy="12" r="9" /><path d="M8.5 12h7" /></>}
+      {state === "warn" && <><path d="M12 3.5 21 19.5H3L12 3.5Z" /><path d="M12 10v4M12 17h.01" /></>}
+    </svg>
+  );
+}
 
 export default function AdminSettingsPage() {
   const { auditLog } = useStore();
@@ -11,64 +32,62 @@ export default function AdminSettingsPage() {
   const isShippingEnabled = process.env.NEXT_PUBLIC_SHIPPING_ENABLED === "true";
   const isPaymentEnabled =
     process.env.NEXT_PUBLIC_MERCADO_PAGO_ENABLED === "true";
-  const integrations = [
+  const integrations: { name: string; variable: string; status: string; state: IntegrationState }[] = [
     {
       name: "Base de datos",
       variable: "DATABASE_URL",
       status: isSupabase ? "Supabase conectada" : "Modo local",
-      ready: isSupabase,
+      state: isSupabase ? "ok" : "off",
     },
     {
       name: "Mercado Pago",
       variable: "MP_ACCESS_TOKEN",
-      status: isPaymentEnabled
-        ? "Checkout Pro activo"
-        : "Backend y correo postpago listos; faltan credenciales productivas y pruebas",
-      ready: isPaymentEnabled,
+      status: isPaymentEnabled ? "Checkout Pro activo" : "Desactivado en este entorno",
+      state: isPaymentEnabled ? "ok" : "off",
     },
     {
       name: "Google Login",
       variable: "Supabase Auth + Google OAuth",
       status: "Activo y probado en producción",
-      ready: true,
+      state: "ok",
     },
     {
       name: "Captcha (Turnstile)",
       variable: "Cloudflare + Supabase",
       status: "Activo y exigido por Supabase en accesos y compra invitada",
-      ready: true,
+      state: "ok",
     },
     {
       name: "Emails de cuenta",
       variable: "Resend SMTP + Supabase",
       status: "Activo; plantillas en español",
-      ready: true,
+      state: "ok",
     },
     {
       name: "Correos de pedidos",
       variable: "Resend API + Outbox",
       status:
         "Activo para clientes; falta aprobar y validar la casilla operativa del negocio",
-      ready: true,
+      state: "warn",
     },
     {
       name: "WhatsApp automático",
       variable: "Proveedor oficial + plantilla",
       status:
         "Contacto manual por ahora; automatización pendiente de proveedor y aprobación",
-      ready: false,
+      state: "off",
     },
     {
       name: "Google Sheets",
       variable: "GOOGLE_SHEETS_ID",
       status: "Catálogo conectado",
-      ready: true,
+      state: "ok",
     },
     {
       name: "Imágenes",
       variable: "STORAGE_*",
       status: "Pendiente",
-      ready: false,
+      state: "off",
     },
     {
       name: "Envíopack",
@@ -76,78 +95,94 @@ export default function AdminSettingsPage() {
       status: isShippingEnabled
         ? "Integración automática activa"
         : "Descartado para la operación actual; integración desactivada",
-      ready: isShippingEnabled,
+      state: isShippingEnabled ? "ok" : "off",
     },
     {
       name: "Andreani",
       variable: "SHIPPING_PROVIDER",
-      status: "Opción logística a evaluar con el cliente",
-      ready: false,
+      status: "Disponible como opción de envío a coordinar",
+      state: "ok",
     },
   ];
+  const operation = [
+    {
+      label: "Retiro",
+      value: "Gratis en Sáenz 1587",
+      detail: "Se confirma disponibilidad antes de preparar el pedido.",
+    },
+    {
+      label: "Envíos",
+      value: isShippingEnabled
+        ? "Envíopack automático + respaldo manual"
+        : "Cotización manual",
+      detail: isShippingEnabled
+        ? "Cotiza OCA/Urbano; pesos incompletos o bultos fuera de límite pasan a revisión manual."
+        : `El cliente elige empresa (${CARRIERS}) y el equipo le pasa el costo del envío después del pago.`,
+    },
+    {
+      label: "Pago",
+      value: isPaymentEnabled
+        ? "Mercado Pago Checkout Pro"
+        : "Solicitud de compra con pago a coordinar",
+      detail: isPaymentEnabled
+        ? "El webhook firmado confirma el pago y avisa al cliente; el regreso del navegador no cambia estados."
+        : "Mercado Pago está desactivado en este entorno: el pedido entra con el pago pendiente y se coordina con el cliente.",
+    },
+  ];
+  const activeCount = integrations.filter((item) => item.state === "ok").length;
 
   return (
     <main className="admin-content">
       <div className="admin-heading">
         <div>
-          <span className="eyebrow orange">AJUSTES</span>
           <h1>Configuración</h1>
-          <p>Estado real del circuito comercial y sus integraciones.</p>
+          <p>Cómo opera hoy la tienda y en qué estado está cada integración.</p>
         </div>
       </div>
       <div className="settings-grid">
-        <section className="admin-card operational-mode">
-          <h2>Operación vigente</h2>
-          <div>
-            <span>Retiro</span>
-            <strong>Gratis en Sáenz 1587</strong>
-            <small>
-              Se confirma disponibilidad antes de preparar el pedido.
-            </small>
-          </div>
-          <div>
-            <span>Envíos</span>
-            <strong>
-              {isShippingEnabled
-                ? "Envíopack automático + respaldo manual"
-                : "Respaldo manual"}
-            </strong>
-            <small>
-              {isShippingEnabled
-                ? "Cotiza OCA/Urbano; pesos incompletos o bultos fuera de límite pasan a revisión manual."
-                : "Retiro gratis y cotización manual hasta elegir operador y validar su integración."}
-            </small>
-          </div>
-          <div>
-            <span>Pago</span>
-            <strong>
-              {isPaymentEnabled ? "Mercado Pago Checkout Pro" : "A coordinar"}
-            </strong>
-            <small>
-              {isPaymentEnabled
-                ? "El webhook firmado confirma el pago y envía el aviso al cliente; el regreso del navegador no cambia estados."
-                : "Al activarlo, el webhook confirmará el cobro y avisará al cliente por email. La logística se definirá después."}
-            </small>
-          </div>
-        </section>
-        <section className="admin-card integrations">
-          <h2>Integraciones</h2>
-          {integrations.map((integration) => (
-            <div key={integration.name}>
-              <span
-                className={
-                  integration.ready
-                    ? "integration-dot ready"
-                    : "integration-dot"
-                }
-              />
-              <strong>{integration.name}</strong>
-              <code>{integration.variable}</code>
-              <small>{integration.status}</small>
+        <section className="admin-card">
+          <div className="card-heading">
+            <div>
+              <h2>Operación vigente</h2>
+              <p>Lo que se le ofrece al cliente al comprar</p>
             </div>
-          ))}
+          </div>
+          <dl className="settings-facts">
+            {operation.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>
+                  <strong>{item.value}</strong>
+                  <span>{item.detail}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
         </section>
-        <section className="admin-card wide">
+        <section className="admin-card">
+          <div className="card-heading">
+            <div>
+              <h2>Integraciones</h2>
+              <p>{activeCount} de {integrations.length} activas</p>
+            </div>
+          </div>
+          <ul className="integration-list">
+            {integrations.map((integration) => (
+              <li key={integration.name}>
+                <StateIcon state={integration.state} />
+                <div>
+                  <strong>{integration.name}</strong>
+                  <span>{integration.status}</span>
+                  <code>{integration.variable}</code>
+                </div>
+                <span className={`integration-state ${integration.state}`}>
+                  {STATE_LABEL[integration.state]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="admin-card wide list-card">
           <div className="card-heading">
             <div>
               <h2>Actividad administrativa reciente</h2>
@@ -160,31 +195,30 @@ export default function AdminSettingsPage() {
           </div>
           {!auditLog.length ? (
             <div className="empty-inline">
-              Todavía no se registraron acciones administrativas.
+              Todavía no se registraron acciones administrativas. Cuando
+              alguien del equipo haga un cambio sensible, queda anotado acá.
             </div>
           ) : (
-            <TableScroll>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Fecha</th>
-                    <th>Administrador</th>
-                    <th>Acción</th>
-                    <th>Detalle</th>
+            <table className="admin-list audit-list" role="table">
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader" className="cell-date">Fecha</th>
+                  <th role="columnheader" className="cell-admin">Administrador</th>
+                  <th role="columnheader" className="cell-action">Acción</th>
+                  <th role="columnheader" className="cell-detail">Detalle</th>
+                </tr>
+              </thead>
+              <tbody role="rowgroup">
+                {auditLog.slice(0, 20).map((entry) => (
+                  <tr role="row" key={entry.id}>
+                    <td role="cell" className="cell-date">{formatDate(entry.at)}</td>
+                    <td role="cell" className="cell-admin">{entry.adminEmail}</td>
+                    <td role="cell" className="cell-action">{entry.action}</td>
+                    <td role="cell" className="cell-detail">{entry.detail}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {auditLog.slice(0, 20).map((entry) => (
-                    <tr key={entry.id}>
-                      <td>{formatDate(entry.at)}</td>
-                      <td>{entry.adminEmail}</td>
-                      <td>{entry.action}</td>
-                      <td>{entry.detail}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </TableScroll>
+                ))}
+              </tbody>
+            </table>
           )}
         </section>
       </div>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { TestimonialsSection } from "@/components/testimonials";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, STORE_MAPS_URL } from "@/lib/utils";
 import {
   getLaunchFamilyCards,
 } from "@/lib/launch-catalog";
@@ -67,14 +67,15 @@ const PROMO_SLIDES = [
 
 const STAR_PRODUCTS = [
   { productId: "3381", image: "/products/catalog/3381-aa518-220plus.webp" },
-  { productId: "3506", image: "/products/MOTOSIERRA_.png" },
   { productId: "3499", image: "/products/catalog/3499-bwir150.webp" },
   { productId: "3542", image: "/products/catalog/3542-lo180-220.webp" },
-  // 3506 (motosierra Knock Out) está inactiva y no se cuenta acá abajo: este
-  // quinto producto es el que mantiene la fila en cuatro tarjetas mientras
-  // esa siga sin foto y descripción confirmadas.
+  // 3506 (motosierra Knock Out) queda afuera hasta tener una foto de producto
+  // real: su imagen es un arte de marca y desentonaba con las otras tres.
   { productId: "3216", image: "/products/catalog/3216-sk455-1.webp" },
+  // Reserva: si alguno de arriba está inactivo, la fila sigue en cuatro.
+  { productId: "3588", image: "/products/catalog/3588-ai1014-12c1.webp" },
 ] as const;
+const STAR_PRODUCTS_SHOWN = 4;
 
 // Cinta continua: píxeles por segundo, no tarjetas por segundo. El ritmo es
 // el de un ticker —constante y parejo— en vez de saltar de tarjeta en tarjeta.
@@ -181,10 +182,12 @@ function CategoryWinnerCard({
         )}
       </div>
       <div className="winner-card-copy">
-        <span>{productCount} {productCount === 1 ? "producto" : "productos"}</span>
         <h3>{label}</h3>
         <small>{description}</small>
-        <strong>{priceFrom === null ? "Consultar" : `Desde ${formatCurrency(priceFrom)}`}</strong>
+        {/* Precio "desde" sin centavos: es orientativo. El conteo solo suma
+            cuando hay variedad; "1 producto" le restaba a la categoría. */}
+        <strong>{priceFrom === null ? "Consultar" : `Desde ${formatCurrency(Math.floor(priceFrom), 0)}`}</strong>
+        {productCount >= 3 && <span className="winner-card-count">{productCount} productos</span>}
         <b>Ver {label.toLowerCase()} <span aria-hidden>→</span></b>
       </div>
     </Link>
@@ -237,7 +240,7 @@ export function HomeClient() {
   const starProducts = STAR_PRODUCTS.flatMap((item) => {
     const product = activeProducts.find((candidate) => candidate.id === item.productId);
     return product ? [{ product, image: item.image }] : [];
-  });
+  }).slice(0, STAR_PRODUCTS_SHOWN);
   return (
     <main>
       <section className="commerce-hero">
@@ -260,14 +263,20 @@ export function HomeClient() {
               <span className="hero-offers-mobile">Ver ofertas destacadas →</span>
             </Link>
           </div>
-          <div className="pickup-banner">
+          <a
+            className="pickup-banner"
+            href={STORE_MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Retiro gratis en Sáenz 1587, Corrientes Capital. Cómo llegar (abre Google Maps)"
+          >
             <span>RETIRO GRATIS</span>
             <div className="pickup-banner-copy">
-              <strong><i aria-hidden="true">📍</i> Retirá gratis en Sáenz 1587, Corrientes Capital</strong>
+              <strong>Retirá gratis en Sáenz 1587, Corrientes Capital</strong>
               <small>Abrí y probá tu producto antes de llevártelo, sin compromiso.</small>
             </div>
             <b aria-hidden="true">→</b>
-          </div>
+          </a>
         </div>
       </section>
 
@@ -276,9 +285,9 @@ export function HomeClient() {
           <div>
             <span className="eyebrow orange">COMPRÁ POR CATEGORÍA</span>
             <h2>Encontrá la máquina que necesitás</h2>
-            <p>Ocho accesos directos con stock real y precios para comparar.</p>
+            <p>Elegí una categoría para ver sus productos con precio desde; deslizá para ver todas.</p>
           </div>
-          <Link href="/productos" className="text-link">Ver todos los productos →</Link>
+          <Link href="/productos" className="text-link">Ver catálogo →</Link>
         </div>
         <CategoryMarquee categories={categories} />
       </section>
@@ -288,18 +297,13 @@ export function HomeClient() {
           <div>
             <span className="eyebrow orange">PRODUCTOS ESTRELLA</span>
             <h2>Los elegidos de Litoral Maq</h2>
-            <p>Cuatro productos con buen precio, stock y salida.</p>
+            <p>Productos que recomendamos por precio y rendimiento, con stock y precio actualizado. Comprá online o retiralos en el local.</p>
           </div>
-          <Link href="/productos" className="text-link">Ver catálogo completo →</Link>
+          <Link href="/productos" className="text-link">Ver catálogo →</Link>
         </div>
-        <div className="star-products-grid" aria-label="Cuatro productos estrella">
+        <div className="star-products-grid" aria-label="Productos destacados">
           {starProducts.map(({ product, image }) => (
-            <ProductCard
-              product={product}
-              imageOverride={image}
-              badge="Producto estrella"
-              key={product.id}
-            />
+            <ProductCard product={product} imageOverride={image} badge={null} key={product.id} />
           ))}
         </div>
       </section>

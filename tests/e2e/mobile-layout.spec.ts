@@ -80,6 +80,15 @@ test.describe("layout móvil", () => {
     expect(editableFontSizes.every((size) => size >= 16)).toBe(true);
   });
 
+  test("el botón flotante de WhatsApp no tapa las pantallas de compra", async ({ page }) => {
+    const floating = page.getByRole("link", { name: "Consultar por WhatsApp" });
+    await page.goto("/productos");
+    await expect(floating).toBeVisible();
+    await page.goto("/carrito");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(floating).toBeHidden();
+  });
+
   test("la cabecera y el hero mantienen una jerarquía compacta", async ({ page }) => {
     await page.goto("/");
 

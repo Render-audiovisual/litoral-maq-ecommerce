@@ -100,6 +100,8 @@ export type Order = {
   createdAt: string;
   followUpAt?: string;
   expiresAt?: string;
+  /** Último cambio de estado o de pago. En Supabase lo escribe un trigger. */
+  statusChangedAt?: string;
   paymentReference: string;
   paymentStatus?: PaymentStatus;
   paymentInstallments?: number;

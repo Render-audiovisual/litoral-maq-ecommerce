@@ -49,7 +49,9 @@ export type OrderEmailEvent =
   | "customer_payment_rejected"
   | "customer_order_ready"
   | "customer_order_shipped"
-  | "customer_order_delivered";
+  | "customer_order_delivered"
+  | "customer_payment_reminder"
+  | "customer_order_expired";
 
 function escapeHtml(value: unknown) {
   return String(value ?? "")
@@ -114,8 +116,25 @@ function subtotalRowsHtml(order: OrderRecord) {
     );
 }
 
+/**
+ * Un evento de la cola se procesa a veces horas después (reintentos). Antes de
+ * mandarlo se revisa que siga teniendo sentido con el estado actual: no se
+ * recuerda el pago de un pedido ya pagado ni se avisa "venció" a uno que se
+ * pagó tarde.
+ */
+export function orderEmailStillApplies(eventType: string, order: Pick<OrderRecord, "status" | "payment_status">) {
+  if (eventType === "customer_payment_reminder") {
+    return order.payment_status === "pending" && order.status === "pendiente";
+  }
+  if (eventType === "customer_order_expired") {
+    return order.status === "cancelado" &&
+      (order.payment_status === "cancelled" || order.payment_status === "pending");
+  }
+  return true;
+}
+
 /** Qué va a pasar ahora. Es lo que más consultan por WhatsApp después de pagar. */
-function nextStepsHtml(eventType: OrderEmailEvent, order: OrderRecord) {
+function nextStepsHtml(eventType: OrderEmailEvent, order: OrderRecord, mercadoPago: boolean) {
   const pasos = eventType === "customer_payment_approved"
     ? order.delivery_method === "retiro"
       ? [
@@ -138,7 +157,9 @@ function nextStepsHtml(eventType: OrderEmailEvent, order: OrderRecord) {
       ]
     : eventType === "customer_order_received"
     ? [
-      "Completás el pago en Mercado Pago.",
+      mercadoPago
+        ? "Completás el pago en Mercado Pago."
+        : "Te contactamos por WhatsApp para coordinar el pago.",
       "Apenas se acredita te llega la confirmación de compra.",
       order.delivery_method === "retiro"
         ? "Preparamos tu pedido para retirar en Sáenz 1587."
@@ -222,8 +243,12 @@ function whatsappUrl(order: OrderRecord) {
     : coordinar
     ? `Elegí el envío por ${order.shipping_carrier || "la empresa que me recomienden"}${hacia}.`
     : `Elegí el envío por ${order.shipping_carrier || "correo"}${hacia}.`;
-  const cierre = !pagado
-    ? "Quiero confirmar que les llegó el pago."
+  // Mismo cierre que getOrderWhatsAppUrl (src/lib/whatsapp.ts): sin pago
+  // acreditado no se da por hecho que se pagó.
+  const cierre = order.payment_status === "cancelled"
+    ? "Se me venció el pedido y quiero retomar la compra."
+    : !pagado
+    ? "Quiero coordinar el pago y la entrega, ¿me ayudan? 🙏"
     : order.delivery_method === "retiro"
     ? "¿Me avisan cuándo puedo pasar a retirarlo?"
     : coordinar
@@ -244,7 +269,7 @@ function whatsappUrl(order: OrderRecord) {
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
-function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
+function emailCopy(eventType: OrderEmailEvent, order: OrderRecord, mercadoPago: boolean) {
   const tracking = order.shipping_tracking_number
     ? `Seguimiento: <strong>${escapeHtml(order.shipping_tracking_number)}</strong>${
       order.shipping_carrier ? ` · ${escapeHtml(order.shipping_carrier)}` : ""
@@ -257,8 +282,9 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
     customer_order_received: {
       subject: `Recibimos tu pedido ${order.id}`,
       title: "Recibimos tu pedido",
-      intro:
-        "Registramos tu pedido. Cuando Mercado Pago acredite el pago te enviamos la confirmación de compra. Si no llegaste a terminar el pago, escribinos y te ayudamos.",
+      intro: mercadoPago
+        ? "Registramos tu pedido. Cuando Mercado Pago acredite el pago te enviamos la confirmación de compra. Si no llegaste a terminar el pago, escribinos y te ayudamos."
+        : "Registramos tu pedido. Te contactamos para coordinar el pago; si querés adelantarte, escribinos por WhatsApp con el mensaje ya armado.",
     },
     team_new_order: {
       subject: `Nuevo pedido ${order.id} · ${order.customer_name}`,
@@ -267,7 +293,9 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
         ? `${escapeHtml(order.customer_name)} hizo un pedido con envío${
           empresaEnvio(order)
         }. Cuando se acredite el pago, pasale el costo del envío por WhatsApp.`
-        : `${escapeHtml(order.customer_name)} hizo un pedido. Se confirma cuando Mercado Pago acredite el pago.`,
+        : `${escapeHtml(order.customer_name)} hizo un pedido. ${
+          mercadoPago ? "Se confirma cuando Mercado Pago acredite el pago." : "Contactalo para coordinar el pago."
+        }`,
       action: "Abrir panel de pedidos",
     },
     customer_payment_approved: {
@@ -309,6 +337,19 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord) {
         ? "El pedido figura como retirado de la sucursal. Si necesitás ayuda, comunicate con Litoral Maq."
         : "El pedido figura como entregado. Si necesitás ayuda, comunicate con Litoral Maq.",
     },
+    customer_payment_reminder: {
+      subject: `Tu pedido ${order.id} te está esperando`,
+      title: "¡Tu pedido sigue reservado!",
+      intro:
+        "Vimos que el pago todavía no se acreditó. Te guardamos los productos durante 24 horas desde que hiciste el pedido, así que estás a tiempo. Si algo falló con el pago o necesitás ayuda para elegir, escribinos por WhatsApp y te ayudamos personalmente.",
+    },
+    customer_order_expired: {
+      subject: `Tu pedido ${order.id} venció`,
+      title: "Tu pedido venció",
+      intro:
+        "Pasaron 24 horas sin que se acreditara el pago, así que cancelamos el pedido para liberar el stock. No se te cobró nada. Si todavía querés los productos, podés hacer un pedido nuevo en la tienda o escribirnos por WhatsApp y te ayudamos a cerrar la compra.",
+      action: "Volver a la tienda",
+    },
   };
   return copies[eventType];
 }
@@ -322,6 +363,8 @@ function emailVisual(eventType: OrderEmailEvent) {
     customer_order_ready: { emoji: "🛠️", label: "PEDIDO PREPARADO", color: "#0b3c6f", soft: "#eaf4fb" },
     customer_order_shipped: { emoji: "🚚", label: "PEDIDO EN CAMINO", color: "#0b3c6f", soft: "#eaf4fb" },
     customer_order_delivered: { emoji: "🙌", label: "PEDIDO ENTREGADO", color: "#18794e", soft: "#eaf8f1" },
+    customer_payment_reminder: { emoji: "⏳", label: "PAGO PENDIENTE", color: "#b54708", soft: "#fff4e8" },
+    customer_order_expired: { emoji: "🕓", label: "PEDIDO VENCIDO", color: "#667085", soft: "#f2f4f7" },
   };
   return visuals[eventType];
 }
@@ -336,8 +379,10 @@ export function renderOrderEmail(
   publicUrl: string,
   /** Foto por productId, en URL absoluta. Sin esto las filas van sin miniatura. */
   fotos: Record<string, string> = {},
+  /** Si el cobro con Mercado Pago está activo (MP_CHECKOUT_ENABLED). Sin eso el texto no lo nombra. */
+  { mercadoPago = true }: { mercadoPago?: boolean } = {},
 ) {
-  const copy = emailCopy(eventType, order);
+  const copy = emailCopy(eventType, order, mercadoPago);
   const visual = emailVisual(eventType);
   const customerGreeting = eventType === "team_new_order"
     ? ""
@@ -353,13 +398,19 @@ export function renderOrderEmail(
     }`;
   const buttonUrl = eventType === "team_new_order"
     ? `${publicUrl.replace(/\/$/, "")}/admin/pedidos`
+    : eventType === "customer_order_expired"
+    ? `${publicUrl.replace(/\/$/, "")}/`
     : `${publicUrl.replace(/\/$/, "")}/cuenta/pedidos`;
   const customerWhatsAppButton = eventType === "team_new_order"
     ? ""
     : `<div style="text-align:center;margin-top:12px"><a href="${escapeHtml(whatsappUrl(order))}" style="display:inline-block;background:#1fa855;color:#fff;text-decoration:none;font-weight:700;padding:13px 22px;border-radius:9px">Hablar con Litoral Maq por WhatsApp</a></div>`;
   const totalNote = pagado
-    ? "Pago acreditado por Mercado Pago."
-    : "Pendiente de pago en Mercado Pago.";
+    ? mercadoPago ? "Pago acreditado por Mercado Pago." : "Pago acreditado."
+    : order.payment_status === "cancelled"
+    ? "Pedido cancelado, sin cobro."
+    : mercadoPago
+    ? "Pendiente de pago en Mercado Pago."
+    : "Pendiente de pago.";
 
   return {
     subject: copy.subject,
@@ -377,7 +428,7 @@ export function renderOrderEmail(
       }</td></tr><tr><td colspan="2" style="padding:0 14px 14px;color:#475467;font-size:13px"><strong>Entrega:</strong> ${
         escapeHtml(destination)
       }</td></tr>${paymentSummary(order)}</table>${
-        nextStepsHtml(eventType, order)
+        nextStepsHtml(eventType, order, mercadoPago)
       }<div style="text-align:center;margin-top:26px"><a href="${
         escapeHtml(buttonUrl)
       }" class="email-button" style="display:inline-block;background:#f58220;color:#fff;text-decoration:none;font-weight:700;padding:14px 24px;border-radius:9px">${

@@ -51,18 +51,23 @@ function AdminLoginForm() {
   }
 
   return (
-    <main className="auth-page admin-auth-page">
-      <section className="auth-panel visual">
-        <Image src="/brand/AZUL.png" alt="Litoral Maq" width={210} height={78} />
-        <h1>Panel de<br />administración.</h1>
-        <p>Acceso exclusivo para el equipo de Litoral Maq.</p>
-      </section>
+    <main className="auth-page customer-auth admin-auth-page">
+      <aside className="auth-panel visual" aria-label="Panel de administración de Litoral Maq">
+        <span className="auth-logo">
+          <Image src="/brand/AZUL.png" alt="Litoral Maq" width={186} height={186} />
+        </span>
+        <p className="auth-visual-title">Panel de administración</p>
+        <p className="auth-visual-lead">Pedidos, catálogo y clientes de la tienda. Acceso exclusivo para el equipo de Litoral Maq.</p>
+      </aside>
       <section className="auth-panel form">
         <div className="auth-card">
-          <span className="eyebrow orange">ADMINISTRACIÓN</span>
-          <h2>Ingresá al panel</h2>
+          <span className="auth-logo auth-card-logo">
+            <Image src="/brand/AZUL.png" alt="Litoral Maq" width={186} height={186} />
+          </span>
+          <h1>Ingresá al panel</h1>
+          <p className="auth-intro">Usá el email y la contraseña de tu cuenta de administrador.</p>
           {denied && (
-            <div className="error-message">
+            <div className="error-message" role="alert">
               Tu cuenta no tiene permisos de administrador para acceder a esta sección.
             </div>
           )}
@@ -72,25 +77,26 @@ function AdminLoginForm() {
               <input
                 required
                 type="email"
+                autoComplete="username"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder="admin@litoralmaq.com"
+                placeholder="nombre@litoralmaq.com"
               />
             </label>
-            <PasswordInput
-              id="admin-password"
-              label="Contraseña"
-              required
-              autoComplete="current-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Mínimo 4 caracteres"
-            />
-            <p className="form-helper">
-              <a href={`${AUTH_ORIGINS.production}/recuperar-clave${email ? `?email=${encodeURIComponent(email)}` : ""}`}>
+            <div className="auth-password">
+              <PasswordInput
+                id="admin-password"
+                label="Contraseña"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Tu contraseña"
+              />
+              <a className="auth-forgot" href={`${AUTH_ORIGINS.production}/recuperar-clave${email ? `?email=${encodeURIComponent(email)}` : ""}`}>
                 ¿Olvidaste tu contraseña?
               </a>
-            </p>
+            </div>
             {captcha.field}
             {error && <div className="error-message" role="alert">{error}</div>}
             <button className="button primary large full" disabled={loading || !captcha.solved}>

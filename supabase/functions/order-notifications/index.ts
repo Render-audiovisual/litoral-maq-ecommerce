@@ -8,6 +8,9 @@ import {
   serviceClient,
 } from "../_shared/http.ts";
 import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
+import { maybeRunAutoCatalogSync } from "../_shared/catalog-auto-sync.ts";
+
+declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void } | undefined;
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object"
@@ -33,12 +36,50 @@ Deno.serve(async (request) => {
       const { data: lifecycle, error: lifecycleError } = await db.rpc(
         "process_pending_order_lifecycle",
       );
-      if (lifecycleError) throw lifecycleError;
+      // Un fallo del ciclo de vida no puede frenar el resto de los correos.
+      if (lifecycleError) {
+        console.error(JSON.stringify({
+          scope: "order-notifications",
+          step: "process_pending_order_lifecycle",
+          error: lifecycleError.message,
+          code: lifecycleError.code,
+        }));
+      }
+      const notifications = await processPendingOrderNotifications(
+        db,
+        null,
+        25,
+      );
+      // Después de los correos, para que una sincronización lenta no los demore.
+      // En Supabase corre en segundo plano (EdgeRuntime.waitUntil): el cron
+      // corta la espera a los 15 s y la sincronización puede tardar más. Su
+      // resultado queda en catalog_sync_runs.
+      const syncRun = maybeRunAutoCatalogSync(db).catch((error) => {
+        console.error(JSON.stringify({
+          scope: "order-notifications",
+          step: "catalog_auto_sync",
+          error: error instanceof Error ? error.message : "Error desconocido",
+        }));
+        return { status: "failed" as const };
+      });
+      let catalogSync: unknown;
+      if (typeof EdgeRuntime !== "undefined" && EdgeRuntime) {
+        EdgeRuntime.waitUntil(syncRun);
+        catalogSync = { status: "background" };
+      } else {
+        catalogSync = await syncRun;
+      }
       return json(
         request,
         {
-          lifecycle: Array.isArray(lifecycle) ? lifecycle[0] ?? null : lifecycle,
-          notifications: await processPendingOrderNotifications(db, null, 25),
+          lifecycle: lifecycleError
+            ? null
+            : Array.isArray(lifecycle)
+            ? lifecycle[0] ?? null
+            : lifecycle,
+          ...(lifecycleError ? { lifecycleError: lifecycleError.message } : {}),
+          notifications,
+          catalogSync,
         },
       );
     }

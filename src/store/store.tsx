@@ -783,17 +783,24 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   if (configError) {
     return (
       <main className="center-state" aria-live="assertive">
-        <span className="state-icon">⚠</span>
-        <h1>Error de configuración</h1>
-        <p>{configError}</p>
+        <div className="cart-empty">
+          <span className="cart-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7.5v5.5M12 16.5h.01" />
+            </svg>
+          </span>
+          <h1>Error de configuración</h1>
+          <p>{configError}</p>
+        </div>
       </main>
     );
   }
 
   if (!ready) {
     return (
-      <main className="center-state" aria-live="polite">
-        <div className="spinner" />
+      <main className="center-state" role="status">
+        <div className="spinner" aria-hidden="true" />
         <p>Cargando Litoral Maq…</p>
       </main>
     );

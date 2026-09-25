@@ -233,6 +233,26 @@ describe("supabase persistence adapter", () => {
     expect(result).toBeNull();
   });
 
+  it("cancelar un pedido sin pago también cancela el pago (solo si sigue pendiente)", async () => {
+    const row = { id: "o1", status: "cancelado", payment_status: "pending", lines: [], total: 0, shipping: 0 };
+    const { client, builders } = createFakeClient({ orders: { data: row, error: null } });
+    const adapter = createSupabasePersistenceAdapter(client);
+    await adapter.updateOrderStatus("o1", "cancelado");
+    expect(builders).toHaveLength(2);
+    expect(builders[1].calls.find((c) => c.method === "update")?.args[0]).toEqual({ payment_status: "cancelled" });
+    expect(builders[1].calls.filter((c) => c.method === "eq").map((c) => c.args)).toEqual([
+      ["id", "o1"], ["payment_status", "pending"],
+    ]);
+  });
+
+  it("cancelar un pedido pagado no toca el pago", async () => {
+    const row = { id: "o1", status: "cancelado", payment_status: "approved", lines: [], total: 0, shipping: 0 };
+    const { client, builders } = createFakeClient({ orders: { data: row, error: null } });
+    const adapter = createSupabasePersistenceAdapter(client);
+    await adapter.updateOrderStatus("o1", "cancelado");
+    expect(builders).toHaveLength(1);
+  });
+
   it("reassignOrdersCustomer filtra por customer_id de origen y cuenta filas afectadas", async () => {
     const { client, builders } = createFakeClient({
       orders: { data: [{ id: "o1" }, { id: "o2" }], error: null },

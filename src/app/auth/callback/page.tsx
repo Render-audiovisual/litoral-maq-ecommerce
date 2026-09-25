@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AuthLayout } from "@/components/auth-layout";
 import { readAuthErrorFromUrl } from "@/lib/auth-callbacks";
 import { getAuthAdapter, waitForRestoredSession } from "@/services/auth";
 import { useStore } from "@/store/store";
@@ -71,25 +72,31 @@ export default function OAuthCallbackPage() {
   }, [router, setCustomerSession]);
 
   if (alreadyLinked) {
-    return <main className="simple-auth-page"><section className="auth-card">
-      <span className="eyebrow orange">INGRESO CON GOOGLE</span><h1>Esa cuenta de Google ya está en uso</h1>
+    return <AuthLayout>
+      <h1>Esa cuenta de Google ya está en uso</h1>
       <div className="error-message" role="alert">
         Ya existe una cuenta de Litoral Maq asociada a ese Google. No unimos automáticamente los datos de dos
         cuentas: ingresá con ella para ver sus pedidos.
       </div>
-      <Link className="button primary large full" href="/login">Ingresar a esa cuenta</Link>
-      <p><Link href="/cuenta/pedidos">Seguir como invitado en este navegador</Link></p>
-    </section></main>;
+      <Link className="button primary large full auth-action" href="/login">Ingresar a esa cuenta</Link>
+      <div className="auth-alt"><p><Link href="/cuenta/pedidos">Seguir como invitado en este navegador</Link></p></div>
+    </AuthLayout>;
   }
 
   if (message) {
-    return <main className="simple-auth-page"><section className="auth-card">
-      <span className="eyebrow orange">INGRESO CON GOOGLE</span><h1>No pudimos completar el ingreso</h1>
+    return <AuthLayout>
+      <h1>No pudimos completar el ingreso</h1>
       <div className="error-message" role="alert">{message}</div>
-      <Link className="button primary large full" href="/login">Volver a intentar</Link>
-      <p><Link href="/productos">Seguir comprando</Link></p>
-    </section></main>;
+      <Link className="button primary large full auth-action" href="/login">Volver a intentar</Link>
+      <div className="auth-alt"><p><Link href="/productos">Seguir comprando</Link></p></div>
+    </AuthLayout>;
   }
 
-  return <main className="center-state" aria-live="polite"><div className="spinner" /><p>Confirmando tu ingreso…</p></main>;
+  return <AuthLayout>
+    <h1>Ingreso con Google</h1>
+    <div className="auth-status" role="status">
+      <span className="spinner" aria-hidden="true" />
+      Confirmando tu ingreso…
+    </div>
+  </AuthLayout>;
 }

@@ -1,12 +1,28 @@
 "use client";
 
-import { FormEvent, Suspense, useMemo, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { TableScroll } from "@/components/table-scroll";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
+import { pageWindow, paginate } from "@/lib/paginate";
 import { googleSheetSyncAdapter } from "@/services/sheet-sync";
+
+const PAGE_SIZE = 50;
+
+function managedBySheet(product: Product) {
+  return (
+    product.source === "google-sheet" &&
+    !product.incomplete.includes("sheet-absent")
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg className="button-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" /></svg>
+  );
+}
 
 function stockStatus(product: Product) {
   if (!product.incomplete.includes("stock")) return String(product.stock);
@@ -59,6 +75,18 @@ function AdminProductsContent() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"active" | "inactive" | "all">("active");
   const [sortBy, setSortBy] = useState<"name" | "recent">("name");
+  // La página se vuelve a 1 al cambiar filtros, búsqueda u orden; al editar
+  // o eliminar se conserva (paginate la acota si la última queda vacía).
+  const [page, setPage] = useState(1);
+  const listRef = useRef<HTMLElement>(null);
+  // En celular la nota arranca plegada: ocupaba media pantalla antes del
+  // primer producto. En escritorio queda abierta.
+  const sourceNoteRef = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    if (sourceNoteRef.current && window.matchMedia("(max-width: 560px)").matches) {
+      sourceNoteRef.current.open = false;
+    }
+  }, []);
   const [editing, setEditing] = useState<Product | null>(null);
   const [message, setMessage] = useState("");
   const [messageKind, setMessageKind] = useState<"success" | "error">(
@@ -91,6 +119,12 @@ function AdminProductsContent() {
         ),
     [products, query, category, status, sortBy],
   );
+  const current = paginate(filtered, page, PAGE_SIZE);
+
+  function goToPage(next: number) {
+    setPage(next);
+    listRef.current?.scrollIntoView({ block: "start" });
+  }
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -100,6 +134,7 @@ function AdminProductsContent() {
       editing.price === null ||
       editing.price < 0
     ) {
+      setMessageKind("error");
       setMessage("Completá nombre, código y un precio válido.");
       return;
     }
@@ -108,6 +143,7 @@ function AdminProductsContent() {
       (editing.purchaseLimit ?? 3) < 1 ||
       (editing.purchaseLimit ?? 3) > 99
     ) {
+      setMessageKind("error");
       setMessage(
         "El límite por compra debe ser un número entero entre 1 y 99.",
       );
@@ -122,6 +158,7 @@ function AdminProductsContent() {
         editing.shippingLengthCm,
       ].some((value) => !value || value <= 0)
     ) {
+      setMessageKind("error");
       setMessage(
         "Para habilitar envío automático completá peso, alto, ancho y largo del producto embalado.",
       );
@@ -226,11 +263,16 @@ function AdminProductsContent() {
     }
   }
 
+  const statusTabs = [
+    { value: "active", label: "Activos", count: activeCount },
+    { value: "inactive", label: "No activos", count: inactiveCount },
+    { value: "all", label: "Todos", count: products.length },
+  ] as const;
+
   return (
     <main className="admin-content">
       <div className="admin-heading">
         <div>
-          <span className="eyebrow orange">CATÁLOGO</span>
           <h1>Productos</h1>
           <p>
             {products.length} productos · {sheetProductCount} provenientes del
@@ -244,7 +286,8 @@ function AdminProductsContent() {
             onClick={sync}
             disabled={syncing || pendingProductId !== null}
           >
-            {syncing ? "Sincronizando…" : "↻ Actualizar desde Sheet"}
+            <svg className="button-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4" /></svg>
+            {syncing ? "Sincronizando…" : "Actualizar desde Sheet"}
           </button>
           <button
             type="button"
@@ -252,157 +295,273 @@ function AdminProductsContent() {
             onClick={() => setEditing(emptyProduct())}
             disabled={pendingProductId !== null}
           >
-            + Nuevo producto
+            <svg className="button-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
+            Nuevo producto
           </button>
         </div>
       </div>
-      <div className="source-of-truth-note">
-        <strong>Fuente de verdad:</strong> el Google Sheet controla código,
-        nombre, precio y qué productos siguen en catálogo. El panel controla
-        visibilidad, ficha, logística y límite por compra. Sin stock numérico,
-        el límite predeterminado es 3 unidades por producto.
-      </div>
+      <details className="source-of-truth-note" open ref={sourceNoteRef}>
+        <summary>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+          Cómo se actualiza el catálogo
+        </summary>
+        <p>
+          <strong>Fuente de verdad:</strong> el Google Sheet controla código,
+          nombre, precio y qué productos siguen en catálogo. El panel controla
+          visibilidad, ficha, logística y límite por compra. Sin stock numérico,
+          el límite predeterminado es 3 unidades por producto.
+        </p>
+      </details>
       {message && (
         <div
           className={`${messageKind === "error" ? "error-message" : "success-message"} dismissible`}
+          role="status"
         >
           {message}
-          <button onClick={() => setMessage("")}>×</button>
+          <button type="button" onClick={() => setMessage("")} aria-label="Cerrar aviso">
+            <CloseIcon />
+          </button>
         </div>
       )}
-      <section className="admin-card">
-        <div className="status-tabs">
-          <button
-            type="button"
-            className={status === "active" ? "status-tab selected" : "status-tab"}
-            onClick={() => setStatus("active")}
-          >
-            Activos ({activeCount})
-          </button>
-          <button
-            type="button"
-            className={status === "inactive" ? "status-tab selected" : "status-tab"}
-            onClick={() => setStatus("inactive")}
-          >
-            No activos ({inactiveCount})
-          </button>
-          <button
-            type="button"
-            className={status === "all" ? "status-tab selected" : "status-tab"}
-            onClick={() => setStatus("all")}
-          >
-            Todos ({products.length})
-          </button>
+      <section
+        className="admin-card products-card"
+        ref={listRef}
+        aria-label="Lista de productos"
+      >
+        <div className="status-tabs" role="group" aria-label="Mostrar productos">
+          {statusTabs.map((tab) => (
+            <button
+              key={tab.value}
+              type="button"
+              className={status === tab.value ? "status-tab selected" : "status-tab"}
+              aria-pressed={status === tab.value}
+              onClick={() => {
+                setStatus(tab.value);
+                setPage(1);
+              }}
+            >
+              {tab.label} <span>({tab.count})</span>
+            </button>
+          ))}
         </div>
-        <div className="table-toolbar">
+        <div className="table-toolbar product-filters">
           <input
+            type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setPage(1);
+            }}
             placeholder="Buscar por nombre o código…"
+            aria-label="Buscar productos"
           />
           {category && (
             <button
               type="button"
               className="filter-chip"
-              onClick={() => setCategory("")}
-              title="Quitar filtro de categoría"
+              onClick={() => {
+                setCategory("");
+                setPage(1);
+              }}
+              aria-label={`Quitar filtro de categoría ${category}`}
             >
-              {category} ×
+              {category}
+              <CloseIcon />
             </button>
           )}
           <select
             className="sort-select"
             value={sortBy}
-            onChange={(event) => setSortBy(event.target.value as "name" | "recent")}
+            aria-label="Ordenar productos"
+            onChange={(event) => {
+              setSortBy(event.target.value as "name" | "recent");
+              setPage(1);
+            }}
           >
             <option value="name">Ordenar: nombre (A-Z)</option>
-            <option value="recent">Ordenar: agregados/editados recientemente</option>
+            <option value="recent">Ordenar: editados recientemente</option>
           </select>
-          <span>Mostrando {filtered.length} resultados</span>
+          <span className="order-filters-count" aria-live="polite">
+            {current.total
+              ? `Mostrando ${current.from}–${current.to} de ${current.total}`
+              : "Sin resultados"}
+          </span>
         </div>
-        <TableScroll>
-          <table>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Código</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Logística</th>
-                <th>Visible</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    <strong>{product.name}</strong>
-                    <small>{product.brand}</small>
-                  </td>
-                  <td>{product.code}</td>
-                  <td>{product.category}</td>
-                  <td>{formatCurrency(product.price)}</td>
-                  <td>
-                    <span
-                      className={
-                        product.source === "google-sheet" &&
-                        !product.incomplete.includes("sheet-absent")
-                          ? "shipping-ready"
-                          : "stock-pending"
-                      }
-                      title={
-                        product.source === "google-sheet" &&
-                        !product.incomplete.includes("sheet-absent")
-                          ? "Código, precio y disponibilidad vienen del Google Sheet vigente, administrado por Litoral."
-                          : undefined
-                      }
-                    >
-                      {stockStatus(product)}
-                    </span>
-                  </td>
-                  <td>
-                    {product.shippingEnabled ? (
-                      <span className="shipping-ready">Automático</span>
-                    ) : (
-                      <span className="stock-pending">Manual</span>
+        {!current.total ? (
+          <div className="orders-empty">
+            <h2>
+              {products.length
+                ? "Ningún producto coincide con la búsqueda"
+                : "Todavía no hay productos"}
+            </h2>
+            <p>
+              {products.length
+                ? "Probá con otro nombre o código, o mirá todos los productos sin filtrar."
+                : "Actualizá desde el Google Sheet o cargá un producto nuevo."}
+            </p>
+            {products.length > 0 && (
+              <button
+                type="button"
+                className="button secondary"
+                onClick={() => {
+                  setQuery("");
+                  setCategory("");
+                  setStatus("all");
+                  setPage(1);
+                }}
+              >
+                Limpiar filtros
+              </button>
+            )}
+          </div>
+        ) : (
+          <>
+            <TableScroll>
+              {/* Tabla real en escritorio; en una tarjeta angosta cada fila
+                  pasa a ser una ficha (ver .products-table en globals.css).
+                  Los roles explícitos mantienen la semántica de tabla aunque
+                  el CSS cambie el display de las filas. */}
+              <table className="products-table" role="table">
+                <thead role="rowgroup">
+                  <tr role="row">
+                    <th role="columnheader" className="cell-product">Producto</th>
+                    <th role="columnheader" className="cell-code">Código</th>
+                    <th role="columnheader" className="cell-category">Categoría</th>
+                    <th role="columnheader" className="cell-price">Precio</th>
+                    <th role="columnheader" className="cell-stock">Stock</th>
+                    <th role="columnheader" className="cell-visible">Visible</th>
+                    <th role="columnheader" className="cell-actions">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody role="rowgroup">
+                  {current.items.map((product) => (
+                    <tr role="row" key={product.id}>
+                      <th role="rowheader" scope="row" className="cell-product">
+                        <strong>{product.name}</strong>
+                        <small>{product.brand}</small>
+                      </th>
+                      <td role="cell" className="cell-code">{product.code}</td>
+                      <td role="cell" className="cell-category">{product.category}</td>
+                      <td role="cell" className="cell-price">{formatCurrency(product.price)}</td>
+                      <td role="cell" className="cell-stock">
+                        <span
+                          className={
+                            managedBySheet(product)
+                              ? "stock-pill ok"
+                              : "stock-pill pending"
+                          }
+                          title={
+                            managedBySheet(product)
+                              ? "Código, precio y disponibilidad vienen del Google Sheet vigente, administrado por Litoral."
+                              : undefined
+                          }
+                        >
+                          {stockStatus(product)}
+                        </span>
+                        <small>
+                          {product.shippingEnabled
+                            ? "Envío automático"
+                            : "Envío manual"}
+                        </small>
+                      </td>
+                      <td role="cell" className="cell-visible">
+                        <button
+                          type="button"
+                          role="switch"
+                          aria-checked={product.active}
+                          aria-label={`Visible en la tienda: ${product.name}`}
+                          className="visibility-switch"
+                          onClick={() => void toggleVisibility(product)}
+                          disabled={pendingProductId !== null}
+                        >
+                          <span className={product.active ? "toggle active" : "toggle"}>
+                            <span />
+                          </span>
+                          <span className="visibility-label" aria-hidden="true">
+                            {product.active ? "Visible" : "Oculto"}
+                          </span>
+                        </button>
+                      </td>
+                      <td role="cell" className="cell-actions">
+                        <div className="row-actions">
+                          <button
+                            type="button"
+                            className="button secondary row-edit"
+                            aria-label={`Editar ${product.name}`}
+                            onClick={() => setEditing({ ...product })}
+                            disabled={pendingProductId !== null}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            className="row-delete"
+                            aria-label={`Eliminar ${product.name}`}
+                            onClick={() => void removeProduct(product)}
+                            disabled={pendingProductId !== null}
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableScroll>
+            {current.pageCount > 1 && (
+              <nav className="pager" aria-label="Paginación">
+                <span className="pager-range">
+                  Mostrando {current.from}–{current.to} de {current.total}
+                </span>
+                <div className="pager-controls">
+                  <button
+                    type="button"
+                    className="button secondary"
+                    onClick={() => goToPage(current.page - 1)}
+                    disabled={current.page === 1}
+                  >
+                    <svg className="button-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6" /></svg>
+                    Anterior
+                  </button>
+                  <ol className="pager-pages">
+                    {pageWindow(current.page, current.pageCount).map((number, index) =>
+                      number === null ? (
+                        <li key={`salto-${index}`} className="pager-gap" aria-hidden="true">
+                          …
+                        </li>
+                      ) : (
+                        <li key={number}>
+                          <button
+                            type="button"
+                            aria-label={`Página ${number}`}
+                            aria-current={number === current.page ? "page" : undefined}
+                            onClick={() => goToPage(number)}
+                          >
+                            {number}
+                          </button>
+                        </li>
+                      ),
                     )}
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className={product.active ? "toggle active" : "toggle"}
-                      onClick={() => void toggleVisibility(product)}
-                      disabled={pendingProductId !== null}
-                    >
-                      <span />
-                    </button>
-                  </td>
-                  <td>
-                    <div className="row-actions">
-                      <button
-                        type="button"
-                        onClick={() => setEditing({ ...product })}
-                        disabled={pendingProductId !== null}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        type="button"
-                        className="danger-link"
-                        onClick={() => void removeProduct(product)}
-                        disabled={pendingProductId !== null}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableScroll>
+                  </ol>
+                  <span className="pager-status">
+                    <span className="sr-only">Página </span>
+                    {current.page} de {current.pageCount}
+                  </span>
+                  <button
+                    type="button"
+                    className="button secondary"
+                    onClick={() => goToPage(current.page + 1)}
+                    disabled={current.page === current.pageCount}
+                  >
+                    Siguiente
+                    <svg className="button-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg>
+                  </button>
+                </div>
+              </nav>
+            )}
+          </>
+        )}
       </section>
       {editing && (
         <div
@@ -412,28 +571,28 @@ function AdminProductsContent() {
           }}
         >
           <form
-            className="modal"
+            className="modal product-form"
             onSubmit={submit}
             onMouseDown={(event) => event.stopPropagation()}
+            aria-labelledby="product-form-title"
           >
             <div className="modal-heading">
-              <div>
-                <span className="eyebrow orange">ADMINISTRAR</span>
-                <h2>
-                  {editing.source === "admin"
-                    ? "Nuevo producto"
-                    : "Editar producto"}
-                </h2>
-              </div>
+              <h2 id="product-form-title">
+                {editing.source === "admin"
+                  ? "Nuevo producto"
+                  : "Editar producto"}
+              </h2>
               <button
                 type="button"
                 onClick={() => setEditing(null)}
                 disabled={pendingProductId === editing.id}
+                aria-label="Cerrar"
               >
-                ×
+                <CloseIcon />
               </button>
             </div>
             <div className="form-grid">
+              <h3 className="form-section-title wide">Datos del catálogo</h3>
               <label className="wide">
                 Nombre
                 <input
@@ -444,7 +603,9 @@ function AdminProductsContent() {
                   }
                 />
                 {editing.source === "google-sheet" && (
-                  <small>Se actualiza desde el Google Sheet.</small>
+                  <small>
+                    Nombre, código y precio se actualizan desde el Google Sheet.
+                  </small>
                 )}
               </label>
               <label>
@@ -493,6 +654,7 @@ function AdminProductsContent() {
                   }
                 />
               </label>
+              <h3 className="form-section-title wide">Stock y compra</h3>
               <label>
                 Stock
                 <input
@@ -551,12 +713,12 @@ function AdminProductsContent() {
                 />
                 Stock verificado por el negocio
               </label>
-              <div className="shipping-fields wide">
-                <strong>Bulto embalado</strong>
-                <small>
+              <div className="form-section-title shipping-fields wide">
+                <h3>Bulto embalado</h3>
+                <p>
                   Se usa para cotizar Envíopack. Sin estos datos, el producto
                   queda en cotización manual.
-                </small>
+                </p>
               </div>
               <label>
                 Peso (kg)
@@ -640,6 +802,7 @@ function AdminProductsContent() {
                 Peso y medidas embaladas verificados; habilitar cotización
                 automática
               </label>
+              <h3 className="form-section-title wide">Ficha y publicación</h3>
               <label className="wide">
                 Descripción
                 <textarea
@@ -670,7 +833,11 @@ function AdminProductsContent() {
                 Producto destacado
               </label>
             </div>
-            {message && <div className="error-message">{message}</div>}
+            {message && (
+              <div className="error-message" role="alert">
+                {message}
+              </div>
+            )}
             <div className="modal-actions">
               <button
                 type="button"

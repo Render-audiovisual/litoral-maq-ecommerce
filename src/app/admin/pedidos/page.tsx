@@ -1,18 +1,21 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TableScroll } from "@/components/table-scroll";
 import { useStore } from "@/store/store";
 import { getPendingOrderCustomerWhatsAppUrl, paymentMethodLabel } from "@/lib/whatsapp";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   adminOrderStatusLabel,
+  deliveryLabel,
   isShippingToCoordinate,
   ADMIN_ORDER_STATUS_LABELS,
   ORDER_STATUS_LABELS,
   orderStatusOptions,
   resolveOrderLines,
 } from "@/lib/order-details";
+import { getOrderDelay } from "@/lib/order-delays";
+import { canRecontactUnpaidOrder } from "@/lib/orders";
 import type { Order, PaymentStatus } from "@/lib/types";
 import { createShipping, downloadShippingLabel } from "@/services/shipping";
 import { flushOrderNotifications } from "@/services/order-notifications";
@@ -52,11 +55,18 @@ const PAYMENT_LABELS: Record<PaymentStatus, string> = {
   charged_back: "Contracargo",
 };
 
-type CommercialFilter = "active" | "followup" | "paid" | "expired" | "all";
+type CommercialFilter = "active" | "followup" | "delayed" | "paid" | "expired" | "all";
 
-function matchesCommercialFilter(order: Order, filter: CommercialFilter) {
+/** Filtros que se pueden pedir por URL (?filtro=…), p. ej. desde el Resumen. */
+const URL_FILTERS: Record<string, CommercialFilter> = {
+  demorados: "delayed",
+  seguimiento: "followup",
+};
+
+function matchesCommercialFilter(order: Order, filter: CommercialFilter, now: Date) {
   const payment = order.paymentStatus || "pending";
   if (filter === "all") return true;
+  if (filter === "delayed") return getOrderDelay(order, now) !== null;
   if (filter === "followup") {
     return payment === "pending" && order.status === "pendiente" && !!order.followUpAt;
   }
@@ -87,19 +97,43 @@ export default function AdminOrdersPage() {
   const [processingEmails, setProcessingEmails] = useState(false);
   const paymentAutomatic =
     process.env.NEXT_PUBLIC_MERCADO_PAGO_ENABLED === "true";
+  // Enlace directo desde el Resumen: /admin/pedidos?pedido=LM-… abre el
+  // detalle de ese pedido una sola vez, cuando la lista ya cargó.
+  const deepLinkHandled = useRef(false);
+  useEffect(() => {
+    if (deepLinkHandled.current || !orders.length) return;
+    const requested = new URLSearchParams(window.location.search).get("pedido");
+    const match = requested ? orders.find((order) => order.id === requested) : undefined;
+    const timer = window.setTimeout(() => {
+      deepLinkHandled.current = true;
+      if (match) setSelected(match);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [orders]);
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("filtro");
+    const filter = requested ? URL_FILTERS[requested] : undefined;
+    if (!filter) return;
+    const timer = window.setTimeout(() => setCommercialFilter(filter), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // Hora de referencia fijada al abrir la página: las demoras se miden en
+  // horas, no hace falta un reloj en vivo.
+  const [now] = useState(() => new Date());
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return orders.filter(
       (order) =>
-        matchesCommercialFilter(order, commercialFilter) &&
+        matchesCommercialFilter(order, commercialFilter, now) &&
         (!status || order.status === status) &&
         (!normalized ||
           [order.id, order.customerName, order.email, order.address].some(
             (value) => value?.toLowerCase().includes(normalized),
           )),
     );
-  }, [orders, query, status, commercialFilter]);
+  }, [orders, query, status, commercialFilter, now]);
 
   /**
    * Resumen de productos por fila. Antes la columna decía "1 unidades · 1
@@ -112,9 +146,15 @@ export default function AdminOrdersPage() {
       filtered.map((order) => {
         const lines = resolveOrderLines(order, products);
         const units = lines.reduce((sum, line) => sum + line.quantity, 0);
-        return { order, first: lines[0], extra: lines.length - 1, units };
+        return {
+          order,
+          first: lines[0],
+          extra: lines.length - 1,
+          units,
+          delay: getOrderDelay(order, now),
+        };
       }),
-    [filtered, products],
+    [filtered, products, now],
   );
 
   const pendingCount = orders.filter((order) =>
@@ -122,7 +162,10 @@ export default function AdminOrdersPage() {
     (order.paymentStatus || "pending") === "pending",
   ).length;
   const followUpCount = orders.filter((order) =>
-    matchesCommercialFilter(order, "followup")
+    matchesCommercialFilter(order, "followup", now)
+  ).length;
+  const delayedCount = orders.filter((order) =>
+    matchesCommercialFilter(order, "delayed", now)
   ).length;
   const preparingCount = orders.filter(
     (order) => order.status === "preparando",
@@ -258,7 +301,7 @@ export default function AdminOrdersPage() {
     ? customers.find((customer) => customer.id === selected.customerId)
     : null;
   const selectedPhone = selected?.phone || selectedCustomer?.phone || "";
-  const recoveryWhatsAppUrl = selected && selected.paymentStatus !== "approved"
+  const recoveryWhatsAppUrl = selected && canRecontactUnpaidOrder(selected)
     ? getPendingOrderCustomerWhatsAppUrl(selected, selectedPhone)
     : "";
 
@@ -266,7 +309,6 @@ export default function AdminOrdersPage() {
     <main className="admin-content">
       <div className="admin-heading">
         <div>
-          <span className="eyebrow orange">VENTAS</span>
           <h1>Pedidos</h1>
           <p>
             Consultá cada pedido y avanzá su preparación.
@@ -287,7 +329,7 @@ export default function AdminOrdersPage() {
       </div>
 
       <section className="stats-grid order-stats">
-        <article className="warning">
+        <article className={pendingCount ? "warning" : undefined}>
           <span>Paso 0 · Pedido recibido</span>
           <strong>{pendingCount}</strong>
           <small>{followUpCount} listos para seguimiento comercial</small>
@@ -326,14 +368,17 @@ export default function AdminOrdersPage() {
         </div>
       )}
 
-      <section className="admin-card">
+      <section className="admin-card orders-card">
         <div className="table-toolbar order-filters">
           <input
+            type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Buscar pedido, cliente, email o domicilio…"
+            aria-label="Buscar pedidos"
           />
           <select
+            aria-label="Filtrar por estado"
             value={status}
             onChange={(event) =>
               setStatus(event.target.value as Order["status"] | "")
@@ -355,53 +400,93 @@ export default function AdminOrdersPage() {
           >
             <option value="active">Activos</option>
             <option value="followup">Seguimiento comercial</option>
+            <option value="delayed">Demorados</option>
             <option value="paid">Pagados</option>
             <option value="expired">Vencidos</option>
             <option value="all">Todos</option>
           </select>
-          <span>
+          {delayedCount > 0 && commercialFilter !== "delayed" && (
+            <button
+              type="button"
+              className="payment-status delay-shortcut"
+              onClick={() => setCommercialFilter("delayed")}
+            >
+              {delayedCount} {delayedCount === 1 ? "demorado" : "demorados"}
+            </button>
+          )}
+          <span className="order-filters-count" aria-live="polite">
             {filtered.length} de {orders.length} pedidos
           </span>
         </div>
         {!orders.length ? (
-          <div className="empty-state">
-            <span>▤</span>
-            <h2>No hay pedidos todavía</h2>
-            <p>Los pedidos confirmados desde la tienda van a aparecer acá.</p>
+          <div className="orders-empty">
+            <h2>Todavía no hay pedidos</h2>
+            <p>
+              Cuando un cliente envíe una solicitud desde la tienda, aparece
+              acá para que la prepares.
+            </p>
           </div>
         ) : !filtered.length ? (
-          <div className="empty-state">
-            <span>⌕</span>
-            <h2>No hay coincidencias</h2>
-            <p>Probá otro término o limpiá el filtro de estado.</p>
+          <div className="orders-empty">
+            <h2>Ningún pedido coincide con estos filtros</h2>
+            <p>
+              Probá con otro número, nombre o email, o mirá todos los pedidos
+              sin filtrar.
+            </p>
+            <button
+              type="button"
+              className="button secondary"
+              onClick={() => {
+                setQuery("");
+                setStatus("");
+                setCommercialFilter("all");
+              }}
+            >
+              Limpiar filtros
+            </button>
           </div>
         ) : (
           <TableScroll>
-            <table>
-              <thead>
-                <tr>
-                  <th>Pedido</th>
-                  <th>Cliente</th>
-                  <th>Productos</th>
-                  <th>Entrega</th>
-                  <th>Total</th>
-                  <th>Pago</th>
-                  <th>Estado</th>
-                  <th />
+            {/* Cada fila es una grilla (ver .orders-table en globals.css):
+                pedido y cliente, productos y entrega, total y pago, y las
+                acciones. Entra entera en una notebook sin scroll lateral.
+                Los roles explícitos conservan la semántica de tabla para los
+                lectores de pantalla aunque el CSS cambie el display. */}
+            <table className="orders-table" role="table">
+              <thead role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader" className="cell-order">Pedido</th>
+                  <th role="columnheader" className="cell-customer">Cliente</th>
+                  <th role="columnheader" className="cell-products">Productos</th>
+                  <th role="columnheader" className="cell-delivery">Entrega</th>
+                  <th role="columnheader" className="cell-total">Total</th>
+                  <th role="columnheader" className="cell-payment">Pago</th>
+                  <th role="columnheader" className="cell-actions">Estado</th>
                 </tr>
               </thead>
-              <tbody>
-                {rows.map(({ order, first, extra, units }) => (
-                  <tr key={order.id}>
-                    <td>
+              <tbody role="rowgroup">
+                {rows.map(({ order, first, extra, units, delay }) => (
+                  <tr role="row" key={order.id}>
+                    <td role="cell" className="cell-order">
                       <strong>{order.id}</strong>
                       <small>{formatDate(order.createdAt)}</small>
+                      {delay && (
+                        <span className="payment-status delay-pill" title={delay.label}>
+                          Demorado
+                        </span>
+                      )}
+                      {delay && <small className="delay-note">{delay.label}</small>}
                     </td>
-                    <td>
-                      {order.customerName}
-                      <small>{order.email}</small>
+                    <td role="cell" className="cell-customer">
+                      <span>{order.customerName}</span>
+                      <small title={order.email}>
+                        {/* Si no entra, se parte primero antes de la arroba. */}
+                        {order.email.replace(/@.*/, "")}
+                        <wbr />
+                        {order.email.replace(/^[^@]*/, "")}
+                      </small>
                     </td>
-                    <td className="order-products">
+                    <td role="cell" className="cell-products order-products">
                       <strong title={first?.productName}>
                         {first?.productName ?? "Sin productos"}
                       </strong>
@@ -413,31 +498,33 @@ export default function AdminOrdersPage() {
                           : ""}
                       </small>
                     </td>
-                    <td>
-                      {order.deliveryMethod === "retiro"
-                        ? "Retiro en local"
-                        : isShippingToCoordinate(order)
-                          ? `Envío a coordinar${order.shippingCarrier ? ` · ${order.shippingCarrier}` : ""}`
-                          : order.shippingCarrier || "Envío"}
-                      <small>
+                    <td role="cell" className="cell-delivery">
+                      <span>
+                        {order.deliveryMethod === "retiro"
+                          ? "Retiro en local"
+                          : isShippingToCoordinate(order)
+                            ? `Envío a coordinar${order.shippingCarrier ? ` · ${order.shippingCarrier}` : ""}`
+                            : order.shippingCarrier || "Envío"}
+                      </span>
+                      <small title={order.address || "Sáenz 1587"}>
                         {order.address || "Sáenz 1587"}
                       </small>
                     </td>
-                    <td>
-                      {formatCurrency(order.total)}
+                    <td role="cell" className="cell-total">
+                      <strong>{formatCurrency(order.total)}</strong>
                       <small>Entrega {deliveryAmountLabel(order)}</small>
                     </td>
-                    <td>
+                    <td role="cell" className="cell-payment">
                       <span
                         className={`payment-status payment-${order.paymentStatus || "pending"}`}
                       >
                         {PAYMENT_LABELS[order.paymentStatus || "pending"]}
                       </span>
-                      {matchesCommercialFilter(order, "followup") && (
+                      {matchesCommercialFilter(order, "followup", now) && (
                         <small>Contactar al cliente</small>
                       )}
                     </td>
-                    <td>
+                    <td role="cell" className="cell-actions">
                       <select
                         aria-label={`Estado de ${order.id}`}
                         className={`status-select status-${order.status}`}
@@ -456,11 +543,9 @@ export default function AdminOrdersPage() {
                           </option>
                         ))}
                       </select>
-                    </td>
-                    <td>
                       <button
                         type="button"
-                        className="table-detail-button"
+                        className="button secondary table-detail-button"
                         onClick={() => setSelected(order)}
                       >
                         Ver detalle
@@ -482,13 +567,17 @@ export default function AdminOrdersPage() {
           >
             <div className="modal-heading">
               <div>
-                <span className="eyebrow orange">PEDIDO {selected.id}</span>
+                <span className="eyebrow">PEDIDO {selected.id}</span>
                 <small className="order-detail-created-at">
                   {formatDate(selected.createdAt)}
                 </small>
                 <h2>Detalle operativo</h2>
               </div>
-              <button type="button" onClick={() => setSelected(null)}>
+              <button
+                type="button"
+                aria-label="Cerrar detalle"
+                onClick={() => setSelected(null)}
+              >
                 ×
               </button>
             </div>
@@ -497,28 +586,27 @@ export default function AdminOrdersPage() {
                 <span>Cliente</span>
                 <strong>{selected.customerName}</strong>
                 <small>{selected.email}</small>
-                <small>DNI {selected.dni || "no disponible"}</small>
                 <small>
                   {selectedPhone || "Teléfono no disponible"}
                 </small>
+                <small>DNI {selected.dni || "no disponible"}</small>
                 {recoveryWhatsAppUrl && (
-                  <a
-                    href={recoveryWhatsAppUrl}
-                    className="button whatsapp-button"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Contactar al cliente
-                  </a>
+                  <div className="detail-action">
+                    <a
+                      href={recoveryWhatsAppUrl}
+                      className="button whatsapp-button"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Contactar por WhatsApp
+                    </a>
+                    <small>Se abre un mensaje ya armado con el pedido.</small>
+                  </div>
                 )}
               </div>
               <div>
                 <span>Entrega</span>
-                <strong>
-                  {selected.deliveryMethod === "envio"
-                    ? "Envío a domicilio"
-                    : "Retiro en sucursal"}
-                </strong>
+                <strong>{deliveryLabel(selected)}</strong>
                 <small>{selected.address || "Sáenz 1587"}</small>
               </div>
               <label>
@@ -550,7 +638,11 @@ export default function AdminOrdersPage() {
                   {paymentSummary && (
                     <>
                       <br />
-                      💳 {paymentSummary}
+                      <svg className="inline-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+                        <rect x="3" y="5.5" width="18" height="13" rx="2" />
+                        <path d="M3 10h18" />
+                      </svg>{" "}
+                      {paymentSummary}
                     </>
                   )}
                 </small>
@@ -585,12 +677,15 @@ export default function AdminOrdersPage() {
                     {selected.shippingCarrier || "Cotización manual"}
                   </strong>
                   <small>
-                    {selected.shippingDeliveryType === "sucursal"
-                      ? `${selected.shippingBranchName || "Sucursal"} · ${selected.shippingBranchAddress || ""}`
+                    {selected.shippingDeliveryType === "sucursal" && selected.shippingBranchName
+                      ? [selected.shippingBranchName, selected.shippingBranchAddress].filter(Boolean).join(" · ")
                       : selected.address}
                   </small>
                   <small>
-                    Estado: {selected.shippingStatus || "pendiente"}
+                    Estado:{" "}
+                    {selected.shippingStatus === "manual_quote"
+                      ? "cotización manual"
+                      : (selected.shippingStatus || "pendiente").replace(/_/g, " ")}
                     {selected.shippingTrackingNumber
                       ? ` · Tracking ${selected.shippingTrackingNumber}`
                       : ""}
@@ -642,7 +737,9 @@ export default function AdminOrdersPage() {
                 <strong>Productos</strong>
                 <span>
                   {selected.lines.reduce((sum, line) => sum + line.quantity, 0)}{" "}
-                  unidades
+                  {selected.lines.reduce((sum, line) => sum + line.quantity, 0) === 1
+                    ? "unidad"
+                    : "unidades"}
                 </span>
               </div>
               {selectedLines.map((line) => (

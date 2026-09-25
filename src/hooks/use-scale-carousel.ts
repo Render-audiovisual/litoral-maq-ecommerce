@@ -20,7 +20,9 @@ type ScaleCarouselOptions = {
 // Proporciones tomadas del carrusel de referencia: la central manda y las
 // laterales caen en progresión geométrica, que es lo que da la sensación de
 // profundidad sin usar 3D real.
-const SIDE_RATIO = 0.7; // vecinas legibles aun con material vertical 9:16
+// La central va ~10 % más grande que en la primera versión (pedido del dueño);
+// 0,64 × 1,1 ≈ 0,7 deja a las vecinas del mismo tamaño que antes.
+const SIDE_RATIO = 0.64; // vecinas legibles aun con material vertical 9:16
 const DECAY = 0.84; // reducción gradual hacia los extremos
 // Al encajar tarda cerca de un segundo en vez de medio: el recambio se ve
 // deslizar en lugar de acomodarse de golpe, que es lo que hace que la cinta
@@ -129,7 +131,7 @@ export function useScaleCarousel({ count, autoAdvanceMs = 0, paused = false }: S
         // La central ocupa poco más de un cuarto del ancho en escritorio y
         // bastante más en pantallas angostas, donde si no queda diminuta.
         const centerWidth = Math.min(
-          stageWidth * (stageWidth < 720 ? 0.62 : 0.3),
+          stageWidth * (stageWidth < 720 ? 0.68 : 0.33),
           stage.clientHeight * 0.5625,
         );
         const gap = stageWidth < 720 ? 10 : 18;

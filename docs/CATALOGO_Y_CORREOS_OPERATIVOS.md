@@ -21,6 +21,16 @@ npm run validate:catalog
 
 Resultado esperado del validador: `verdict: PASS`, sin códigos duplicados, filas inválidas ni diferencias de nombre/precio.
 
+### Descripción del producto (ficha técnica)
+
+La ficha del producto arma sola la tabla "Ficha técnica" a partir de la descripción. Formato recomendado:
+
+1. Primera línea: nombre y modelo (`Set de puntas de 25 piezas GLADIATOR SPP825.`).
+2. Una línea `Datos técnicos:` y debajo una viñeta por dato: `• Clave: valor` (`• Material: S2`).
+3. Al final, `Contenido: …` con lo que trae la caja (también se aceptan `Contiene.` e `Incluye.`).
+
+Marca, Categoría y Código aparecen siempre en la ficha, aunque no haya descripción. Lo que no siga este formato se muestra igual, como descripción común: nunca se pierde texto.
+
 ## 2. Activación en Supabase
 
 1. Ejecutar completa la migración `supabase/migrations/0010_catalog_limits_order_notifications.sql` en SQL Editor.
@@ -32,6 +42,23 @@ Resultado esperado del validador: `verdict: PASS`, sin códigos duplicados, fila
 Si Google no responde, cambian los encabezados, hay filas inválidas/duplicadas o llegan menos de 100 productos, la operación se cancela antes de escribir y el catálogo anterior queda intacto. Cada intento queda registrado en `catalog_sync_runs` con fecha, resultado y detalle técnico.
 
 La migración agrega el límite por compra, el estado `listo`, una outbox privada y triggers idempotentes. No envía correos por sí sola hasta desplegar la función y cargar el secreto.
+
+### Sincronización automática del catálogo
+
+Cada 3 horas, el mismo cron de 5 minutos que procesa los correos (`order-notifications`, ver "Reintento automático") lee el Sheet público y sincroniza el catálogo solo, después de despachar los correos de ese tick. Aplica las mismas reglas que el botón **Actualizar desde Sheet**: el Sheet manda en código, nombre, precio y qué productos siguen; el panel conserva visibilidad, ficha, logística y límite por compra. Las 3 horas se cuentan desde la última corrida registrada, manual o automática, exitosa o fallida.
+
+No hace falta migración, secreto ni cron nuevo. La corrida queda a nombre del primer administrador (el más antiguo en `profiles`); si no hay ninguno, se saltea.
+
+Freno de seguridad: la corrida automática no escribe nada y queda registrada como fallida ("Sincronización automática detenida: …") cuando el Sheet parece cortado (menos del 80 % de los productos del Sheet que hoy siguen vigentes, con 20 o más conocidos) o cuando más del 10 % de sus filas son ilegibles. En esos casos hay que revisar el Sheet y, si está bien, apretar el botón manual, que sigue funcionando igual.
+
+Cada corrida queda en `catalog_sync_runs`; las automáticas tienen una fuente que termina en "(automática)". Para ver las últimas:
+
+```sql
+select started_at, status, source, total, created, updated, unchanged, retired, error_detail
+from public.catalog_sync_runs
+order by started_at desc
+limit 10;
+```
 
 ## 3. Correos operativos
 

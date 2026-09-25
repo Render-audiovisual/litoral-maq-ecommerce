@@ -49,7 +49,7 @@ test.describe("@staging", () => {
     await page.getByLabel("DNI").fill("30123456");
     await page.getByText("Retiro en Sáenz 1587").click();
     await page.getByRole("button", { name: "Confirmar retiro" }).click();
-    await expect(page.getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
+    await expect(page.locator("main").getByText(/Retiro gratis en Sáenz 1587/)).toBeVisible();
     await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
     await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible(CROSS_ROUTE);
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AuthLayout } from "@/components/auth-layout";
 import { PasswordInput } from "@/components/password-input";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -79,36 +80,36 @@ export default function CreatePasswordPage() {
   }
 
   if (linkError || !session) {
-    return <main className="simple-auth-page"><section className="auth-card">
-      <span className="eyebrow orange">CREAR CONTRASEÑA</span><h1>Necesitamos confirmar tu email</h1>
+    return <AuthLayout>
+      <h1>Necesitamos confirmar tu email</h1>
       <div className="error-message" role="alert">
         {linkError || "Abrí el enlace que te enviamos por email desde este mismo navegador para terminar de crear tu cuenta."}
       </div>
-      <Link className="button primary large full" href="/confirmar-cuenta">Reenviar el email</Link>
-      <p><Link href="/login">Volver a ingresar</Link></p>
-    </section></main>;
+      <Link className="button primary large full auth-action" href="/confirmar-cuenta">Reenviar el email</Link>
+      <div className="auth-alt"><p><Link href="/login">Volver a ingresar</Link></p></div>
+    </AuthLayout>;
   }
 
   if (session.user.isAnonymous) {
-    return <main className="simple-auth-page"><section className="auth-card">
-      <span className="eyebrow orange">CREAR CONTRASEÑA</span><h1>Falta confirmar tu email</h1>
+    return <AuthLayout>
+      <h1>Falta confirmar tu email</h1>
       <div className="error-message" role="alert">
         Tu sesión sigue siendo de invitado. Abrí el enlace del email para confirmar la dirección y volvé acá.
       </div>
-      <Link className="button primary large full" href="/confirmar-cuenta">Reenviar el email</Link>
-      <p><Link href="/cuenta/pedidos">Ver mis pedidos como invitado</Link></p>
-    </section></main>;
+      <Link className="button primary large full auth-action" href="/confirmar-cuenta">Reenviar el email</Link>
+      <div className="auth-alt"><p><Link href="/cuenta/pedidos">Ver mis pedidos como invitado</Link></p></div>
+    </AuthLayout>;
   }
 
-  return <main className="simple-auth-page"><section className="auth-card">
-    <span className="eyebrow orange">CREAR CONTRASEÑA</span><h1>Elegí tu contraseña</h1>
+  return <AuthLayout>
+    <h1>Elegí tu contraseña</h1>
     <div className="success-message">Confirmamos <strong>{session.user.email}</strong>. Tus pedidos anteriores ya están en esta cuenta.</div>
-    <p>Debe tener al menos 6 caracteres.</p>
+    <p className="auth-intro">Debe tener al menos 6 caracteres.</p>
     <form onSubmit={submit}>
       <PasswordInput id="create-password" label="Contraseña" required autoComplete="new-password" minLength={6} value={password} onChange={(event) => setPassword(event.target.value)} />
       <PasswordInput id="create-password-confirmation" label="Repetir contraseña" required autoComplete="new-password" minLength={6} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} />
       {error && <div className="error-message" role="alert">{error}</div>}
       <button className="button primary large full" disabled={loading}>{loading ? "Guardando…" : "Guardar contraseña"}</button>
     </form>
-  </section></main>;
+  </AuthLayout>;
 }

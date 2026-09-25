@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
+import { AuthLayout } from "@/components/auth-layout";
 import { GoogleSignInButton } from "@/components/google-button";
 import { PasswordInput } from "@/components/password-input";
 import { useCaptcha } from "@/components/use-captcha";
@@ -62,9 +63,9 @@ function RegisterForm() {
   }
 
   return (
-    <main className="simple-auth-page"><section className="auth-card">
-      <span className="eyebrow orange">NUEVA CUENTA</span><h1>Registrate en Litoral Maq</h1>
-      <p>Tu cuenta guarda el historial de pedidos, te deja seguir cada envío y entrar desde cualquier dispositivo.</p>
+    <AuthLayout>
+      <h1>Creá tu cuenta</h1>
+      <p className="auth-intro">Tu cuenta guarda el historial de pedidos, te deja seguir cada envío y entrar desde cualquier dispositivo.</p>
       {confirmationEmail ? (
         <div>
           <div className="success-message">
@@ -72,8 +73,8 @@ function RegisterForm() {
               ? <>Te enviamos un enlace a <strong>{confirmationEmail}</strong>. Confirmalo y vas a poder elegir tu contraseña; tus pedidos ya quedan asociados a la cuenta.</>
               : <>Si el email <strong>{confirmationEmail}</strong> está disponible, te enviamos un enlace para confirmarlo. Si ya tenías cuenta, ingresá con tu contraseña.</>}
           </div>
-          <Link className="button primary large full" href={`/confirmar-cuenta?email=${encodeURIComponent(confirmationEmail)}`}>Reenviar email</Link>
-          <p><Link href="/login">Ya lo confirmé, quiero ingresar</Link></p>
+          <Link className="button primary large full auth-action" href={`/confirmar-cuenta?email=${encodeURIComponent(confirmationEmail)}`}>Reenviar email</Link>
+          <div className="auth-alt"><p><Link href="/login">Ya lo confirmé, quiero ingresar</Link></p></div>
         </div>
       ) : <>
         {convertingGuest && (
@@ -82,7 +83,7 @@ function RegisterForm() {
             <span>Creá tu cuenta con este mismo email y el pedido que acabás de hacer queda guardado en ella.</span>
           </div>
         )}
-        <GoogleSignInButton label="Crear cuenta con Google" />
+        <div className="auth-social"><GoogleSignInButton label="Crear cuenta con Google" /></div>
         <p className="auth-divider"><span>o con tu email</span></p>
         <form onSubmit={submit}>
           <label>Nombre y apellido<input required autoComplete="name" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></label>
@@ -97,8 +98,8 @@ function RegisterForm() {
           <button className="button primary large full" disabled={loading || !captcha.solved}>{loading ? "Creando…" : convertingGuest ? "Confirmar mi email" : "Crear cuenta"}</button>
         </form>
       </>}
-      <p>¿Ya tenés cuenta? <Link href="/login">Ingresá acá</Link></p>
-    </section></main>
+      {!confirmationEmail && <div className="auth-alt"><p>¿Ya tenés cuenta? <Link href="/login">Ingresá acá</Link></p></div>}
+    </AuthLayout>
   );
 }
 
