@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Product } from "@/lib/types";
-import { selectRelatedProducts } from "./related-products";
+import { RELATED_ROTATION_MS, selectRelatedProducts } from "./related-products";
 
 function product(id: string, category: string, overrides: Partial<Product> = {}): Product {
   return {
@@ -33,10 +33,10 @@ const catalog = CATEGORIES.flatMap((category, c) =>
 );
 
 describe("selectRelatedProducts", () => {
-  it("excluye el producto actual, no repite y trae hasta 10", () => {
+  it("excluye el producto actual, no repite y trae hasta 12", () => {
     const current = catalog[0];
     const picks = selectRelatedProducts(catalog, current);
-    expect(picks).toHaveLength(10);
+    expect(picks).toHaveLength(12);
     expect(picks.map((p) => p.id)).not.toContain(current.id);
     expect(new Set(picks.map((p) => p.id)).size).toBe(picks.length);
   });
@@ -77,5 +77,70 @@ describe("selectRelatedProducts", () => {
     ];
     expect(selectRelatedProducts(items, items[0]).map((p) => p.id)).toEqual(["ok"]);
     expect(selectRelatedProducts([items[0]], items[0])).toEqual([]);
+  });
+
+  describe("renovación y precios", () => {
+    const CATS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+    // 40 productos en 8 categorías, de $5.000 a $400.000 (cada categoría cubre todo el rango).
+    const big = Array.from({ length: 40 }, (_, i) =>
+      product(`p${i}`, CATS[i % 8], { price: 5000 + Math.round((i * 395000) / 39) }),
+    );
+    const now = 100 * RELATED_ROTATION_MS + 12345;
+    const ids = (list: Product[]) => list.map((p) => p.id);
+
+    it("trae hasta 12, sin el actual, sin repetir y con máximo dos por categoría", () => {
+      const picks = selectRelatedProducts(big, big[0], undefined, now);
+      expect(picks).toHaveLength(12);
+      expect(ids(picks)).not.toContain("p0");
+      expect(new Set(ids(picks)).size).toBe(12);
+      const perCategory = new Map<string, number>();
+      for (const p of picks) perCategory.set(p.category, (perCategory.get(p.category) ?? 0) + 1);
+      expect(Math.max(...perCategory.values())).toBeLessThanOrEqual(2);
+    });
+
+    it("incluye productos baratos, medios y caros (tercios del precio)", () => {
+      for (const current of [big[0], big[13], big[39]]) {
+        const candidates = big.filter((p) => p.id !== current.id).sort((a, b) => a.price! - b.price!);
+        const tierOf = (p: Product) => Math.floor((candidates.indexOf(p) * 3) / candidates.length);
+        const tiers = new Set(selectRelatedProducts(big, current, 12, now).map((p) => tierOf(big.find((b) => b.id === p.id)!)));
+        expect(tiers).toEqual(new Set([0, 1, 2]));
+      }
+    });
+
+    it("es el mismo dentro de la ventana de 48 h y cambia al cruzarla", () => {
+      const a = ids(selectRelatedProducts(big, big[5], 12, now));
+      expect(ids(selectRelatedProducts(big, big[5], 12, now + 1000))).toEqual(a);
+      expect(ids(selectRelatedProducts(big, big[5], 12, now + RELATED_ROTATION_MS))).not.toEqual(a);
+    });
+
+    it("nunca trae inactivos, agotados ni sin foto", () => {
+      const bad = [
+        product("x-inactivo", "A", { active: false }),
+        product("x-agotado", "B", { stock: 0 }),
+        product("x-sin-foto", "C", { image: null }),
+      ];
+      for (const t of [now, now + RELATED_ROTATION_MS, now + 2 * RELATED_ROTATION_MS]) {
+        const picks = ids(selectRelatedProducts([...big, ...bad], big[0], 12, t));
+        expect(picks.filter((id) => id.startsWith("x-"))).toEqual([]);
+      }
+    });
+
+    it("catálogos chicos devuelven lo que hay", () => {
+      expect(selectRelatedProducts(big.slice(0, 5), big[0], 12, now)).toHaveLength(4);
+    });
+
+    it("si se desactiva un producto sugerido, otro lo reemplaza", () => {
+      const before = selectRelatedProducts(big, big[0], 12, now);
+      const removed = before[4];
+      const after = selectRelatedProducts(
+        big.map((p) => (p.id === removed.id ? { ...p, active: false } : p)),
+        big[0],
+        12,
+        now,
+      );
+      expect(after).toHaveLength(12);
+      expect(ids(after)).not.toContain(removed.id);
+      expect(ids(after).filter((id) => !ids(before).includes(id))).not.toEqual([]);
+    });
   });
 });
