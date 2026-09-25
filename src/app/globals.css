@@ -105,6 +105,11 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .button.full { width: 100%; }
 .commerce-hero { min-height: 680px; padding: 54px 6vw 60px; display: grid; grid-template-columns: .86fr 1.14fr; grid-template-rows: auto 1fr; grid-template-areas: "copy promo" "actions promo"; column-gap: 4vw; align-items: center; overflow: hidden; background: linear-gradient(118deg, #fff 0 48%, #edf7f8 48% 100%); }
 .commerce-hero-copy { grid-area: copy; align-self: end; padding-left: clamp(18px, 2vw, 32px); }
+/* Entrada del hero: el texto llega por la izquierda y el carrusel por la derecha.
+   En escritorio el recorrido es más largo (se nota en una pantalla ancha); en celular
+   queda corto. Se ve también con "reducir animaciones" activado en el sistema (ver el
+   bloque prefers-reduced-motion): es una entrada única, sin bucle. */
+.commerce-hero-copy, .hero-promo-slider { --hero-copy-shift: -22px; --hero-carousel-shift: 28px; }
 .commerce-hero-copy > * { animation: hero-copy-in .52s cubic-bezier(.22, 1, .36, 1) both; }
 .commerce-hero-copy > :nth-child(2) { animation-delay: .06s; }
 .commerce-hero-copy > :nth-child(3) { animation-delay: .12s; }
@@ -486,12 +491,17 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 .choice-text strong { color: var(--navy); font-size: 15px; font-weight: 750; line-height: 1.25; }
 .choice-text small { color: #566472; font-size: 13px; font-weight: 500; line-height: 1.35; }
 
+@media (min-width: 821px) {
+  .commerce-hero-copy, .hero-promo-slider { --hero-copy-shift: -72px; --hero-carousel-shift: 96px; }
+  .commerce-hero-copy > * { animation-duration: .75s; }
+  .hero-promo-slider { animation-duration: .85s; animation-delay: .16s; }
+}
 @keyframes hero-copy-in {
-  from { opacity: 0; transform: translate3d(-22px, 0, 0); }
+  from { opacity: 0; transform: translate3d(var(--hero-copy-shift, -22px), 0, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 @keyframes hero-carousel-in {
-  from { opacity: 0; transform: translate3d(28px, 0, 0); }
+  from { opacity: 0; transform: translate3d(var(--hero-carousel-shift, 28px), 0, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 @keyframes checkout-heading-in {
@@ -1495,8 +1505,6 @@ td > small { margin-top: 4px; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .spinner { animation: none; }
-  .commerce-hero-copy > *,
-  .hero-promo-slider,
   .checkout-page .page-heading { animation: none; }
   /* El formulario y el cuadro de compra se animan igual con "reducir animaciones":
      es una entrada única de 0,75 s, sin bucle, y es parte del diseño pedido. */
