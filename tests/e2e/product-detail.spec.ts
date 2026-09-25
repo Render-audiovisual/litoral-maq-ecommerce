@@ -11,5 +11,5 @@ test("la ficha técnica siempre muestra marca, categoría y código, sin emojis 
   const trust = page.locator(".pdp-trust");
   await expect(trust).toContainText("Envíos a todo el país");
   await expect(trust).not.toContainText(/[🚚📍✓]/u);
-  await expect(page.getByRole("button", { name: "Agregar al carrito" })).toBeEnabled();
+  await expect(page.locator(".pdp-buy").getByRole("button", { name: "Agregar al carrito" })).toBeEnabled();
 });

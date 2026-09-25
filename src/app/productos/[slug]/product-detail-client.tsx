@@ -4,11 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/image-lightbox";
+import { ProductCard } from "@/components/product-card";
+import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
+import type { Product } from "@/lib/types";
 import { isMercadoPagoEnabled } from "@/services/payments";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { getPurchaseLimit } from "@/lib/purchase-limits";
 import { parseProductDescription } from "@/lib/product-description";
+import { selectRelatedProducts } from "@/lib/related-products";
 import {
   canAddProductToCart,
   getProductAvailability,
@@ -62,6 +66,58 @@ const TRUST = [
     ),
   },
 ];
+
+// Mismo ritmo y arrastre que la cinta de categorías del inicio. Como las otras
+// cintas del sitio, no mira `prefers-reduced-motion` (ver use-continuous-ticker:
+// si algún día se honra, que sea en todas a la vez) y no se frena con el mouse
+// encima: solo mientras se la arrastra.
+const RELATED_AUTO_SCROLL_SPEED = 75;
+const RELATED_MAX_FLING_SPEED = 1500;
+// Con pocas sugerencias el juego se repite hasta llenar el ancho; si no, la
+// vuelta a cero se notaría en pantallas anchas.
+const RELATED_MIN_BELT_ITEMS = 8;
+
+function RelatedProducts({ products, current }: { products: Product[]; current: Product }) {
+  const picks = selectRelatedProducts(products, current);
+  const belt = Array.from({ length: Math.ceil(RELATED_MIN_BELT_ITEMS / Math.max(1, picks.length)) }, () => picks).flat();
+  const { railRef, dragging, handlers } = useInfinitePointerMarquee({
+    itemCount: picks.length,
+    autoSpeed: RELATED_AUTO_SCROLL_SPEED,
+    maxFlingSpeed: RELATED_MAX_FLING_SPEED,
+  });
+  if (picks.length < 3) return null;
+
+  return (
+    <section className="pdp-related" aria-labelledby="pdp-related-title">
+      <h2 id="pdp-related-title">También te puede interesar</h2>
+      <p>Otras máquinas y herramientas que suelen sumarse a esta compra.</p>
+      <div
+        ref={railRef}
+        className={`pdp-related-rail${dragging ? " is-dragging" : ""}`}
+        role="group"
+        aria-roledescription="carrusel"
+        aria-label="Productos sugeridos, se puede deslizar"
+        {...handlers}
+      >
+        <div className="pdp-related-track">
+          {[...belt, ...belt].map((item, index) => {
+            const duplicate = index >= picks.length;
+            return (
+              <div
+                className="pdp-related-item"
+                aria-hidden={duplicate || undefined}
+                inert={duplicate || undefined}
+                key={`${item.id}-${index}`}
+              >
+                <ProductCard product={item} badge={null} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export function ProductDetailClient({ slug }: { slug: string }) {
   const { products, addToCart } = useStore();
@@ -305,6 +361,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
           </section>
         )}
       </div>
+      <RelatedProducts products={products} current={product} />
     </main>
   );
 }
