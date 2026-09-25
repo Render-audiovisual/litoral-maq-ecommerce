@@ -207,7 +207,8 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
    vez más chicas. El tamaño y la posición los calcula use-scale-carousel en
    cada frame; acá sólo va lo que no depende de la distancia al centro. */
 .testimonial-carousel { width: 100%; max-width: 1590px; margin: 0 auto; }
-.testimonial-stage { position: relative; height: clamp(430px, 62vh, 680px); margin-top: 26px; overflow: hidden; cursor: grab; user-select: none; touch-action: pan-y; }
+/* isolation: los z-index de las tarjetas (hasta 100, para que la del centro quede arriba) no salen del carrusel y no tapan la barra fija (z-index 50). */
+.testimonial-stage { isolation: isolate; position: relative; height: clamp(430px, 62vh, 680px); margin-top: 26px; overflow: hidden; cursor: grab; user-select: none; touch-action: pan-y; }
 .testimonial-carousel.is-dragging .testimonial-stage { cursor: grabbing; }
 .testimonial-card { position: absolute; left: 50%; top: 50%; aspect-ratio: 9 / 16; margin: 0; overflow: hidden; border: 1px solid rgba(0,42,73,.08); border-radius: clamp(10px, 1.1vw, 18px); background: var(--navy-dark); box-shadow: 0 16px 42px rgba(0,42,73,.14); transform: translate3d(-50%, -50%, 0); will-change: transform, width; }
 .testimonial-card.is-active { box-shadow: 0 30px 80px rgba(0,42,73,.24); }
