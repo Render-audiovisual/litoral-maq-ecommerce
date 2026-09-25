@@ -31,3 +31,11 @@ test('ofertas funciona como acceso directo a productos estrella', async ({ page 
   await expect(page).toHaveURL(/#productos-estrella$/);
   await expect(starProducts).toBeInViewport();
 });
+
+test('el cartel de retiro gratis lleva a la ficha del local en Google Maps', async ({ page }) => {
+  await page.goto('/');
+  const banner = page.locator('.commerce-hero').getByRole('link', { name: /Cómo llegar/ });
+  await expect(banner).toHaveAttribute('href', 'https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8');
+  await expect(banner).toHaveAttribute('target', '_blank');
+  await expect(banner).toContainText('RETIRO GRATIS');
+});

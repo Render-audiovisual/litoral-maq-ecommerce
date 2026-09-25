@@ -103,36 +103,38 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
   if (slides.length === 0) return null;
 
   return (
-    <div
-      className={`hero-promo-slider${dragging ? " is-dragging" : ""}`}
-      aria-label="Promociones destacadas"
-      aria-roledescription="carrusel"
-      {...handlers}
-    >
-      <div className="hero-promo-track" ref={trackRef}>
-        {trackItems.map((slide, index) => {
-          const duplicate = index >= slides.length;
-          return (
-            <Link
-              href={slide.href}
-              className="hero-promo-card"
-              aria-label={`Ver ${slide.label}`}
-              aria-hidden={duplicate}
-              tabIndex={duplicate ? -1 : undefined}
-              key={`${slide.id}-${index}`}
-            >
-              <Image
-                src={slide.image}
-                alt={slide.label}
-                fill
-                sizes="(max-width: 430px) 46vw, (max-width: 820px) 42vw, 270px"
-                loading={index < slides.length ? "eager" : "lazy"}
-                priority={index === 0}
-                draggable={false}
-              />
-            </Link>
-          );
-        })}
+    <div className="hero-promo-frame">
+      <div
+        className={`hero-promo-slider${dragging ? " is-dragging" : ""}`}
+        aria-label="Promociones destacadas"
+        aria-roledescription="carrusel"
+        {...handlers}
+      >
+        <div className="hero-promo-track" ref={trackRef}>
+          {trackItems.map((slide, index) => {
+            const duplicate = index >= slides.length;
+            return (
+              <Link
+                href={slide.href}
+                className="hero-promo-card"
+                aria-label={`Ver ${slide.label}`}
+                aria-hidden={duplicate}
+                tabIndex={duplicate ? -1 : undefined}
+                key={`${slide.id}-${index}`}
+              >
+                <Image
+                  src={slide.image}
+                  alt={slide.label}
+                  fill
+                  sizes="(max-width: 430px) 46vw, (max-width: 820px) 42vw, 270px"
+                  loading={index < slides.length ? "eager" : "lazy"}
+                  priority={index === 0}
+                  draggable={false}
+                />
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -266,15 +268,13 @@ export function HomeClient() {
             </Link>
           </div>
           <a className="pickup-banner" href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" />
-              <circle cx="12" cy="10" r="2.4" />
-            </svg>
+            <span className="pickup-tag">RETIRO GRATIS</span>
             <span className="pickup-banner-copy">
-              <strong>Retiro gratis en {STORE_ADDRESS}</strong>
-              <small>Abrí y probá tu producto antes de llevártelo.</small>
+              <strong>Retirá gratis en <span>{STORE_ADDRESS}</span></strong>
+              <small>Abrí y probá tu producto antes de llevártelo, sin compromiso.</small>
             </span>
-            <b>Cómo llegar</b>
+            <span className="pickup-arrow" aria-hidden="true">→</span>
+            <span className="sr-only">Cómo llegar (abre Google Maps)</span>
           </a>
         </div>
       </section>
