@@ -62,11 +62,14 @@ class FakeQueryBuilder {
   }
 }
 
-function createFakeClient(responses: Partial<Record<string, FakeResponse>>) {
+// Una lista por tabla devuelve una respuesta distinta en cada llamada.
+function createFakeClient(responses: Partial<Record<string, FakeResponse | FakeResponse[]>>) {
   const builders: FakeQueryBuilder[] = [];
   const client = {
     from(table: string) {
-      const builder = new FakeQueryBuilder(table, responses[table] ?? { data: null, error: null });
+      const entry = responses[table];
+      const response = Array.isArray(entry) ? entry.shift() : entry;
+      const builder = new FakeQueryBuilder(table, response ?? { data: null, error: null });
       builders.push(builder);
       return builder;
     },
@@ -245,6 +248,18 @@ describe("supabase persistence adapter", () => {
     ]);
   });
 
+  it("si la base rechaza el cambio de pago (empleado), el pedido igual queda cancelado", async () => {
+    const row = { id: "o1", status: "cancelado", payment_status: "pending", lines: [], total: 0, shipping: 0 };
+    const { client } = createFakeClient({
+      orders: [
+        { data: row, error: null },
+        { data: null, error: { code: "42501", message: "Como empleado solo podés cambiar el estado del pedido." } },
+      ],
+    });
+    const adapter = createSupabasePersistenceAdapter(client);
+    await expect(adapter.updateOrderStatus("o1", "cancelado")).resolves.toMatchObject({ id: "o1", status: "cancelado" });
+  });
+
   it("cancelar un pedido pagado no toca el pago", async () => {
     const row = { id: "o1", status: "cancelado", payment_status: "approved", lines: [], total: 0, shipping: 0 };
     const { client, builders } = createFakeClient({ orders: { data: row, error: null } });
@@ -286,7 +301,7 @@ describe("supabase persistence adapter", () => {
     ]);
   });
 
-  it("appendAuditEntry inserta en audit_log con las columnas esperadas", async () => {
+  it("appendAuditEntry no escribe: el registro lo arma la base con el autor real", async () => {
     const { client, builders } = createFakeClient({ audit_log: { data: null, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);
     await adapter.appendAuditEntry({
@@ -297,9 +312,7 @@ describe("supabase persistence adapter", () => {
       action: "producto.guardar",
       detail: "P1",
     });
-    expect(builders[0].table).toBe("audit_log");
-    const insertCall = builders[0].calls.find((c) => c.method === "insert");
-    expect(insertCall?.args[0]).toMatchObject({ admin_id: "admin-1", admin_email: "admin@litoralmaq.com" });
+    expect(builders).toHaveLength(0);
   });
 
   it("listAuditLog ordena por at descendente y respeta el límite", async () => {

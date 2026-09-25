@@ -297,7 +297,9 @@ export function createSupabasePersistenceAdapter(
           .eq("payment_status", "pending")
           .select()
           .maybeSingle();
-        if (cancelled.error) throw cancelled.error;
+        // 42501: un empleado no puede tocar el pago (la base lo rechaza). El
+        // estado ya quedó cancelado; el pago queda pendiente para un admin.
+        if (cancelled.error && cancelled.error.code !== "42501") throw cancelled.error;
         if (cancelled.data) return rowToOrder(cancelled.data);
       }
       return data ? rowToOrder(data) : null;
@@ -352,21 +354,10 @@ export function createSupabasePersistenceAdapter(
       if (error) throw error;
       return (data ?? []).map(rowToAudit);
     },
-    async appendAuditEntry(entry) {
-      // No se manda `id`: el id que genera createAuditEntry() (string
-      // "audit-<timestamp>-<random>") es para la key local del adapter
-      // local — audit_log.id en Postgres es uuid con gen_random_uuid() por
-      // default (ver 0001_schema.sql), y mandar el string causaba
-      // "invalid input syntax for type uuid" en cada insert (fire-and-forget,
-      // por eso no se notaba en la UI: el log simplemente nunca se grababa).
-      const { error } = await client.from("audit_log").insert({
-        at: entry.at,
-        admin_id: entry.adminId,
-        admin_email: entry.adminEmail,
-        action: entry.action,
-        detail: entry.detail,
-      });
-      if (error) throw error;
+    async appendAuditEntry() {
+      // No-op a propósito: el registro lo escriben triggers de la base con el
+      // autor real (20260925120000_admin_hardening.sql) y audit_log ya no
+      // acepta inserts desde la API. El panel solo lo lee (listAuditLog).
     },
   };
 }

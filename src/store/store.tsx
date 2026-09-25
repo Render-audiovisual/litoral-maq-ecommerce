@@ -23,7 +23,6 @@ import {
 } from "@/services/auth";
 import { flushOrderNotifications } from "@/services/order-notifications";
 import {
-  appendAuditEntry,
   applyDeleteProduct,
   applyReplaceProducts,
   applySaveProduct,
@@ -472,6 +471,20 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setAuditLog([]);
   }, []);
 
+  // Local: guarda la entrada en el navegador. Supabase: no escribe nada (la
+  // base registra el cambio con el autor real) y se relee el registro.
+  const recordAudit = useCallback(
+    async (entry: AuditEntry, failureMessage: string) => {
+      try {
+        await adapter.appendAuditEntry(entry);
+        setAuditLog(await adapter.listAuditLog());
+      } catch (error) {
+        console.warn(failureMessage, error);
+      }
+    },
+    [adapter],
+  );
+
   const saveProduct = useCallback(
     async (product: Product) => {
       const result = applySaveProduct(products, adminSession, product);
@@ -490,20 +503,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
             )
           : [persisted, ...current];
       });
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El producto se guardó, pero no se pudo registrar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El producto se guardó, pero no se pudo registrar la auditoría.");
       return persisted;
     },
-    [products, adminSession, adapter],
+    [products, adminSession, adapter, recordAudit],
   );
 
   const deleteProduct = useCallback(
@@ -519,19 +522,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setProducts((current) =>
         current.filter((product) => product.id !== id),
       );
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El producto se eliminó, pero no se pudo registrar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El producto se eliminó, pero no se pudo registrar la auditoría.");
     },
-    [products, adminSession, adapter],
+    [products, adminSession, adapter, recordAudit],
   );
 
   const replaceProducts = useCallback(
@@ -544,20 +537,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       const persisted = await adapter.replaceCatalog(result.next);
       setProducts(persisted);
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El catálogo se sincronizó, pero no se pudo guardar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El catálogo se sincronizó, pero no se pudo guardar la auditoría.");
       return persisted;
     },
-    [products, adminSession, adapter],
+    [products, adminSession, adapter, recordAudit],
   );
 
   const refreshProducts = useCallback(async () => {
@@ -598,17 +581,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setOrders((current) =>
         current.map((order) => (order.id === id ? persisted : order)),
       );
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El estado cambió, pero no se pudo guardar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El estado cambió, pero no se pudo guardar la auditoría.");
       try {
         await flushOrderNotifications(id);
       } catch (error) {
@@ -619,7 +592,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       return persisted;
     },
-    [orders, adminSession, adapter],
+    [orders, adminSession, adapter, recordAudit],
   );
 
   const updateOrderPaymentStatus = useCallback(
@@ -642,17 +615,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setOrders((current) =>
         current.map((order) => (order.id === id ? persisted : order)),
       );
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El pago cambió, pero no se pudo guardar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El pago cambió, pero no se pudo guardar la auditoría.");
       try {
         await flushOrderNotifications(id);
       } catch (error) {
@@ -663,7 +626,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       return persisted;
     },
-    [orders, adminSession, adapter],
+    [orders, adminSession, adapter, recordAudit],
   );
 
   const refreshOrders = useCallback(async () => {
