@@ -50,6 +50,47 @@ function productToInsert(
   };
 }
 
+type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
+
+// Mismo mapeo que productToInsert. id y updatedAt no son campos editables.
+const PRODUCT_COLUMNS = {
+  slug: "slug",
+  code: "code",
+  name: "name",
+  price: "price",
+  rawPrice: "raw_price",
+  category: "category",
+  brand: "brand",
+  image: "image",
+  images: "images",
+  stock: "stock",
+  lowStockThreshold: "low_stock_threshold",
+  purchaseLimit: "purchase_limit",
+  active: "active",
+  featured: "featured",
+  description: "description",
+  variants: "variants",
+  source: "source",
+  sourceRow: "source_row",
+  incomplete: "incomplete",
+  shippingWeightKg: "shipping_weight_kg",
+  shippingHeightCm: "shipping_height_cm",
+  shippingWidthCm: "shipping_width_cm",
+  shippingLengthCm: "shipping_length_cm",
+  shippingEnabled: "shipping_enabled",
+} as const satisfies Record<Exclude<keyof Product, "id" | "updatedAt">, keyof ProductUpdate>;
+
+/** Solo las columnas de los campos cambiados, para no pisar el resto. */
+export function productPatch(changes: Partial<Product>): ProductUpdate {
+  const patch: Record<string, unknown> = {};
+  for (const [field, column] of Object.entries(PRODUCT_COLUMNS)) {
+    if (!(field in changes)) continue;
+    const value = changes[field as keyof Product];
+    patch[column] = value === undefined ? null : value;
+  }
+  return patch as ProductUpdate;
+}
+
 function rowToProduct(row: ProductRow): Product {
   return {
     id: row.id,
@@ -212,6 +253,21 @@ export function createSupabasePersistenceAdapter(
       if (error) throw error;
       return rowToProduct(data);
     },
+    async updateProduct(id, changes, expectedUpdatedAt) {
+      if (!expectedUpdatedAt) {
+        throw new Error("Falta la versión del producto. Recargá la página y volvé a guardar.");
+      }
+      // Ningún trigger toca products.updated_at: lo avanza este guardado.
+      // El filtro por la versión leída hace de compare-and-set.
+      const { data, error } = await client
+        .from("products")
+        .update({ ...productPatch(changes), updated_at: new Date().toISOString() })
+        .eq("id", id)
+        .eq("updated_at", expectedUpdatedAt)
+        .select();
+      if (error) throw error;
+      return data?.length === 1 ? rowToProduct(data[0]) : null;
+    },
     async deleteProduct(id) {
       const { error } = await client.from("products").delete().eq("id", id);
       if (error) throw error;
@@ -277,11 +333,12 @@ export function createSupabasePersistenceAdapter(
       if (error) throw error;
       return rowToOrder(data);
     },
-    async updateOrderStatus(id, status) {
+    async updateOrderStatus(id, status, expectedStatus) {
       const { data, error } = await client
         .from("orders")
         .update({ status })
         .eq("id", id)
+        .eq("status", expectedStatus)
         .select()
         .maybeSingle();
       if (error) throw error;
@@ -304,11 +361,12 @@ export function createSupabasePersistenceAdapter(
       }
       return data ? rowToOrder(data) : null;
     },
-    async updateOrderPaymentStatus(id, paymentStatus) {
+    async updateOrderPaymentStatus(id, paymentStatus, expectedStatus) {
       const { data, error } = await client
         .from("orders")
         .update({ payment_status: paymentStatus })
         .eq("id", id)
+        .eq("payment_status", expectedStatus)
         .select()
         .maybeSingle();
       if (error) throw error;

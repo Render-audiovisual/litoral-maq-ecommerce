@@ -1,4 +1,4 @@
-import type { Order, OrderLine, Product } from "./types";
+import type { Order, OrderLine, PaymentStatus, Product } from "./types";
 
 export type ResolvedOrderLine = OrderLine & {
   productName: string;
@@ -6,6 +6,15 @@ export type ResolvedOrderLine = OrderLine & {
   unitPrice: number | null;
   lineTotal: number | null;
   historicalSnapshot: boolean;
+};
+
+export const PAYMENT_LABELS: Record<PaymentStatus, string> = {
+  pending: "Pendiente",
+  approved: "Confirmado",
+  rejected: "Rechazado",
+  cancelled: "Cancelado",
+  refunded: "Reintegrado",
+  charged_back: "Contracargo",
 };
 
 export const ORDER_STATUS_LABELS: Record<Order["status"], string> = {

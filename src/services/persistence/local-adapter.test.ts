@@ -94,7 +94,7 @@ describe("local persistence adapter", () => {
   it("createOrder y updateOrderStatus", async () => {
     const adapter = createLocalPersistenceAdapter();
     await adapter.createOrder(order);
-    const updated = await adapter.updateOrderStatus("o1", "enviado");
+    const updated = await adapter.updateOrderStatus("o1", "enviado", "pendiente");
     expect(updated?.status).toBe("enviado");
     const orders = await adapter.listOrders();
     expect(orders).toHaveLength(1);
@@ -104,7 +104,7 @@ describe("local persistence adapter", () => {
   it("updateOrderStatus sobre un id inexistente no rompe y devuelve null", async () => {
     const adapter = createLocalPersistenceAdapter();
     await adapter.createOrder(order);
-    const updated = await adapter.updateOrderStatus("no-existe", "enviado");
+    const updated = await adapter.updateOrderStatus("no-existe", "enviado", "pendiente");
     expect(updated).toBeNull();
   });
 
@@ -112,16 +112,46 @@ describe("local persistence adapter", () => {
     const adapter = createLocalPersistenceAdapter();
     await adapter.createOrder({ ...order, paymentStatus: undefined });
     await adapter.createOrder({ ...order, id: "o2", paymentStatus: "approved" });
-    expect((await adapter.updateOrderStatus("o1", "cancelado"))?.paymentStatus).toBe("cancelled");
-    expect((await adapter.updateOrderStatus("o2", "cancelado"))?.paymentStatus).toBe("approved");
+    expect((await adapter.updateOrderStatus("o1", "cancelado", "pendiente"))?.paymentStatus).toBe("cancelled");
+    expect((await adapter.updateOrderStatus("o2", "cancelado", "pendiente"))?.paymentStatus).toBe("approved");
   });
 
   it("updateOrderPaymentStatus persiste la confirmaciÃ³n administrativa", async () => {
     const adapter = createLocalPersistenceAdapter();
     await adapter.createOrder(order);
-    const updated = await adapter.updateOrderPaymentStatus("o1", "approved");
+    const updated = await adapter.updateOrderPaymentStatus("o1", "approved", "pending");
     expect(updated?.paymentStatus).toBe("approved");
     expect((await adapter.listOrders())[0].paymentStatus).toBe("approved");
+  });
+
+  it("updateOrderStatus no pisa un pedido que otra persona ya movió", async () => {
+    const adapter = createLocalPersistenceAdapter();
+    await adapter.createOrder({ ...order, status: "preparando" });
+    expect(await adapter.updateOrderStatus("o1", "listo", "pendiente")).toBeNull();
+    expect((await adapter.listOrders())[0].status).toBe("preparando");
+  });
+
+  it("updateOrderPaymentStatus no pisa un pago que otra persona ya cambió", async () => {
+    const adapter = createLocalPersistenceAdapter();
+    await adapter.createOrder({ ...order, paymentStatus: "approved" });
+    expect(await adapter.updateOrderPaymentStatus("o1", "rejected", "pending")).toBeNull();
+    expect((await adapter.listOrders())[0].paymentStatus).toBe("approved");
+  });
+
+  it("updateProduct guarda solo los cambios si la versión coincide y avanza la versión", async () => {
+    const adapter = createLocalPersistenceAdapter();
+    await adapter.replaceCatalog([{ ...product, updatedAt: "v1" }]);
+    const saved = await adapter.updateProduct("p1", { featured: true }, "v1");
+    expect(saved).toMatchObject({ featured: true, name: "Producto Uno" });
+    expect(saved?.updatedAt).not.toBe("v1");
+    expect((await adapter.listProducts())[0].featured).toBe(true);
+  });
+
+  it("updateProduct no escribe si otra persona cambió el producto", async () => {
+    const adapter = createLocalPersistenceAdapter();
+    await adapter.replaceCatalog([{ ...product, description: "de Gonzalo", updatedAt: "v2" }]);
+    expect(await adapter.updateProduct("p1", { featured: true }, "v1")).toBeNull();
+    expect((await adapter.listProducts())[0]).toMatchObject({ featured: false, description: "de Gonzalo" });
   });
 
   it("reassignOrdersCustomer reasigna solo los pedidos del id de origen", async () => {

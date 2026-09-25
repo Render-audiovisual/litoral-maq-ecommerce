@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Order, Product } from "@/lib/types";
-import { createSupabasePersistenceAdapter } from "./supabase-adapter";
+import { createSupabasePersistenceAdapter, productPatch } from "./supabase-adapter";
 import type { TypedSupabaseClient } from "./supabase/client";
 
 type FakeResponse = { data: unknown; error: unknown };
@@ -155,6 +155,44 @@ describe("supabase persistence adapter", () => {
     await expect(adapter.upsertProduct(product)).rejects.toThrow("boom");
   });
 
+  it("productPatch mapea solo los campos cambiados a sus columnas", () => {
+    expect(productPatch({ featured: true, lowStockThreshold: 4, shippingWeightKg: undefined })).toEqual({
+      featured: true,
+      low_stock_threshold: 4,
+      shipping_weight_kg: null,
+    });
+    expect(productPatch({})).toEqual({});
+  });
+
+  it("updateProduct manda solo el parche con compare-and-set sobre updated_at", async () => {
+    const { client, builders } = createFakeClient({
+      products: { data: [{ ...productRow, featured: true, updated_at: "v2" }], error: null },
+    });
+    const adapter = createSupabasePersistenceAdapter(client);
+    const saved = await adapter.updateProduct("p1", { featured: true }, "v1");
+    const payload = builders[0].calls.find((c) => c.method === "update")?.args[0] as Record<string, unknown>;
+    expect(Object.keys(payload).sort()).toEqual(["featured", "updated_at"]);
+    expect(builders[0].calls.filter((c) => c.method === "eq").map((c) => c.args)).toEqual([
+      ["id", "p1"], ["updated_at", "v1"],
+    ]);
+    expect(saved).toMatchObject({ featured: true, updatedAt: "v2" });
+  });
+
+  it("updateProduct devuelve null si ninguna fila coincidió (otra persona lo cambió)", async () => {
+    const { client } = createFakeClient({ products: { data: [], error: null } });
+    const adapter = createSupabasePersistenceAdapter(client);
+    expect(await adapter.updateProduct("p1", { featured: true }, "v1")).toBeNull();
+  });
+
+  it("updateOrderPaymentStatus exige el pago que veía la persona", async () => {
+    const { client, builders } = createFakeClient({ orders: { data: null, error: null } });
+    const adapter = createSupabasePersistenceAdapter(client);
+    expect(await adapter.updateOrderPaymentStatus("o1", "approved", "pending")).toBeNull();
+    expect(builders[0].calls.filter((c) => c.method === "eq").map((c) => c.args)).toEqual([
+      ["id", "o1"], ["payment_status", "pending"],
+    ]);
+  });
+
   it("deleteProduct filtra por id con eq", async () => {
     const { client, builders } = createFakeClient({ products: { data: null, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);
@@ -232,7 +270,7 @@ describe("supabase persistence adapter", () => {
   it("updateOrderStatus devuelve null cuando no hay fila (maybeSingle sin match)", async () => {
     const { client } = createFakeClient({ orders: { data: null, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);
-    const result = await adapter.updateOrderStatus("no-existe", "enviado");
+    const result = await adapter.updateOrderStatus("no-existe", "enviado", "pendiente");
     expect(result).toBeNull();
   });
 
@@ -240,8 +278,11 @@ describe("supabase persistence adapter", () => {
     const row = { id: "o1", status: "cancelado", payment_status: "pending", lines: [], total: 0, shipping: 0 };
     const { client, builders } = createFakeClient({ orders: { data: row, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);
-    await adapter.updateOrderStatus("o1", "cancelado");
+    await adapter.updateOrderStatus("o1", "cancelado", "pendiente");
     expect(builders).toHaveLength(2);
+    expect(builders[0].calls.filter((c) => c.method === "eq").map((c) => c.args)).toEqual([
+      ["id", "o1"], ["status", "pendiente"],
+    ]);
     expect(builders[1].calls.find((c) => c.method === "update")?.args[0]).toEqual({ payment_status: "cancelled" });
     expect(builders[1].calls.filter((c) => c.method === "eq").map((c) => c.args)).toEqual([
       ["id", "o1"], ["payment_status", "pending"],
@@ -257,14 +298,14 @@ describe("supabase persistence adapter", () => {
       ],
     });
     const adapter = createSupabasePersistenceAdapter(client);
-    await expect(adapter.updateOrderStatus("o1", "cancelado")).resolves.toMatchObject({ id: "o1", status: "cancelado" });
+    await expect(adapter.updateOrderStatus("o1", "cancelado", "pendiente")).resolves.toMatchObject({ id: "o1", status: "cancelado" });
   });
 
   it("cancelar un pedido pagado no toca el pago", async () => {
     const row = { id: "o1", status: "cancelado", payment_status: "approved", lines: [], total: 0, shipping: 0 };
     const { client, builders } = createFakeClient({ orders: { data: row, error: null } });
     const adapter = createSupabasePersistenceAdapter(client);
-    await adapter.updateOrderStatus("o1", "cancelado");
+    await adapter.updateOrderStatus("o1", "cancelado", "pendiente");
     expect(builders).toHaveLength(1);
   });
 

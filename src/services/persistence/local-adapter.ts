@@ -32,20 +32,36 @@ function write<T>(key: string, value: T) {
  * claves que usaba `store.tsx` antes de la Etapa 5. Es también el camino de
  * rollback si el adaptador Supabase no está disponible o configurado.
  */
+function readProducts(): Product[] {
+  // Distingue "nunca se guardó nada" (primera visita: arranca del seed
+  // de 460 productos reales) de "se guardó un catálogo vacío" (el
+  // admin borró todo a propósito: se respeta, no se re-siembra).
+  if (typeof window === "undefined") return productsSeed as Product[];
+  const raw = window.localStorage.getItem(KEYS.products);
+  if (raw === null) return productsSeed as Product[];
+  try {
+    return JSON.parse(raw) as Product[];
+  } catch {
+    return productsSeed as Product[];
+  }
+}
+
 export function createLocalPersistenceAdapter(): PersistenceAdapter {
   return {
     async listProducts() {
-      // Distingue "nunca se guardó nada" (primera visita: arranca del seed
-      // de 460 productos reales) de "se guardó un catálogo vacío" (el
-      // admin borró todo a propósito: se respeta, no se re-siembra).
-      if (typeof window === "undefined") return productsSeed as Product[];
-      const raw = window.localStorage.getItem(KEYS.products);
-      if (raw === null) return productsSeed as Product[];
-      try {
-        return JSON.parse(raw) as Product[];
-      } catch {
-        return productsSeed as Product[];
-      }
+      return readProducts();
+    },
+    async updateProduct(id, changes, expectedUpdatedAt) {
+      // Misma semántica que Supabase: solo escribe si nadie cambió la versión.
+      const products = readProducts();
+      const current = products.find((item) => item.id === id);
+      if (!current || current.updatedAt !== expectedUpdatedAt) return null;
+      const updated = { ...current, ...changes, updatedAt: new Date().toISOString() };
+      write(
+        KEYS.products,
+        products.map((item) => (item.id === id ? updated : item)),
+      );
+      return updated;
     },
     async upsertProduct(product) {
       const products = read<Product[]>(KEYS.products, []);
@@ -98,11 +114,13 @@ export function createLocalPersistenceAdapter(): PersistenceAdapter {
       write(KEYS.orders, [created, ...orders]);
       return created;
     },
-    async updateOrderStatus(id, status) {
+    async updateOrderStatus(id, status, expectedStatus) {
       const orders = read<Order[]>(KEYS.orders, []);
       let updated: Order | null = null;
       const next = orders.map((order) => {
-        if (order.id !== id) return order;
+        // Igual que el filtro por estado en Supabase: si otra persona ya lo
+        // movió, no se escribe y el store avisa.
+        if (order.id !== id || order.status !== expectedStatus) return order;
         updated = order.status === status
           ? order
           : {
@@ -119,11 +137,11 @@ export function createLocalPersistenceAdapter(): PersistenceAdapter {
       write(KEYS.orders, next);
       return updated;
     },
-    async updateOrderPaymentStatus(id, paymentStatus) {
+    async updateOrderPaymentStatus(id, paymentStatus, expectedStatus) {
       const orders = read<Order[]>(KEYS.orders, []);
       let updated: Order | null = null;
       const next = orders.map((order) => {
-        if (order.id !== id) return order;
+        if (order.id !== id || (order.paymentStatus ?? "pending") !== expectedStatus) return order;
         updated = order.paymentStatus === paymentStatus
           ? order
           : { ...order, paymentStatus, statusChangedAt: new Date().toISOString() };
