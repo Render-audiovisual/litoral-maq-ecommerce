@@ -4,6 +4,7 @@ import {
 } from "../_shared/payments/mercadopago.ts";
 import { serviceClient } from "../_shared/http.ts";
 import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
+import { logEdgeError } from "../_shared/monitoring.ts";
 
 declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
 
@@ -194,6 +195,9 @@ Deno.serve(async (request) => {
       await db.from("payment_events").update({ processing_error: message })
         .eq("provider", "mercadopago").eq("event_key", eventKey);
     }
+    logEdgeError("mercado-pago-webhook", error, {
+      event_key: eventKey || undefined,
+    });
     const retryable = typeof (error as { retryable?: unknown })?.retryable ===
         "boolean"
       ? Boolean((error as { retryable?: unknown }).retryable)

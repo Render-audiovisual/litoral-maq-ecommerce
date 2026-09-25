@@ -7,6 +7,7 @@ import {
   requireUser,
   serviceClient,
 } from "../_shared/http.ts";
+import { logEdgeError } from "../_shared/monitoring.ts";
 
 type RequestedLine = { productId: string; quantity: number };
 
@@ -279,6 +280,10 @@ Deno.serve(async (request) => {
       reused: false,
     });
   } catch (error) {
+    // Los 4xx son respuestas esperadas al cliente; se loguea lo inesperado.
+    if (!(error instanceof HttpError && error.status < 500)) {
+      logEdgeError("payment-create", error);
+    }
     return errorResponse(request, error);
   }
 });

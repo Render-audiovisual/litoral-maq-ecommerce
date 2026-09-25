@@ -9,6 +9,9 @@ import {
 } from "../_shared/http.ts";
 import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
 import { maybeRunAutoCatalogSync } from "../_shared/catalog-auto-sync.ts";
+import { collectFindings } from "../_shared/health-checks.ts";
+import { runAlerting, supabaseAlertStore } from "../_shared/alerting.ts";
+import { logEdgeError } from "../_shared/monitoring.ts";
 
 declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void } | undefined;
 
@@ -45,6 +48,25 @@ Deno.serve(async (request) => {
           code: lifecycleError.code,
         }));
       }
+      const lifecycleResult = lifecycleError
+        ? null
+        : Array.isArray(lifecycle)
+        ? lifecycle[0] ?? null
+        : lifecycle;
+      // Latido del cron: lo lee el endpoint health y la alerta de cron caído.
+      // Nunca frena el tick.
+      try {
+        const { error: heartbeatError } = await db.from("system_heartbeat")
+          .upsert({
+            id: "cron",
+            last_tick_at: new Date().toISOString(),
+            last_lifecycle: lifecycleResult,
+            last_error: lifecycleError?.message ?? null,
+          }, { onConflict: "id" });
+        if (heartbeatError) throw heartbeatError;
+      } catch (error) {
+        logEdgeError("order-notifications", error, { step: "heartbeat" });
+      }
       const notifications = await processPendingOrderNotifications(
         db,
         null,
@@ -69,17 +91,29 @@ Deno.serve(async (request) => {
       } else {
         catalogSync = await syncRun;
       }
+      // Alertas al equipo, también en segundo plano y aisladas del resto.
+      const alertsRun = (async () => {
+        const { findings, unchecked } = await collectFindings(db);
+        return await runAlerting(supabaseAlertStore(db), findings, unchecked);
+      })().catch((error) => {
+        logEdgeError("order-notifications", error, { step: "alerts" });
+        return { status: "failed" as const };
+      });
+      let alerts: unknown;
+      if (typeof EdgeRuntime !== "undefined" && EdgeRuntime) {
+        EdgeRuntime.waitUntil(alertsRun);
+        alerts = { status: "background" };
+      } else {
+        alerts = await alertsRun;
+      }
       return json(
         request,
         {
-          lifecycle: lifecycleError
-            ? null
-            : Array.isArray(lifecycle)
-            ? lifecycle[0] ?? null
-            : lifecycle,
+          lifecycle: lifecycleResult,
           ...(lifecycleError ? { lifecycleError: lifecycleError.message } : {}),
           notifications,
           catalogSync,
+          alerts,
         },
       );
     }
