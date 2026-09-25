@@ -1,9 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useStore } from "@/store/store";
 import { formatDate } from "@/lib/utils";
 import { SHIPPING_CARRIER_OPTIONS } from "@/lib/order-details";
 import { resolveRequestedProvider } from "@/services/provider";
+import { getPersistenceAdapter } from "@/services/persistence";
+import {
+  formatAgo,
+  SEVERITY_LABEL,
+  sortAlerts,
+  syncSummary,
+  tickDot,
+  type SystemStatus,
+} from "@/lib/system-status";
 
 type IntegrationState = "ok" | "off" | "warn";
 
@@ -15,6 +25,95 @@ const STATE_LABEL: Record<IntegrationState, string> = {
 
 // "Vía Cargo, OCA o Andreani": las mismas empresas que ofrece el checkout.
 const CARRIERS = `${SHIPPING_CARRIER_OPTIONS.slice(0, -1).join(", ")} o ${SHIPPING_CARRIER_OPTIONS.at(-1)}`;
+
+const HEALTH_URL = `${(process.env.NEXT_PUBLIC_SUPABASE_URL || "https://bhtaecnzpuotlsenbdlz.supabase.co").replace(/\/$/, "")}/functions/v1/health`;
+
+function SystemStatusCard() {
+  // undefined = cargando, null = no disponible (modo local), "error" = falló.
+  const [status, setStatus] = useState<SystemStatus | null | "error" | undefined>(undefined);
+  useEffect(() => {
+    let alive = true;
+    getPersistenceAdapter()
+      .getSystemStatus()
+      .then((value) => alive && setStatus(value))
+      .catch(() => alive && setStatus("error"));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  const now = new Date();
+
+  return (
+    <section className="admin-card wide">
+      <div className="card-heading">
+        <div>
+          <h2>Estado del sistema</h2>
+          <p>Cron de pedidos, alertas al equipo y catálogo</p>
+        </div>
+      </div>
+      {status === undefined ? (
+        <div className="empty-inline">Cargando el estado del sistema…</div>
+      ) : status === null ? (
+        <div className="empty-inline">Disponible solo con la base real.</div>
+      ) : status === "error" ? (
+        <div className="empty-inline">No se pudo leer el estado del sistema. Probá recargar la página.</div>
+      ) : (
+        <>
+          <dl className="settings-facts">
+            <div>
+              <dt>Cron</dt>
+              <dd>
+                <strong className="system-tick">
+                  <span className={`dot ${tickDot(status.lastTickAt, now)}`} aria-hidden="true" />
+                  {formatAgo(status.lastTickAt, now)}
+                </strong>
+                <span>Corre cada 5 minutos: vence pedidos, manda correos y revisa alertas.</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Catálogo</dt>
+              <dd>
+                <strong>
+                  {status.lastSync
+                    ? `${status.lastSync.status === "succeeded" ? "Sincronizado" : "Falló"} · ${formatAgo(status.lastSync.startedAt, now)}`
+                    : "Sin sincronizaciones registradas"}
+                </strong>
+                {status.lastSync && <span>{syncSummary(status.lastSync)}</span>}
+              </dd>
+            </div>
+            <div>
+              <dt>Monitor</dt>
+              <dd>
+                <strong>Endpoint de salud</strong>
+                <span>Para UptimeRobot o similar: responde 200 si todo anda y 503 si no.</span>
+                <code>{HEALTH_URL}</code>
+              </dd>
+            </div>
+          </dl>
+          {status.alerts.length ? (
+            <ul className="integration-list system-alerts" aria-label="Alertas activas">
+              {sortAlerts(status.alerts).map((alert) => (
+                <li key={alert.key}>
+                  <StateIcon state="warn" />
+                  <div>
+                    <strong>{alert.title}</strong>
+                    <span>{alert.detail}</span>
+                    <span>Desde {formatDate(alert.firstSeenAt)}</span>
+                  </div>
+                  <span className={`payment-status${alert.severity === "medium" ? "" : " payment-rejected"}`}>
+                    {SEVERITY_LABEL[alert.severity]}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="empty-inline system-alerts">Sin alertas activas</div>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
 
 function StateIcon({ state }: { state: IntegrationState }) {
   return (
@@ -182,6 +281,7 @@ export default function AdminSettingsPage() {
             ))}
           </ul>
         </section>
+        <SystemStatusCard />
         <section className="admin-card wide list-card">
           <div className="card-heading">
             <div>
