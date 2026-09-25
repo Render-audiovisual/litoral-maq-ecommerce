@@ -506,9 +506,10 @@ Sin cambios: rutas, componentes de UI, `next.config.ts` (sigue
      ```sql
      update public.profiles set role = 'admin' where email = 'admin-real@tu-dominio.com';
      ```
-     (el trigger `profiles_role_guard` impide que lo haga cualquier otra
-     vía que no sea una sesión ya-admin o el propio dashboard con la
-     service_role).
+     (el trigger `profiles_identity_guard` solo acepta ese cambio desde el
+     SQL Editor o desde una sesión admin; por la API, incluida la
+     service_role, se descarta). Para los siguientes roles, desactivar
+     cuentas y el resto del procedimiento: `docs/ADMIN_CUENTAS.md`.
 7. **Probar permisos** (con ese usuario ya admin, y con un usuario común):
    - Un usuario común no debe poder leer/escribir `audit_log` ni cambiar
      `orders.status`, ni ver pedidos de otro `customer_id`.

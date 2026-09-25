@@ -3,6 +3,15 @@
 import productsSeed from "@/data/products.json";
 import { guestIdFromEmail, isSessionExpired, normalizeEmail } from "@/lib/auth";
 import { mergeCartLines } from "@/lib/cart";
+import {
+  changedProductFields,
+  ConflictError,
+  orderConflictMessage,
+  PRODUCT_CONFLICT_MESSAGE,
+  PRODUCT_DELETED_MESSAGE,
+} from "@/lib/concurrency";
+import { clearAdminActivity } from "@/lib/admin-idle";
+import { adminOrderStatusLabel, PAYMENT_LABELS } from "@/lib/order-details";
 import { clampPurchaseQuantity } from "@/lib/purchase-limits";
 import type {
   AuditEntry,
@@ -23,7 +32,6 @@ import {
 } from "@/services/auth";
 import { flushOrderNotifications } from "@/services/order-notifications";
 import {
-  appendAuditEntry,
   applyDeleteProduct,
   applyReplaceProducts,
   applySaveProduct,
@@ -56,14 +64,17 @@ type Store = {
   setAdminSession: (session: Session | null) => Promise<void>;
   signOutCustomer: () => Promise<void>;
   signOutAdmin: () => Promise<void>;
-  saveProduct: (product: Product) => Promise<Product>;
+  /** Con `original` (la copia que se abrió) guarda solo lo cambiado y sin
+   * pisar a otra persona; sin él, crea el producto. */
+  saveProduct: (product: Product, original?: Product) => Promise<Product>;
   deleteProduct: (id: string) => Promise<void>;
   replaceProducts: (products: Product[]) => Promise<Product[]>;
   refreshProducts: () => Promise<Product[]>;
   createOrder: (order: Order) => Promise<Order>;
-  updateOrderStatus: (id: string, status: Order["status"]) => Promise<Order>;
+  // `order` es el pedido tal como lo ve la persona: su estado es el esperado.
+  updateOrderStatus: (order: Order, status: Order["status"]) => Promise<Order>;
   updateOrderPaymentStatus: (
-    id: string,
+    order: Order,
     status: NonNullable<Order["paymentStatus"]>,
   ) => Promise<Order>;
   refreshOrders: () => Promise<Order[]>;
@@ -113,6 +124,7 @@ function createFailingAdapter(message: string): PersistenceAdapter {
   return {
     listProducts: fail,
     upsertProduct: fail,
+    updateProduct: fail,
     deleteProduct: fail,
     replaceCatalog: fail,
     listCustomers: fail,
@@ -323,7 +335,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   // Notificaciones operativas sin proveedor externo: mientras hay una
   // sesión activa, actualiza los pedidos cada 15 s y también al volver a la
   // pestaña. Así los contadores del panel y los estados del cliente cambian
-  // sin exigir F5. Supabase sigue aplicando RLS en cada lectura.
+  // sin exigir F5 (y cada persona del panel ve lo que movieron las demás).
+  // Con la pestaña oculta no consulta. Supabase aplica RLS en cada lectura.
   useEffect(() => {
     if (!ready || (!adminSession && !customerSession)) return;
     let stopped = false;
@@ -342,7 +355,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (document.visibilityState === "visible") void refreshOrders();
     };
     const timer = window.setInterval(
-      () => void refreshOrders(),
+      () => {
+        if (document.visibilityState === "visible") void refreshOrders();
+      },
       ORDER_REFRESH_INTERVAL_MS,
     );
     document.addEventListener("visibilitychange", onVisibilityChange);
@@ -465,6 +480,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const signOutAdmin = useCallback(async () => {
     await getAuthAdapter().signOut();
     localStorage.removeItem(keys.adminSession);
+    clearAdminActivity();
     setAdminSessionState(null);
     setCustomerSessionState(null);
     setOrders([]);
@@ -472,8 +488,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setAuditLog([]);
   }, []);
 
+  // Local: guarda la entrada en el navegador. Supabase: no escribe nada (la
+  // base registra el cambio con el autor real) y se relee el registro.
+  const recordAudit = useCallback(
+    async (entry: AuditEntry, failureMessage: string) => {
+      try {
+        await adapter.appendAuditEntry(entry);
+        setAuditLog(await adapter.listAuditLog());
+      } catch (error) {
+        console.warn(failureMessage, error);
+      }
+    },
+    [adapter],
+  );
+
   const saveProduct = useCallback(
-    async (product: Product) => {
+    async (product: Product, original?: Product) => {
       const result = applySaveProduct(products, adminSession, product);
       if (!result.applied || !result.auditEntry) {
         throw new Error(
@@ -481,7 +511,33 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         );
       }
 
-      const persisted = await adapter.upsertProduct(product);
+      let persisted: Product;
+      if (original) {
+        const changes = changedProductFields(original, product);
+        if (!Object.keys(changes).length) return original;
+        const updated = await adapter.updateProduct(
+          product.id,
+          changes,
+          original.updatedAt,
+        );
+        if (!updated) {
+          // No se pisa nada: se trae la versión vigente para mostrarla.
+          const latest = await adapter.listProducts();
+          setProducts(latest);
+          const fresh = latest.find((item) => item.id === product.id);
+          if (fresh && fresh.updatedAt === original.updatedAt) {
+            // Misma versión y aun así 0 filas: no fue otra persona.
+            throw new Error("La base no confirmó el guardado. Revisá tus permisos y volvé a intentar.");
+          }
+          throw new ConflictError(
+            fresh ? PRODUCT_CONFLICT_MESSAGE : PRODUCT_DELETED_MESSAGE,
+            fresh,
+          );
+        }
+        persisted = updated;
+      } else {
+        persisted = await adapter.upsertProduct(product);
+      }
       setProducts((current) => {
         const exists = current.some((item) => item.id === persisted.id);
         return exists
@@ -490,20 +546,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
             )
           : [persisted, ...current];
       });
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El producto se guardó, pero no se pudo registrar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El producto se guardó, pero no se pudo registrar la auditoría.");
       return persisted;
     },
-    [products, adminSession, adapter],
+    [products, adminSession, adapter, recordAudit],
   );
 
   const deleteProduct = useCallback(
@@ -519,19 +565,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setProducts((current) =>
         current.filter((product) => product.id !== id),
       );
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El producto se eliminó, pero no se pudo registrar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El producto se eliminó, pero no se pudo registrar la auditoría.");
     },
-    [products, adminSession, adapter],
+    [products, adminSession, adapter, recordAudit],
   );
 
   const replaceProducts = useCallback(
@@ -544,20 +580,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       const persisted = await adapter.replaceCatalog(result.next);
       setProducts(persisted);
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El catálogo se sincronizó, pero no se pudo guardar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El catálogo se sincronizó, pero no se pudo guardar la auditoría.");
       return persisted;
     },
-    [products, adminSession, adapter],
+    [products, adminSession, adapter, recordAudit],
   );
 
   const refreshProducts = useCallback(async () => {
@@ -586,29 +612,38 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     [adapter],
   );
 
+  // Tras un conflicto: recarga los pedidos y devuelve la versión vigente.
+  const reloadOrder = useCallback(
+    async (id: string) => {
+      const latest = await adapter.listOrders();
+      setOrders(latest);
+      return latest.find((item) => item.id === id);
+    },
+    [adapter],
+  );
+
   const updateOrderStatus = useCallback(
-    async (id: string, status: Order["status"]) => {
+    async (order: Order, status: Order["status"]) => {
+      const { id } = order;
       const result = applyUpdateOrderStatus(orders, adminSession, id, status);
       if (!result.applied || !result.auditEntry) {
         throw new Error("La sesión de administrador venció. Volvé a ingresar.");
       }
-      const persisted = await adapter.updateOrderStatus(id, status);
-      if (!persisted)
+      const persisted = await adapter.updateOrderStatus(id, status, order.status);
+      if (!persisted) {
+        const latest = await reloadOrder(id);
+        if (latest && latest.status !== order.status) {
+          throw new ConflictError(
+            orderConflictMessage(adminOrderStatusLabel(latest.status, latest.deliveryMethod)),
+            latest,
+          );
+        }
         throw new Error("Supabase no confirmó el cambio de estado.");
+      }
       setOrders((current) =>
         current.map((order) => (order.id === id ? persisted : order)),
       );
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El estado cambió, pero no se pudo guardar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El estado cambió, pero no se pudo guardar la auditoría.");
       try {
         await flushOrderNotifications(id);
       } catch (error) {
@@ -619,11 +654,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       return persisted;
     },
-    [orders, adminSession, adapter],
+    [orders, adminSession, adapter, recordAudit, reloadOrder],
   );
 
   const updateOrderPaymentStatus = useCallback(
-    async (id: string, paymentStatus: NonNullable<Order["paymentStatus"]>) => {
+    async (order: Order, paymentStatus: NonNullable<Order["paymentStatus"]>) => {
+      const { id } = order;
+      const expected = order.paymentStatus ?? "pending";
       const result = applyUpdateOrderPaymentStatus(
         orders,
         adminSession,
@@ -636,23 +673,23 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const persisted = await adapter.updateOrderPaymentStatus(
         id,
         paymentStatus,
+        expected,
       );
-      if (!persisted)
+      if (!persisted) {
+        const latest = await reloadOrder(id);
+        const current = latest?.paymentStatus ?? "pending";
+        if (latest && current !== expected) {
+          throw new ConflictError(
+            orderConflictMessage(PAYMENT_LABELS[current], "El pago del pedido"),
+            latest,
+          );
+        }
         throw new Error("Supabase no confirmó el estado del pago.");
+      }
       setOrders((current) =>
         current.map((order) => (order.id === id ? persisted : order)),
       );
-      setAuditLog((current) =>
-        appendAuditEntry(current, result.auditEntry as AuditEntry),
-      );
-      try {
-        await adapter.appendAuditEntry(result.auditEntry);
-      } catch (error) {
-        console.warn(
-          "El pago cambió, pero no se pudo guardar la auditoría.",
-          error,
-        );
-      }
+      await recordAudit(result.auditEntry, "El pago cambió, pero no se pudo guardar la auditoría.");
       try {
         await flushOrderNotifications(id);
       } catch (error) {
@@ -663,7 +700,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       return persisted;
     },
-    [orders, adminSession, adapter],
+    [orders, adminSession, adapter, recordAudit, reloadOrder],
   );
 
   const refreshOrders = useCallback(async () => {

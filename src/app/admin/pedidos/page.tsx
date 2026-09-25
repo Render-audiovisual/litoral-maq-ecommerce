@@ -12,6 +12,7 @@ import {
   ADMIN_ORDER_STATUS_LABELS,
   ORDER_STATUS_LABELS,
   orderStatusOptions,
+  PAYMENT_LABELS,
   resolveOrderLines,
 } from "@/lib/order-details";
 import { getOrderDelay } from "@/lib/order-delays";
@@ -45,15 +46,6 @@ function deliveryAmountLabel(order: Order) {
   if (isShippingToCoordinate(order)) return "a coordinar";
   return formatCurrency(order.shipping);
 }
-
-const PAYMENT_LABELS: Record<PaymentStatus, string> = {
-  pending: "Pendiente",
-  approved: "Confirmado",
-  rejected: "Rechazado",
-  cancelled: "Cancelado",
-  refunded: "Reintegrado",
-  charged_back: "Contracargo",
-};
 
 type CommercialFilter = "active" | "followup" | "delayed" | "paid" | "expired" | "all";
 
@@ -89,7 +81,12 @@ export default function AdminOrdersPage() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<Order["status"] | "">("");
   const [commercialFilter, setCommercialFilter] = useState<CommercialFilter>("active");
-  const [selected, setSelected] = useState<Order | null>(null);
+  const [selectedSnapshot, setSelected] = useState<Order | null>(null);
+  // El detalle abierto sigue a la lista: si otra persona mueve el pedido (lo
+  // trae el refresco periódico o un conflicto al guardar), se ve al instante.
+  const selected = selectedSnapshot
+    ? (orders.find((order) => order.id === selectedSnapshot.id) ?? selectedSnapshot)
+    : null;
   const [updatingId, setUpdatingId] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -183,7 +180,7 @@ export default function AdminOrdersPage() {
     setError("");
     setMessage("");
     try {
-      const persisted = await updateOrderStatus(order.id, nextStatus);
+      const persisted = await updateOrderStatus(order, nextStatus);
       setSelected((current) =>
         current?.id === order.id ? persisted : current,
       );
@@ -206,7 +203,7 @@ export default function AdminOrdersPage() {
     setError("");
     setMessage("");
     try {
-      const persisted = await updateOrderPaymentStatus(order.id, nextStatus);
+      const persisted = await updateOrderPaymentStatus(order, nextStatus);
       setSelected((current) =>
         current?.id === order.id ? persisted : current,
       );
@@ -669,6 +666,11 @@ export default function AdminOrdersPage() {
                 </select>
               </label>
             </div>
+            {error && (
+              <div className="error-message" role="alert">
+                {error}
+              </div>
+            )}
             {selected.deliveryMethod === "envio" && (
               <div className="shipping-operation">
                 <div>

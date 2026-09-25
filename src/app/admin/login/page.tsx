@@ -6,6 +6,7 @@ import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useCaptcha } from "@/components/use-captcha";
 import { PasswordInput } from "@/components/password-input";
 import { isValidAdminSession } from "@/lib/auth";
+import { ADMIN_IDLE_MESSAGE, markAdminSignedIn } from "@/lib/admin-idle";
 import { AUTH_ORIGINS } from "@/lib/auth-callbacks";
 import { getAuthAdapter } from "@/services/auth";
 import { useStore } from "@/store/store";
@@ -19,6 +20,7 @@ function AdminLoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const denied = params.get("denied") === "1";
+  const idle = params.get("idle") === "1";
   // "Enable CAPTCHA protection" es un ajuste del PROYECTO Supabase, no de
   // cada formulario: al activarlo, signInWithPassword exige el token
   // también acá. Sin él, el panel quedaría sin poder ingresar.
@@ -36,6 +38,8 @@ function AdminLoginForm() {
     setLoading(true);
     try {
       const session = await getAuthAdapter().signInAdmin(email, password, captcha.token);
+      // Antes de publicar la sesión: el panel no debe ver la actividad vieja.
+      markAdminSignedIn();
       await setAdminSession(session);
       router.push(params.get("next") || "/admin");
     } catch (caught) {
@@ -66,6 +70,11 @@ function AdminLoginForm() {
           </span>
           <h1>Ingresá al panel</h1>
           <p className="auth-intro">Usá el email y la contraseña de tu cuenta de administrador.</p>
+          {idle && !denied && (
+            <div className="error-message" role="status">
+              {ADMIN_IDLE_MESSAGE}
+            </div>
+          )}
           {denied && (
             <div className="error-message" role="alert">
               Tu cuenta no tiene permisos de administrador para acceder a esta sección.

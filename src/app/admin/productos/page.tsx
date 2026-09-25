@@ -8,8 +8,12 @@ import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { pageWindow, paginate } from "@/lib/paginate";
 import { googleSheetSyncAdapter } from "@/services/sheet-sync";
+import { ConflictError, rebaseProductEdits } from "@/lib/concurrency";
 
 const PAGE_SIZE = 50;
+// Trae lo que cambiaron otras personas del panel. Pausado con la pestaña
+// oculta o con el formulario abierto, para no mover nada bajo los dedos.
+const PRODUCT_REFRESH_INTERVAL_MS = 60_000;
 
 function managedBySheet(product: Product) {
   return (
@@ -88,6 +92,20 @@ function AdminProductsContent() {
     }
   }, []);
   const [editing, setEditing] = useState<Product | null>(null);
+  // Copia del producto al abrir el formulario: define qué cambió la persona
+  // y la versión (updatedAt) que se exige al guardar. null = producto nuevo.
+  const [original, setOriginal] = useState<Product | null>(null);
+  const formOpen = editing !== null;
+  useEffect(() => {
+    if (formOpen) return;
+    const timer = window.setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      refreshProducts().catch((error) =>
+        console.warn("No se pudo actualizar el catálogo.", error),
+      );
+    }, PRODUCT_REFRESH_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [formOpen, refreshProducts]);
   const [message, setMessage] = useState("");
   const [messageKind, setMessageKind] = useState<"success" | "error">(
     "success",
@@ -173,11 +191,22 @@ function AdminProductsContent() {
     setPendingProductId(product.id);
     setMessage("");
     try {
-      await saveProduct(product);
+      await saveProduct(product, original ?? undefined);
       setEditing(null);
       setMessageKind("success");
       setMessage("Producto guardado correctamente.");
     } catch (error) {
+      if (error instanceof ConflictError && original) {
+        // Otra persona guardó antes: se muestra su versión con lo que esta
+        // persona escribió encima, para revisar y volver a guardar.
+        const latest = error.latest as Product | undefined;
+        if (latest) {
+          setEditing(rebaseProductEdits(latest, original, product));
+          setOriginal(latest);
+        } else {
+          setEditing(null);
+        }
+      }
       setMessageKind("error");
       setMessage(
         error instanceof Error
@@ -193,7 +222,7 @@ function AdminProductsContent() {
     setPendingProductId(product.id);
     setMessage("");
     try {
-      await saveProduct({ ...product, active: !product.active });
+      await saveProduct({ ...product, active: !product.active }, product);
       setMessageKind("success");
       setMessage("Visibilidad actualizada correctamente.");
     } catch (error) {
@@ -292,7 +321,10 @@ function AdminProductsContent() {
           <button
             type="button"
             className="button primary"
-            onClick={() => setEditing(emptyProduct())}
+            onClick={() => {
+              setEditing(emptyProduct());
+              setOriginal(null);
+            }}
             disabled={pendingProductId !== null}
           >
             <svg className="button-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
@@ -488,7 +520,10 @@ function AdminProductsContent() {
                             type="button"
                             className="button secondary row-edit"
                             aria-label={`Editar ${product.name}`}
-                            onClick={() => setEditing({ ...product })}
+                            onClick={() => {
+                              setEditing({ ...product });
+                              setOriginal(product);
+                            }}
                             disabled={pendingProductId !== null}
                           >
                             Editar

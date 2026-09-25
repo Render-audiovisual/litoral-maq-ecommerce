@@ -50,6 +50,47 @@ function productToInsert(
   };
 }
 
+type ProductUpdate = Database["public"]["Tables"]["products"]["Update"];
+
+// Mismo mapeo que productToInsert. id y updatedAt no son campos editables.
+const PRODUCT_COLUMNS = {
+  slug: "slug",
+  code: "code",
+  name: "name",
+  price: "price",
+  rawPrice: "raw_price",
+  category: "category",
+  brand: "brand",
+  image: "image",
+  images: "images",
+  stock: "stock",
+  lowStockThreshold: "low_stock_threshold",
+  purchaseLimit: "purchase_limit",
+  active: "active",
+  featured: "featured",
+  description: "description",
+  variants: "variants",
+  source: "source",
+  sourceRow: "source_row",
+  incomplete: "incomplete",
+  shippingWeightKg: "shipping_weight_kg",
+  shippingHeightCm: "shipping_height_cm",
+  shippingWidthCm: "shipping_width_cm",
+  shippingLengthCm: "shipping_length_cm",
+  shippingEnabled: "shipping_enabled",
+} as const satisfies Record<Exclude<keyof Product, "id" | "updatedAt">, keyof ProductUpdate>;
+
+/** Solo las columnas de los campos cambiados, para no pisar el resto. */
+export function productPatch(changes: Partial<Product>): ProductUpdate {
+  const patch: Record<string, unknown> = {};
+  for (const [field, column] of Object.entries(PRODUCT_COLUMNS)) {
+    if (!(field in changes)) continue;
+    const value = changes[field as keyof Product];
+    patch[column] = value === undefined ? null : value;
+  }
+  return patch as ProductUpdate;
+}
+
 function rowToProduct(row: ProductRow): Product {
   return {
     id: row.id,
@@ -212,6 +253,21 @@ export function createSupabasePersistenceAdapter(
       if (error) throw error;
       return rowToProduct(data);
     },
+    async updateProduct(id, changes, expectedUpdatedAt) {
+      if (!expectedUpdatedAt) {
+        throw new Error("Falta la versión del producto. Recargá la página y volvé a guardar.");
+      }
+      // Ningún trigger toca products.updated_at: lo avanza este guardado.
+      // El filtro por la versión leída hace de compare-and-set.
+      const { data, error } = await client
+        .from("products")
+        .update({ ...productPatch(changes), updated_at: new Date().toISOString() })
+        .eq("id", id)
+        .eq("updated_at", expectedUpdatedAt)
+        .select();
+      if (error) throw error;
+      return data?.length === 1 ? rowToProduct(data[0]) : null;
+    },
     async deleteProduct(id) {
       const { error } = await client.from("products").delete().eq("id", id);
       if (error) throw error;
@@ -277,11 +333,12 @@ export function createSupabasePersistenceAdapter(
       if (error) throw error;
       return rowToOrder(data);
     },
-    async updateOrderStatus(id, status) {
+    async updateOrderStatus(id, status, expectedStatus) {
       const { data, error } = await client
         .from("orders")
         .update({ status })
         .eq("id", id)
+        .eq("status", expectedStatus)
         .select()
         .maybeSingle();
       if (error) throw error;
@@ -297,16 +354,19 @@ export function createSupabasePersistenceAdapter(
           .eq("payment_status", "pending")
           .select()
           .maybeSingle();
-        if (cancelled.error) throw cancelled.error;
+        // 42501: un empleado no puede tocar el pago (la base lo rechaza). El
+        // estado ya quedó cancelado; el pago queda pendiente para un admin.
+        if (cancelled.error && cancelled.error.code !== "42501") throw cancelled.error;
         if (cancelled.data) return rowToOrder(cancelled.data);
       }
       return data ? rowToOrder(data) : null;
     },
-    async updateOrderPaymentStatus(id, paymentStatus) {
+    async updateOrderPaymentStatus(id, paymentStatus, expectedStatus) {
       const { data, error } = await client
         .from("orders")
         .update({ payment_status: paymentStatus })
         .eq("id", id)
+        .eq("payment_status", expectedStatus)
         .select()
         .maybeSingle();
       if (error) throw error;
@@ -352,21 +412,10 @@ export function createSupabasePersistenceAdapter(
       if (error) throw error;
       return (data ?? []).map(rowToAudit);
     },
-    async appendAuditEntry(entry) {
-      // No se manda `id`: el id que genera createAuditEntry() (string
-      // "audit-<timestamp>-<random>") es para la key local del adapter
-      // local — audit_log.id en Postgres es uuid con gen_random_uuid() por
-      // default (ver 0001_schema.sql), y mandar el string causaba
-      // "invalid input syntax for type uuid" en cada insert (fire-and-forget,
-      // por eso no se notaba en la UI: el log simplemente nunca se grababa).
-      const { error } = await client.from("audit_log").insert({
-        at: entry.at,
-        admin_id: entry.adminId,
-        admin_email: entry.adminEmail,
-        action: entry.action,
-        detail: entry.detail,
-      });
-      if (error) throw error;
+    async appendAuditEntry() {
+      // No-op a propósito: el registro lo escriben triggers de la base con el
+      // autor real (20260925120000_admin_hardening.sql) y audit_log ya no
+      // acepta inserts desde la API. El panel solo lo lee (listAuditLog).
     },
   };
 }
