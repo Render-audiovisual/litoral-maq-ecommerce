@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { TestimonialsSection } from "@/components/testimonials";
-import { formatCurrency, STORE_ADDRESS, STORE_MAPS_URL } from "@/lib/utils";
+import { formatCurrency, STORE_MAPS_URL } from "@/lib/utils";
 import {
   getLaunchFamilyCards,
 } from "@/lib/launch-catalog";
@@ -103,38 +103,36 @@ function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
   if (slides.length === 0) return null;
 
   return (
-    <div className="hero-promo-frame">
-      <div
-        className={`hero-promo-slider${dragging ? " is-dragging" : ""}`}
-        aria-label="Promociones destacadas"
-        aria-roledescription="carrusel"
-        {...handlers}
-      >
-        <div className="hero-promo-track" ref={trackRef}>
-          {trackItems.map((slide, index) => {
-            const duplicate = index >= slides.length;
-            return (
-              <Link
-                href={slide.href}
-                className="hero-promo-card"
-                aria-label={`Ver ${slide.label}`}
-                aria-hidden={duplicate}
-                tabIndex={duplicate ? -1 : undefined}
-                key={`${slide.id}-${index}`}
-              >
-                <Image
-                  src={slide.image}
-                  alt={slide.label}
-                  fill
-                  sizes="(max-width: 430px) 46vw, (max-width: 820px) 42vw, 270px"
-                  loading={index < slides.length ? "eager" : "lazy"}
-                  priority={index === 0}
-                  draggable={false}
-                />
-              </Link>
-            );
-          })}
-        </div>
+    <div
+      className={`hero-promo-slider${dragging ? " is-dragging" : ""}`}
+      aria-label="Promociones destacadas"
+      aria-roledescription="carrusel"
+      {...handlers}
+    >
+      <div className="hero-promo-track" ref={trackRef}>
+        {trackItems.map((slide, index) => {
+          const duplicate = index >= slides.length;
+          return (
+            <Link
+              href={slide.href}
+              className="hero-promo-card"
+              aria-label={`Ver ${slide.label}`}
+              aria-hidden={duplicate}
+              tabIndex={duplicate ? -1 : undefined}
+              key={`${slide.id}-${index}`}
+            >
+              <Image
+                src={slide.image}
+                alt={slide.label}
+                fill
+                sizes="(max-width: 430px) 46vw, (max-width: 820px) 42vw, 270px"
+                loading={index < slides.length ? "eager" : "lazy"}
+                priority={index === 0}
+                draggable={false}
+              />
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
@@ -250,10 +248,11 @@ export function HomeClient() {
     <main>
       <section className="commerce-hero">
         <div className="commerce-hero-copy">
+          <span className="hero-pill">PRODUCTOS Y PRECIOS REALES</span>
           <h1>Armá tu <em>taller.</em></h1>
           <p>
-            Máquinas y herramientas para obra, taller y campo, con envío a
-            todo el país.
+            Máquinas y herramientas con precios reales, envíos a todo el país
+            y retiro gratis en nuestro local.
           </p>
         </div>
 
@@ -267,14 +266,19 @@ export function HomeClient() {
               <span className="hero-offers-mobile">Ver ofertas destacadas →</span>
             </Link>
           </div>
-          <a className="pickup-banner" href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-            <span className="pickup-tag">RETIRO GRATIS</span>
-            <span className="pickup-banner-copy">
-              <strong>Retirá gratis en <span>{STORE_ADDRESS}</span></strong>
+          <a
+            className="pickup-banner"
+            href={STORE_MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Retiro gratis en Sáenz 1587, Corrientes Capital. Cómo llegar (abre Google Maps)"
+          >
+            <span>RETIRO GRATIS</span>
+            <div className="pickup-banner-copy">
+              <strong>Retirá gratis en Sáenz 1587, Corrientes Capital</strong>
               <small>Abrí y probá tu producto antes de llevártelo, sin compromiso.</small>
-            </span>
-            <span className="pickup-arrow" aria-hidden="true">→</span>
-            <span className="sr-only">Cómo llegar (abre Google Maps)</span>
+            </div>
+            <b aria-hidden="true">→</b>
           </a>
         </div>
       </section>
