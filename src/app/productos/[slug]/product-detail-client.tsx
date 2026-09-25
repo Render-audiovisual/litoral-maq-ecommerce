@@ -7,7 +7,6 @@ import { ImageLightbox } from "@/components/image-lightbox";
 import { ProductCard } from "@/components/product-card";
 import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
 import type { Product } from "@/lib/types";
-import { isMercadoPagoEnabled } from "@/services/payments";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { getPurchaseLimit } from "@/lib/purchase-limits";
@@ -54,10 +53,9 @@ const TRUST = [
     ),
   },
   {
-    title: isMercadoPagoEnabled() ? "Pago seguro" : "Pago a coordinar",
-    text: isMercadoPagoEnabled()
-      ? "Mercado Pago: cuotas o débito"
-      : "Te confirmamos el pago por WhatsApp",
+    // Mercado Pago es la forma de pago de la tienda: el cliente no tiene que coordinar nada.
+    title: "Pagá con Mercado Pago",
+    text: "Elegí tu financiación y pagá con cualquier tarjeta. El cobro lo hace Mercado Pago.",
     icon: (
       <svg {...icon}>
         <path d="M12 3 19 6v5.5c0 4.3-2.9 7.7-7 9.5-4.1-1.8-7-5.2-7-9.5V6z" />
