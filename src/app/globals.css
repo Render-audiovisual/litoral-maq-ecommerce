@@ -41,9 +41,9 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
    calculada para que la cinta avance a los mismos píxeles por segundo que
    con el texto anterior (≈58 px/s en escritorio, ≈41 px/s en celular),
    ahora que la frase es más larga: ancho de la frase + gap, sobre esa velocidad. */
-.announcement > span { flex-shrink: 0; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: 0; white-space: nowrap; will-change: transform; animation: marquee 18.6s linear infinite; }
+.announcement > span { flex-shrink: 0; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: 0; white-space: nowrap; will-change: transform; animation: marquee 15.4s linear infinite; }
 /* Sin Mercado Pago la frase no menciona cuotas y es más corta. */
-.announcement.no-payments > span { animation-duration: 14.7s; }
+.announcement.no-payments > span { animation-duration: 12.2s; }
 @keyframes marquee {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(calc(-100% - var(--marquee-gap)), 0, 0); }
@@ -1326,8 +1326,8 @@ td > small { margin-top: 4px; color: var(--muted); }
   .announcement { padding: 7px 0; }
   /* 12 px de piso; la duración crece en la misma proporción para que la cinta
      avance a la misma velocidad que con la letra de 8 px. */
-  .announcement > span { font-size: 12px; animation-duration: 26.4s; }
-  .announcement.no-payments > span { animation-duration: 20.9s; }
+  .announcement > span { font-size: 12px; animation-duration: 21.9s; }
+  .announcement.no-payments > span { animation-duration: 17.3s; }
   .site-header {
     padding: 8px 16px 9px;
     gap: 8px 12px;

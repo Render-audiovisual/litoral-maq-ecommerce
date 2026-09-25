@@ -261,8 +261,8 @@ export function HomeClient() {
           <div className="hero-buttons">
             <Link href="/productos" className="button primary large">Explorar catálogo</Link>
             <Link href="#productos-estrella" className="button ghost large hero-offers-link">
-              <span className="hero-offers-desktop">Ver destacados</span>
-              <span className="hero-offers-mobile">Ver productos destacados →</span>
+              <span className="hero-offers-desktop">Ver ofertas</span>
+              <span className="hero-offers-mobile">Ver ofertas destacadas →</span>
             </Link>
           </div>
           <a className="pickup-banner" href={STORE_MAPS_URL} target="_blank" rel="noopener noreferrer">

@@ -269,7 +269,7 @@ export function Header() {
             Productos
           </Link>
           <Link href="/#productos-estrella" onClick={() => setOpen(false)}>
-            Destacados
+            Ofertas
           </Link>
           <Link
             href="/cuenta/pedidos"
