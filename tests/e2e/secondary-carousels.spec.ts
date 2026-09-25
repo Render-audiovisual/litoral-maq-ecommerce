@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-// Testimonios dejó de ser un marquee de scroll: es una cinta con transform,
-// con su propia prueba en testimonials-carousel.spec.ts.
+// Testimonios dejó de ser un marquee de scroll: ahora es el carrusel de
+// escala, con su propia prueba en testimonials-carousel.spec.ts.
 for (const carousel of [
   { name: "categorías", selector: ".category-marquee", card: ".winner-card" },
 ]) {

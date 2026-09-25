@@ -14,8 +14,6 @@ type ContinuousTickerOptions = {
   speed: number;
   /** Tope del envión al soltar, en píxeles por segundo. */
   maxFlingSpeed: number;
-  /** Frena el avance automático (por ejemplo, un video sonando). El arrastre sigue andando. */
-  paused?: boolean;
 };
 
 const INERTIA_RESPONSE = 1.5; // el envión del gesto decae hasta el automático
@@ -36,13 +34,7 @@ export function useContinuousTicker({
   itemCount,
   speed,
   maxFlingSpeed,
-  paused = false,
 }: ContinuousTickerOptions) {
-  // En una ref para que pausar no reinicie el loop.
-  const pausedRef = useRef(paused);
-  useEffect(() => {
-    pausedRef.current = paused;
-  });
   const trackRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const velocityRef = useRef(speed);
@@ -88,7 +80,7 @@ export function useContinuousTicker({
       const track = trackRef.current;
 
       if (track) {
-        if (!draggingRef.current && !pausedRef.current) {
+        if (!draggingRef.current) {
           velocityRef.current += (speed - velocityRef.current) * Math.min(1, dt * INERTIA_RESPONSE);
           offsetRef.current += velocityRef.current * dt;
         }
@@ -109,8 +101,6 @@ export function useContinuousTicker({
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType === "mouse" && event.button !== 0) return;
-    // Los controles del video se usan con el mismo puntero que el arrastre.
-    if ((event.target as HTMLElement).closest("video")) return;
     draggingRef.current = true;
     draggedRef.current = false;
     velocityRef.current = 0;

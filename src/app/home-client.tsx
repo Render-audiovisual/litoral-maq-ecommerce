@@ -198,9 +198,6 @@ function CategoryWinnerCard({
 // cada 11 segundos y la cinta parecía detenida.
 const CATEGORY_AUTO_SCROLL_SPEED = 75;
 const CATEGORY_MAX_FLING_SPEED = 1500;
-// Testimonios: más calma que las otras cintas, para que dé tiempo a mirar
-// cada foto mientras pasa.
-const TESTIMONIALS_TICKER_SPEED = 45;
 
 type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
 
@@ -311,7 +308,7 @@ export function HomeClient() {
         </div>
       </section>
 
-      <TestimonialsSection speed={TESTIMONIALS_TICKER_SPEED} />
+      <TestimonialsSection />
     </main>
   );
 }
