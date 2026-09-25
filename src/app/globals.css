@@ -206,14 +206,14 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .star-products-grid { width: 100%; max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .testimonials-section { overflow: hidden; }
 /* Cinta infinita: el riel se mueve entero con transform (use-continuous-ticker)
-   y cada tarjeta solo se escala según su distancia al centro. Va de borde a
-   borde de la pantalla y recorta solo en horizontal, así la sombra de la
-   tarjeta grande no dibuja una caja gris contra un borde visible. */
-.testimonial-belt { margin: 20px -6vw 0; padding: 44px 0 8px; overflow-x: clip; cursor: grab; user-select: none; touch-action: pan-y; }
+   y todas las tarjetas tienen el mismo tamaño. Va de borde a borde de la
+   pantalla y recorta solo en horizontal, así la sombra no dibuja una caja
+   gris contra un borde visible. */
+.testimonial-belt { margin: 20px -6vw 0; padding: 28px 0 12px; overflow-x: clip; cursor: grab; user-select: none; touch-action: pan-y; }
 .testimonial-belt.is-dragging { cursor: grabbing; }
-.testimonial-track { display: flex; align-items: flex-start; gap: clamp(20px, 2.2vw, 32px); width: max-content; will-change: transform; }
-.testimonial-card { flex: 0 0 auto; width: clamp(176px, 20vw, 290px); margin: 0; transform: scale(.88); transform-origin: center 45%; }
-.testimonial-frame { aspect-ratio: 9 / 16; position: relative; overflow: hidden; border-radius: 12px; background: var(--navy-dark); box-shadow: 0 8px 20px rgba(0,42,73,.14); }
+.testimonial-track { display: flex; align-items: flex-start; gap: clamp(14px, 1.4vw, 20px); width: max-content; will-change: transform; }
+.testimonial-card { flex: 0 0 auto; width: clamp(150px, 14vw, 200px); margin: 0; position: relative; transform-origin: center 40%; }
+.testimonial-frame { aspect-ratio: 9 / 16; position: relative; overflow: hidden; border: 1px solid rgba(0,42,73,.08); border-radius: 14px; background: var(--navy-dark); box-shadow: 0 8px 20px rgba(0,42,73,.14); }
 .testimonial-media { width: 100%; height: 100%; object-fit: cover; object-position: center; -webkit-user-drag: none; }
 /* Los videos son más angostos que la tarjeta: encajarlos completos evita
    recortar al que habla, que es justamente lo que se quiere ver. */
@@ -221,7 +221,15 @@ video.testimonial-media { object-fit: contain; background: #000; }
 .testimonial-play { position: absolute; inset: 0; display: grid; place-items: center; padding: 0; border: 0; background: none; cursor: pointer; }
 .testimonial-play svg { width: clamp(44px, 4vw, 56px); height: auto; padding: 10px; border-radius: 50%; background: rgba(0,42,73,.72); fill: #fff; }
 .testimonial-play:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
-.testimonial-card figcaption { margin-top: 12px; color: #566472; font-size: 14px; font-weight: 600; line-height: 1.35; text-align: center; text-wrap: balance; }
+.testimonial-card figcaption { margin-top: 10px; color: var(--navy); font-size: 14px; font-weight: 700; line-height: 1.3; text-align: center; text-wrap: balance; }
+/* Solo con mouse: la foto bajo el puntero crece para leerla mejor. Es un
+   transform, así que la cinta y las vecinas no se mueven. En pantallas
+   táctiles no hay :hover estable y no cambia nada. */
+@media (hover: hover) and (pointer: fine) {
+  .testimonial-card { transition: transform .18s cubic-bezier(.22, 1, .36, 1); }
+  .testimonial-card:hover { z-index: 1; transform: scale(1.12); }
+  .testimonial-card:hover .testimonial-frame { box-shadow: 0 14px 28px rgba(0,42,73,.24); }
+}
 .footer { padding: 56px 6vw 30px; display: flex; flex-direction: column; align-items: center; gap: 26px; background: var(--navy-dark); color: #c5d4de; }
 .footer img { filter: brightness(0) invert(1); }
 .footer-brand { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
@@ -1403,8 +1411,8 @@ td > small { margin-top: 4px; color: var(--muted); }
   .product-card .stock { margin-bottom: 12px; font-size: 12px; }
   .product-card .button { min-height: 40px; padding: 0 8px; font-size: 13px; }
   .testimonials-section { padding-bottom: 62px; }
-  .testimonial-belt { margin: 8px -16px 0; padding-top: 28px; }
-  .testimonial-card { width: 46vw; }
+  .testimonial-belt { margin: 8px -16px 0; padding-top: 20px; }
+  .testimonial-card { width: 40vw; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
   .product-detail-page, .standard-page { padding: 30px 4vw 70px; }
   .auth-page { width: 100%; min-width: 0; }

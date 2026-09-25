@@ -14,10 +14,8 @@ type ContinuousTickerOptions = {
   speed: number;
   /** Tope del envión al soltar, en píxeles por segundo. */
   maxFlingSpeed: number;
-  /** Frena el avance automático (puntero encima, video sonando). El arrastre sigue andando. */
+  /** Frena el avance automático (por ejemplo, un video sonando). El arrastre sigue andando. */
   paused?: boolean;
-  /** Se llama en cada frame con el desplazamiento actual, después de mover el riel. */
-  onFrame?: (offset: number) => void;
 };
 
 const INERTIA_RESPONSE = 1.5; // el envión del gesto decae hasta el automático
@@ -39,14 +37,11 @@ export function useContinuousTicker({
   speed,
   maxFlingSpeed,
   paused = false,
-  onFrame,
 }: ContinuousTickerOptions) {
-  // En refs para que pausar o cambiar el callback no reinicie el loop.
+  // En una ref para que pausar no reinicie el loop.
   const pausedRef = useRef(paused);
-  const onFrameRef = useRef(onFrame);
   useEffect(() => {
     pausedRef.current = paused;
-    onFrameRef.current = onFrame;
   });
   const trackRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
@@ -103,7 +98,6 @@ export function useContinuousTicker({
           if (offsetRef.current < 0) offsetRef.current += loop;
         }
         track.style.transform = `translate3d(${-offsetRef.current}px, 0, 0)`;
-        onFrameRef.current?.(offsetRef.current);
       }
 
       raf = requestAnimationFrame(frame);

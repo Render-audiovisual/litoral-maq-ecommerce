@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useContinuousTicker } from "@/hooks/use-continuous-ticker";
 
 type Testimonial = {
@@ -31,11 +31,6 @@ const TESTIMONIALS: Testimonial[] = [
   { id: "cliente-equipado", type: "image", src: "/testimonios/cliente-equipado.jpg", name: "Cliente equipado en el local" },
 ];
 
-// La tarjeta más cerca del centro crece y las demás se achican un poco. La
-// escala sale de la distancia al centro en cada frame, así el cambio es
-// continuo mientras la cinta pasa.
-const CENTER_SCALE = 1.16;
-const SIDE_SCALE = 0.88;
 const TESTIMONIALS_MAX_FLING_SPEED = 900;
 
 function TestimonialCard({
@@ -102,63 +97,22 @@ function TestimonialCard({
 }
 
 /**
- * Cinta infinita de testimonios: avanza sola a velocidad pareja, se frena con
- * el puntero encima o con un video sonando y se puede arrastrar. Igual que las
- * otras cintas del inicio, no mira `prefers-reduced-motion` (ver
+ * Cinta infinita de testimonios: avanza sola a velocidad pareja y se puede
+ * arrastrar. No se frena con el mouse encima (el dueño la quiere siempre en
+ * movimiento); solo se detiene mientras suena un video. En escritorio, la foto
+ * bajo el puntero crece un poco con CSS (:hover), sin mover a las vecinas.
+ * Igual que las otras cintas del inicio, no mira `prefers-reduced-motion` (ver
  * use-continuous-ticker: si algún día se honra, que sea en las cuatro a la vez).
  */
 export function TestimonialsSection({ speed }: { speed: number }) {
   const [playingCount, setPlayingCount] = useState(0);
-  const [hovering, setHovering] = useState(false);
-  const beltRef = useRef<HTMLDivElement>(null);
-  // Centro de cada tarjeta dentro del riel y mitad del ancho visible. Se miden
-  // al cambiar el tamaño, no en cada frame: el transform no altera offsetLeft.
-  const layoutRef = useRef({ centers: [] as number[], half: 0, reach: 1 });
-  const lastOffsetRef = useRef<number | null>(null);
 
   const { trackRef, dragging, handlers } = useContinuousTicker({
     itemCount: TESTIMONIALS.length,
     speed,
     maxFlingSpeed: TESTIMONIALS_MAX_FLING_SPEED,
-    paused: hovering || playingCount > 0,
-    onFrame: (offset) => {
-      const track = trackRef.current;
-      const { centers, half, reach } = layoutRef.current;
-      if (!track || centers.length === 0 || offset === lastOffsetRef.current) return;
-      lastOffsetRef.current = offset;
-      for (let i = 0; i < centers.length; i += 1) {
-        const distance = Math.abs(centers[i] - offset - half);
-        const t = Math.max(0, 1 - distance / reach);
-        const eased = t * t * (3 - 2 * t);
-        const card = track.children[i] as HTMLElement | undefined;
-        if (card) card.style.transform = `scale(${(SIDE_SCALE + (CENTER_SCALE - SIDE_SCALE) * eased).toFixed(4)})`;
-      }
-    },
+    paused: playingCount > 0,
   });
-
-  useEffect(() => {
-    const track = trackRef.current;
-    const belt = beltRef.current;
-    if (!track || !belt) return;
-    function measure() {
-      if (!track || !belt) return;
-      const cards = [...track.children] as HTMLElement[];
-      const first = cards[0];
-      const next = cards[1];
-      layoutRef.current = {
-        centers: cards.map((card) => card.offsetLeft + card.offsetWidth / 2),
-        half: belt.clientWidth / 2,
-        // Una tarjeta a un paso del centro ya quedó en el tamaño lateral.
-        reach: first && next ? next.offsetLeft - first.offsetLeft : 1,
-      };
-      lastOffsetRef.current = null;
-    }
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(track);
-    observer.observe(belt);
-    return () => observer.disconnect();
-  }, [trackRef]);
 
   const trackItems = [...TESTIMONIALS, ...TESTIMONIALS];
 
@@ -175,15 +129,10 @@ export function TestimonialsSection({ speed }: { speed: number }) {
       </div>
 
       <div
-        ref={beltRef}
         className={`testimonial-belt${dragging ? " is-dragging" : ""}`}
         role="group"
         aria-roledescription="carrusel"
         aria-label="Testimonios de clientes"
-        // Solo el mouse frena la cinta: en el celular un toque dispararía
-        // "enter" sin un "leave" y la dejaría quieta para siempre.
-        onPointerEnter={(event) => event.pointerType === "mouse" && setHovering(true)}
-        onPointerLeave={() => setHovering(false)}
         {...handlers}
       >
         <div className="testimonial-track" ref={trackRef}>
