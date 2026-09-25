@@ -1,4 +1,5 @@
 import type { AuditEntry, CartLine, Customer, Order, OrderStatus, PaymentStatus, Product } from "@/lib/types";
+import type { SystemStatus } from "@/lib/system-status";
 
 /**
  * Contrato único de persistencia de datos de catálogo/clientes/pedidos (no
@@ -47,4 +48,8 @@ export interface PersistenceAdapter {
   // Auditoría — append-only por diseño, nunca se sobrescribe en bloque
   listAuditLog(limit?: number): Promise<AuditEntry[]>;
   appendAuditEntry(entry: AuditEntry): Promise<void>;
+
+  // Estado del sistema (tarjeta de Configuración). `null` = no disponible
+  // en este proveedor (modo local).
+  getSystemStatus(): Promise<SystemStatus | null>;
 }

@@ -278,6 +278,54 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["audit_log"]["Insert"]>;
         Relationships: [];
       };
+      // Solo lectura desde el panel (20260925170000_system_alerts.sql).
+      system_heartbeat: {
+        Row: {
+          id: string;
+          last_tick_at: string;
+          last_lifecycle: Json | null;
+          last_error: string | null;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      system_alerts: {
+        Row: {
+          key: string;
+          severity: "critical" | "high" | "medium";
+          title: string;
+          detail: string;
+          first_seen_at: string;
+          last_seen_at: string;
+          last_notified_at: string | null;
+          resolved_at: string | null;
+          notified_resolved_at: string | null;
+          occurrences: number;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      catalog_sync_runs: {
+        Row: {
+          id: string;
+          admin_id: string;
+          status: "succeeded" | "failed";
+          source: string;
+          total: number | null;
+          created: number | null;
+          updated: number | null;
+          unchanged: number | null;
+          retired: number | null;
+          error_detail: string | null;
+          started_at: string;
+          finished_at: string | null;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

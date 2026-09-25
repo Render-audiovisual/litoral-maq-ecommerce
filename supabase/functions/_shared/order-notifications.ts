@@ -5,6 +5,7 @@ import {
   type OrderRecord,
   renderOrderEmail,
 } from "./order-email.ts";
+import { logEdgeError } from "./monitoring.ts";
 
 type OutboxEvent = {
   id: string;
@@ -138,6 +139,12 @@ export async function processPendingOrderNotifications(
       sent += 1;
     } catch (error) {
       failed += 1;
+      logEdgeError("order-notifications", error, {
+        step: "send_email",
+        order_id: event.order_id,
+        event_type: event.event_type,
+        attempt: event.attempts,
+      });
       await markFailed(
         db,
         event,

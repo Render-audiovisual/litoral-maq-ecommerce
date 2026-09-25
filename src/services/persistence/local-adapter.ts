@@ -179,5 +179,10 @@ export function createLocalPersistenceAdapter(): PersistenceAdapter {
       const next = [entry, ...current].slice(0, AUDIT_LOG_LIMIT);
       write(KEYS.auditLog, next);
     },
+
+    async getSystemStatus() {
+      // El latido del cron y las alertas solo existen en la base real.
+      return null;
+    },
   };
 }

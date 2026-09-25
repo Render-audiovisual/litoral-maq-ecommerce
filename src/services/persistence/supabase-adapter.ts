@@ -417,5 +417,47 @@ export function createSupabasePersistenceAdapter(
       // autor real (20260925120000_admin_hardening.sql) y audit_log ya no
       // acepta inserts desde la API. El panel solo lo lee (listAuditLog).
     },
+
+    async getSystemStatus() {
+      const [heartbeat, alerts, lastSync] = await Promise.all([
+        client.from("system_heartbeat").select("last_tick_at").eq("id", "cron").maybeSingle(),
+        client
+          .from("system_alerts")
+          .select("key,severity,title,detail,first_seen_at")
+          .is("resolved_at", null)
+          .limit(50),
+        client
+          .from("catalog_sync_runs")
+          .select("status,started_at,total,created,updated,retired,error_detail")
+          .order("started_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ]);
+      if (heartbeat.error) throw heartbeat.error;
+      if (alerts.error) throw alerts.error;
+      if (lastSync.error) throw lastSync.error;
+      const run = lastSync.data;
+      return {
+        lastTickAt: heartbeat.data?.last_tick_at ?? null,
+        alerts: (alerts.data ?? []).map((row) => ({
+          key: row.key,
+          severity: row.severity,
+          title: row.title,
+          detail: row.detail,
+          firstSeenAt: row.first_seen_at,
+        })),
+        lastSync: run
+          ? {
+              status: run.status,
+              startedAt: run.started_at,
+              total: run.total,
+              created: run.created,
+              updated: run.updated,
+              retired: run.retired,
+              errorDetail: run.error_detail,
+            }
+          : null,
+      };
+    },
   };
 }

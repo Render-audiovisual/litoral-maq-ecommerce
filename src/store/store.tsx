@@ -138,6 +138,7 @@ function createFailingAdapter(message: string): PersistenceAdapter {
     saveCart: fail,
     listAuditLog: fail,
     appendAuditEntry: fail,
+    getSystemStatus: fail,
   };
 }
 
