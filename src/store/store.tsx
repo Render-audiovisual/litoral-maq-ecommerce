@@ -10,6 +10,7 @@ import {
   PRODUCT_CONFLICT_MESSAGE,
   PRODUCT_DELETED_MESSAGE,
 } from "@/lib/concurrency";
+import { clearAdminActivity } from "@/lib/admin-idle";
 import { adminOrderStatusLabel, PAYMENT_LABELS } from "@/lib/order-details";
 import { clampPurchaseQuantity } from "@/lib/purchase-limits";
 import type {
@@ -479,6 +480,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const signOutAdmin = useCallback(async () => {
     await getAuthAdapter().signOut();
     localStorage.removeItem(keys.adminSession);
+    clearAdminActivity();
     setAdminSessionState(null);
     setCustomerSessionState(null);
     setOrders([]);

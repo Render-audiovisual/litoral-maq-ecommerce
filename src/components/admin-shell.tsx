@@ -8,6 +8,14 @@ import { useStore } from "@/store/store";
 import { isValidAdminSession, isValidCustomerSession } from "@/lib/auth";
 import { getStoreUrl } from "@/lib/domain-config";
 import { isAdminLoginPath } from "@/lib/admin-routing";
+import {
+  ADMIN_ACTIVITY_WRITE_THROTTLE_MS,
+  ADMIN_IDLE_CHECK_INTERVAL_MS,
+  isAdminSessionStale,
+  markAdminSignedIn,
+  readAdminActivity,
+  writeAdminActivity,
+} from "@/lib/admin-idle";
 import { resolveRequestedProvider } from "@/services/provider";
 import { getAuthAdapter, supportsSessionRestore } from "@/services/auth";
 
@@ -30,6 +38,7 @@ function NavIcon({ children }: { children: React.ReactNode }) {
 }
 
 const ADMIN_LOGIN_PATH = "/admin/login";
+const ACTIVITY_EVENTS = ["pointerdown", "mousemove", "keydown", "touchstart", "scroll", "wheel"] as const;
 const SESSION_RESTORE_TIMEOUT_MS = 10_000;
 
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
@@ -83,6 +92,62 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, [ready, adminSession, isLoginRoute]);
+
+  // Inactividad: 8 h sin usar el panel, o 24 h desde el ingreso, cierran la
+  // sesión aunque el token se siga renovando solo. Se revisa al cargar, al
+  // volver a la pestaña y cada minuto.
+  useEffect(() => {
+    if (isLoginRoute || !ready || !isValidAdminSession(adminSession)) return;
+    let lastWrite = 0;
+    const expire = async () => {
+      if (loggingOutRef.current) return;
+      loggingOutRef.current = true;
+      try {
+        await signOutAdmin();
+      } catch (error) {
+        console.warn("No se pudo cerrar la sesión en el servidor.", error);
+      }
+      router.replace(`${ADMIN_LOGIN_PATH}?idle=1&next=${encodeURIComponent(pathname)}`);
+    };
+    // Devuelve false si la sesión venció.
+    const check = () => {
+      const activity = readAdminActivity();
+      if (!activity) {
+        // Sesión previa a este control: arranca a contar desde ahora.
+        markAdminSignedIn();
+        return true;
+      }
+      if (!isAdminSessionStale(activity.lastActivity, activity.signedInAt)) return true;
+      void expire();
+      return false;
+    };
+    const onActivity = () => {
+      const now = Date.now();
+      if (now - lastWrite < ADMIN_ACTIVITY_WRITE_THROTTLE_MS) return;
+      // Volver después de 8 h no revive la sesión: primero se revisa.
+      if (!check()) return;
+      const activity = readAdminActivity();
+      if (!activity) return;
+      lastWrite = now;
+      writeAdminActivity({ ...activity, lastActivity: now });
+    };
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") check();
+    };
+    if (!check()) return;
+    const timer = window.setInterval(check, ADMIN_IDLE_CHECK_INTERVAL_MS);
+    for (const name of ACTIVITY_EVENTS) {
+      window.addEventListener(name, onActivity, { passive: true, capture: true });
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.clearInterval(timer);
+      for (const name of ACTIVITY_EVENTS) {
+        window.removeEventListener(name, onActivity, { capture: true });
+      }
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [ready, adminSession, isLoginRoute, pathname, router, signOutAdmin]);
 
   useEffect(() => {
     if (isLoginRoute || !ready || loggingOutRef.current) return;
