@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ImageLightbox } from "@/components/image-lightbox";
 import { ProductCard } from "@/components/product-card";
 import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
@@ -76,7 +76,8 @@ const RELATED_MAX_FLING_SPEED = 1500;
 const RELATED_MIN_BELT_ITEMS = 8;
 
 function RelatedProducts({ products, current }: { products: Product[]; current: Product }) {
-  const picks = selectRelatedProducts(products, current);
+  // El reloj (ventana de 48 h) se lee al calcular las sugerencias, nunca a nivel de módulo.
+  const picks = useMemo(() => selectRelatedProducts(products, current), [products, current]);
   const belt = Array.from({ length: Math.ceil(RELATED_MIN_BELT_ITEMS / Math.max(1, picks.length)) }, () => picks).flat();
   const { railRef, dragging, handlers } = useInfinitePointerMarquee({
     itemCount: picks.length,
