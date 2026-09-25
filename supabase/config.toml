@@ -26,6 +26,11 @@ verify_jwt = false
 # La función valida el JWT y el rol admin explícitamente con requireAdmin.
 verify_jwt = true
 
+[functions.health]
+# Pública a propósito: la consulta un monitor externo sin sesión. Solo
+# devuelve números (último latido del cron y alertas abiertas por prioridad).
+verify_jwt = false
+
 # ---------------------------------------------------------------------------
 # Staging local (chore/p2-supabase-staging). Estas secciones SOLO afectan al
 # stack que levanta `npx supabase start` en la máquina de quien desarrolla o
