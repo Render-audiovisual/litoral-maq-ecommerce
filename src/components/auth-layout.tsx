@@ -17,28 +17,35 @@ const BENEFITS: { text: string; icon: ReactNode }[] = [
 ];
 
 /**
- * Marco común del ingreso de clientes: panel de marca a la izquierda (se
- * oculta en celular) y la tarjeta del formulario a la derecha. Login,
- * registro, recuperación y confirmaciones comparten este mismo layout.
+ * Marco común de autenticación. Registro, recuperación y confirmaciones
+ * conservan el panel de marca; el login puede pedir una única columna centrada.
  */
-export function AuthLayout({ children }: { children: ReactNode }) {
+export function AuthLayout({
+  children,
+  centered = false,
+}: {
+  children: ReactNode;
+  centered?: boolean;
+}) {
   return (
-    <main className="auth-page customer-auth">
-      <aside className="auth-panel visual" aria-label="Tu cuenta en Litoral Maq">
-        <span className="auth-logo">
-          <Image src="/brand/AZUL.png" alt="Litoral Maq" width={186} height={186} />
-        </span>
-        <p className="auth-visual-title">Todo tu taller, en un solo lugar.</p>
-        <p className="auth-visual-lead">Con tu cuenta guardás tus pedidos y comprás más rápido la próxima vez.</p>
-        <ul className="auth-benefits">
-          {BENEFITS.map((benefit) => (
-            <li key={benefit.text}>
-              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">{benefit.icon}</svg>
-              {benefit.text}
-            </li>
-          ))}
-        </ul>
-      </aside>
+    <main className={`auth-page customer-auth${centered ? " auth-page-centered" : ""}`}>
+      {!centered && (
+        <aside className="auth-panel visual" aria-label="Tu cuenta en Litoral Maq">
+          <span className="auth-logo">
+            <Image src="/brand/AZUL.png" alt="Litoral Maq" width={186} height={186} />
+          </span>
+          <p className="auth-visual-title">Todo tu taller, en un solo lugar.</p>
+          <p className="auth-visual-lead">Con tu cuenta guardás tus pedidos y comprás más rápido la próxima vez.</p>
+          <ul className="auth-benefits">
+            {BENEFITS.map((benefit) => (
+              <li key={benefit.text}>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">{benefit.icon}</svg>
+                {benefit.text}
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
       <section className="auth-panel form">
         <div className="auth-card">{children}</div>
       </section>
