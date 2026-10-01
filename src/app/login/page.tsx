@@ -38,7 +38,7 @@ function LoginForm() {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout centered>
       <h1>Ingresá a tu cuenta</h1>
       <p className="auth-intro">Mirá tus pedidos y comprá con tus datos guardados.</p>
       {confirmed && <div className="success-message">Email confirmado. Ya podés ingresar.</div>}
