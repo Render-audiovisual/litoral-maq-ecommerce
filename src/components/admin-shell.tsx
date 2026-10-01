@@ -18,6 +18,7 @@ import {
 } from "@/lib/admin-idle";
 import { resolveRequestedProvider } from "@/services/provider";
 import { getAuthAdapter, supportsSessionRestore } from "@/services/auth";
+import { adminInitials, resolveAdminDisplayName } from "@/lib/admin-names";
 
 // Un solo set de iconos (trazo 1,75, 24×24, currentColor) para todo el menú.
 const links: [string, string, React.ReactNode][] = [
@@ -243,6 +244,18 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
+        {/* Puede haber varias cuentas admin con los mismos permisos (dueño,
+            empleadas de confianza, dev): esto muestra de un vistazo cuál
+            tiene la sesión abierta. Nombres en src/lib/admin-names.ts. */}
+        <div className="admin-account">
+          <span className="admin-account-avatar" aria-hidden="true">
+            {adminInitials(resolveAdminDisplayName(adminSession?.user.email))}
+          </span>
+          <span className="admin-account-info">
+            <strong>{resolveAdminDisplayName(adminSession?.user.email)}</strong>
+            <small>{adminSession?.user.email}</small>
+          </span>
+        </div>
         <button
           type="button"
           className="sidebar-logout"
