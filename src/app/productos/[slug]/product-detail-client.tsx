@@ -69,8 +69,8 @@ const TRUST = [
 // cintas del sitio, no mira `prefers-reduced-motion` (ver use-continuous-ticker:
 // si algún día se honra, que sea en todas a la vez) y no se frena con el mouse
 // encima: solo mientras se la arrastra.
-const RELATED_AUTO_SCROLL_SPEED = 75;
-const RELATED_MAX_FLING_SPEED = 1500;
+const RELATED_AUTO_SCROLL_SPEED = 48;
+const RELATED_MAX_FLING_SPEED = 900;
 // Con pocas sugerencias el juego se repite hasta llenar el ancho; si no, la
 // vuelta a cero se notaría en pantallas anchas.
 const RELATED_MIN_BELT_ITEMS = 8;

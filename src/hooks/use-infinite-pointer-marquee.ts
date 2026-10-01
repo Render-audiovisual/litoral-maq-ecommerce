@@ -6,6 +6,7 @@ import type {
   MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
 } from "react";
+import { useAnimationActivity } from "@/hooks/use-animation-activity";
 
 type InfinitePointerMarqueeOptions = {
   itemCount: number;
@@ -41,9 +42,10 @@ export function useInfinitePointerMarquee({
   const draggedRef = useRef(false);
   const pointerRef = useRef({ pointerId: -1, startX: 0, lastX: 0, lastTime: 0 });
   const [dragging, setDragging] = useState(false);
+  const animationActive = useAnimationActivity(railRef);
 
   useEffect(() => {
-    if (itemCount < 2) return;
+    if (itemCount < 2 || !animationActive) return;
     let raf = 0;
     let last = performance.now();
 
@@ -72,7 +74,7 @@ export function useInfinitePointerMarquee({
 
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [autoSpeed, itemCount, paused]);
+  }, [animationActive, autoSpeed, itemCount, paused]);
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     // En pantallas táctiles dejamos que el navegador gestione el scroll

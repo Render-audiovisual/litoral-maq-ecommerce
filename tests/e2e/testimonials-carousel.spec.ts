@@ -71,13 +71,12 @@ test("avanza sola, frena con el puntero encima y se puede arrastrar", async ({ p
   await openSection(page);
 
   const inicial = await activeIndex(page);
-  await page.waitForTimeout(5200);
-  expect(await activeIndex(page)).not.toBe(inicial);
+  await expect.poll(() => activeIndex(page), { timeout: 7000 }).not.toBe(inicial);
 
   // Con el mouse encima queda quieta para poder mirar el testimonio.
   await page.locator(stage).hover();
   const quieta = await activeIndex(page);
-  await page.waitForTimeout(5200);
+  await page.waitForTimeout(5600);
   expect(await activeIndex(page)).toBe(quieta);
 
   // El arrastre reparte el protagonismo entre dos tarjetas y al soltar

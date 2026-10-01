@@ -74,8 +74,8 @@ const PROMO_SLIDES = [
 // misma velocidad el recambio se sentía la mitad de vivo y el carrusel
 // parecía quieto. 100 px/s deja una tarjeta cada 2,9 s: se ve moverse de
 // entrada y las promos siguen siendo legibles.
-const HERO_TICKER_SPEED = 100;
-const HERO_MAX_FLING_SPEED = 900;
+const HERO_TICKER_SPEED = 68;
+const HERO_MAX_FLING_SPEED = 720;
 
 type PromoSlide = (typeof PROMO_SLIDES)[number];
 
@@ -185,8 +185,8 @@ function CategoryWinnerCard({
 
 // Mismo criterio que el hero: a 38 px/s, con tarjetas de ~400 px, pasaba una
 // cada 11 segundos y la cinta parecía detenida.
-const CATEGORY_AUTO_SCROLL_SPEED = 75;
-const CATEGORY_MAX_FLING_SPEED = 1500;
+const CATEGORY_AUTO_SCROLL_SPEED = 48;
+const CATEGORY_MAX_FLING_SPEED = 900;
 
 type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
 
