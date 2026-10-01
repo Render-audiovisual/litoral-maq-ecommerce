@@ -37,11 +37,11 @@ h1, h2, h3 { color: var(--navy-dark); letter-spacing: -0.035em; }
 h1 { font-size: clamp(2.2rem, 4vw, 4.8rem); line-height: .98; }
 h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .sr-only { width: 1px; height: 1px; padding: 0; position: absolute; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.announcement { background: var(--navy-dark); color: #fff; padding: 10px 0; display: flex; gap: var(--marquee-gap); overflow: hidden; }
+.announcement { background: var(--orange); color: var(--navy-dark); padding: 10px 0; display: flex; gap: var(--marquee-gap); overflow: hidden; }
 /* Texto original con la letra y la velocidad de la cinta de datos concretos
    (≈70 px/s en escritorio, ≈49 px/s en celular): la duración es el ancho de
    la frase + gap (≈433 px) sobre esa velocidad. */
-.announcement > span { flex-shrink: 0; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: 0; white-space: nowrap; will-change: transform; animation: marquee 6.2s linear infinite; }
+.announcement > span { flex-shrink: 0; color: var(--navy-dark); font-size: 12px; font-weight: 700; letter-spacing: 0; white-space: nowrap; will-change: transform; animation: marquee 6.2s linear infinite; }
 @keyframes marquee {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(calc(-100% - var(--marquee-gap)), 0, 0); }
