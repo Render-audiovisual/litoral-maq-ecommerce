@@ -17,6 +17,19 @@ test('la página principal carga correctamente', async ({ page }) => {
   );
 });
 
+test('la franja superior se mueve aun cuando el navegador reduce animaciones', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const message = page.locator('.announcement > span').first();
+  await expect(message).toBeVisible();
+
+  const start = await message.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(700);
+  const end = await message.evaluate((element) => getComputedStyle(element).transform);
+
+  expect(start).not.toBe(end);
+});
+
 test('ofertas funciona como acceso directo a productos estrella', async ({ page }) => {
   await page.goto('/');
 

@@ -105,7 +105,7 @@ test("los testimonios no quedan congelados con movimiento reducido", async ({ pa
   await openSection(page);
 
   const inicial = await activeIndex(page);
-  await expect.poll(() => activeIndex(page), { timeout: 7000 }).not.toBe(inicial);
+  await expect.poll(() => activeIndex(page), { timeout: 5000 }).not.toBe(inicial);
 });
 
 test("tocar una tarjeta lateral la trae al centro", async ({ page }) => {

@@ -1527,6 +1527,10 @@ td > small { margin-top: 4px; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+  /* La franja es información breve que entra y sale del viewport, no una
+     transición que oculte contenido. Mantenerla lenta evita que parezca rota
+     en navegadores que activan esta preferencia automáticamente. */
+  .announcement > span { animation-duration: 8.8s !important; animation-iteration-count: infinite !important; }
 }
 
 @media (max-width: 700px) {
