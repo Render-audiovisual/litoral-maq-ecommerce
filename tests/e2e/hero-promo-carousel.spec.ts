@@ -89,6 +89,20 @@ test("la cinta del hero corre sola, se arrastra con el mouse y conserva el enviÃ
   expect(advance(settled, await trackOffset(page), loop)).toBeLessThan(-3);
 });
 
+test("la cinta funcional sigue activa con movimiento reducido", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator(".hero-promo-track .hero-promo-card").first()).toBeVisible();
+
+  const loop = await loopWidth(page);
+  const start = await trackOffset(page);
+  await page.waitForTimeout(700);
+
+  // Las entradas decorativas terminan de inmediato bajo esta preferencia,
+  // pero la navegaciÃ³n continua de productos no queda congelada.
+  expect(advance(start, await trackOffset(page), loop)).toBeLessThan(-10);
+});
+
 test("la cinta responde igual al dedo y no se traga el scroll vertical", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");

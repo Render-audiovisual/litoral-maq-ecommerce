@@ -97,13 +97,6 @@ export function useScaleCarousel({ count, autoAdvanceMs = 0, paused = false }: S
     let raf = 0;
     let last = performance.now();
     let nextAdvance = performance.now() + autoAdvanceMs;
-// Las cintas del inicio se mueven siempre, igual que la barra superior y el
-// carrusel de categorías, que nunca miraron esta preferencia. Cuando solo
-// estas dos la respetaban, en una máquina que pide "menos movimiento" el
-// inicio quedaba a medias —dos cintas corriendo y dos congeladas— y se leía
-// como que estaban rotas. Si alguna vez se decide honrar la preferencia,
-// tiene que hacerse en los cuatro lugares a la vez, no en dos.
-
     function frame(now: number) {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
