@@ -5,6 +5,18 @@ import { expect, test } from "@playwright/test";
 for (const carousel of [
   { name: "categorías", selector: ".category-marquee", card: ".winner-card" },
 ]) {
+  test(`el carrusel de ${carousel.name} sigue activo con movimiento reducido`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    const rail = page.locator(carousel.selector);
+    await expect(rail).toBeVisible();
+    await rail.scrollIntoViewIfNeeded();
+
+    const start = await rail.evaluate((element) => element.scrollLeft);
+    await page.waitForTimeout(700);
+    expect(await rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(start + 10);
+  });
+
   test(`el carrusel móvil de ${carousel.name} avanza aunque el navegador redondee scrollLeft`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");

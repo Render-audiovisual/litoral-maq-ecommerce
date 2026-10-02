@@ -100,6 +100,14 @@ test("avanza sola, frena con el puntero encima y se puede arrastrar", async ({ p
   expect(await activeIndex(page)).not.toBe(quieta);
 });
 
+test("los testimonios no quedan congelados con movimiento reducido", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await openSection(page);
+
+  const inicial = await activeIndex(page);
+  await expect.poll(() => activeIndex(page), { timeout: 7000 }).not.toBe(inicial);
+});
+
 test("tocar una tarjeta lateral la trae al centro", async ({ page }) => {
   await openSection(page);
   await page.locator(stage).hover(); // frena el automático para que la prueba sea estable
