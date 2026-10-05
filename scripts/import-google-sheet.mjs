@@ -39,6 +39,12 @@ const CURATED_ACTIVE_COMPLETIONS = {
   580: {
     description: "Taladro Energy ID13/2/220 de 550 W con mandril de 13 mm.",
   },
+  // El Sheet trae "############" en la columna precio para estos dos (celda
+  // angosta en Google Sheets, no un error de stock). Son productos activos
+  // de verdad, con precio real en la base de Supabase en vivo (confirmado
+  // 2026-10-05) — se completa a mano para no perderlo en este seed estático.
+  3906: { price: 1290000 },
+  3969: { price: 12000000 },
 };
 
 function applyCuratedCompletion(product) {
@@ -48,6 +54,7 @@ function applyCuratedCompletion(product) {
   if (!completion) return product;
   const image = completion.image || product.image;
   const description = completion.description || product.description;
+  const price = completion.price ?? product.price;
   return {
     ...product,
     image,
@@ -56,10 +63,12 @@ function applyCuratedCompletion(product) {
         ? [image, ...(product.images || [])]
         : product.images || [],
     description,
+    price,
     incomplete: (product.incomplete || []).filter(
       (item) =>
         !(item === "image" && image) &&
-        !(item === "description" && description),
+        !(item === "description" && description) &&
+        !(item === "price" && typeof price === "number"),
     ),
   };
 }
@@ -220,19 +229,37 @@ const sheetProducts = body
     const existing = cleanCode ? currentByCode.get(cleanCode) : null;
     if (existing) {
       updated += 1;
+      // Precio ilegible en el Sheet ("############" por celda angosta, no
+      // un precio real) → conserva el último precio bueno conocido en vez
+      // de vaciarlo. Mismo criterio que el sync automático de producción
+      // (ver supabase/functions/_shared/catalog-sheet.ts: `unpriceable`).
+      const resolvedPrice = price ?? existing.price;
       return {
         ...existing,
         name: name || existing.name,
-        price,
-        rawPrice: rawPrice.trim() || null,
+        price: resolvedPrice,
+        rawPrice: rawPrice.trim() || existing.rawPrice,
         source: "google-sheet",
         sourceRow: index + 2,
         purchaseLimit: existing.purchaseLimit ?? DEFAULT_PURCHASE_LIMIT,
         incomplete: existing.incomplete.filter(
-          (item) => !["code", "price", "sheet-absent"].includes(item),
+          (item) =>
+            !["code", "sheet-absent"].includes(item) &&
+            !(item === "price" && typeof resolvedPrice === "number"),
         ),
       };
     }
+
+    // Producto nuevo (sin historial) con precio ilegible en el Sheet: no hay
+    // precio bueno previo que conservar, salvo que esté en
+    // CURATED_ACTIVE_COMPLETIONS. Si no, se descarta — igual que el sync de
+    // producción (catalog-sheet.ts trata estas filas como `unpriceable` y no
+    // las crea) — se vuelve a intentar solo cuando se arregle la celda.
+    const curatedPrice = cleanCode
+      ? CURATED_ACTIVE_COMPLETIONS[cleanCode]?.price
+      : undefined;
+    const resolvedNewPrice = price ?? curatedPrice ?? null;
+    if (resolvedNewPrice === null) return null;
 
     created += 1;
     return {
@@ -240,7 +267,7 @@ const sheetProducts = body
       slug: `${slugify(name || `producto-${index + 2}`)}-${cleanCode || index + 2}`,
       code: cleanCode || null,
       name: name || "Producto sin nombre",
-      price,
+      price: resolvedNewPrice,
       rawPrice: rawPrice.trim() || null,
       category: inferCategory(name.toUpperCase()),
       brand: inferBrand(name.toUpperCase()),
@@ -257,7 +284,7 @@ const sheetProducts = body
       sourceRow: index + 2,
       incomplete: [
         !cleanCode && "code",
-        price === null && "price",
+        resolvedNewPrice === null && "price",
         "image",
         "stock",
         "description",
