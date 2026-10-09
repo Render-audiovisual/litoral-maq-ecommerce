@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useCaptcha } from "@/components/use-captcha";
+import { MercadoPagoMark } from "@/components/mercado-pago-mark";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { guestIdFromEmail, normalizeEmail } from "@/lib/auth";
@@ -909,10 +910,7 @@ export default function CheckoutPage() {
             <h2>{paymentEnabled ? "Pago" : "Revisión y contacto"}</h2>
             <div className="payment-option">
               {paymentEnabled ? (
-                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-                  <rect x="3" y="5.5" width="18" height="13" rx="2" />
-                  <path d="M3 10h18M7 15h4" />
-                </svg>
+                <MercadoPagoMark />
               ) : (
                 <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
                   <path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5z" />
@@ -983,7 +981,7 @@ export default function CheckoutPage() {
             <strong>{formatCurrency(cartSubtotal + (shipping || 0))}</strong>
           </div>
           <button
-            className="button primary large full"
+            className={`button large full${paymentEnabled ? " mercado-pago-button" : " primary"}`}
             disabled={
               loading ||
               quoting ||
@@ -996,7 +994,15 @@ export default function CheckoutPage() {
               : shipping === null
                 ? "Confirmá la entrega para continuar"
                 : paymentEnabled
-                  ? "Continuar a Mercado Pago"
+                  ? (
+                      <>
+                        <MercadoPagoMark compact />
+                        <span>Pagar con Mercado Pago</span>
+                        <svg className="payment-button-arrow" viewBox="0 0 20 20" aria-hidden="true">
+                          <path d="M4 10h11m-4-4 4 4-4 4" />
+                        </svg>
+                      </>
+                    )
                   : "Enviar solicitud de compra"}
           </button>
           <p className="reservation-note">
