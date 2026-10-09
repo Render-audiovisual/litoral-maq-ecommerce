@@ -10,20 +10,27 @@ declare
 begin
   select count(*)
     into franco_order_count
-  from public.orders
-  where lower(trim(customer_name)) = 'franco'
-    and regexp_replace(coalesce(phone, ''), '[^0-9]', '', 'g') = '3794530578'
-    and total = 1000
-    and (created_at at time zone 'America/Argentina/Cordoba')::date = date '2026-09-07';
+  from public.orders as orders
+  join public.profiles as profiles on profiles.id = orders.customer_id
+  where lower(trim(profiles.name)) = 'franco'
+    and coalesce(trim(profiles.email), '') = ''
+    and regexp_replace(coalesce(profiles.phone, ''), '[^0-9]', '', 'g') = '3794530578'
+    and orders.total = 1000
+    and orders.status <> 'pago_simulado'
+    and (orders.payment_status = 'approved' or orders.status = 'entregado')
+    and (orders.created_at at time zone 'America/Argentina/Cordoba')::date = date '2026-09-07';
 
   select count(*)
     into abba_order_count
-  from public.orders
-  where lower(trim(customer_name)) = 'abba distribuidora'
-    and lower(trim(email)) = 'abbadistribuidora2@gmail.com'
-    and regexp_replace(coalesce(phone, ''), '[^0-9]', '', 'g') = '3794009782'
-    and total = 1000
-    and (created_at at time zone 'America/Argentina/Cordoba')::date = date '2026-09-07';
+  from public.orders as orders
+  join public.profiles as profiles on profiles.id = orders.customer_id
+  where lower(trim(profiles.name)) = 'abba distribuidora'
+    and lower(trim(profiles.email)) = 'abbadistribuidora2@gmail.com'
+    and regexp_replace(coalesce(profiles.phone, ''), '[^0-9]', '', 'g') = '3794009782'
+    and orders.total = 1000
+    and orders.status <> 'pago_simulado'
+    and (orders.payment_status = 'approved' or orders.status = 'entregado')
+    and (orders.created_at at time zone 'America/Argentina/Cordoba')::date = date '2026-09-07';
 
   if franco_order_count <> 1 then
     raise exception
@@ -38,18 +45,26 @@ begin
   end if;
 
   delete from public.orders
-  where (
-      lower(trim(customer_name)) = 'franco'
-      and regexp_replace(coalesce(phone, ''), '[^0-9]', '', 'g') = '3794530578'
-      and total = 1000
-      and (created_at at time zone 'America/Argentina/Cordoba')::date = date '2026-09-07'
-    )
-    or (
-      lower(trim(customer_name)) = 'abba distribuidora'
-      and lower(trim(email)) = 'abbadistribuidora2@gmail.com'
-      and regexp_replace(coalesce(phone, ''), '[^0-9]', '', 'g') = '3794009782'
-      and total = 1000
-      and (created_at at time zone 'America/Argentina/Cordoba')::date = date '2026-09-07'
-    );
+  where id in (
+    select orders.id
+    from public.orders as orders
+    join public.profiles as profiles on profiles.id = orders.customer_id
+    where orders.total = 1000
+      and orders.status <> 'pago_simulado'
+      and (orders.payment_status = 'approved' or orders.status = 'entregado')
+      and (orders.created_at at time zone 'America/Argentina/Cordoba')::date = date '2026-09-07'
+      and (
+        (
+          lower(trim(profiles.name)) = 'franco'
+          and coalesce(trim(profiles.email), '') = ''
+          and regexp_replace(coalesce(profiles.phone, ''), '[^0-9]', '', 'g') = '3794530578'
+        )
+        or (
+          lower(trim(profiles.name)) = 'abba distribuidora'
+          and lower(trim(profiles.email)) = 'abbadistribuidora2@gmail.com'
+          and regexp_replace(coalesce(profiles.phone, ''), '[^0-9]', '', 'g') = '3794009782'
+        )
+      )
+  );
 end;
 $$;
