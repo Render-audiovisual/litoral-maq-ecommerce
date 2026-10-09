@@ -244,7 +244,7 @@ export function HomeClient() {
         <div className="hero-actions commerce-hero-actions">
           <div className="hero-buttons">
             <Link href="/productos" className="button primary large">Explorar catálogo</Link>
-            <Link href="#productos-estrella" className="button ghost large hero-offers-link">
+            <Link href="/productos?categoria=Ofertas" className="button ghost large hero-offers-link">
               <span className="hero-offers-desktop">Ver ofertas</span>
               <span className="hero-offers-mobile">Ver ofertas destacadas →</span>
             </Link>

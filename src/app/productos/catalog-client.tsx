@@ -11,6 +11,7 @@ import {
 import { useStore } from "@/store/store";
 import { getProductAvailability } from "@/lib/product-availability";
 import { searchProducts } from "@/lib/search";
+import "./catalog-refined.css";
 
 const PAGE_SIZE = 24;
 
@@ -80,18 +81,14 @@ export function CatalogClient() {
   }
 
   // Cuántos filtros (además de la búsqueda) hay aplicados: se muestra en el botón "Filtros" del celular.
-  const activeFilterCount = [family, brand, minimumPrice, maximumPrice, onlyAvailable ? "1" : ""].filter(Boolean).length;
+  const activeFilterCount = [category, family, brand, minimumPrice, maximumPrice, onlyAvailable ? "1" : ""].filter(Boolean).length;
 
   function clearFilters() {
     setQuery(""); setFamily(""); setBrand(""); setMinimumPrice(""); setMaximumPrice(""); setCategory(""); setOnlyAvailable(false); resetVisibleCount();
   }
 
   return (
-    <main className="catalog-page">
-      <div className="page-hero compact">
-        <h1>Máquinas y herramientas</h1>
-        <p>Precio, código y disponibilidad de cada producto, a la vista.</p>
-      </div>
+    <main className="catalog-page catalog-refined">
       <div className="catalog-layout">
         <aside className="filters">
           <div className="filters-head">
@@ -106,9 +103,22 @@ export function CatalogClient() {
               Filtros{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
             </button>
           </div>
-          <label className="catalog-search">Buscar
-            <input value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="Producto, marca o código" />
+          <label className="catalog-search">Buscar productos
+            <input type="search" value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="¿Qué estás buscando? Ej. taladro, escalera…" />
           </label>
+          <div className="catalog-category-shortcuts" role="group" aria-label="Accesos rápidos del catálogo">
+            <button type="button" aria-pressed={!family && !category} onClick={() => { setFamily(""); setCategory(""); setBrand(""); resetVisibleCount(); }}>Todos</button>
+            {LAUNCH_FAMILIES.map((item) => <button type="button" key={item.slug} aria-pressed={family === item.slug} onClick={() => { setFamily(item.slug); setCategory(""); setBrand(""); resetVisibleCount(); }}>{item.label}</button>)}
+          </div>
+          {(query || activeFilterCount > 0) && <div className="catalog-active-filters" aria-label="Filtros aplicados">
+            {query && <button type="button" onClick={() => { setQuery(""); resetVisibleCount(); }}>Búsqueda: {query} ×</button>}
+            {family && <button type="button" onClick={() => { setFamily(""); setBrand(""); resetVisibleCount(); }}>{LAUNCH_FAMILIES.find((item) => item.slug === family)?.label ?? family} ×</button>}
+            {category && <button type="button" onClick={() => { setCategory(""); resetVisibleCount(); }}>{category} ×</button>}
+            {brand && <button type="button" onClick={() => { setBrand(""); resetVisibleCount(); }}>{brand} ×</button>}
+            {(minimumPrice || maximumPrice) && <button type="button" onClick={() => { setMinimumPrice(""); setMaximumPrice(""); resetVisibleCount(); }}>Precio {minimumPrice || "0"} – {maximumPrice || "sin límite"} ×</button>}
+            {onlyAvailable && <button type="button" onClick={() => { setOnlyAvailable(false); resetVisibleCount(); }}>Con stock ×</button>}
+            <button type="button" className="catalog-clear-all" onClick={clearFilters}>Limpiar todo</button>
+          </div>}
           <div id="catalog-more-filters" className={filtersOpen ? "filters-more open" : "filters-more"}>
           <label>Categoría
             <select value={family} onChange={(event) => { setFamily(event.target.value); setBrand(""); resetVisibleCount(); }}>
@@ -139,15 +149,16 @@ export function CatalogClient() {
         </aside>
         <section>
           <div className="catalog-toolbar">
-            <span><strong>{filtered.length}</strong> productos encontrados</span>
-            <label className="catalog-sort">Ordenar por
-              <select value={sort} onChange={(event) => { setSort(event.target.value); resetVisibleCount(); }}>
-                <option value="featured">Destacados primero</option>
-                <option value="price-asc">Menor precio</option>
-                <option value="price-desc">Mayor precio</option>
-                <option value="name">Nombre A–Z</option>
-              </select>
-            </label>
+            <span role="status" aria-live="polite"><strong>{filtered.length}</strong> productos encontrados</span>
+            <div className="catalog-sort-options" role="group" aria-label="Ordenar productos">
+              <span>Ordenar por</span>
+              {[
+                { value: "featured", label: "Destacados" },
+                { value: "price-asc", label: "Menor precio" },
+                { value: "price-desc", label: "Mayor precio" },
+                { value: "name", label: "Nombre A–Z" },
+              ].map((option) => <button type="button" key={option.value} aria-pressed={sort === option.value} onClick={() => { setSort(option.value); resetVisibleCount(); }}>{option.label}</button>)}
+            </div>
           </div>
           {filtered.length ? (
             <div className="product-grid catalog-grid">

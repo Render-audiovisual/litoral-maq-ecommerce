@@ -30,19 +30,18 @@ test('la franja superior se mueve aun cuando el navegador reduce animaciones', a
   expect(start).not.toBe(end);
 });
 
-test('ofertas funciona como acceso directo a productos estrella', async ({ page }) => {
+test('ofertas abre el catálogo filtrado desde el menú y el inicio', async ({ page }) => {
   await page.goto('/');
 
-  const starProducts = page.locator('#productos-estrella');
-  await expect(starProducts).toBeVisible();
   await expect(page.getByRole('navigation').getByRole('link', { name: 'Ofertas' })).toHaveAttribute(
     'href',
-    '/#productos-estrella',
+    '/productos?categoria=Ofertas',
   );
 
-  await page.getByRole('link', { name: 'Ver ofertas', exact: true }).click();
-  await expect(page).toHaveURL(/#productos-estrella$/);
-  await expect(starProducts).toBeInViewport();
+  await page.locator('.hero-offers-link').click();
+  await expect(page).toHaveURL(/\/productos\?categoria=Ofertas$/);
+  await expect(page.getByRole('searchbox', { name: 'Buscar productos' })).toBeVisible();
+  await expect(page.locator('.catalog-grid .product-card').first()).toBeVisible();
 });
 
 test('el cartel de retiro gratis lleva a la ficha del local en Google Maps', async ({ page }) => {
