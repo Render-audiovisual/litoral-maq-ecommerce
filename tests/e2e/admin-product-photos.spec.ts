@@ -1,0 +1,31 @@
+import { expect, test } from "@playwright/test";
+
+test("fotos: buscar, agregar y cambiar sin alterar precio ni stock", async ({ page }) => {
+  await page.goto("/admin/login");
+  await page.getByLabel("Email").fill("admin@litoralmaq.com");
+  await page.getByLabel("Contraseña").fill("admin123");
+  await page.getByRole("button", { name: "Ingresar", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin$/);
+  await page.getByRole("link", { name: "Fotos de productos", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Fotos de productos", exact: true })).toBeVisible();
+  const missing = page.getByRole("region", { name: "Productos sin foto" });
+  const first = missing.locator("li").first();
+  const name = await first.locator("strong").innerText();
+  await first.getByRole("button", { name: /Agregar foto/ }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Enlace de la imagen").fill("/products/catalog/3381-aa518-220plus.webp");
+  await dialog.getByRole("button", { name: "Guardar foto" }).click();
+  await expect(dialog).not.toBeVisible();
+  await page.getByRole("searchbox", { name: "Buscar por nombre o código" }).fill(name);
+  const withPhoto = page.getByRole("region", { name: "Productos con foto" });
+  await expect(withPhoto).toContainText(name);
+  await expect(missing.locator("li")).toHaveCount(0);
+  await withPhoto.getByRole("button", { name: `Cambiar foto de ${name}`, exact: true }).click();
+  await expect(dialog.getByLabel("Enlace de la imagen")).toHaveValue("/products/catalog/3381-aa518-220plus.webp");
+  await dialog.getByRole("button", { name: "Cancelar" }).click();
+  await page.reload();
+  await page.getByRole("searchbox", { name: "Buscar por nombre o código" }).fill(name);
+  await expect(withPhoto).toContainText(name);
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});
