@@ -6,6 +6,7 @@ import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { getPurchaseLimit } from "@/lib/purchase-limits";
 import { isMercadoPagoEnabled } from "@/services/payments";
+import { MercadoPagoMark } from "@/components/mercado-pago-mark";
 
 export default function CartPage() {
   const { cart, products, cartSubtotal, setCartQuantity } = useStore();
@@ -138,13 +139,19 @@ export default function CartPage() {
               <strong>{formatCurrency(cartSubtotal)}</strong>
             </div>
             <Link href="/checkout" className="button primary full">
-              Iniciar compra
+              Continuar compra
             </Link>
-            <small>
-              {isMercadoPagoEnabled()
-                ? "Pagás seguro con Mercado Pago: cuotas, débito o dinero en cuenta."
-                : "Enviás la solicitud sin cargo y coordinamos el pago con vos."}
-            </small>
+            {isMercadoPagoEnabled() ? (
+              <div className="cart-payment-trust">
+                <MercadoPagoMark />
+                <p>
+                  <strong>Pago seguro</strong>
+                  <span>Crédito, débito o dinero en cuenta</span>
+                </p>
+              </div>
+            ) : (
+              <small>Enviás la solicitud sin cargo y coordinamos el pago con vos.</small>
+            )}
           </aside>
         </div>
       )}

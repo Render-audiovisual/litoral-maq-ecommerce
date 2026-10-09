@@ -560,6 +560,18 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 /* Paso 3: una sola forma de pago, con el estilo de elección seleccionada. */
 .payment-option { padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--navy); border-radius: 6px; background: #f2f7fb; box-shadow: 0 0 0 1px var(--navy); }
 .payment-option svg { flex: none; margin-top: 1px; fill: none; stroke: var(--navy); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.mercado-pago-mark { min-width: 94px; display: inline-flex; align-items: center; gap: 5px; color: #263238; }
+.mercado-pago-mark > svg { width: 38px; height: 28px; margin: 0; fill: #fff; stroke: #3483fa; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
+.mercado-pago-wordmark { display: flex; flex-direction: column; align-items: flex-start; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 800; letter-spacing: -.045em; line-height: .78; }
+.mercado-pago-wordmark b { font: inherit; }
+.mercado-pago-mark.compact { min-width: 0; }
+.mercado-pago-mark.compact > svg { width: 35px; height: 25px; fill: #fff; stroke: currentColor; }
+.mercado-pago-button { min-height: 54px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; border-color: #3483fa; background: #3483fa; color: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -.01em; box-shadow: 0 8px 18px rgba(52,131,250,.23); transition: background-color .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+.mercado-pago-button:hover:not(:disabled) { border-color: #2968c8; background: #2968c8; box-shadow: 0 10px 22px rgba(52,131,250,.3); transform: translateY(-1px); }
+.mercado-pago-button:focus-visible { outline: 3px solid rgba(52,131,250,.35); outline-offset: 3px; }
+.mercado-pago-button:disabled { opacity: 1; border-color: #e3e8ec; background: #e3e8ec; color: #66737d; box-shadow: none; }
+.mercado-pago-button:disabled .mercado-pago-mark { display: none; }
+.payment-button-arrow { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .payment-option div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .payment-option strong { color: var(--navy); font-size: 15px; font-weight: 750; line-height: 1.25; }
 .payment-option small { color: #566472; font-size: 13px; line-height: 1.4; }
@@ -602,6 +614,10 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 .cart-layout .order-summary .summary-total strong { color: var(--orange-contrast); font-size: 20px; font-variant-numeric: tabular-nums; }
 .cart-layout .order-summary .button { min-height: 46px; margin: 16px 0 10px; }
 .cart-layout .order-summary > small { color: #566472; font-size: 13px; line-height: 1.45; }
+.cart-payment-trust { margin-top: 4px; padding: 12px 0 0; display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); }
+.cart-payment-trust .mercado-pago-mark { min-width: 88px; }
+.cart-payment-trust p { margin: 0; display: flex; flex-direction: column; gap: 1px; color: #566472; font-size: 12px; line-height: 1.35; }
+.cart-payment-trust strong { color: var(--navy); font-size: 13px; }
 .cart-empty { max-width: 520px; margin: 0 0 40px; padding: 48px 24px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--line); border-radius: 6px; background: var(--soft); }
 .cart-page > .cart-empty { width: min(100%, 520px); margin-inline: auto; }
 .cart-empty-icon { width: 56px; height: 56px; margin-bottom: 16px; display: grid; place-items: center; border-radius: 50%; background: #fff; color: var(--navy); }
@@ -1459,6 +1475,7 @@ td > small { margin-top: 4px; color: var(--muted); }
   .checkout-layout[data-mobile-step="3"] .order-summary > div { padding: 6px 0; }
   .checkout-layout[data-mobile-step="3"] .order-summary hr { margin: 10px 0; }
   .checkout-layout[data-mobile-step="3"] .order-summary .button { min-height: 50px; margin-top: 16px; }
+  .checkout-layout[data-mobile-step="3"] .mercado-pago-button { min-height: 56px; margin-top: 14px; }
   .winner-section { padding: 50px 16px 56px; }
   .category-marquee { margin: 0 -16px; }
   .winner-heading { align-items: flex-start; }
