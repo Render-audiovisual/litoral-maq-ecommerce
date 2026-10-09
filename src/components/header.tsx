@@ -262,8 +262,8 @@ export function Header() {
           <Link href="/productos" aria-current={pathname === "/productos" ? "page" : undefined} onClick={() => setOpen(false)}>
             Productos
           </Link>
-          <Link href="/productos?categoria=Ofertas" className="nav-offers" onClick={() => setOpen(false)}>
-            Ofertas
+          <Link href="/#productos-estrella" className="nav-offers" onClick={() => setOpen(false)}>
+            Más vendidos
           </Link>
           {account && (
             <Link

@@ -59,3 +59,9 @@
   .photo-thumbnail { width: 54px; height: 54px; }
   .photo-list .button { grid-column: 2; justify-self: start; }
 }
+.photo-upload-fields { border:0; padding:0; margin:0; min-width:0; }
+.photo-file-button { padding:16px; background:#eef6fa; border:1px dashed #9bb8c9; border-radius:10px; }
+.photo-gallery-editor { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin:16px 0; }
+.photo-gallery-item { min-width:0; padding:12px; border:1px solid #dbe5eb; border-radius:10px; display:flex; flex-direction:column; gap:10px; }
+.photo-gallery-item button { padding:8px; border:1px solid #cad8e1; border-radius:6px; background:white; color:var(--navy); cursor:pointer; }
+.photo-gallery-item input { max-width:100%; font-size:11px; }

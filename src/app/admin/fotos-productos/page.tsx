@@ -4,7 +4,8 @@ import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/store/store";
 import type { Product } from "@/lib/types";
-import { productPhoto, isPhotoUrl, withProductPhoto } from "@/lib/product-photos";
+import { productPhoto, isPhotoUrl, productGallery, withProductGallery } from "@/lib/product-photos";
+import { uploadProductPhoto } from "@/services/product-photo-upload";
 import { getStoreUrl } from "@/lib/domain-config";
 import { paginate } from "@/lib/paginate";
 import { ConflictError } from "@/lib/concurrency";
@@ -29,6 +30,8 @@ export default function ProductPhotosPage() {
   const [photoPage, setPhotoPage] = useState(1);
   const [editing, setEditing] = useState<Product | null>(null);
   const [photo, setPhoto] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
@@ -52,16 +55,35 @@ export default function ProductPhotosPage() {
   }, [products, query]);
 
   function openEditor(product: Product) {
-    setPhoto(productPhoto(product) ?? ""); setError(""); setEditing(product);
+    setPhoto(""); setGallery(productGallery(product)); setError(""); setEditing(product);
+  }
+  async function loadFiles(files: FileList | null, replace?: number) {
+    if (!editing || !files?.length || uploading) return;
+    if ((replace === undefined && gallery.length + files.length > 3) || (replace !== undefined && files.length > 1)) {
+      setError("Podés guardar hasta 3 fotos. Para reemplazar, elegí una sola."); return;
+    }
+    setUploading(true); setError("");
+    try {
+      const next = [...gallery];
+      // Keep each successful upload in the editor even if a later file fails.
+      for (const file of Array.from(files)) {
+        const url = await uploadProductPhoto(editing.id, file);
+        if (replace !== undefined) next[replace] = url; else next.push(url);
+        setGallery([...next]);
+      }
+    } catch (failure) { setError(failure instanceof Error ? failure.message : "No se pudo subir."); }
+    finally { setUploading(false); }
   }
   async function save(event: FormEvent) {
     event.preventDefault();
-    if (!editing || saving) return;
+    if (!editing || saving || uploading) return;
     const nextPhoto = photo.trim();
-    if (!isPhotoUrl(nextPhoto)) { setError("Pegá un enlace HTTPS de una imagen o una ruta /products/ del catálogo."); return; }
+    if (nextPhoto && !isPhotoUrl(nextPhoto)) { setError("Pegá un enlace HTTPS de una imagen o una ruta /products/ del catálogo."); return; }
+    const photos = [...new Set([...gallery, ...(nextPhoto ? [nextPhoto] : [])])];
+    if (!photos.length || photos.length > 3) { setError("Guardá entre 1 y 3 fotos. Quitá las adicionales si tenés más de 3."); return; }
     setSaving(true); setError("");
     try {
-      await saveProduct(withProductPhoto(editing, nextPhoto), editing);
+      await saveProduct(withProductGallery(editing, photos), editing);
       setSelectedGroup("withPhoto");
       setEditing(null); setNotice(`Foto guardada: ${editing.name}.`);
     } catch (failure) {
@@ -117,15 +139,31 @@ export default function ProductPhotosPage() {
         </section>;
       })}
     </div>
-    <dialog ref={dialog} className="photo-dialog" aria-labelledby="photo-dialog-title" onCancel={(event) => { event.preventDefault(); if (!saving) setEditing(null); }}>
+    <dialog ref={dialog} className="photo-dialog" aria-labelledby="photo-dialog-title" onCancel={(event) => { event.preventDefault(); if (!saving && !uploading) setEditing(null); }}>
       {editing && <form onSubmit={save}>
         <h2 id="photo-dialog-title">{productPhoto(editing) ? "Cambiar foto" : "Agregar foto"}</h2>
         <p>{editing.name} · Cód. {editing.code}</p>
-        <label>Enlace de la imagen<input autoFocus value={photo} onChange={(event) => setPhoto(event.target.value)} placeholder="https://…/foto.jpg" disabled={saving} required /></label>
-        <p>Usá un enlace directo a la foto. Solo se actualiza la imagen; se conserva la galería y el resto de los datos.</p>
+        <fieldset disabled={saving || uploading} className="photo-upload-fields">
+          <label className="photo-file-button">Subir desde archivos o galería
+            <input autoFocus type="file" accept="image/jpeg,image/png,image/webp" multiple disabled={gallery.length >= 3 || saving || uploading} onChange={(event) => { void loadFiles(event.target.files); event.target.value = ""; }} />
+          </label>
+          <p>{gallery.length}/3 fotos · JPG, PNG o WebP · Hasta 5 MB cada una.</p>
+          <div className="photo-gallery-editor">
+            {gallery.map((image, index) => <div className="photo-gallery-item" key={`${index}-${image}`}>
+              <div className="photo-editor-preview"><PhotoPreview photo={image} name={`${editing.name}, foto ${index + 1}`} /></div>
+              <strong>{index === 0 ? "Principal" : `Foto ${index + 1}`}</strong>
+              {index > 0 && <button type="button" onClick={() => setGallery([image, ...gallery.filter((_, i) => i !== index)])}>Usar como principal</button>}
+              <label>Reemplazar<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { void loadFiles(event.target.files, index); event.target.value = ""; }} /></label>
+              <button type="button" onClick={() => setGallery(gallery.filter((_, i) => i !== index))}>Quitar del producto</button>
+            </div>)}
+          </div>
+          <label>Enlace de la imagen (opcional)<input value={photo} onChange={(event) => setPhoto(event.target.value)} placeholder="https://…/foto.jpg" /></label>
+        </fieldset>
+        <p>Solo cambian las fotos. Precio y stock se conservan. Los cambios se aplican al guardar.</p>
+        {uploading && <p role="status">Subiendo foto…</p>}
         {isPhotoUrl(photo.trim()) && <div className="photo-editor-preview"><PhotoPreview key={photo.trim()} photo={photo.trim()} name={editing.name} /></div>}
         {error && <p role="alert">{error}</p>}
-        <div className="photo-dialog-actions"><button type="button" className="button secondary" disabled={saving} onClick={() => setEditing(null)}>Cancelar</button><button className="button" type="submit" disabled={saving}>{saving ? "Guardando…" : "Guardar foto"}</button></div>
+        <div className="photo-dialog-actions"><button type="button" className="button secondary" disabled={saving || uploading} onClick={() => setEditing(null)}>Cancelar</button><button className="button" type="submit" disabled={saving || uploading}>{saving ? "Guardando…" : "Guardar foto"}</button></div>
       </form>}
     </dialog>
   </div>;
