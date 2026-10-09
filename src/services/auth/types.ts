@@ -63,7 +63,7 @@ export function supportsGuestSessions(adapter: AuthAdapter): adapter is GuestCap
  * retornar acá, llega en `/auth/callback`.
  */
 export interface OAuthCapableAuthAdapter extends AuthAdapter {
-  startGoogleSignIn(redirectTo: string): Promise<void>;
+  startGoogleSignIn(redirectTo: string, intent?: "link-guest" | "sign-in"): Promise<void>;
 }
 
 export function supportsOAuth(adapter: AuthAdapter): adapter is OAuthCapableAuthAdapter {

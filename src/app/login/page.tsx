@@ -43,7 +43,9 @@ function LoginForm() {
       <p className="auth-intro">Mirá tus pedidos y comprá con tus datos guardados.</p>
       {confirmed && <div className="success-message">Email confirmado. Ya podés ingresar.</div>}
       {passwordChanged && <div className="success-message">Contraseña actualizada. Ingresá con la nueva clave.</div>}
-      <div className="auth-social"><GoogleSignInButton /></div>
+      <div className="auth-social">
+        <GoogleSignInButton intent="sign-in" next={params.get("next") || "/cuenta/pedidos"} />
+      </div>
       <p className="auth-divider"><span>o con tu email</span></p>
       <form onSubmit={signIn}>
         <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="tu@email.com" /></label>

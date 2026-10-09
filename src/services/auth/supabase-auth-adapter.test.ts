@@ -9,6 +9,7 @@ type ProfileRow = {
   name: string | null;
   email: string | null;
   is_anonymous: boolean;
+  phone?: string | null;
 };
 
 class FakeProfilesBuilder {
@@ -117,13 +118,14 @@ describe("supabaseAuthAdapter", () => {
 
   it("signInCustomer devuelve la sesión cuando las credenciales son correctas", async () => {
     const { client, auth } = createFakeClient([
-      { id: "user-1", role: "customer", name: "Juan", email: "juan@test.com", is_anonymous: false },
+      { id: "user-1", role: "customer", name: "Juan", email: "juan@test.com", phone: "3794556677", is_anonymous: false },
     ]);
     auth.signInWithPassword.mockResolvedValue({ data: { session: fakeAuthSession("user-1") }, error: null });
     const adapter = createSupabaseAuthAdapter(client);
     const session = await adapter.signInCustomer("juan@test.com", "clave123");
     expect(session.user.id).toBe("user-1");
     expect(session.user.role).toBe("customer");
+    expect(session.user.phone).toBe("3794556677");
   });
 
   it("signInCustomer rechaza credenciales inválidas con error genérico", async () => {
@@ -297,6 +299,23 @@ describe("supabaseAuthAdapter", () => {
       options: { redirectTo: "https://tienda.test/auth/callback" },
     });
     expect(auth.signInWithOAuth).not.toHaveBeenCalled();
+  });
+
+  it("Google desde Ingresar cierra la sesión invitada y abre la cuenta existente", async () => {
+    const { client, auth } = createFakeClient([
+      { id: "anon-1", role: "customer", name: null, email: null, is_anonymous: true },
+    ]);
+    auth.getSession.mockResolvedValue({ data: { session: fakeAuthSession("anon-1", true) }, error: null });
+    const adapter = createSupabaseAuthAdapter(client);
+
+    await adapter.startGoogleSignIn("https://tienda.test/auth/callback", "sign-in");
+
+    expect(auth.signOut).toHaveBeenCalledWith({ scope: "local" });
+    expect(auth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: "google",
+      options: { redirectTo: "https://tienda.test/auth/callback" },
+    });
+    expect(auth.linkIdentity).not.toHaveBeenCalled();
   });
 
   it("Google con cuenta permanente vuelve a signInWithOAuth", async () => {
