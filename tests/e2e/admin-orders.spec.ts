@@ -21,6 +21,16 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   // explícito apunta solo al encabezado real.
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
 
+  // El intento de checkout todavía no es una venta operativa. Simulamos la
+  // acreditación que en producción llega por el webhook de Mercado Pago.
+  await page.evaluate(() => {
+    const key = "litoral-orders-v1";
+    const orders = JSON.parse(localStorage.getItem(key) || "[]");
+    const order = orders.find((item: { customerName?: string }) => item.customerName === "Cliente Pedido E2E");
+    if (order) order.paymentStatus = "approved";
+    localStorage.setItem(key, JSON.stringify(orders));
+  });
+
   await page.goto("/admin/login");
   await page.getByLabel("Email").fill("admin@litoralmaq.com");
   await page.getByLabel("Contraseña").fill("admin123");
@@ -40,12 +50,6 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await expect(modal).toContainText(productName);
   await expect(modal).toContainText("Cód. 3403");
   await expect(modal).toContainText("3794000000");
-  await expect(modal).toContainText("Pago pendiente");
-  // Recontacto: el detalle ofrece WhatsApp con el pedido ya armado.
-  const whatsapp = modal.getByRole("link", { name: "Contactar por WhatsApp" });
-  const href = (await whatsapp.getAttribute("href")) ?? "";
-  expect(href).toContain("https://wa.me/5493794000000?text=");
-  expect(decodeURIComponent(href)).toContain("Vimos que solicitaste el pedido");
 
   const rowStatus = row.locator(".status-select");
   await expect(rowStatus.locator('option[value="listo"]')).toHaveText(

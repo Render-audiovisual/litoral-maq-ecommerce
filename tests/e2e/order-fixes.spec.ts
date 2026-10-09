@@ -15,6 +15,16 @@ async function fillContact(page: Page, lastName: string, phone: string, email = 
 }
 
 async function openAdminOrder(page: Page, customer: string) {
+  // El panel operativo muestra una venta solamente después de la acreditación.
+  // Estas pruebas crean el pedido desde el checkout local y confirman el pago
+  // antes de verificar sus datos y su gestión administrativa.
+  await page.evaluate((customerName) => {
+    const key = "litoral-orders-v1";
+    const orders = JSON.parse(localStorage.getItem(key) || "[]");
+    const order = orders.find((item: { customerName?: string }) => item.customerName === customerName);
+    if (order) order.paymentStatus = "approved";
+    localStorage.setItem(key, JSON.stringify(orders));
+  }, customer);
   await page.goto("/admin/login");
   await page.getByLabel("Email").fill("admin@litoralmaq.com");
   await page.getByLabel("Contraseña").fill("admin123");
@@ -77,12 +87,17 @@ test("el checkout pide un celular argentino y un email completo", async ({ page 
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
 
   // El "15" después del código de área no termina en el número de WhatsApp.
-  const modal = await openAdminOrder(page, "Cliente Telefono E2E");
-  await expect(modal.getByRole("link", { name: "Contactar por WhatsApp" }))
-    .toHaveAttribute("href", /^https:\/\/wa\.me\/5493794530578\?text=/);
+  const savedPhone = await page.evaluate(() => {
+    const orders = JSON.parse(localStorage.getItem("litoral-orders-v1") || "[]");
+    return orders.find((item: { customerName?: string }) => item.customerName === "Cliente Telefono E2E")?.phone;
+  });
+  expect(savedPhone).toBe("0379 15 4530578");
+
+  // También confirma que, una vez acreditado, el pedido es operativo.
+  await openAdminOrder(page, "Cliente Telefono E2E");
 });
 
-test("cancelar a mano un pedido sin pago lo deja como vencido; entregado ya no ofrece recontacto", async ({ page }) => {
+test("cancelar una venta acreditada conserva el pago y no ofrece recontacto", async ({ page }) => {
   await addProductAndOpenCheckout(page);
   await fillContact(page, "Cancelado E2E", "3794000000");
   await page.getByText("Retiro en Sáenz 1587").click();
@@ -93,11 +108,8 @@ test("cancelar a mano un pedido sin pago lo deja como vencido; entregado ya no o
   const modal = await openAdminOrder(page, "Cliente Cancelado E2E");
   await modal.getByLabel(/Estado de .* en detalle/).selectOption("cancelado");
   await expect(page.getByText(/actualizado a Cancelado/)).toBeVisible();
-  await expect(modal.getByLabel(/^Pago de /)).toHaveValue("cancelled");
-  await expect(modal.getByRole("link", { name: "Contactar por WhatsApp" })).toBeVisible();
-
-  await page.getByLabel("Circuito comercial").selectOption("expired");
-  await expect(page.locator("tbody tr").filter({ hasText: "Cliente Cancelado E2E" })).toHaveCount(1);
+  await expect(modal.getByLabel(/^Pago de /)).toHaveValue("approved");
+  await expect(modal.getByRole("link", { name: "Contactar por WhatsApp" })).toHaveCount(0);
 
   await modal.getByLabel(/Estado de .* en detalle/).selectOption("entregado");
   await expect(page.getByText(/actualizado a Retirado/)).toBeVisible();

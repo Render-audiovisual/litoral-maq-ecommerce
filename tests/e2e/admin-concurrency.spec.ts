@@ -84,7 +84,7 @@ test("cambiar el estado de un pedido que otra persona ya movió avisa y no lo pi
           createdAt: new Date().toISOString(),
           statusChangedAt: new Date().toISOString(),
           paymentReference: "REF-CONC",
-          paymentStatus: "pending",
+          paymentStatus: "approved",
         },
       ]),
     );
