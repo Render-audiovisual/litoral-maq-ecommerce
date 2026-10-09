@@ -96,6 +96,18 @@ export default function CheckoutPage() {
   // Campos marcados como inválidos en el último intento: borde rojo,
   // aria-invalid y foco al primero. Se desmarcan apenas se editan.
   const [invalidFields, setInvalidFields] = useState<Set<FormField>>(new Set());
+  const [mobileStep, setMobileStep] = useState<1 | 2 | 3>(1);
+
+  function goToMobileStep(step: 1 | 2 | 3) {
+    setMobileStep(step);
+    if (window.matchMedia("(max-width: 560px)").matches) {
+      window.requestAnimationFrame(() => {
+        document
+          .getElementById(`checkout-step-${step}`)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
 
   function resetQuote() {
     setShipping(null);
@@ -128,7 +140,17 @@ export default function CheckoutPage() {
   /** Marca los campos (en el orden del formulario) y lleva el foco al primero. */
   function flagFields(fields: FormField[]) {
     setInvalidFields(new Set(fields));
-    if (fields.length) document.getElementById(`checkout-${fields[0]}`)?.focus();
+    if (!fields.length) return;
+    const destinationFields: FormField[] = [
+      "postalCode",
+      "locality",
+      "street",
+      "streetNumber",
+    ];
+    goToMobileStep(destinationFields.includes(fields[0]) ? 2 : 1);
+    window.requestAnimationFrame(() =>
+      document.getElementById(`checkout-${fields[0]}`)?.focus(),
+    );
   }
 
   function fieldProps(field: FormField) {
@@ -202,25 +224,25 @@ export default function CheckoutPage() {
     };
   }
 
-  async function confirmDelivery() {
+  async function confirmDelivery(): Promise<boolean> {
     setError("");
     setDeliveryError("");
     setManualReason("");
     const contactError = validateContact();
     if (contactError) {
       setDeliveryError(contactError);
-      return;
+      return false;
     }
     if (method === "retiro") {
       setQuoteOptions([]);
       setSelectedQuoteId("");
       setShipping(0);
-      return;
+      return true;
     }
     const destinationError = validateDestination();
     if (destinationError) {
       setDeliveryError(destinationError);
-      return;
+      return false;
     }
     setQuoting(true);
     resetQuote();
@@ -236,7 +258,7 @@ export default function CheckoutPage() {
       if (result.status === "manual") {
         setManualReason(result.reason);
         setShipping(0);
-        return;
+        return true;
       }
       const sorted = [...result.options].sort(
         (a, b) =>
@@ -247,27 +269,65 @@ export default function CheckoutPage() {
           "No hay una opción automática disponible; vamos a cotizar el envío manualmente.",
         );
         setShipping(0);
-        return;
+        return true;
       }
       setQuoteOptions(sorted);
       setSelectedQuoteId(sorted[0].id);
       setShipping(sorted[0].amount);
+      return true;
     } catch (caught) {
       if (caught instanceof ShippingIntegrationError && caught.status === 503) {
         setManualReason(
           "La integración todavía no está activa; vamos a cotizar este envío manualmente.",
         );
         setShipping(0);
+        return true;
       } else {
         setDeliveryError(
           caught instanceof Error
             ? caught.message
             : "No se pudo cotizar el envío.",
         );
+        return false;
       }
     } finally {
       setQuoting(false);
     }
+  }
+
+  function continueFromContact() {
+    setError("");
+    const contactError = validateContact();
+    if (contactError) {
+      setError(contactError);
+      return;
+    }
+    if (needsGuestSession && !captcha.solved) {
+      setError("Completá la verificación de seguridad para continuar.");
+      return;
+    }
+    goToMobileStep(2);
+  }
+
+  function deliveryIsReady() {
+    if (shipping === null) return false;
+    if (method === "envio" && !manualReason && !selectedQuoteId) return false;
+    if (method === "envio" && manualReason && !preferredCarrier) return false;
+    return true;
+  }
+
+  function continueFromDelivery() {
+    setError("");
+    setDeliveryError("");
+    if (!deliveryIsReady()) {
+      setDeliveryError(
+        method === "envio" && manualReason && !preferredCarrier
+          ? "Elegí con qué empresa querés el envío."
+          : "Confirmá la forma de entrega para continuar.",
+      );
+      return;
+    }
+    goToMobileStep(3);
   }
 
   function chooseQuote(option: ShippingQuoteOption) {
@@ -282,25 +342,30 @@ export default function CheckoutPage() {
     const contactError = validateContact();
     if (contactError) {
       setError(contactError);
+      goToMobileStep(1);
       return;
     }
     if (method === "envio") {
       const destinationError = validateDestination();
       if (destinationError) {
         setError(destinationError);
+        goToMobileStep(2);
         return;
       }
     }
     if (shipping === null) {
       setError("Confirmá la forma de entrega antes de continuar.");
+      goToMobileStep(2);
       return;
     }
     if (method === "envio" && !manualReason && !selectedQuoteId) {
       setError("Elegí una opción de envío.");
+      goToMobileStep(2);
       return;
     }
     if (method === "envio" && manualReason && !preferredCarrier) {
       setError("Elegí con qué empresa querés el envío: Vía Cargo, OCA o Andreani.");
+      goToMobileStep(2);
       return;
     }
     const quantityError = validateCartPurchaseLimits(cart, products);
@@ -437,9 +502,31 @@ export default function CheckoutPage() {
             : "Completá tus datos y elegí cómo querés recibirlo."}
         </p>
       </div>
-      <form className="checkout-layout" onSubmit={submit}>
+      <nav className="checkout-progress" aria-label="Pasos de la compra">
+        {["Tus datos", "Entrega", paymentEnabled ? "Pago" : "Revisión"].map(
+          (label, index) => {
+            const step = (index + 1) as 1 | 2 | 3;
+            return (
+              <button
+                type="button"
+                key={label}
+                className={mobileStep === step ? "active" : mobileStep > step ? "complete" : ""}
+                aria-current={mobileStep === step ? "step" : undefined}
+                onClick={() => {
+                  if (step < mobileStep) goToMobileStep(step);
+                }}
+                disabled={step > mobileStep}
+              >
+                <span>{step}</span>
+                {label}
+              </button>
+            );
+          },
+        )}
+      </nav>
+      <form className="checkout-layout" data-mobile-step={mobileStep} onSubmit={submit}>
         <div className="checkout-steps">
-          <section className="form-card">
+          <section className="form-card checkout-step" id="checkout-step-1" data-step="1">
             <div className="step-number">1</div>
             <h2>Datos de contacto</h2>
             <div className="form-grid">
@@ -519,8 +606,20 @@ export default function CheckoutPage() {
                 {captcha.field}
               </>
             )}
+            {error && mobileStep === 1 && (
+              <div className="error-message mobile-step-message" role="alert">
+                {error}
+              </div>
+            )}
+            <button
+              type="button"
+              className="button primary full mobile-step-action"
+              onClick={continueFromContact}
+            >
+              Continuar a entrega
+            </button>
           </section>
-          <section className="form-card">
+          <section className="form-card checkout-step" id="checkout-step-2" data-step="2">
             <div className="step-number">2</div>
             <h2>Entrega</h2>
             <div className="delivery-options" role="radiogroup" aria-label="Forma de entrega">
@@ -787,8 +886,25 @@ export default function CheckoutPage() {
                   : "Opción de envío seleccionada"}
               </div>
             )}
+            <div className="mobile-step-actions">
+              <button
+                type="button"
+                className="button secondary"
+                onClick={() => goToMobileStep(1)}
+              >
+                Volver
+              </button>
+              <button
+                type="button"
+                className="button primary"
+                onClick={continueFromDelivery}
+                disabled={!deliveryIsReady()}
+              >
+                Continuar a revisión
+              </button>
+            </div>
           </section>
-          <section className="form-card">
+          <section className="form-card checkout-step" id="checkout-step-3" data-step="3">
             <div className="step-number">3</div>
             <h2>{paymentEnabled ? "Pago" : "Revisión y contacto"}</h2>
             <div className="payment-option">
@@ -819,10 +935,17 @@ export default function CheckoutPage() {
                 ? "Al continuar vas al sitio seguro de Mercado Pago. Apenas se acredita el pago te llega la confirmación por correo."
                 : "La guía logística se crea únicamente cuando Litoral Maq confirma el pago. Enviar esta solicitud no genera cargos ni despachos."}
             </p>
+            <button
+              type="button"
+              className="button secondary mobile-step-back"
+              onClick={() => goToMobileStep(2)}
+            >
+              Volver a entrega
+            </button>
           </section>
           {error && (
             <div
-              className="error-message"
+              className="error-message checkout-global-error"
               role="alert"
               id={deliveryError ? undefined : "checkout-form-error"}
             >
