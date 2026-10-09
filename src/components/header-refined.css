@@ -1,0 +1,27 @@
+.site-header.header-refined {
+  min-height: 78px;
+  padding-inline: clamp(16px, 3vw, 48px);
+  gap: clamp(16px, 2vw, 30px);
+  background: #fff;
+  border-bottom-color: #e4ebef;
+}
+.header-refined .brand { width: 136px; height: 50px; }
+.header-refined .brand img { width: 192px; height: 192px; left: -28px; top: -73px; }
+.header-refined .header-search { height: 46px; }
+.header-refined .header-search input { border-color: #e0e8ed; border-radius: 10px; background: #f4f7f9; }
+.header-refined .header-search button { background: var(--orange); border-radius: 8px; }
+.header-refined .header-search button:hover { background: #e85e00; }
+.header-refined .nav { gap: 24px; font-size: 14px; }
+.header-refined .nav .nav-offers { color: #a94000; display: inline-flex; align-items: center; gap: 7px; }
+.header-refined .nav-offers::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+.header-refined .header-actions { padding-left: 20px; border-left: 1px solid #e4ebef; gap: 16px; }
+.header-refined .icon-link { font-size: 14px; }
+.header-refined .cart-link { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 10px; background: #fff3e9; }
+@media (max-width: 1100px) {
+  .site-header.header-refined { min-height: 0; padding-block: 10px; grid-template-columns: 1fr auto; gap: 10px 14px; }
+  .header-refined .header-actions { padding-left: 0; border-left: 0; }
+  .header-refined .header-search { height: 44px; }
+  .header-refined .nav { gap: 0; }
+  .header-refined .nav .nav-offers { display: flex; }
+  .header-refined .header-search button { width: 38px; height: 38px; }
+}

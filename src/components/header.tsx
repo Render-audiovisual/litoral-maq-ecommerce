@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import "./header-refined.css";
 import { usePathname, useRouter } from "next/navigation";
 import { FocusEvent, FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/store/store";
@@ -128,7 +129,7 @@ export function Header() {
           </span>
         ))}
       </div>
-      <header className="site-header">
+      <header className={`site-header header-refined${pathname.replace(/\/$/, "") === "/productos" ? " catalog-header" : ""}`}>
         <Link href="/" className="brand" aria-label="Litoral Maq, inicio">
           <Image
             src="/brand/AZUL.png"
@@ -258,13 +259,10 @@ export function Header() {
           )}
         </form>
         <nav className={open ? "nav open" : "nav"} aria-label="Navegación principal">
-          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} onClick={() => setOpen(false)}>
-            Inicio
-          </Link>
           <Link href="/productos" aria-current={pathname === "/productos" ? "page" : undefined} onClick={() => setOpen(false)}>
             Productos
           </Link>
-          <Link href="/#productos-estrella" onClick={() => setOpen(false)}>
+          <Link href="/productos?categoria=Ofertas" className="nav-offers" onClick={() => setOpen(false)}>
             Ofertas
           </Link>
           {account && (
