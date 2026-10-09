@@ -103,4 +103,6 @@ Deno.test("un correo encolado se omite si ya no aplica al estado actual", () => 
     "vencido a pedido cancelado con pago",
   );
   assert(orderEmailStillApplies("customer_payment_approved", pagado), "los demás eventos no cambian");
+  assert(!orderEmailStillApplies("team_new_order", pendiente), "el equipo no recibe intentos sin pago");
+  assert(orderEmailStillApplies("team_new_order", pagado), "el equipo recibe la venta acreditada");
 });

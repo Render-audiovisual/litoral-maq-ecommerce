@@ -123,6 +123,9 @@ function subtotalRowsHtml(order: OrderRecord) {
  * pagó tarde.
  */
 export function orderEmailStillApplies(eventType: string, order: Pick<OrderRecord, "status" | "payment_status">) {
+  if (eventType === "team_new_order") {
+    return order.payment_status === "approved";
+  }
   if (eventType === "customer_payment_reminder") {
     return order.payment_status === "pending" && order.status === "pendiente";
   }

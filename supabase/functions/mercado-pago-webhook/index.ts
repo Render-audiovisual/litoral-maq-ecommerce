@@ -177,6 +177,17 @@ Deno.serve(async (request) => {
       .eq("id", orderId);
     if (orderError) throw orderError;
 
+    if (status === "approved") {
+      // El evento creado al iniciar el checkout se omite mientras no haya
+      // pago. Al acreditarse, se crea una clave nueva para avisar al equipo
+      // una sola vez de la venta real.
+      await db.from("order_notification_outbox").upsert({
+        order_id: orderId,
+        event_type: "team_new_order",
+        event_key: `order:${orderId}:team-paid`,
+      }, { onConflict: "event_key" });
+    }
+
     EdgeRuntime.waitUntil(
       processPendingOrderNotifications(db, orderId, 10).catch(() => undefined),
     );

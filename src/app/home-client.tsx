@@ -74,8 +74,8 @@ const PROMO_SLIDES = [
 // misma velocidad el recambio se sentía la mitad de vivo y el carrusel
 // parecía quieto. 100 px/s deja una tarjeta cada 2,9 s: se ve moverse de
 // entrada y las promos siguen siendo legibles.
-const HERO_TICKER_SPEED = 100;
-const HERO_MAX_FLING_SPEED = 900;
+const HERO_TICKER_SPEED = 68;
+const HERO_MAX_FLING_SPEED = 720;
 
 type PromoSlide = (typeof PROMO_SLIDES)[number];
 
@@ -185,8 +185,8 @@ function CategoryWinnerCard({
 
 // Mismo criterio que el hero: a 38 px/s, con tarjetas de ~400 px, pasaba una
 // cada 11 segundos y la cinta parecía detenida.
-const CATEGORY_AUTO_SCROLL_SPEED = 75;
-const CATEGORY_MAX_FLING_SPEED = 1500;
+const CATEGORY_AUTO_SCROLL_SPEED = 48;
+const CATEGORY_MAX_FLING_SPEED = 900;
 
 type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
 
@@ -244,7 +244,7 @@ export function HomeClient() {
         <div className="hero-actions commerce-hero-actions">
           <div className="hero-buttons">
             <Link href="/productos" className="button primary large">Explorar catálogo</Link>
-            <Link href="#productos-estrella" className="button ghost large hero-offers-link">
+            <Link href="/productos?categoria=Ofertas" className="button ghost large hero-offers-link">
               <span className="hero-offers-desktop">Ver ofertas</span>
               <span className="hero-offers-mobile">Ver ofertas destacadas →</span>
             </Link>

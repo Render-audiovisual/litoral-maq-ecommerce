@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("el checkout registra el pedido y no inventa un costo de envío", async ({ page }) => {
   await page.goto("/productos?q=3403");
-  await page.locator(".product-card").first().getByRole("button", { name: "Agregar al carrito" }).click();
+  await page.locator(".product-card").first().getByRole("button", { name: "Comprar" }).click();
   await page.goto("/checkout");
 
   await expect(page.getByRole("heading", { name: "Confirmá tu pedido" })).toBeVisible();

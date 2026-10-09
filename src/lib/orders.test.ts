@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Order, Session } from "@/lib/types";
-import { canRecontactUnpaidOrder, selectOwnOrders } from "./orders";
+import { canRecontactUnpaidOrder, isConfirmedOperationalOrder, selectOwnOrders } from "./orders";
 
 const sessionA: Session = {
   user: { id: "customer-a@test.com", name: "A", email: "a@test.com", role: "customer" },
@@ -101,5 +101,23 @@ describe("canRecontactUnpaidOrder", () => {
     expect(canRecontactUnpaidOrder(order("cancelado", "refunded"))).toBe(false);
     expect(canRecontactUnpaidOrder(order("entregado", "charged_back"))).toBe(false);
     expect(canRecontactUnpaidOrder(order("entregado", "pending"))).toBe(false);
+  });
+});
+
+describe("isConfirmedOperationalOrder", () => {
+  const order = (paymentStatus?: Order["paymentStatus"]) =>
+    ({ ...baseOrder, id: "x", customerId: "c", customerName: "C", email: "c@test.com", paymentStatus }) as Order;
+
+  it("oculta intentos pendientes, rechazados y cancelados", () => {
+    expect(isConfirmedOperationalOrder(order())).toBe(false);
+    expect(isConfirmedOperationalOrder(order("pending"))).toBe(false);
+    expect(isConfirmedOperationalOrder(order("rejected"))).toBe(false);
+    expect(isConfirmedOperationalOrder(order("cancelled"))).toBe(false);
+  });
+
+  it("conserva ventas cobradas y su historial financiero", () => {
+    expect(isConfirmedOperationalOrder(order("approved"))).toBe(true);
+    expect(isConfirmedOperationalOrder(order("refunded"))).toBe(true);
+    expect(isConfirmedOperationalOrder(order("charged_back"))).toBe(true);
   });
 });

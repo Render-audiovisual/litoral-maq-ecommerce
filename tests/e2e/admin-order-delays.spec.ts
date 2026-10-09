@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("un pedido pagado que no se empezó a preparar se marca como demorado", async ({ page }) => {
   await page.goto("/productos?q=3403");
-  await page.locator(".product-card").first().getByRole("button", { name: "Agregar al carrito" }).click();
+  await page.locator(".product-card").first().getByRole("button", { name: "Comprar" }).click();
   await page.goto("/checkout");
   await page.getByLabel("Nombre", { exact: true }).fill("Cliente");
   await page.getByLabel("Apellido", { exact: true }).fill("Demorado E2E");

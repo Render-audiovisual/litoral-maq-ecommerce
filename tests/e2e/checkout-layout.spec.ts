@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 async function openCheckout(page: Page) {
   await page.goto("/productos?q=3403");
-  await page.locator(".product-card").first().getByRole("button", { name: "Agregar al carrito" }).click();
+  await page.locator(".product-card").first().getByRole("button", { name: "Comprar" }).click();
   await page.goto("/checkout");
   await expect(page.getByRole("heading", { name: "Confirmá tu pedido" })).toBeVisible();
 }
@@ -92,3 +92,51 @@ test("las opciones de entrega son tarjetas con el radio junto al texto", async (
   expect(radio!.x + radio!.width).toBeLessThan(title!.x);
 });
 
+test("en celular muestra un paso por vez, conserva datos y deja revisar antes de enviar", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openCheckout(page);
+
+  const contact = page.locator('[data-step="1"]');
+  const delivery = page.locator('[data-step="2"]');
+  const review = page.locator('[data-step="3"]');
+  await expect(contact).toBeVisible();
+  await expect(delivery).toBeHidden();
+  await expect(review).toBeHidden();
+  await expect(page.locator(".order-summary")).toBeHidden();
+  await expect(page.getByRole("navigation", { name: "Pasos de la compra" })).toBeVisible();
+
+  await page.getByLabel("Nombre", { exact: true }).fill("Ana");
+  await page.getByLabel("Apellido", { exact: true }).fill("Cliente");
+  await page.getByLabel("Email").fill("ana@example.com");
+  await page.getByLabel("Teléfono").fill("3794530578");
+  await page.getByLabel("DNI").fill("30123456");
+  await page.getByRole("button", { name: "Continuar a entrega" }).click();
+
+  await expect(contact).toBeHidden();
+  await expect(delivery).toBeVisible();
+  await page.getByText("Retiro en Sáenz 1587").click();
+  await page.getByRole("button", { name: "Confirmar retiro" }).click();
+  await expect(page.getByRole("button", { name: "Continuar a revisión" })).toBeEnabled();
+  await page.getByRole("button", { name: "Continuar a revisión" }).click();
+
+  await expect(delivery).toBeHidden();
+  await expect(review).toBeVisible();
+  await expect(page.locator(".order-summary")).toBeVisible();
+  await page.getByRole("button", { name: "Volver a entrega" }).click();
+  await page.getByRole("button", { name: "Volver", exact: true }).click();
+  await expect(page.getByLabel("Nombre", { exact: true })).toHaveValue("Ana");
+  await expect(page.getByLabel("Email")).toHaveValue("ana@example.com");
+});
+
+test("en celular vuelve al primer campo inválido antes de avanzar", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openCheckout(page);
+  await page.getByLabel("Nombre", { exact: true }).fill("Ana");
+  await page.getByRole("button", { name: "Continuar a entrega" }).click();
+
+  await expect(page.locator('[data-step="1"]')).toBeVisible();
+  await expect(page.getByLabel("Apellido", { exact: true })).toBeFocused();
+  await expect(page.locator('[data-step="1"]').getByRole("alert")).toContainText(
+    "Completá nombre, apellido, email, teléfono y DNI",
+  );
+});

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
@@ -22,12 +23,33 @@ export function ProductCard({
   imageOverride?: string;
 }) {
   const { addToCart } = useStore();
+  const [added, setAdded] = useState(false);
+  const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const productHref = `/producto?slug=${encodeURIComponent(product.slug)}`;
   const productImage = imageOverride || product.image;
   const availability = getProductAvailability(product);
+
+  useEffect(() => {
+    return () => {
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+    };
+  }, []);
+
+  const handleBuy = () => {
+    addToCart(product.id);
+    setAdded(true);
+    if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+    feedbackTimer.current = setTimeout(() => setAdded(false), 1_500);
+  };
+
   return (
     <article className="product-card">
-      <Link href={productHref} className="product-image">
+      <Link
+        href={productHref}
+        className="product-card-link"
+        aria-label={`Ver ${product.name}`}
+      />
+      <div className="product-image">
         {productImage ? (
           <Image
             src={productImage}
@@ -42,12 +64,12 @@ export function ProductCard({
           </div>
         )}
         {badge !== null && (badge || product.featured) && <span className="product-badge">{badge || "Destacado"}</span>}
-      </Link>
+      </div>
       <div className="product-card-body">
         <span className="eyebrow">{product.brand}</span>
-        <Link href={productHref} className="product-name">
+        <h3 className="product-name">
           {product.name}
-        </Link>
+        </h3>
         <span className="product-code">Cód. {product.code}</span>
         <strong className="product-price">{formatCurrency(product.price)}</strong>
         <span className={`stock ${availability === "available" || availability === "sheet-managed" ? "in" : availability === "unknown" ? "pending" : "out"}`}>
@@ -57,9 +79,9 @@ export function ProductCard({
           type="button"
           className="button primary full"
           disabled={!canAddProductToCart(product)}
-          onClick={() => addToCart(product.id)}
+          onClick={handleBuy}
         >
-          Agregar al carrito
+          <span aria-live="polite">{added ? "Agregado" : "Comprar"}</span>
         </button>
       </div>
     </article>

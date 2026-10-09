@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import "./header-refined.css";
 import { usePathname, useRouter } from "next/navigation";
 import { FocusEvent, FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/store/store";
-import { isPermanentCustomerSession, isValidCustomerSession } from "@/lib/auth";
+import { isPermanentCustomerSession } from "@/lib/auth";
 import { selectOwnOrders } from "@/lib/orders";
 import { isActiveOrder } from "@/lib/order-details";
 import { searchProducts } from "@/lib/search";
@@ -32,8 +33,8 @@ export function Header() {
   // Una sesión de invitado (anónima) NO es una cuenta: mostrar su nombre
   // significaba mostrar una cadena vacía al lado del ícono de usuario.
   const account = isPermanentCustomerSession(customerSession) ? customerSession : null;
-  const activeOrderCount = isValidCustomerSession(customerSession)
-    ? selectOwnOrders(orders, customerSession).filter(isActiveOrder).length
+  const activeOrderCount = account
+    ? selectOwnOrders(orders, account).filter(isActiveOrder).length
     : 0;
 
   const catalog = useMemo(() => products.filter((product) => product.active), [products]);
@@ -128,7 +129,7 @@ export function Header() {
           </span>
         ))}
       </div>
-      <header className="site-header">
+      <header className={`site-header header-refined${pathname.replace(/\/$/, "") === "/productos" ? " catalog-header" : ""}`}>
         <Link href="/" className="brand" aria-label="Litoral Maq, inicio">
           <Image
             src="/brand/AZUL.png"
@@ -258,23 +259,22 @@ export function Header() {
           )}
         </form>
         <nav className={open ? "nav open" : "nav"} aria-label="Navegación principal">
-          <Link href="/" aria-current={pathname === "/" ? "page" : undefined} onClick={() => setOpen(false)}>
-            Inicio
-          </Link>
           <Link href="/productos" aria-current={pathname === "/productos" ? "page" : undefined} onClick={() => setOpen(false)}>
             Productos
           </Link>
-          <Link href="/#productos-estrella" onClick={() => setOpen(false)}>
+          <Link href="/productos?categoria=Ofertas" className="nav-offers" onClick={() => setOpen(false)}>
             Ofertas
           </Link>
-          <Link
-            href="/cuenta/pedidos"
-            className="nav-orders-link"
-            aria-current={pathname === "/cuenta/pedidos" ? "page" : undefined}
-            onClick={() => setOpen(false)}
-          >
-            Mis pedidos {activeOrderCount > 0 && <b>{activeOrderCount}</b>}
-          </Link>
+          {account && (
+            <Link
+              href="/cuenta/pedidos"
+              className="nav-orders-link"
+              aria-current={pathname === "/cuenta/pedidos" ? "page" : undefined}
+              onClick={() => setOpen(false)}
+            >
+              Mis pedidos {activeOrderCount > 0 && <b>{activeOrderCount}</b>}
+            </Link>
+          )}
         </nav>
         <div className="header-actions">
           <Link

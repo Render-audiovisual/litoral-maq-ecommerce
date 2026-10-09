@@ -6,6 +6,7 @@ import type {
   MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
 } from "react";
+import { useAnimationActivity } from "@/hooks/use-animation-activity";
 
 type ScaleCarouselOptions = {
   /** Cantidad de tarjetas. Cada una se renderiza una sola vez: el bucle se
@@ -63,6 +64,7 @@ export function useScaleCarousel({ count, autoAdvanceMs = 0, paused = false }: S
   const stepRef = useRef(1);
   const [activeIndex, setActiveIndex] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const animationActive = useAnimationActivity(stageRef);
 
   const registerCard = useCallback((index: number, node: HTMLElement | null) => {
     cardsRef.current[index] = node;
@@ -95,13 +97,6 @@ export function useScaleCarousel({ count, autoAdvanceMs = 0, paused = false }: S
     let raf = 0;
     let last = performance.now();
     let nextAdvance = performance.now() + autoAdvanceMs;
-// Las cintas del inicio se mueven siempre, igual que la barra superior y el
-// carrusel de categorías, que nunca miraron esta preferencia. Cuando solo
-// estas dos la respetaban, en una máquina que pide "menos movimiento" el
-// inicio quedaba a medias —dos cintas corriendo y dos congeladas— y se leía
-// como que estaban rotas. Si alguna vez se decide honrar la preferencia,
-// tiene que hacerse en los cuatro lugares a la vez, no en dos.
-
     function frame(now: number) {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
@@ -167,12 +162,12 @@ export function useScaleCarousel({ count, autoAdvanceMs = 0, paused = false }: S
       const nearest = ((Math.round(positionRef.current) % count) + count) % count;
       setActiveIndex((current) => (current === nearest ? current : nearest));
 
-      raf = requestAnimationFrame(frame);
+      if (animationActive) raf = requestAnimationFrame(frame);
     }
 
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [autoAdvanceMs, count, paused, wrappedDistance]);
+  }, [animationActive, autoAdvanceMs, count, paused, wrappedDistance]);
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType === "mouse" && event.button !== 0) return;

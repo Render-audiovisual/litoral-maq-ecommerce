@@ -6,6 +6,7 @@ import type {
   MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
 } from "react";
+import { useAnimationActivity } from "@/hooks/use-animation-activity";
 
 type ContinuousTickerOptions = {
   /** Cantidad de elementos originales; el riel debe renderizarlos dos veces. */
@@ -46,6 +47,7 @@ export function useContinuousTicker({
   const draggedRef = useRef(false);
   const pointerRef = useRef({ pointerId: -1, startX: 0, lastX: 0, lastTime: 0 });
   const [dragging, setDragging] = useState(false);
+  const animationActive = useAnimationActivity(trackRef);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -65,15 +67,9 @@ export function useContinuousTicker({
   }, [itemCount]);
 
   useEffect(() => {
+    if (!animationActive) return;
     let raf = 0;
     let last = performance.now();
-// Las cintas del inicio se mueven siempre, igual que la barra superior y el
-// carrusel de categorías, que nunca miraron esta preferencia. Cuando solo
-// estas dos la respetaban, en una máquina que pide "menos movimiento" el
-// inicio quedaba a medias —dos cintas corriendo y dos congeladas— y se leía
-// como que estaban rotas. Si alguna vez se decide honrar la preferencia,
-// tiene que hacerse en los cuatro lugares a la vez, no en dos.
-
     function frame(now: number) {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
@@ -97,7 +93,7 @@ export function useContinuousTicker({
 
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [speed]);
+  }, [animationActive, speed]);
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.pointerType === "mouse" && event.button !== 0) return;

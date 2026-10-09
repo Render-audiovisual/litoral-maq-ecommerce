@@ -62,7 +62,12 @@ export default function OAuthCallbackPage() {
         return;
       }
       await setCustomerSession(session);
-      router.replace("/cuenta/pedidos");
+      const requestedNext = sessionStorage.getItem("litoral-oauth-next");
+      sessionStorage.removeItem("litoral-oauth-next");
+      const safeNext = requestedNext?.startsWith("/") && !requestedNext.startsWith("//")
+        ? requestedNext
+        : "/cuenta/pedidos";
+      router.replace(safeNext);
     }
 
     void resolve();

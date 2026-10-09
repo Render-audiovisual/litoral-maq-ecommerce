@@ -22,9 +22,13 @@ const GOOGLE_AUTH_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED !== "fal
 export function GoogleSignInButton({
   label = "Continuar con Google",
   className = "button secondary large full",
+  intent = "link-guest",
+  next,
 }: {
   label?: string;
   className?: string;
+  intent?: "link-guest" | "sign-in";
+  next?: string;
 }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,9 +48,17 @@ export function GoogleSignInButton({
     setError("");
     setLoading(true);
     try {
+      if (next?.startsWith("/") && !next.startsWith("//")) {
+        sessionStorage.setItem("litoral-oauth-next", next);
+      } else {
+        sessionStorage.removeItem("litoral-oauth-next");
+      }
       // Redirige a Google: si todo sale bien, esta pantalla ya no existe
       // cuando vuelve la promesa. `setLoading(false)` solo corre si falló.
-      await oauthAdapter.startGoogleSignIn(authCallbackUrl("oauth", window.location.origin));
+      await oauthAdapter.startGoogleSignIn(
+        authCallbackUrl("oauth", window.location.origin),
+        intent,
+      );
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "No se pudo continuar con Google.");
       setLoading(false);

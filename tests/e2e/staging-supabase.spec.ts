@@ -39,7 +39,7 @@ test.describe("@staging", () => {
     await page.goto("/productos?q=Motosierra");
     const card = page.locator(".product-card").first();
     await expect(card).toContainText("Motosierra de prueba E2E");
-    await card.getByRole("button", { name: "Agregar al carrito" }).click();
+    await card.getByRole("button", { name: "Comprar" }).click();
 
     await page.goto("/checkout");
     await page.getByLabel("Nombre", { exact: true }).fill("Cliente");

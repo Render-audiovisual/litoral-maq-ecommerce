@@ -10,7 +10,7 @@ test("la ficha sugiere otros productos en una cinta que no se frena con el mouse
   // Tarjetas reales: las copias del bucle quedan fuera del árbol accesible.
   const realCards = section.locator(".pdp-related-item:not([aria-hidden]) .product-card");
   expect(await realCards.count()).toBeGreaterThanOrEqual(6);
-  const hrefs = await realCards.locator("a.product-name").evaluateAll((links) =>
+  const hrefs = await realCards.locator("a.product-card-link").evaluateAll((links) =>
     links.map((link) => link.getAttribute("href")),
   );
   expect(new Set(hrefs).size).toBe(hrefs.length);
@@ -48,8 +48,9 @@ test("un clic en una sugerencia abre ese producto", async ({ page }) => {
   await page.goto(`/producto?slug=${SLUG}`);
   await page.locator(".pdp-related").scrollIntoViewIfNeeded();
   // La tercera tarjeta: queda entera a la vista aunque la cinta avance sola.
-  const link = page.locator(".pdp-related-item:not([aria-hidden]) a.product-name").nth(2);
-  const name = (await link.textContent())?.trim() ?? "";
+  const card = page.locator(".pdp-related-item:not([aria-hidden])").nth(2);
+  const link = card.locator("a.product-card-link");
+  const name = (await card.locator(".product-name").textContent())?.trim() ?? "";
   // La cinta nunca está quieta: `force` evita esperar a que el enlace se
   // estabilice, pero el clic sigue siendo un clic real del mouse.
   await link.click({ force: true });

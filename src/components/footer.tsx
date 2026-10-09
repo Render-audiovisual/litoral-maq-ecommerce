@@ -34,22 +34,31 @@ export function Footer() {
         <p>Máquinas y herramientas para tu casa, obra o taller.</p>
       </div>
 
-      <nav className="footer-nav">
-        <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
-          Ubicación
-        </a>
-        <span>Lun a Vie 8 a 17 hs · Sáb 8:30 a 12:30 hs</span>
-        <Link href="/productos">Productos</Link>
-        <Link href="/cuenta/pedidos">Seguimiento</Link>
-        <Link href="/politica-de-privacidad">Privacidad</Link>
-        <Link href="/terminos-y-condiciones">Términos</Link>
-        <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
-          WhatsApp comercial
-        </a>
-      </nav>
+      <div className="footer-links">
+        <section className="footer-column" aria-labelledby="footer-local-title">
+          <h2 id="footer-local-title">Nuestro local</h2>
+          <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
+            Sáenz 1587, Corrientes
+          </a>
+          <p>Lun a Vie 8 a 17 hs<br />Sáb 8:30 a 12:30 hs</p>
+        </section>
+
+        <nav className="footer-column" aria-labelledby="footer-explora-title">
+          <h2 id="footer-explora-title">Explorá</h2>
+          <Link href="/productos">Productos</Link>
+          <Link href="/cuenta/pedidos">Seguimiento de pedidos</Link>
+        </nav>
+
+        <nav className="footer-column" aria-labelledby="footer-ayuda-title">
+          <h2 id="footer-ayuda-title">Ayuda</h2>
+          <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">WhatsApp comercial</a>
+          <Link href="/politica-de-privacidad">Privacidad</Link>
+          <Link href="/terminos-y-condiciones">Términos y condiciones</Link>
+        </nav>
+      </div>
 
       <div className="footer-bottom">
-        <span>Design by Render</span>
+        <span className="render-credit">Creado por <strong>Render</strong></span>
         <div className="footer-social">
           <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>

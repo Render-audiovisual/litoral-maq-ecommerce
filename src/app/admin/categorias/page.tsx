@@ -34,15 +34,10 @@ export default function AdminCategoriesPage() {
   const visibleTotal = rows.reduce((sum, row) => sum + row.visible, 0);
   return (
     <main className="admin-content">
-      <div className="admin-heading">
-        <div>
-          <h1>Categorías</h1>
-          <p>
-            {categories.length} categorías · {products.length} productos, {visibleTotal} visibles en la tienda
-          </p>
-        </div>
-      </div>
       <section className="admin-card list-card">
+        <div className="card-heading compact-section-heading">
+          <div><span className="eyebrow">Catálogo</span><h1>Categorías</h1><p>{categories.length} categorías · {products.length} productos · {visibleTotal} visibles</p></div>
+        </div>
         {!rows.length ? (
           <div className="orders-empty">
             <h2>Todavía no hay categorías</h2>

@@ -50,13 +50,20 @@ async function fetchProfile(client: TypedSupabaseClient, userId: string, retries
 function sessionFromAuth(
   authSession: { access_token: string; expires_at?: number; user?: { is_anonymous?: boolean } },
   userId: string,
-  profile: { name: string | null; email: string | null; role: ProfileRole; is_anonymous?: boolean },
+  profile: {
+    name: string | null;
+    email: string | null;
+    phone?: string | null;
+    role: ProfileRole;
+    is_anonymous?: boolean;
+  },
 ): Session {
   return {
     user: {
       id: userId,
       name: profile.name ?? "",
       email: profile.email ?? "",
+      phone: profile.phone ?? undefined,
       role: profile.role,
       isAnonymous: authSession.user?.is_anonymous ?? profile.is_anonymous ?? false,
     },
@@ -233,15 +240,24 @@ export function createSupabaseAuthAdapter(
       return sessionFromAuth(data.session, data.user.id, profile);
     },
 
-    async startGoogleSignIn(redirectTo) {
+    async startGoogleSignIn(redirectTo, intent = "link-guest") {
       const { data: existing } = await client.auth.getSession();
       const options = { redirectTo };
+
+      // "Ingresar con Google" es un cambio explícito hacia una cuenta ya
+      // existente. Si quedó una sesión anónima de una compra anterior, se
+      // cierra antes del OAuth; intentar linkIdentity haría que Supabase
+      // rechace un Google que ya pertenece legítimamente a esa cuenta.
+      if (intent === "sign-in" && existing.session?.user.is_anonymous) {
+        const { error: signOutError } = await client.auth.signOut({ scope: "local" });
+        if (signOutError) throw signOutError;
+      }
 
       // Invitado anónimo → linkIdentity: la identidad de Google se agrega
       // al MISMO uid, así que sus pedidos siguen siendo suyos. Un
       // signInWithOAuth acá crearía otro usuario y el invitado perdería el
       // pedido que acaba de hacer.
-      const { error } = existing.session?.user.is_anonymous
+      const { error } = intent !== "sign-in" && existing.session?.user.is_anonymous
         ? await client.auth.linkIdentity({ provider: "google", options })
         : await client.auth.signInWithOAuth({ provider: "google", options });
 

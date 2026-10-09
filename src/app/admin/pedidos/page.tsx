@@ -16,7 +16,7 @@ import {
   resolveOrderLines,
 } from "@/lib/order-details";
 import { getOrderDelay } from "@/lib/order-delays";
-import { canRecontactUnpaidOrder } from "@/lib/orders";
+import { canRecontactUnpaidOrder, isConfirmedOperationalOrder } from "@/lib/orders";
 import type { Order, PaymentStatus } from "@/lib/types";
 import { createShipping, downloadShippingLabel } from "@/services/shipping";
 import { flushOrderNotifications } from "@/services/order-notifications";
@@ -81,11 +81,15 @@ export default function AdminOrdersPage() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<Order["status"] | "">("");
   const [commercialFilter, setCommercialFilter] = useState<CommercialFilter>("active");
+  const operationalOrders = useMemo(
+    () => orders.filter(isConfirmedOperationalOrder),
+    [orders],
+  );
   const [selectedSnapshot, setSelected] = useState<Order | null>(null);
   // El detalle abierto sigue a la lista: si otra persona mueve el pedido (lo
   // trae el refresco periódico o un conflicto al guardar), se ve al instante.
   const selected = selectedSnapshot
-    ? (orders.find((order) => order.id === selectedSnapshot.id) ?? selectedSnapshot)
+    ? (operationalOrders.find((order) => order.id === selectedSnapshot.id) ?? selectedSnapshot)
     : null;
   const [updatingId, setUpdatingId] = useState("");
   const [message, setMessage] = useState("");
@@ -98,15 +102,15 @@ export default function AdminOrdersPage() {
   // detalle de ese pedido una sola vez, cuando la lista ya cargó.
   const deepLinkHandled = useRef(false);
   useEffect(() => {
-    if (deepLinkHandled.current || !orders.length) return;
+    if (deepLinkHandled.current || !operationalOrders.length) return;
     const requested = new URLSearchParams(window.location.search).get("pedido");
-    const match = requested ? orders.find((order) => order.id === requested) : undefined;
+    const match = requested ? operationalOrders.find((order) => order.id === requested) : undefined;
     const timer = window.setTimeout(() => {
       deepLinkHandled.current = true;
       if (match) setSelected(match);
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [orders]);
+  }, [operationalOrders]);
   useEffect(() => {
     const requested = new URLSearchParams(window.location.search).get("filtro");
     const filter = requested ? URL_FILTERS[requested] : undefined;
@@ -121,7 +125,7 @@ export default function AdminOrdersPage() {
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    return orders.filter(
+    return operationalOrders.filter(
       (order) =>
         matchesCommercialFilter(order, commercialFilter, now) &&
         (!status || order.status === status) &&
@@ -130,7 +134,7 @@ export default function AdminOrdersPage() {
             (value) => value?.toLowerCase().includes(normalized),
           )),
     );
-  }, [orders, query, status, commercialFilter, now]);
+  }, [operationalOrders, query, status, commercialFilter, now]);
 
   /**
    * Resumen de productos por fila. Antes la columna decía "1 unidades · 1
@@ -154,24 +158,18 @@ export default function AdminOrdersPage() {
     [filtered, products, now],
   );
 
-  const pendingCount = orders.filter((order) =>
-    ["pendiente", "pago_simulado"].includes(order.status) &&
-    (order.paymentStatus || "pending") === "pending",
-  ).length;
-  const followUpCount = orders.filter((order) =>
-    matchesCommercialFilter(order, "followup", now)
-  ).length;
-  const delayedCount = orders.filter((order) =>
+  const delayedCount = operationalOrders.filter((order) =>
     matchesCommercialFilter(order, "delayed", now)
   ).length;
-  const preparingCount = orders.filter(
+  const preparingCount = operationalOrders.filter(
     (order) => order.status === "preparando",
   ).length;
-  const shippedCount = orders.filter(
+  const readyCount = operationalOrders.filter((order) => order.status === "listo").length;
+  const shippedCount = operationalOrders.filter(
     (order) => order.status === "enviado",
   ).length;
-  const totalAmount = orders
-    .filter((order) => order.status !== "cancelado")
+  const totalAmount = operationalOrders
+    .filter((order) => order.paymentStatus === "approved" && order.status !== "cancelado")
     .reduce((sum, order) => sum + order.total, 0);
 
   async function changeStatus(order: Order, nextStatus: Order["status"]) {
@@ -326,15 +324,15 @@ export default function AdminOrdersPage() {
       </div>
 
       <section className="stats-grid order-stats">
-        <article className={pendingCount ? "warning" : undefined}>
-          <span>Paso 0 · Pedido recibido</span>
-          <strong>{pendingCount}</strong>
-          <small>{followUpCount} listos para seguimiento comercial</small>
-        </article>
         <article>
           <span>Paso 1 · Preparando</span>
           <strong>{preparingCount}</strong>
           <small>Pedidos en proceso</small>
+        </article>
+        <article>
+          <span>Paso 2 · Listo</span>
+          <strong>{readyCount}</strong>
+          <small>Para retirar o despachar</small>
         </article>
         <article>
           <span>Paso 3 · Enviado</span>
@@ -342,16 +340,16 @@ export default function AdminOrdersPage() {
           <small>Marcados como enviados</small>
         </article>
         <article>
-          <span>Total registrado</span>
+          <span>Ventas aprobadas</span>
           <strong>{formatCurrency(totalAmount)}</strong>
-          <small>Sin pedidos cancelados</small>
+          <small>Solo pagos confirmados</small>
         </article>
       </section>
 
       {message && (
         <div className="success-message dismissible">
           {message}
-          <button type="button" onClick={() => setMessage("")}>
+          <button type="button" onClick={() => setMessage("")} aria-label="Cerrar aviso">
             ×
           </button>
         </div>
@@ -359,7 +357,7 @@ export default function AdminOrdersPage() {
       {error && (
         <div className="error-message dismissible">
           {error}
-          <button type="button" onClick={() => setError("")}>
+          <button type="button" onClick={() => setError("")} aria-label="Cerrar error">
             ×
           </button>
         </div>
@@ -396,10 +394,8 @@ export default function AdminOrdersPage() {
             aria-label="Circuito comercial"
           >
             <option value="active">Activos</option>
-            <option value="followup">Seguimiento comercial</option>
             <option value="delayed">Demorados</option>
             <option value="paid">Pagados</option>
-            <option value="expired">Vencidos</option>
             <option value="all">Todos</option>
           </select>
           {delayedCount > 0 && commercialFilter !== "delayed" && (
@@ -412,15 +408,14 @@ export default function AdminOrdersPage() {
             </button>
           )}
           <span className="order-filters-count" aria-live="polite">
-            {filtered.length} de {orders.length} pedidos
+            {filtered.length} de {operationalOrders.length} pedidos confirmados
           </span>
         </div>
-        {!orders.length ? (
+        {!operationalOrders.length ? (
           <div className="orders-empty">
-            <h2>Todavía no hay pedidos</h2>
+            <h2>Todavía no hay pedidos confirmados</h2>
             <p>
-              Cuando un cliente envíe una solicitud desde la tienda, aparece
-              acá para que la prepares.
+              Van a aparecer cuando Mercado Pago acredite el pago.
             </p>
           </div>
         ) : !filtered.length ? (
@@ -561,6 +556,9 @@ export default function AdminOrdersPage() {
           <section
             className="modal order-detail-modal"
             onMouseDown={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="order-detail-title"
           >
             <div className="modal-heading">
               <div>
@@ -568,7 +566,7 @@ export default function AdminOrdersPage() {
                 <small className="order-detail-created-at">
                   {formatDate(selected.createdAt)}
                 </small>
-                <h2>Detalle operativo</h2>
+                <h2 id="order-detail-title">Detalle operativo</h2>
               </div>
               <button
                 type="button"
