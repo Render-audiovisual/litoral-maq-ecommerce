@@ -73,11 +73,13 @@ function AdminProductsContent() {
   } = useStore();
   // Acceso directo desde /admin/categorias: la categoría llega por query
   // string y queda en estado local para poder limpiarla sin navegar.
-  const [category, setCategory] = useState(
-    useSearchParams().get("categoria") ?? "",
-  );
+  const searchParams = useSearchParams();
+  const [category, setCategory] = useState(searchParams.get("categoria") ?? "");
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"active" | "inactive" | "all">("active");
+  const [stockFilter, setStockFilter] = useState<"all" | "low" | "missing" | "out">(
+    searchParams.get("stock") === "bajo" ? "low" : "all",
+  );
   const [sortBy, setSortBy] = useState<"name" | "recent">("name");
   // La página se vuelve a 1 al cambiar filtros, búsqueda u orden; al editar
   // o eliminar se conserva (paginate la acota si la última queda vacía).
@@ -117,6 +119,8 @@ function AdminProductsContent() {
   ).length;
   const activeCount = products.filter((product) => product.active).length;
   const inactiveCount = products.length - activeCount;
+  const lowStockCount = products.filter((product) => !product.incomplete.includes("stock") && product.stock <= product.lowStockThreshold).length;
+  const missingStockCount = products.filter((product) => product.incomplete.includes("stock")).length;
   const filtered = useMemo(
     () =>
       products
@@ -124,6 +128,12 @@ function AdminProductsContent() {
         .filter((product) =>
           status === "all" ? true : status === "active" ? product.active : !product.active,
         )
+        .filter((product) => {
+          if (stockFilter === "low") return !product.incomplete.includes("stock") && product.stock <= product.lowStockThreshold;
+          if (stockFilter === "missing") return product.incomplete.includes("stock");
+          if (stockFilter === "out") return !product.incomplete.includes("stock") && product.stock === 0;
+          return true;
+        })
         .filter(
           (product) =>
             !query ||
@@ -135,7 +145,7 @@ function AdminProductsContent() {
             ? (b.updatedAt ?? "").localeCompare(a.updatedAt ?? "")
             : a.name.localeCompare(b.name),
         ),
-    [products, query, category, status, sortBy],
+    [products, query, category, status, stockFilter, sortBy],
   );
   const current = paginate(filtered, page, PAGE_SIZE);
 
@@ -344,6 +354,12 @@ function AdminProductsContent() {
           el límite predeterminado es 3 unidades por producto.
         </p>
       </details>
+      <div className="catalog-overview" aria-label="Resumen del catálogo">
+        <div><span>Activos</span><strong>{activeCount}</strong></div>
+        <div className={lowStockCount ? "warning" : ""}><span>Stock bajo</span><strong>{lowStockCount}</strong></div>
+        <div className={missingStockCount ? "warning" : ""}><span>Sin confirmar</span><strong>{missingStockCount}</strong></div>
+        <div><span>Desde Sheet</span><strong>{sheetProductCount}</strong></div>
+      </div>
       {message && (
         <div
           className={`${messageKind === "error" ? "error-message" : "success-message"} dismissible`}
@@ -403,6 +419,17 @@ function AdminProductsContent() {
           )}
           <select
             className="sort-select"
+            value={stockFilter}
+            aria-label="Filtrar por stock"
+            onChange={(event) => { setStockFilter(event.target.value as typeof stockFilter); setPage(1); }}
+          >
+            <option value="all">Stock: todos</option>
+            <option value="low">Stock bajo</option>
+            <option value="out">Sin stock</option>
+            <option value="missing">Stock sin confirmar</option>
+          </select>
+          <select
+            className="sort-select"
             value={sortBy}
             aria-label="Ordenar productos"
             onChange={(event) => {
@@ -439,6 +466,7 @@ function AdminProductsContent() {
                   setQuery("");
                   setCategory("");
                   setStatus("all");
+                  setStockFilter("all");
                   setPage(1);
                 }}
               >

@@ -16,7 +16,6 @@ import {
   readAdminActivity,
   writeAdminActivity,
 } from "@/lib/admin-idle";
-import { resolveRequestedProvider } from "@/services/provider";
 import { getAuthAdapter, supportsSessionRestore } from "@/services/auth";
 import { adminInitials, resolveAdminDisplayName } from "@/lib/admin-names";
 
@@ -236,7 +235,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           {links.map(([href, label, icon]) => {
             const active = pathname === href || (href !== "/admin" && pathname.startsWith(`${href}/`));
             return (
-              <Link href={href} key={href} className={active ? "active" : undefined} aria-current={active ? "page" : undefined}>
+              <Link href={href} key={href} className={active ? "active" : undefined} aria-current={active ? "page" : undefined} aria-label={href === "/admin/pedidos" ? `${pendingOrderCount} pedidos pendientes` : undefined}>
                 <NavIcon>{icon}</NavIcon>
                 <span>{label}</span>
                 {href === "/admin/pedidos" && pendingOrderCount > 0 && <b className="nav-notification-badge">{pendingOrderCount}</b>}
@@ -256,6 +255,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <small>{adminSession?.user.email}</small>
           </span>
         </div>
+        {storeUrlError ? (
+          <span className="admin-domain-warning" title={storeUrlError} role="alert">Dominio de tienda mal configurado</span>
+        ) : isExternalStoreLink ? (
+          <a href={storeUrl} className="sidebar-store-link" target="_blank" rel="noopener noreferrer"><NavIcon><path d="M14 3h7v7M21 3l-9 9" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></NavIcon>Ver tienda</a>
+        ) : (
+          <Link href={storeUrl} className="sidebar-store-link"><NavIcon><path d="M14 3h7v7M21 3l-9 9" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V8a2 2 0 0 1 2-2h6" /></NavIcon>Ver tienda</Link>
+        )}
         <button
           type="button"
           className="sidebar-logout"
@@ -266,33 +272,6 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </button>
       </aside>
       <div className="admin-main">
-        <header className="admin-topbar">
-          <div className="admin-topbar-context">
-            <strong>Gestión Litoral Maq</strong>
-            <span>
-              {resolveRequestedProvider() === "supabase"
-                ? "Datos reales — Supabase"
-                : "Datos demo persistidos en este navegador"}
-            </span>
-          </div>
-          <div className="admin-topbar-actions">
-            <Link href="/admin/pedidos" className={pendingOrderCount > 0 ? "admin-notification active" : "admin-notification"} aria-label={`${pendingOrderCount} pedidos pendientes`}><span className="admin-notification-dot" aria-hidden="true" /><strong>{pendingOrderCount}</strong> por revisar</Link>
-            {isExternalStoreLink ? (
-              <a href={storeUrl} className="button secondary" target="_blank" rel="noopener noreferrer">
-                Ver tienda
-              </a>
-            ) : (
-              <Link href={storeUrl} className="button secondary">
-                Ver tienda
-              </Link>
-            )}
-          </div>
-          {storeUrlError && (
-            <span className="admin-domain-warning" title={storeUrlError} role="alert">
-              Dominio de tienda mal configurado
-            </span>
-          )}
-        </header>
         {children}
       </div>
     </div>

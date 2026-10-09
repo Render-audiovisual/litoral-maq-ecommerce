@@ -167,11 +167,12 @@ export default function AdminOrdersPage() {
   const preparingCount = orders.filter(
     (order) => order.status === "preparando",
   ).length;
+  const readyCount = orders.filter((order) => order.status === "listo").length;
   const shippedCount = orders.filter(
     (order) => order.status === "enviado",
   ).length;
   const totalAmount = orders
-    .filter((order) => order.status !== "cancelado")
+    .filter((order) => order.paymentStatus === "approved" && order.status !== "cancelado")
     .reduce((sum, order) => sum + order.total, 0);
 
   async function changeStatus(order: Order, nextStatus: Order["status"]) {
@@ -337,21 +338,26 @@ export default function AdminOrdersPage() {
           <small>Pedidos en proceso</small>
         </article>
         <article>
+          <span>Paso 2 · Listo</span>
+          <strong>{readyCount}</strong>
+          <small>Para retirar o despachar</small>
+        </article>
+        <article>
           <span>Paso 3 · Enviado</span>
           <strong>{shippedCount}</strong>
           <small>Marcados como enviados</small>
         </article>
         <article>
-          <span>Total registrado</span>
+          <span>Ventas aprobadas</span>
           <strong>{formatCurrency(totalAmount)}</strong>
-          <small>Sin pedidos cancelados</small>
+          <small>Solo pagos confirmados</small>
         </article>
       </section>
 
       {message && (
         <div className="success-message dismissible">
           {message}
-          <button type="button" onClick={() => setMessage("")}>
+          <button type="button" onClick={() => setMessage("")} aria-label="Cerrar aviso">
             ×
           </button>
         </div>
@@ -359,7 +365,7 @@ export default function AdminOrdersPage() {
       {error && (
         <div className="error-message dismissible">
           {error}
-          <button type="button" onClick={() => setError("")}>
+          <button type="button" onClick={() => setError("")} aria-label="Cerrar error">
             ×
           </button>
         </div>
@@ -561,6 +567,9 @@ export default function AdminOrdersPage() {
           <section
             className="modal order-detail-modal"
             onMouseDown={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="order-detail-title"
           >
             <div className="modal-heading">
               <div>
@@ -568,7 +577,7 @@ export default function AdminOrdersPage() {
                 <small className="order-detail-created-at">
                   {formatDate(selected.createdAt)}
                 </small>
-                <h2>Detalle operativo</h2>
+                <h2 id="order-detail-title">Detalle operativo</h2>
               </div>
               <button
                 type="button"
