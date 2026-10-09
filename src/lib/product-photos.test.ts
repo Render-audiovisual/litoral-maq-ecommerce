@@ -1,8 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { isPhotoUrl, productPhoto, withProductPhoto } from "./product-photos";
+import { isPhotoUrl, productPhoto, withProductPhoto, productGallery, withProductGallery } from "./product-photos";
 import type { Product } from "./types";
 
 describe("product photos", () => {
+  it("limits galleries and preserves price and stock", () => {
+    const product = { image: "a", images: ["a", "b"], price: 120, stock: 9, incomplete: ["image"] } as Product;
+    expect(productGallery(product)).toEqual(["a", "b"]);
+    expect(() => withProductGallery(product, [])).toThrow();
+    expect(() => withProductGallery(product, ["a", "b", "c", "d"])).toThrow();
+    const result = withProductGallery(product, ["b", "a", "c"]);
+    expect(result.image).toBe("b");
+    expect(result.price).toBe(120);
+    expect(result.stock).toBe(9);
+    expect(product.images).toEqual(["a", "b"]);
+  });
   it("separates empty images and uses the gallery fallback", () => {
     expect(productPhoto({ image: "  ", images: [] })).toBeNull();
     expect(productPhoto({ image: null, images: ["", "/products/test.webp"] })).toBe("/products/test.webp");

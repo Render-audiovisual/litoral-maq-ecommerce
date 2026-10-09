@@ -25,7 +25,16 @@ test("fotos: buscar, agregar y cambiar sin alterar precio ni stock", async ({ pa
   await expect(withPhoto).toContainText(name);
   await expect(missing).not.toBeVisible();
   await withPhoto.getByRole("button", { name: `Cambiar foto de ${name}`, exact: true }).click();
-  await expect(dialog.getByLabel("Enlace de la imagen")).toHaveValue("/products/catalog/3381-aa518-220plus.webp");
+  await expect(dialog.locator(".photo-gallery-item")).toHaveCount(1);
+  const image = { name: "foto.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=", "base64") };
+  await dialog.getByLabel("Subir desde archivos o galería").setInputFiles([image, { ...image, name: "detalle.png", buffer: Buffer.concat([image.buffer, Buffer.from([0])]) }]);
+  await expect(dialog.locator(".photo-gallery-item")).toHaveCount(3);
+  await expect(dialog.getByLabel("Subir desde archivos o galería")).toBeDisabled();
+  await dialog.getByRole("button", { name: "Usar como principal" }).first().click();
+  await dialog.getByRole("button", { name: "Guardar foto" }).click();
+  await withPhoto.getByRole("button", { name: `Cambiar foto de ${name}`, exact: true }).click();
+  await expect(dialog.locator(".photo-gallery-item")).toHaveCount(3);
+  await expect(dialog.locator(".photo-gallery-item").first().locator("img")).toHaveAttribute("src", /^data:image\/png/);
   await dialog.getByRole("button", { name: "Cancelar" }).click();
   await page.reload();
   await containers.getByRole("button", { name: /Productos con foto/ }).click();

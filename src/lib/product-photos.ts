@@ -1,5 +1,14 @@
 import type { Product } from "./types";
 
+export function productGallery(product: Pick<Product, "image" | "images">): string[] {
+  return [...new Set([product.image, ...product.images].map((photo) => photo?.trim()).filter((photo): photo is string => Boolean(photo)))];
+}
+
+export function withProductGallery(product: Product, photos: string[]): Product {
+  if (!photos.length || photos.length > 3) throw new Error("Guardá entre 1 y 3 fotos.");
+  return { ...product, image: photos[0], images: [...photos], incomplete: product.incomplete.filter((field) => field !== "image") };
+}
+
 export function productPhoto(product: Pick<Product, "image" | "images">): string | null {
   return product.image?.trim() || product.images.find((image) => image.trim())?.trim() || null;
 }
