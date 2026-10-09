@@ -17,7 +17,7 @@
 .header-refined .header-actions { padding-left: 20px; border-left: 1px solid #e4ebef; gap: 16px; }
 .header-refined .icon-link { font-size: 14px; }
 .header-refined .cart-link { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 10px; background: #fff3e9; }
-@media (max-width: 1100px) {
+@media (max-width: 980px) {
   .site-header.header-refined { min-height: 0; padding-block: 10px; grid-template-columns: 1fr auto; gap: 10px 14px; }
   .header-refined .header-actions { padding-left: 0; border-left: 0; }
   .header-refined .header-search { height: 44px; }
