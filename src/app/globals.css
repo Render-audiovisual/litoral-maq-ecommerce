@@ -560,14 +560,11 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 /* Paso 3: una sola forma de pago, con el estilo de elección seleccionada. */
 .payment-option { padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--navy); border-radius: 6px; background: #f2f7fb; box-shadow: 0 0 0 1px var(--navy); }
 .payment-option svg { flex: none; margin-top: 1px; fill: none; stroke: var(--navy); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
-.mercado-pago-mark { min-width: 94px; display: inline-flex; align-items: center; gap: 5px; color: #263238; }
-.mercado-pago-mark > svg { width: 38px; height: 28px; margin: 0; fill: #fff; stroke: #3483fa; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
-.mercado-pago-wordmark { display: flex; flex-direction: column; align-items: flex-start; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 800; letter-spacing: -.045em; line-height: .78; }
-.mercado-pago-wordmark b { font: inherit; }
-.mercado-pago-mark.compact { min-width: 0; }
-.mercado-pago-mark.compact > svg { width: 35px; height: 25px; fill: #fff; stroke: currentColor; }
-.mercado-pago-button { min-height: 54px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; border-color: #3483fa; background: #3483fa; color: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -.01em; box-shadow: 0 8px 18px rgba(52,131,250,.23); transition: background-color .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
-.mercado-pago-button:hover:not(:disabled) { border-color: #2968c8; background: #2968c8; box-shadow: 0 10px 22px rgba(52,131,250,.3); transform: translateY(-1px); }
+.mercado-pago-mark { width: 98px; min-width: 98px; display: inline-flex; align-items: center; justify-content: center; }
+.mercado-pago-mark > img { display: block; width: 100%; height: auto; }
+.mercado-pago-mark.compact { width: 82px; min-width: 82px; padding: 5px 7px; border-radius: 6px; background: #fff; }
+.mercado-pago-button { min-height: 56px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; border: 2px solid #3483fa; background: #fff; color: #0a0080; font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -.01em; box-shadow: 0 8px 18px rgba(52,131,250,.18); transition: background-color .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+.mercado-pago-button:hover:not(:disabled) { border-color: #2968c8; background: #f5f9ff; box-shadow: 0 10px 22px rgba(52,131,250,.24); transform: translateY(-1px); }
 .mercado-pago-button:focus-visible { outline: 3px solid rgba(52,131,250,.35); outline-offset: 3px; }
 .mercado-pago-button:disabled { opacity: 1; border-color: #e3e8ec; background: #e3e8ec; color: #66737d; box-shadow: none; }
 .mercado-pago-button:disabled .mercado-pago-mark { display: none; }
