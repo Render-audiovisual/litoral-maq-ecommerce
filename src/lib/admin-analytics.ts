@@ -1,4 +1,5 @@
 import type { Order } from "@/lib/types";
+import { isConfirmedOperationalOrder } from "@/lib/orders";
 
 export type SalesPeriod = 7 | 30 | 90;
 
@@ -137,8 +138,6 @@ export function customerHasPurchase(orders: Order[], customerId: string, email: 
     (order) =>
       (order.customerId === customerId || order.email.trim().toLowerCase() === normalizedEmail) &&
       order.status !== "pago_simulado" &&
-      (order.paymentStatus === "approved" ||
-        (order.status === "entregado" &&
-          !["cancelled", "refunded", "charged_back"].includes(order.paymentStatus ?? ""))),
+      isConfirmedOperationalOrder(order),
   );
 }

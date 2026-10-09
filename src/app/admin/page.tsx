@@ -6,6 +6,7 @@ import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { orderStatusLabel } from "@/lib/order-details";
 import { getOrderDelay } from "@/lib/order-delays";
+import { isConfirmedOperationalOrder } from "@/lib/orders";
 import { customerHasPurchase, getSalesAnalytics, type SalesPeriod } from "@/lib/admin-analytics";
 
 const PERIODS: SalesPeriod[] = [7, 30, 90];
@@ -20,16 +21,17 @@ export default function AdminDashboardPage() {
   const { products, orders, customers } = useStore();
   const [period, setPeriod] = useState<SalesPeriod>(30);
   const analytics = useMemo(() => getSalesAnalytics(orders, period), [orders, period]);
+  const operationalOrders = useMemo(() => orders.filter(isConfirmedOperationalOrder), [orders]);
   const maxPoint = Math.max(...analytics.points.map((point) => point.total), 1);
   const approvedOrders = orders.filter((order) => order.paymentStatus === "approved" && order.status !== "cancelado");
   const buyerCount = customers.filter((customer) => customerHasPurchase(orders, customer.id, customer.email)).length;
   const lowStock = products.filter((product) => !product.incomplete.includes("stock") && product.stock <= product.lowStockThreshold);
   const withoutStock = products.filter((product) => product.incomplete.includes("stock"));
-  const delayed = orders.map((order) => ({ order, delay: getOrderDelay(order, new Date()) })).filter((item) => item.delay !== null).sort((a, b) => (b.delay?.hours ?? 0) - (a.delay?.hours ?? 0));
+  const delayed = operationalOrders.map((order) => ({ order, delay: getOrderDelay(order, new Date()) })).filter((item) => item.delay !== null).sort((a, b) => (b.delay?.hours ?? 0) - (a.delay?.hours ?? 0));
   const workflow = [
-    { label: "Cobrar", detail: "Pagos pendientes", value: orders.filter((order) => order.status === "pendiente" && (order.paymentStatus ?? "pending") === "pending").length, href: "/admin/pedidos?filtro=seguimiento", tone: "amber" },
     { label: "Preparar", detail: "Pagados para armar", value: approvedOrders.filter((order) => ["pendiente", "preparando"].includes(order.status)).length, href: "/admin/pedidos?filtro=preparando", tone: "blue" },
     { label: "Entregar", detail: "Listos para salir", value: approvedOrders.filter((order) => order.status === "listo").length, href: "/admin/pedidos?filtro=listo", tone: "green" },
+    { label: "Despachados", detail: "Pedidos en camino", value: approvedOrders.filter((order) => order.status === "enviado").length, href: "/admin/pedidos?filtro=enviado", tone: "amber" },
     { label: "Reponer", detail: "Productos con stock bajo", value: lowStock.length, href: "/admin/productos?stock=bajo", tone: "red" },
   ];
 
@@ -57,7 +59,7 @@ export default function AdminDashboardPage() {
       <div className="dashboard-lower-grid">
         <section className="admin-card dashboard-list-card attention-card"><div className="card-heading"><div><h2>Requieren atención</h2><p>Pedidos demorados o sin resolver</p></div><Link href="/admin/pedidos?filtro=demorados" className="text-button">Ver todos los demorados</Link></div>{delayed.length ? <ul className="attention-list">{delayed.slice(0, 5).map(({ order, delay }) => <li key={order.id}><Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link">{order.id}</Link><span>{order.customerName}</span><span className="payment-status">{delay?.label}</span></li>)}</ul> : <p className="empty-inline">Todo al día. No hay pedidos demorados.</p>}</section>
         <section className="admin-card dashboard-list-card"><div className="card-heading"><div><h2>Más vendidos</h2><p>Productos líderes en {period} días</p></div></div>{analytics.topProducts.length ? <ol className="ranking-list">{analytics.topProducts.map((product, index) => <li key={product.key}><span>{index + 1}</span><div><strong>{product.name}</strong><small>{product.units} unidades</small></div><b>{formatCurrency(product.total)}</b></li>)}</ol> : <p className="empty-inline">Todavía no hay ventas aprobadas en este período.</p>}</section>
-        <section className="admin-card dashboard-list-card"><div className="card-heading"><div><h2>Pedidos recientes</h2><p>Últimos movimientos</p></div><Link href="/admin/pedidos" className="text-button">Ver todos</Link></div>{orders.length ? <ul className="compact-order-list">{orders.slice(0, 5).map((order) => <li key={order.id}><div><Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link">{order.id}</Link><small>{order.customerName} · {formatDate(order.createdAt)}</small></div><div><strong>{formatCurrency(order.total)}</strong><span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span></div></li>)}</ul> : <p className="empty-inline">Todavía no hay pedidos.</p>}</section>
+        <section className="admin-card dashboard-list-card"><div className="card-heading"><div><h2>Pedidos recientes</h2><p>Solo ventas con pago confirmado</p></div><Link href="/admin/pedidos" className="text-button">Ver todos</Link></div>{operationalOrders.length ? <ul className="compact-order-list">{operationalOrders.slice(0, 5).map((order) => <li key={order.id}><div><Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link">{order.id}</Link><small>{order.customerName} · {formatDate(order.createdAt)}</small></div><div><strong>{formatCurrency(order.total)}</strong><span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span></div></li>)}</ul> : <p className="empty-inline">Todavía no hay pedidos pagados.</p>}</section>
         <section className="admin-card dashboard-list-card health-card"><div className="card-heading"><div><h2>Salud del catálogo</h2><p>Datos que impactan en ventas</p></div><Link href="/admin/productos" className="text-button">Corregir</Link></div><dl><div><dt>Productos activos</dt><dd>{products.filter((product) => product.active).length}</dd></div><div><dt>Stock bajo</dt><dd className={lowStock.length ? "danger" : ""}>{lowStock.length}</dd></div><div><dt>Stock sin confirmar</dt><dd className={withoutStock.length ? "warning" : ""}>{withoutStock.length}</dd></div><div><dt>Compradores</dt><dd>{buyerCount}</dd></div></dl></section>
       </div>
     </main>

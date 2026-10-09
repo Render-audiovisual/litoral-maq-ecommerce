@@ -34,3 +34,14 @@ export function isExpiredUnpaidOrder(order: Order) {
   const payment = order.paymentStatus ?? "pending";
   return order.status === "cancelado" && (payment === "pending" || payment === "cancelled");
 }
+
+/**
+ * Un intento de checkout no es todavía un pedido operativo. El equipo ve la
+ * venta recién cuando Mercado Pago la acreditó. Reintegros y contracargos se
+ * conservan porque pertenecen a una venta que sí llegó a cobrarse.
+ */
+export function isConfirmedOperationalOrder(order: Order) {
+  return ["approved", "refunded", "charged_back"].includes(
+    order.paymentStatus ?? "pending",
+  );
+}

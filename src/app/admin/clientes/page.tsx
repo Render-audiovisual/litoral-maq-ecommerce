@@ -6,6 +6,7 @@ import { normalizeEmail } from "@/lib/auth";
 import { paginate } from "@/lib/paginate";
 import { formatDate } from "@/lib/utils";
 import { customerHasPurchase } from "@/lib/admin-analytics";
+import { isConfirmedOperationalOrder } from "@/lib/orders";
 
 const PAGE_SIZE = 50;
 
@@ -14,7 +15,7 @@ export default function AdminCustomersPage() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const rows = customers.filter((customer) => customerHasPurchase(orders, customer.id, customer.email)).map((customer) => {
-    const customerOrders = orders.filter((order) => (order.customerId === customer.id || normalizeEmail(order.email) === normalizeEmail(customer.email)) && order.status !== "pago_simulado" && (order.paymentStatus === "approved" || order.status === "entregado"));
+    const customerOrders = orders.filter((order) => (order.customerId === customer.id || normalizeEmail(order.email) === normalizeEmail(customer.email)) && order.status !== "pago_simulado" && isConfirmedOperationalOrder(order));
     const lastOrderAt = customerOrders.reduce<string | null>((latest, order) => (!latest || order.createdAt > latest ? order.createdAt : latest), null);
     const spent = customerOrders.reduce((sum, order) => sum + order.total, 0);
     return { customer, orderCount: customerOrders.length, lastOrderAt, spent };
