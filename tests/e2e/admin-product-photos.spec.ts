@@ -8,6 +8,10 @@ test("fotos: buscar, agregar y cambiar sin alterar precio ni stock", async ({ pa
   await expect(page).toHaveURL(/\/admin$/);
   await page.getByRole("link", { name: "Fotos de productos", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Fotos de productos", exact: true })).toBeVisible();
+  const containers = page.getByRole("group", { name: "Estado de fotos" });
+  await expect(containers.getByRole("button")).toHaveCount(2);
+  await expect(page.locator(".photo-list")).toHaveCount(0);
+  await containers.getByRole("button", { name: /Productos sin foto/ }).click();
   const missing = page.getByRole("region", { name: "Productos sin foto" });
   const first = missing.locator("li").first();
   const name = await first.locator("strong").innerText();
@@ -19,11 +23,12 @@ test("fotos: buscar, agregar y cambiar sin alterar precio ni stock", async ({ pa
   await page.getByRole("searchbox", { name: "Buscar por nombre o código" }).fill(name);
   const withPhoto = page.getByRole("region", { name: "Productos con foto" });
   await expect(withPhoto).toContainText(name);
-  await expect(missing.locator("li")).toHaveCount(0);
+  await expect(missing).not.toBeVisible();
   await withPhoto.getByRole("button", { name: `Cambiar foto de ${name}`, exact: true }).click();
   await expect(dialog.getByLabel("Enlace de la imagen")).toHaveValue("/products/catalog/3381-aa518-220plus.webp");
   await dialog.getByRole("button", { name: "Cancelar" }).click();
   await page.reload();
+  await containers.getByRole("button", { name: /Productos con foto/ }).click();
   await page.getByRole("searchbox", { name: "Buscar por nombre o código" }).fill(name);
   await expect(withPhoto).toContainText(name);
   await page.setViewportSize({ width: 390, height: 844 });

@@ -24,6 +24,7 @@ function PhotoPreview({ photo, name }: { photo: string; name: string }) {
 export default function ProductPhotosPage() {
   const { products, saveProduct, refreshProducts } = useStore();
   const [query, setQuery] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState<"missing" | "withPhoto" | null>(null);
   const [missingPage, setMissingPage] = useState(1);
   const [photoPage, setPhotoPage] = useState(1);
   const [editing, setEditing] = useState<Product | null>(null);
@@ -61,6 +62,7 @@ export default function ProductPhotosPage() {
     setSaving(true); setError("");
     try {
       await saveProduct(withProductPhoto(editing, nextPhoto), editing);
+      setSelectedGroup("withPhoto");
       setEditing(null); setNotice(`Foto guardada: ${editing.name}.`);
     } catch (failure) {
       if (failure instanceof ConflictError) {
@@ -79,9 +81,20 @@ export default function ProductPhotosPage() {
     </label>
     {notice && <p role="status" className="photo-notice">{notice}</p>}
     {error && !editing && <p role="alert">{error}</p>}
-    <div className="photo-groups">
+    <div className="photo-containers" role="group" aria-label="Estado de fotos">
+      {([{ key: "missing", label: "Productos sin foto", hint: "Completar fotos pendientes", count: groups.missing.length },
+        { key: "withPhoto", label: "Productos con foto", hint: "Revisar o cambiar fotos", count: groups.withPhoto.length }] as const).map((group) => <button
+          key={group.key} type="button" className={`photo-container ${group.key}`}
+          aria-pressed={selectedGroup === group.key} aria-expanded={selectedGroup === group.key} aria-controls="photo-selected-list"
+          onClick={() => setSelectedGroup((current) => current === group.key ? null : group.key)}>
+          <span className="photo-container-count">{group.count}</span>
+          <strong>{group.label}</strong><span>{group.hint}</span><span className="photo-container-action">{selectedGroup === group.key ? "Cerrar listado ↑" : "Ver productos →"}</span>
+        </button>)}
+    </div>
+    <div className="photo-groups" id="photo-selected-list">
       {([{ title: "Productos sin foto", items: groups.missing, page: missingPage, setPage: setMissingPage, missing: true },
         { title: "Productos con foto", items: groups.withPhoto, page: photoPage, setPage: setPhotoPage, missing: false }]).map((group) => {
+        if ((group.missing ? "missing" : "withPhoto") !== selectedGroup) return null;
         const current = paginate(group.items, group.page, 12);
         return <section className={`photo-group${group.missing ? " pending" : ""}`} key={group.title} aria-label={group.title}>
           <div className="photo-group-heading"><h2>{group.title}</h2><span>{group.items.length}</span></div>
