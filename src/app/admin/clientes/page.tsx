@@ -5,6 +5,7 @@ import { useStore } from "@/store/store";
 import { normalizeEmail } from "@/lib/auth";
 import { paginate } from "@/lib/paginate";
 import { formatDate } from "@/lib/utils";
+import { customerHasPurchase } from "@/lib/admin-analytics";
 
 const PAGE_SIZE = 50;
 
@@ -12,10 +13,11 @@ export default function AdminCustomersPage() {
   const { customers, orders } = useStore();
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
-  const rows = customers.map((customer) => {
-    const customerOrders = orders.filter((order) => order.customerId === customer.id || normalizeEmail(order.email) === normalizeEmail(customer.email));
+  const rows = customers.filter((customer) => customerHasPurchase(orders, customer.id, customer.email)).map((customer) => {
+    const customerOrders = orders.filter((order) => (order.customerId === customer.id || normalizeEmail(order.email) === normalizeEmail(customer.email)) && order.status !== "pago_simulado" && (order.paymentStatus === "approved" || order.status === "entregado"));
     const lastOrderAt = customerOrders.reduce<string | null>((latest, order) => (!latest || order.createdAt > latest ? order.createdAt : latest), null);
-    return { customer, orderCount: customerOrders.length, lastOrderAt };
+    const spent = customerOrders.reduce((sum, order) => sum + order.total, 0);
+    return { customer, orderCount: customerOrders.length, lastOrderAt, spent };
   });
   const needle = query.trim().toLowerCase();
   const filtered = needle
@@ -27,15 +29,15 @@ export default function AdminCustomersPage() {
     <main className="admin-content">
       <div className="admin-heading">
         <div>
-          <h1>Clientes</h1>
-          <p>Personas que crearon su cuenta o hicieron un pedido en la tienda.</p>
+          <h1>Compradores</h1>
+          <p>Solo personas con al menos una compra real. Las cuentas sin compra y las pruebas no aparecen.</p>
         </div>
       </div>
       <section className="admin-card list-card">
-        {!customers.length ? (
+        {!rows.length ? (
           <div className="orders-empty">
-            <h2>Todavía no hay clientes</h2>
-            <p>Cada persona que crea su cuenta o hace un pedido, aunque compre como invitada, aparece acá con su email, su teléfono y cuántos pedidos hizo.</p>
+            <h2>Todavía no hay compradores</h2>
+            <p>Una persona aparece acá después de que su primera compra queda aprobada.</p>
           </div>
         ) : (
           <>
@@ -54,7 +56,7 @@ export default function AdminCustomersPage() {
                 {current.total
                   ? current.pageCount > 1
                     ? `Mostrando ${current.from}–${current.to} de ${current.total}`
-                    : `${current.total} ${current.total === 1 ? "cliente" : "clientes"}`
+                    : `${current.total} ${current.total === 1 ? "comprador" : "compradores"}`
                   : "Sin resultados"}
               </span>
             </div>
@@ -72,16 +74,18 @@ export default function AdminCustomersPage() {
                     <th role="columnheader" className="cell-email">Email</th>
                     <th role="columnheader" className="cell-phone">Teléfono</th>
                     <th role="columnheader" className="cell-number">Pedidos</th>
+                    <th role="columnheader" className="cell-number">Compró por</th>
                     <th role="columnheader" className="cell-date">Último pedido</th>
                   </tr>
                 </thead>
                 <tbody role="rowgroup">
-                  {current.items.map(({ customer, orderCount, lastOrderAt }) => (
+                  {current.items.map(({ customer, orderCount, lastOrderAt, spent }) => (
                     <tr role="row" key={customer.id}>
                       <th role="rowheader" scope="row" className="cell-name">{customer.name}</th>
                       <td role="cell" className="cell-email">{customer.email}</td>
                       <td role="cell" className={customer.phone ? "cell-phone" : "cell-phone is-missing"}>{customer.phone || "Sin teléfono"}</td>
                       <td role="cell" className={orderCount ? "cell-number" : "cell-number is-zero"} data-label={orderCount === 1 ? "pedido" : "pedidos"}>{orderCount}</td>
+                      <td role="cell" className="cell-number">{new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(spent)}</td>
                       <td role="cell" className={lastOrderAt ? "cell-date" : "cell-date is-missing"}>{lastOrderAt ? formatDate(lastOrderAt) : "Sin pedidos"}</td>
                     </tr>
                   ))}

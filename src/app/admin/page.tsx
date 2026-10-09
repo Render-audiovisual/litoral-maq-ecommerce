@@ -1,144 +1,64 @@
 "use client";
 
 import Link from "next/link";
-import { TableScroll } from "@/components/table-scroll";
+import { useMemo, useState } from "react";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { orderStatusLabel } from "@/lib/order-details";
-import { getOrderDelay, type OrderDelay } from "@/lib/order-delays";
-import type { Order } from "@/lib/types";
+import { getOrderDelay } from "@/lib/order-delays";
+import { customerHasPurchase, getSalesAnalytics, type SalesPeriod } from "@/lib/admin-analytics";
 
-type QualityItem = { label: string; pending: number; detail: string };
+const PERIODS: SalesPeriod[] = [7, 30, 90];
 
-function StatusIcon({ ok }: { ok: boolean }) {
-  return (
-    <svg className={ok ? "quality-icon ok" : "quality-icon pending"} viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="10" />
-      {ok ? <path d="m8.5 12.5 2.5 2.5 4.5-5" /> : <path d="M12 7.5v5M12 16.5h.01" />}
-    </svg>
-  );
+function Trend({ value }: { value: number | null }) {
+  if (value === null) return <span className="metric-trend neutral">Sin período anterior</span>;
+  const rounded = Math.round(value);
+  return <span className={`metric-trend ${rounded >= 0 ? "positive" : "negative"}`}>{rounded >= 0 ? "↑" : "↓"} {Math.abs(rounded)}% vs. período anterior</span>;
 }
 
 export default function AdminDashboardPage() {
   const { products, orders, customers } = useStore();
+  const [period, setPeriod] = useState<SalesPeriod>(30);
+  const analytics = useMemo(() => getSalesAnalytics(orders, period), [orders, period]);
+  const maxPoint = Math.max(...analytics.points.map((point) => point.total), 1);
+  const approvedOrders = orders.filter((order) => order.paymentStatus === "approved" && order.status !== "cancelado");
+  const buyerCount = customers.filter((customer) => customerHasPurchase(orders, customer.id, customer.email)).length;
   const lowStock = products.filter((product) => !product.incomplete.includes("stock") && product.stock <= product.lowStockThreshold);
-  const requestedValue = orders.filter((order) => order.status !== "cancelado").reduce((sum, order) => sum + order.total, 0);
-  const incomplete = products.filter((product) => product.incomplete.length > 2);
-  const completeness = products.length ? Math.round(((products.length - incomplete.length) / products.length) * 100) : 0;
-  const quality: QualityItem[] = [
-    { label: "Códigos", pending: 0, detail: "Completos" },
-    { label: "Precios", pending: 0, detail: "Completos" },
-    { label: "Imágenes", pending: products.filter((product) => !product.image).length, detail: "sin imagen" },
-    { label: "Stock real", pending: products.filter((product) => product.incomplete.includes("stock")).length, detail: "sin stock real cargado" },
-    { label: "Descripciones", pending: products.filter((product) => !product.description).length, detail: "sin descripción" },
+  const withoutStock = products.filter((product) => product.incomplete.includes("stock"));
+  const delayed = orders.map((order) => ({ order, delay: getOrderDelay(order, new Date()) })).filter((item) => item.delay !== null).sort((a, b) => (b.delay?.hours ?? 0) - (a.delay?.hours ?? 0));
+  const workflow = [
+    { label: "Cobrar", detail: "Pagos pendientes", value: orders.filter((order) => order.status === "pendiente" && (order.paymentStatus ?? "pending") === "pending").length, href: "/admin/pedidos?filtro=seguimiento", tone: "amber" },
+    { label: "Preparar", detail: "Pagados para armar", value: approvedOrders.filter((order) => ["pendiente", "preparando"].includes(order.status)).length, href: "/admin/pedidos?filtro=preparando", tone: "blue" },
+    { label: "Entregar", detail: "Listos para salir", value: approvedOrders.filter((order) => order.status === "listo").length, href: "/admin/pedidos?filtro=listo", tone: "green" },
+    { label: "Reponer", detail: "Productos con stock bajo", value: lowStock.length, href: "/admin/productos?stock=bajo", tone: "red" },
   ];
-  const recentCustomers = customers.slice(0, 5);
-  // Una sola referencia por render: las demoras se miden en horas.
-  const now = new Date();
-  const delayed = orders
-    .map((order) => ({ order, delay: getOrderDelay(order, now) }))
-    .filter((item): item is { order: Order; delay: OrderDelay } => item.delay !== null)
-    .sort((a, b) => b.delay.hours - a.delay.hours);
-  const followUpCount = orders.filter(
-    (order) => (order.paymentStatus || "pending") === "pending" && order.status === "pendiente" && !!order.followUpAt,
-  ).length;
+
   return (
-    <main className="admin-content">
-      <div className="admin-heading">
-        <div><h1>Resumen</h1><p>Estado del catálogo, pedidos y stock.</p></div>
-        <Link href="/admin/productos" className="button primary">
-          <svg className="button-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
-          Nuevo producto
-        </Link>
-      </div>
-      <div className="stats-grid">
-        <article><span>Valor solicitado</span><strong>{formatCurrency(requestedValue)}</strong><small>Productos, sin envíos a cotizar</small></article>
-        <article><span>Pedidos</span><strong>{orders.length}</strong><small>{orders.filter((order) => order.status === "pendiente").length} para revisar</small></article>
-        <article><span>Productos activos</span><strong>{products.filter((product) => product.active).length}</strong><small>de {products.length} cargados</small></article>
-        <article className={lowStock.length ? "warning" : ""}><span>Stock bajo</span><strong>{lowStock.length}</strong><small>{lowStock.length ? "Requieren revisión" : "Sin alertas de stock"}</small></article>
-      </div>
-      <div className="admin-grid">
-        <section className="admin-card wide attention-card">
-          <div className="card-heading"><div><h2>Requieren atención</h2><p>Pedidos que llevan demasiado tiempo en el mismo paso</p></div></div>
-          {delayed.length ? (
-            <ul className="attention-list">
-              {delayed.slice(0, 5).map(({ order, delay }) => (
-                <li key={order.id}>
-                  <Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link" aria-label={`Ver detalle del pedido ${order.id}`}>{order.id}</Link>
-                  <span>{order.customerName}</span>
-                  <span className="payment-status">{delay.label}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="empty-inline">Todo al día: no hay pedidos demorados.</p>
-          )}
-          {(delayed.length > 0 || followUpCount > 0) && <div className="attention-actions">
-            {delayed.length > 0 && <Link href="/admin/pedidos?filtro=demorados" className="button secondary">Ver todos los demorados</Link>}
-            {followUpCount > 0 && (
-              <Link href="/admin/pedidos?filtro=seguimiento" className="order-link">
-                {followUpCount} {followUpCount === 1 ? "pedido sin pago" : "pedidos sin pago"} para seguimiento
-              </Link>
-            )}
-          </div>}
-        </section>
-        <section className="admin-card wide recent-orders">
-          <div className="card-heading">
-            <div><h2>Pedidos recientes</h2><p>Últimos movimientos de la tienda</p></div>
-            <Link href="/admin/pedidos" className="text-button">
-              Ver todos
-              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg>
-            </Link>
-          </div>
-          {!orders.length ? <div className="empty-inline">Todavía no hay pedidos. Cuando un cliente compre va a aparecer acá.</div> : (
-            <TableScroll>
-              <table>
-                <thead><tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Total productos</th><th>Estado</th></tr></thead>
-                <tbody>
-                  {orders.slice(0, 6).map((order) => (
-                    <tr key={order.id}>
-                      <td className="rc-id"><Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link" aria-label={`Ver detalle del pedido ${order.id}`}>{order.id}</Link></td>
-                      <td className="rc-customer">{order.customerName}</td>
-                      <td className="rc-date">{formatDate(order.createdAt)}</td>
-                      <td className="numeric rc-total">{formatCurrency(order.total)}</td>
-                      <td className="rc-status"><span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </TableScroll>
-          )}
-        </section>
-        <section className="admin-card">
-          <div className="card-heading"><div><h2>Calidad de catálogo</h2><p>Datos que faltan cargar en los productos</p></div></div>
-          <div className="quality-score">
-            <p><strong>{completeness}%</strong> completitud base</p>
-            <div className="quality-bar" aria-hidden="true"><span style={{ width: `${completeness}%` }} /></div>
-          </div>
-          <ul className="quality-list">
-            {quality.map((item) => (
-              <li key={item.label}>
-                <StatusIcon ok={item.pending === 0} />
-                <span>{item.label}</span>
-                <small>{item.pending === 0 ? item.detail : `${item.pending} ${item.detail}`}</small>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="admin-card customers-card">
-          <div className="card-heading"><div><h2>Clientes</h2><p>Registrados por compras web o alta de cuenta</p></div></div>
-          <p className="customer-count"><strong>{customers.length}</strong> {customers.length === 1 ? "cliente registrado" : "clientes registrados"}</p>
-          {recentCustomers.length ? (
-            <ul className="customer-list">
-              {recentCustomers.map((customer) => (
-                <li key={customer.id}><span>{customer.name || "Sin nombre"}</span><small>{customer.email}</small></li>
-              ))}
-            </ul>
-          ) : (
-            <p className="empty-inline">Todavía no hay clientes. Aparecen cuando alguien crea su cuenta o completa una compra.</p>
-          )}
-          <Link href="/admin/clientes" className="button secondary">Ver clientes</Link>
-        </section>
+    <main className="admin-content owner-dashboard">
+      <section className="dashboard-welcome">
+        <div><span className="eyebrow">Mesa de control · Buen día, Gonzalo</span><h1>Resumen</h1><p>Lo importante del negocio, ordenado para decidir rápido.</p></div>
+        <div className="dashboard-actions"><Link href="/admin/pedidos" className="button secondary">Ver pedidos</Link><Link href="/admin/productos" className="button primary">Gestionar productos</Link></div>
+      </section>
+      <section className="workflow-grid" aria-label="Flujo operativo">
+        {workflow.map((item, index) => <Link key={item.label} href={item.href} className={`workflow-card ${item.tone}`}><span className="workflow-step">0{index + 1}</span><strong>{item.value}</strong><div><h2>{item.label}</h2><p>{item.detail}</p></div><span aria-hidden="true">→</span></Link>)}
+      </section>
+      <section className="sales-panel admin-card wide">
+        <div className="card-heading sales-heading"><div><span className="eyebrow">Rendimiento comercial</span><h2>Ventas aprobadas</h2><p>Solo pagos confirmados; no incluye pedidos pendientes.</p></div><div className="period-selector" role="group" aria-label="Período de ventas">{PERIODS.map((value) => <button key={value} type="button" aria-pressed={period === value} className={period === value ? "selected" : ""} onClick={() => setPeriod(value)}>{value} días</button>)}</div></div>
+        <div className="sales-metrics">
+          <div><span>Facturación</span><strong>{formatCurrency(analytics.approvedTotal)}</strong><Trend value={analytics.changePercent} /></div>
+          <div><span>Pedidos cobrados</span><strong>{analytics.approvedOrders}</strong><small>pagos aprobados</small></div>
+          <div><span>Ticket promedio</span><strong>{formatCurrency(analytics.averageTicket)}</strong><small>por compra</small></div>
+          <div><span>Unidades vendidas</span><strong>{analytics.units}</strong><small>{analytics.refundedTotal ? `${formatCurrency(analytics.refundedTotal)} reintegrados` : "sin reintegros en el período"}</small></div>
+        </div>
+        <div className="sales-chart" aria-label={`Ventas aprobadas de los últimos ${period} días`}>
+          {analytics.points.map((point, index) => <div className="chart-column" key={`${point.label}-${index}`} title={`${point.label}: ${formatCurrency(point.total)} en ${point.orders} pedidos`}><span className="chart-value">{point.total ? formatCurrency(point.total) : ""}</span><div className="chart-track"><span style={{ height: `${Math.max(point.total ? 8 : 2, (point.total / maxPoint) * 100)}%` }} /></div><small>{point.label}</small></div>)}
+        </div>
+      </section>
+      <div className="dashboard-lower-grid">
+        <section className="admin-card dashboard-list-card attention-card"><div className="card-heading"><div><h2>Requieren atención</h2><p>Pedidos demorados o sin resolver</p></div><Link href="/admin/pedidos?filtro=demorados" className="text-button">Ver todos los demorados</Link></div>{delayed.length ? <ul className="attention-list">{delayed.slice(0, 5).map(({ order, delay }) => <li key={order.id}><Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link">{order.id}</Link><span>{order.customerName}</span><span className="payment-status">{delay?.label}</span></li>)}</ul> : <p className="empty-inline">Todo al día. No hay pedidos demorados.</p>}</section>
+        <section className="admin-card dashboard-list-card"><div className="card-heading"><div><h2>Más vendidos</h2><p>Productos líderes en {period} días</p></div></div>{analytics.topProducts.length ? <ol className="ranking-list">{analytics.topProducts.map((product, index) => <li key={product.key}><span>{index + 1}</span><div><strong>{product.name}</strong><small>{product.units} unidades</small></div><b>{formatCurrency(product.total)}</b></li>)}</ol> : <p className="empty-inline">Todavía no hay ventas aprobadas en este período.</p>}</section>
+        <section className="admin-card dashboard-list-card"><div className="card-heading"><div><h2>Pedidos recientes</h2><p>Últimos movimientos</p></div><Link href="/admin/pedidos" className="text-button">Ver todos</Link></div>{orders.length ? <ul className="compact-order-list">{orders.slice(0, 5).map((order) => <li key={order.id}><div><Link href={`/admin/pedidos?pedido=${encodeURIComponent(order.id)}`} className="order-link">{order.id}</Link><small>{order.customerName} · {formatDate(order.createdAt)}</small></div><div><strong>{formatCurrency(order.total)}</strong><span className={`status status-${order.status}`}>{orderStatusLabel(order)}</span></div></li>)}</ul> : <p className="empty-inline">Todavía no hay pedidos.</p>}</section>
+        <section className="admin-card dashboard-list-card health-card"><div className="card-heading"><div><h2>Salud del catálogo</h2><p>Datos que impactan en ventas</p></div><Link href="/admin/productos" className="text-button">Corregir</Link></div><dl><div><dt>Productos activos</dt><dd>{products.filter((product) => product.active).length}</dd></div><div><dt>Stock bajo</dt><dd className={lowStock.length ? "danger" : ""}>{lowStock.length}</dd></div><div><dt>Stock sin confirmar</dt><dd className={withoutStock.length ? "warning" : ""}>{withoutStock.length}</dd></div><div><dt>Compradores</dt><dd>{buyerCount}</dd></div></dl></section>
       </div>
     </main>
   );

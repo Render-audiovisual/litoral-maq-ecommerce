@@ -235,7 +235,7 @@ export default function AdminSettingsPage() {
       <div className="admin-heading">
         <div>
           <h1>Configuración</h1>
-          <p>Cómo opera hoy la tienda y en qué estado está cada integración.</p>
+          <p>Estado simple de la operación. La información técnica queda plegada para evitar cambios accidentales.</p>
         </div>
       </div>
       <div className="settings-grid">
@@ -272,7 +272,7 @@ export default function AdminSettingsPage() {
                 <div>
                   <strong>{integration.name}</strong>
                   <span>{integration.status}</span>
-                  <code>{integration.variable}</code>
+                  <details className="technical-detail"><summary>Detalle técnico</summary><code>{integration.variable}</code></details>
                 </div>
                 <span className={`integration-state ${integration.state}`}>
                   {STATE_LABEL[integration.state]}
