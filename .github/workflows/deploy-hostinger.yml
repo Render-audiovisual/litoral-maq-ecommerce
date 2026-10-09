@@ -523,18 +523,21 @@ jobs:
           test -f "$release_root/admin/admin.html"
           test -f "$release_root/deployment-manifest.json"
           mkdir -p "$backup_root/store" "$backup_root/admin"
-          rsync -a --exclude '/admin/' "$store_live/" "$backup_root/store/"
-          rsync -a "$admin_live/" "$backup_root/admin/"
+          rsync -a --exclude '/admin/' "$store_live/" "$backup_root/store/" || {
+            echo "rsync no pudo crear su proceso receptor; usando copia compatible con el límite de Hostinger." >&2
+            cp -a "$store_live/." "$backup_root/store/"
+          }
+          rsync -a "$admin_live/" "$backup_root/admin/" || cp -a "$admin_live/." "$backup_root/admin/"
 
           rollback() {
             echo "El deploy falló; restaurando el backup $backup_root" >&2
-            rsync -a --delete --exclude '/admin/' "$backup_root/store/" "$store_live/"
-            rsync -a --delete "$backup_root/admin/" "$admin_live/"
+            rsync -a --delete --exclude '/admin/' "$backup_root/store/" "$store_live/" || cp -a "$backup_root/store/." "$store_live/"
+            rsync -a --delete "$backup_root/admin/" "$admin_live/" || cp -a "$backup_root/admin/." "$admin_live/"
           }
           trap rollback ERR
 
-          rsync -a --delete --exclude '/admin/' "$release_root/store/" "$store_live/"
-          rsync -a --delete "$release_root/admin/" "$admin_live/"
+          rsync -a --delete --exclude '/admin/' "$release_root/store/" "$store_live/" || cp -a "$release_root/store/." "$store_live/"
+          rsync -a --delete "$release_root/admin/" "$admin_live/" || cp -a "$release_root/admin/." "$admin_live/"
           test -f "$store_live/index.html"
           test -f "$admin_live/admin.html"
 
