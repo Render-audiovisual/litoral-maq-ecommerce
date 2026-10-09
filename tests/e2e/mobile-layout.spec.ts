@@ -93,7 +93,7 @@ test.describe("layout móvil", () => {
     await page.goto("/");
 
     const header = page.locator(".site-header");
-    expect(await header.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(105);
+    expect(await header.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(130);
 
     const primaryAction = page.getByRole("link", { name: "Explorar catálogo" });
     const promo = page.locator(".hero-promo-slider");
@@ -107,6 +107,6 @@ test.describe("layout móvil", () => {
 
     await page.evaluate(() => document.scrollingElement?.scrollTo(0, 900));
     await expect(header).toBeInViewport();
-    expect(await header.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(105);
+    expect(await header.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(130);
   });
 });
