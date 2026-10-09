@@ -30,13 +30,16 @@ test('la franja superior se mueve aun cuando el navegador reduce animaciones', a
   expect(start).not.toBe(end);
 });
 
-test('ofertas abre el catálogo filtrado desde el menú y el inicio', async ({ page }) => {
+test('más vendidos dirige a destacados y ofertas mantiene el catálogo filtrado', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.getByRole('navigation').getByRole('link', { name: 'Ofertas' })).toHaveAttribute(
+  await expect(page.getByRole('navigation').getByRole('link', { name: 'Más vendidos' })).toHaveAttribute(
     'href',
-    '/productos?categoria=Ofertas',
+    '/#productos-estrella',
   );
+  await page.getByRole('navigation').getByRole('link', { name: 'Más vendidos' }).click();
+  await expect(page).toHaveURL(/#productos-estrella$/);
+  await expect(page.locator('#productos-estrella')).toBeVisible();
 
   await page.locator('.hero-offers-link').click();
   await expect(page).toHaveURL(/\/productos\?categoria=Ofertas$/);
