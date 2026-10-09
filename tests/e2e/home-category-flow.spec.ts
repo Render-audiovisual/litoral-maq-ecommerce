@@ -20,6 +20,8 @@ test("el inicio lleva de las categorías más vendidas al catálogo filtrado", a
     taladrosLink.dispatchEvent("click"),
   ]);
   await expect(page.getByLabel("Categoría")).toHaveValue("taladros");
+  // Marca y precios quedan plegados hasta tocar "Filtros".
+  await page.getByRole("button", { name: /^Filtros/ }).click();
   await expect(page.getByLabel("Marca")).toBeVisible();
   await expect(page.getByLabel("Precio mínimo")).toBeVisible();
   await expect(page.getByLabel("Precio máximo")).toBeVisible();

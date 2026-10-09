@@ -3553,14 +3553,14 @@
     "rawPrice": "$ 340.000,97",
     "category": "Jardín",
     "brand": "ENERGY",
-    "image": "/products/DESMALEZADORA.png",
+    "image": "/products/catalog/3502-bc524-1.webp",
     "images": [
-      "/products/DESMALEZADORA.png",
+      "/products/catalog/3502-bc524-1.webp",
       "/products/catalog/3502-bc524-1-ficha.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
-    "active": false,
+    "active": true,
     "featured": false,
     "description": "Desmalezadora a gasolina 4 en 1 ENERGY BC524-1.\n\nDatos técnicos:\n• Cilindrada: 52cc\n• Potencia: 1,94HP (1,45kW)\n• Velocidad en vacío: 7500/min\n• Capacidad de tanque: 1200ml\n• Sierra: 25cm - 10\"\n• Cortacerco: 40cm - 16\"\n• Tanza: 3m\n• Peso: 14,6kg (32lb)\n\nContenido: 1 desmalezadora a gasolina 4 en 1, 1 extensión de cortacerco, 1 extensión de sierra a cadena, 1 extensión de desmalezadora, 1 cabezal para bordeadora, 1 carretel de nylon, 1 hoja de corte 3T, 1 correa y 1 botella de aceite.",
     "variants": [],
@@ -3580,21 +3580,24 @@
     "rawPrice": "$ 120.000,42",
     "category": "Jardín",
     "brand": "ENERGY",
-    "image": "/products/DESMALEZADORA.png",
+    "image": "/products/catalog/2484-bc52-3.webp",
     "images": [
-      "/products/DESMALEZADORA.png"
+      "/products/catalog/2484-bc52-3.webp",
+      "/products/catalog/2484-bc52-3-2.webp",
+      "/products/catalog/2484-bc52-3-3.webp",
+      "/products/catalog/2484-bc52-3-4.webp",
+      "/products/catalog/2484-bc52-3-5.webp"
     ],
     "stock": 0,
     "lowStockThreshold": 5,
-    "active": false,
+    "active": true,
     "featured": false,
-    "description": null,
+    "description": "Desmalezadora naftera 2T ENERGY BC52/3.\n\nDatos técnicos:\n• Cilindrada: 52cc\n• Potencia: 1,94HP (1,45kW)\n• Velocidad en vacío: 3000rpm\n• Capacidad de tanque: 1250ml\n• Longitud de eje: 160cm\n• Diámetro de eje: 26mm\n• Peso: 9,5kg\n\nContenido: 1 carretel de tanza, 1 cuchilla, 1 correa y 1 botella de aceite.",
     "variants": [],
     "source": "google-sheet",
     "sourceRow": 138,
     "incomplete": [
-      "stock",
-      "description"
+      "stock"
     ],
     "purchaseLimit": 3
   },
