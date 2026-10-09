@@ -51,6 +51,7 @@ export default function CheckoutPage() {
     products,
     cartSubtotal,
     customerSession,
+    orders,
     clearCart,
     createOrder,
     addCustomer,
@@ -78,20 +79,23 @@ export default function CheckoutPage() {
   const captcha = useCaptcha();
   const needsGuestSession = !customerSession;
   const sessionName = splitCustomerName(customerSession?.user.name);
+  const latestOrder = customerSession
+    ? orders.find((order) => order.customerId === customerSession.user.id)
+    : undefined;
   const [form, setForm] = useState({
     firstName: sessionName.firstName,
     lastName: sessionName.lastName,
     email: customerSession?.user.email || "",
-    dni: "",
-    phone: "",
-    province: "W",
-    postalCode: "",
-    locality: "",
-    street: "",
-    streetNumber: "",
-    floor: "",
-    apartment: "",
-    reference: "",
+    dni: latestOrder?.dni || "",
+    phone: customerSession?.user.phone || latestOrder?.phone || "",
+    province: latestOrder?.province || "W",
+    postalCode: latestOrder?.postalCode || "",
+    locality: latestOrder?.locality || "",
+    street: latestOrder?.street || "",
+    streetNumber: latestOrder?.streetNumber || "",
+    floor: latestOrder?.floor || "",
+    apartment: latestOrder?.apartment || "",
+    reference: latestOrder?.addressReference || "",
   });
   const paymentEnabled = isMercadoPagoEnabled();
   // Campos marcados como inválidos en el último intento: borde rojo,
