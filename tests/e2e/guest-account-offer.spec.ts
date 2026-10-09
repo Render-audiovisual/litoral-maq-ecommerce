@@ -15,7 +15,7 @@ import { expect, test } from "@playwright/test";
 
 async function addFirstProductToCart(page: import("@playwright/test").Page) {
   await page.goto("/productos?q=3403");
-  await page.locator(".product-card").first().getByRole("button", { name: "Agregar al carrito" }).click();
+  await page.locator(".product-card").first().getByRole("button", { name: "Comprar" }).click();
 }
 
 test("se puede comprar como invitado, sin contraseña, y después se ofrece la cuenta", async ({ page }) => {

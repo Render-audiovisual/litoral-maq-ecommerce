@@ -4,7 +4,7 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await page.goto("/productos?q=3403");
   const card = page.locator(".product-card").first();
   const productName = (await card.locator(".product-name").innerText()).trim();
-  await card.getByRole("button", { name: "Agregar al carrito" }).click();
+  await card.getByRole("button", { name: "Comprar" }).click();
 
   await page.goto("/checkout");
   await page.getByLabel("Nombre", { exact: true }).fill("Cliente");

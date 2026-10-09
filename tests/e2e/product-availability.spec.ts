@@ -5,9 +5,9 @@ test("el catálogo usa la disponibilidad del Sheet sin inventar unidades", async
   const card = page.locator(".product-card").first();
   await expect(card).toContainText("Disponible");
   await expect(card).not.toContainText(/\d+ unidades/);
-  await expect(card.getByRole("button", { name: "Agregar al carrito" })).toBeEnabled();
+  await expect(card.getByRole("button", { name: "Comprar" })).toBeEnabled();
 
-  await card.locator(".product-name").click();
+  await card.locator(".product-card-link").click();
   await expect(page.getByText("Disponible", { exact: true })).toBeVisible();
   await expect(page.getByText("Stock gestionado por Litoral")).toBeVisible();
   await expect(page.getByText(/unidades confirmadas/i)).toHaveCount(0);

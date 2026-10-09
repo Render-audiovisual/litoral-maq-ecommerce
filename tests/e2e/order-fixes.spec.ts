@@ -2,7 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 async function addProductAndOpenCheckout(page: Page) {
   await page.goto("/productos?q=3403");
-  await page.locator(".product-card").first().getByRole("button", { name: "Agregar al carrito" }).click();
+  await page.locator(".product-card").first().getByRole("button", { name: "Comprar" }).click();
   await page.goto("/checkout");
 }
 
