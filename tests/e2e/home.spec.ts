@@ -8,10 +8,10 @@ test('la página principal carga correctamente', async ({ page }) => {
   await expect(page.locator('.store-photo-frame figcaption')).toHaveCount(0);
   await expect(page.locator('.hero-promo-slider')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Más vendidos', exact: true })).toBeVisible();
-  const starProducts = page.locator('.store-bestsellers-track .product-card');
-  await expect(starProducts).toHaveCount(4);
+  const starProducts = page.locator('.category-track .winner-card');
+  await expect(starProducts).toHaveCount(8);
   for (const card of await starProducts.all()) {
-    await expect(card).toContainText('Disponible');
+    await expect(card).toContainText('Ver producto');
     await expect(card).not.toContainText('Consultar disponibilidad');
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);

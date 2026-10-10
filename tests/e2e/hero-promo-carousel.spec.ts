@@ -10,13 +10,13 @@ test("la foto reemplaza la cinta promocional sin botones ni leyenda", async ({ p
 test("los productos siguen accesibles con movimiento reducido", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  await expect(page.locator(".store-bestsellers-track .product-card")).toHaveCount(4);
-  await expect(page.locator(".store-bestsellers-track").getByRole("button", { name: "Comprar", exact: true }).first()).toBeVisible();
+  await expect(page.locator(".category-track .winner-card")).toHaveCount(8);
+  await expect(page.locator(".category-marquee").getByRole("link").first()).toBeVisible();
 });
 test("en celular el riel desborda internamente pero no la página", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  const track = page.locator(".store-bestsellers-track");
+  const track = page.locator(".category-marquee");
   await expect(track).toBeVisible();
   const sizes = await track.evaluate(el => ({ width: el.clientWidth, content: el.scrollWidth, overflow: getComputedStyle(el).overflowX }));
   expect(sizes.content).toBeGreaterThan(sizes.width);
