@@ -231,7 +231,7 @@ export function HomeClient() {
     <main>
       <section className="store-photo-hero" aria-label="Litoral Maq">
         <figure className="store-photo-frame">
-          <Image src="/store-placeholder-ai.png" alt="Ilustración provisional de un local de máquinas y herramientas, generada con IA" fill sizes="100vw" preload />
+          <Image src="/litoral-fachada.webp" alt="Fachada del local Litoral Maq" fill sizes="100vw" preload />
         </figure>
         <h1 className="store-photo-title">Litoral Maq · Máquinas y herramientas</h1>
       </section>
