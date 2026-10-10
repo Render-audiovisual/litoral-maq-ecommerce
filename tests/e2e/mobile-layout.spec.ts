@@ -95,8 +95,10 @@ test.describe("layout móvil", () => {
     const header = page.locator(".site-header");
     expect(await header.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(130);
 
-    const primaryAction = page.getByRole("link", { name: "Explorar catálogo" });
-    const promo = page.locator(".hero-promo-slider");
+    const primaryAction = page.locator(".store-photo-frame");
+    const promo = page.locator(".store-bestsellers");
+    await expect(primaryAction).toBeVisible();
+    await expect(promo).toBeVisible();
     const [actionBox, promoBox] = await Promise.all([
       primaryAction.boundingBox(),
       promo.boundingBox(),
