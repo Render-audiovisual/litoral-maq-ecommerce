@@ -1,5 +1,7 @@
 "use client";
 
+import { isConfirmedOperationalOrder } from "@/lib/orders";
+
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -65,7 +67,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const loggingOutRef = useRef(false);
   const [authCheck, setAuthCheck] = useState(0);
   const pendingOrderCount = useMemo(
-    () => orders.filter((order) => order.status === "pendiente").length,
+    () => orders.filter((order) => order.status === "pendiente" && isConfirmedOperationalOrder(order)).length,
     [orders],
   );
 
