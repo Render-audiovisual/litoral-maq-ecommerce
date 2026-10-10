@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { TestimonialsSection } from "@/components/testimonials";
 import { selectStarProducts } from "@/lib/star-products";
-import { formatCurrency, STORE_MAPS_URL } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import {
   getLaunchFamilyCards,
 } from "@/lib/launch-catalog";
@@ -13,8 +13,9 @@ import { useContinuousTicker } from "@/hooks/use-continuous-ticker";
 import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
+import "./home-store-photo.css";
 
-const PROMO_SLIDES = [
+export const PROMO_SLIDES = [
   {
     id: "electrosierra-forest-20v",
     productId: "3757",
@@ -79,7 +80,7 @@ const HERO_MAX_FLING_SPEED = 720;
 
 type PromoSlide = (typeof PROMO_SLIDES)[number];
 
-function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
+export function HeroPromoCarousel({ slides }: { slides: readonly PromoSlide[] }) {
   // El juego de tarjetas va duplicado: cuando la cinta avanzó exactamente un
   // juego vuelve a cero y el corte no se ve.
   const trackItems = [...slides, ...slides];
@@ -223,48 +224,25 @@ export function HomeClient() {
   const { products } = useStore();
   const activeProducts = products.filter((product) => product.active);
   const categories = getLaunchFamilyCards(activeProducts);
-  const promoSlides = PROMO_SLIDES.filter((slide) =>
-    activeProducts.some((product) => product.id === slide.productId),
-  );
   const starProducts = selectStarProducts(activeProducts);
   return (
     <main>
-      <section className="commerce-hero">
-        <div className="commerce-hero-copy">
-          <span className="hero-pill">PRODUCTOS Y PRECIOS REALES</span>
-          <h1>Armá tu <em>taller.</em></h1>
-          <p>
-            Máquinas y herramientas con precios reales, envíos a todo el país
-            y retiro gratis en nuestro local.
-          </p>
-        </div>
-
-        <HeroPromoCarousel slides={promoSlides} />
-
-        <div className="hero-actions commerce-hero-actions">
-          <div className="hero-buttons">
-            <Link href="/productos" className="button primary large">Explorar catálogo</Link>
-            <Link href="/productos?categoria=Ofertas" className="button ghost large hero-offers-link">
-              <span className="hero-offers-desktop">Ver ofertas</span>
-              <span className="hero-offers-mobile">Ver ofertas destacadas →</span>
-            </Link>
-          </div>
-          <a
-            className="pickup-banner"
-            href={STORE_MAPS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Retiro gratis en Sáenz 1587, Corrientes Capital. Cómo llegar (abre Google Maps)"
-          >
-            <span>RETIRO GRATIS</span>
-            <div className="pickup-banner-copy">
-              <strong>Retirá gratis en Sáenz 1587, Corrientes Capital</strong>
-              <small>Abrí y probá tu producto antes de llevártelo, sin compromiso.</small>
-            </div>
-            <b aria-hidden="true">→</b>
-          </a>
-        </div>
+      <section className="store-photo-hero" aria-label="Litoral Maq">
+        <figure className="store-photo-frame">
+          <Image src="/store-placeholder-ai.png" alt="Ilustración provisional de un local de máquinas y herramientas, generada con IA" fill sizes="100vw" preload />
+        </figure>
+        <h1 className="store-photo-title">Litoral Maq · Máquinas y herramientas</h1>
       </section>
+
+      {starProducts.length > 0 && <section className="store-bestsellers" id="productos-estrella">
+        <div className="section-heading">
+          <div><span className="eyebrow orange">PRODUCTOS</span><h2>Más vendidos</h2></div>
+          <Link href="/productos" className="text-link">Ver todos →</Link>
+        </div>
+        <div className="store-bestsellers-track" aria-label="Selección de productos más vendidos">
+          {starProducts.map(({ product, image }) => <ProductCard product={product} imageOverride={image} badge={null} key={product.id} />)}
+        </div>
+      </section>}
 
       <section className="winner-section" id="categorias-mas-vendidas">
         <div className="section-heading winner-heading">
@@ -277,24 +255,6 @@ export function HomeClient() {
         </div>
         <CategoryMarquee categories={categories} />
       </section>
-
-      {starProducts.length > 0 && (
-        <section className="section soft home-products-section" id="productos-estrella">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow orange">PRODUCTOS ESTRELLA</span>
-              <h2>Los elegidos de Litoral Maq</h2>
-              <p>Productos que recomendamos por precio y rendimiento, con stock y precio actualizado. Comprá online o retiralos en el local.</p>
-            </div>
-            <Link href="/productos" className="text-link">Ver catálogo →</Link>
-          </div>
-          <div className="star-products-grid" aria-label="Productos destacados">
-            {starProducts.map(({ product, image }) => (
-              <ProductCard product={product} imageOverride={image} badge={null} key={product.id} />
-            ))}
-          </div>
-        </section>
-      )}
 
       <TestimonialsSection />
     </main>

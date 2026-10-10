@@ -3,13 +3,19 @@ import { test, expect } from '@playwright/test';
 test('la página principal carga correctamente', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/Litoral Maq/i);
-  await expect(page.getByRole('link', { name: /explorar catálogo/i })).toBeVisible();
-  const starProducts = page.locator('.star-products-grid .product-card');
+  await expect(page.locator('.store-photo-actions')).toHaveCount(0);
+  await expect(page.locator('.store-photo-frame img')).toBeVisible();
+  await expect(page.locator('.store-photo-frame figcaption')).toHaveCount(0);
+  await expect(page.locator('.hero-promo-slider')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Más vendidos', exact: true })).toBeVisible();
+  const starProducts = page.locator('.store-bestsellers-track .product-card');
   await expect(starProducts).toHaveCount(4);
   for (const card of await starProducts.all()) {
     await expect(card).toContainText('Disponible');
     await expect(card).not.toContainText('Consultar disponibilidad');
   }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+  await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
   await expect(page.getByRole('link', { name: 'Consultar por WhatsApp', exact: true })).toHaveAttribute(
     'href',
@@ -30,7 +36,7 @@ test('la franja superior se mueve aun cuando el navegador reduce animaciones', a
   expect(start).not.toBe(end);
 });
 
-test('más vendidos dirige a destacados y ofertas mantiene el catálogo filtrado', async ({ page }) => {
+test('más vendidos dirige a destacados', async ({ page }) => {
   await page.goto('/');
 
   await expect(page.getByRole('navigation').getByRole('link', { name: 'Más vendidos' })).toHaveAttribute(
@@ -41,16 +47,12 @@ test('más vendidos dirige a destacados y ofertas mantiene el catálogo filtrado
   await expect(page).toHaveURL(/#productos-estrella$/);
   await expect(page.locator('#productos-estrella')).toBeVisible();
 
-  await page.locator('.hero-offers-link').click();
-  await expect(page).toHaveURL(/\/productos\?categoria=Ofertas$/);
-  await expect(page.getByRole('searchbox', { name: 'Buscar productos' })).toBeVisible();
-  await expect(page.locator('.catalog-grid .product-card').first()).toBeVisible();
 });
 
-test('el cartel de retiro gratis lleva a la ficha del local en Google Maps', async ({ page }) => {
+test('el inicio no muestra botones bajo la foto y conserva ubicación en el pie', async ({ page }) => {
   await page.goto('/');
-  const banner = page.locator('.commerce-hero').getByRole('link', { name: /Cómo llegar/ });
+  await expect(page.locator('.store-photo-hero a')).toHaveCount(0);
+  const banner = page.getByRole('link', { name: 'Sáenz 1587, Corrientes', exact: true });
   await expect(banner).toHaveAttribute('href', 'https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8');
   await expect(banner).toHaveAttribute('target', '_blank');
-  await expect(banner).toContainText('RETIRO GRATIS');
 });
