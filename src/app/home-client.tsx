@@ -2,13 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ProductCard } from "@/components/product-card";
 import { TestimonialsSection } from "@/components/testimonials";
 import { selectStarProducts } from "@/lib/star-products";
 import { formatCurrency } from "@/lib/utils";
-import {
-  getLaunchFamilyCards,
-} from "@/lib/launch-catalog";
 import { useContinuousTicker } from "@/hooks/use-continuous-ticker";
 import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
 import type { Product } from "@/lib/types";
@@ -138,6 +134,7 @@ function CategoryWinnerCard({
   image,
   rank,
   duplicate = false,
+  productHref,
 }: {
   slug: string;
   label: string;
@@ -148,8 +145,9 @@ function CategoryWinnerCard({
   image: string;
   rank: number;
   duplicate?: boolean;
+  productHref?: string;
 }) {
-  const href = `/productos?familia=${encodeURIComponent(slug)}`;
+  const href = productHref || `/productos?familia=${encodeURIComponent(slug)}`;
   return (
     <Link
       href={href}
@@ -161,7 +159,7 @@ function CategoryWinnerCard({
         {image || representativeProduct?.image ? (
           <Image
             src={image || representativeProduct?.image || ""}
-            alt={`Ver productos de ${label}`}
+            alt={productHref ? label : `Ver productos de ${label}`}
             fill
             sizes="(max-width: 560px) 78vw, (max-width: 900px) 46vw, 30vw"
             loading={rank <= 2 ? "eager" : "lazy"}
@@ -176,9 +174,9 @@ function CategoryWinnerCard({
         <small>{description}</small>
         {/* Precio "desde" sin centavos: es orientativo. El conteo solo suma
             cuando hay variedad; "1 producto" le restaba a la categoría. */}
-        <strong>{priceFrom === null ? "Consultar" : `Desde ${formatCurrency(Math.floor(priceFrom), 0)}`}</strong>
+        <strong>{priceFrom === null ? "Consultar" : productHref ? formatCurrency(priceFrom) : `Desde ${formatCurrency(Math.floor(priceFrom), 0)}`}</strong>
         {productCount >= 3 && <span className="winner-card-count">{productCount} productos</span>}
-        <b>Ver {label.toLowerCase()} <span aria-hidden>→</span></b>
+        <b>{productHref ? "Ver producto" : `Ver ${label.toLowerCase()}`} <span aria-hidden>→</span></b>
       </div>
     </Link>
   );
@@ -189,7 +187,7 @@ function CategoryWinnerCard({
 const CATEGORY_AUTO_SCROLL_SPEED = 48;
 const CATEGORY_MAX_FLING_SPEED = 900;
 
-type CategoryCardData = ReturnType<typeof getLaunchFamilyCards>[number];
+type CategoryCardData = Omit<Parameters<typeof CategoryWinnerCard>[0], "rank">;
 
 function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
   const trackItems = [...categories, ...categories];
@@ -203,7 +201,7 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
     <div
       ref={railRef}
       className={`category-marquee${dragging ? " is-dragging" : ""}`}
-      aria-label="Categorías de productos, se puede deslizar"
+      aria-label="Productos más vendidos, se puede deslizar"
       {...handlers}
     >
       <div className="winner-grid category-track">
@@ -223,8 +221,12 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
 export function HomeClient() {
   const { products } = useStore();
   const activeProducts = products.filter((product) => product.active);
-  const categories = getLaunchFamilyCards(activeProducts);
   const starProducts = selectStarProducts(activeProducts);
+  const categories: CategoryCardData[] = starProducts.map(({ product, image }) => ({
+    slug: product.slug, label: product.name, description: product.brand,
+    priceFrom: product.price, productCount: 0, representativeProduct: product, image,
+    productHref: `/producto?slug=${encodeURIComponent(product.slug)}`,
+  }));
   return (
     <main>
       <section className="store-photo-hero" aria-label="Litoral Maq">
@@ -234,22 +236,12 @@ export function HomeClient() {
         <h1 className="store-photo-title">Litoral Maq · Máquinas y herramientas</h1>
       </section>
 
-      {starProducts.length > 0 && <section className="store-bestsellers" id="productos-estrella">
-        <div className="section-heading">
-          <div><span className="eyebrow orange">PRODUCTOS</span><h2>Más vendidos</h2></div>
-          <Link href="/productos" className="text-link">Ver todos →</Link>
-        </div>
-        <div className="store-bestsellers-track" aria-label="Selección de productos más vendidos">
-          {starProducts.map(({ product, image }) => <ProductCard product={product} imageOverride={image} badge={null} key={product.id} />)}
-        </div>
-      </section>}
-
-      <section className="winner-section" id="categorias-mas-vendidas">
+      <section className="winner-section winner-products" id="productos-estrella">
         <div className="section-heading winner-heading">
           <div>
-            <span className="eyebrow orange">COMPRÁ POR CATEGORÍA</span>
-            <h2>Encontrá la máquina que necesitás</h2>
-            <p>Elegí una categoría para ver sus productos con precio desde; deslizá para ver todas.</p>
+            <span className="eyebrow orange">PRODUCTOS</span>
+            <h2>Más vendidos</h2>
+            <p>Deslizá y encontrá tu próxima herramienta.</p>
           </div>
           <Link href="/productos" className="text-link">Ver catálogo →</Link>
         </div>
