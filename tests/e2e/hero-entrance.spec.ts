@@ -1,44 +1,27 @@
 import { expect, test } from "@playwright/test";
 
-// La entrada del hero es corta y sutil; con "reducir animaciones" conserva la
-// composición final, pero termina prácticamente de inmediato.
 for (const reducedMotion of ["no-preference", "reduce"] as const) {
-  test(`el hero entra por los costados en escritorio (movimiento ${reducedMotion})`, async ({ page }) => {
+  test(`la foto carga sin entrada decorativa (movimiento ${reducedMotion})`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion });
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
-    await page.locator(".commerce-hero-copy h1").waitFor();
-
-    const info = await page.evaluate(() => {
-      const copy = document.querySelector(".commerce-hero-copy h1") as HTMLElement;
-      const slider = document.querySelector(".hero-promo-slider") as HTMLElement;
-      return {
-        copyName: getComputedStyle(copy).animationName,
-        sliderName: getComputedStyle(slider).animationName,
-        copyShift: getComputedStyle(copy.parentElement as HTMLElement).getPropertyValue("--hero-copy-shift").trim(),
-        sliderShift: getComputedStyle(slider).getPropertyValue("--hero-carousel-shift").trim(),
-        copyDuration: Number.parseFloat(getComputedStyle(copy).animationDuration),
-        sliderDuration: Number.parseFloat(getComputedStyle(slider).animationDuration),
-      };
-    });
-
-    expect(info.copyName).toBe("hero-copy-in");
-    expect(info.sliderName).toBe("hero-carousel-in");
-    expect(info.copyShift).toBe("-22px");
-    expect(info.sliderShift).toBe("28px");
-    if (reducedMotion === "reduce") {
-      expect(info.copyDuration).toBeLessThan(.01);
-      expect(info.sliderDuration).toBeLessThan(.01);
-    }
+    const image = page.locator(".store-photo-frame img");
+    await expect(image).toBeVisible();
+    await expect(image).toHaveJSProperty("complete", true);
+    expect(await image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    expect(await page.locator(".store-photo-frame").evaluate(el => getComputedStyle(el).animationName)).toBe("none");
   });
 }
-
-test("en celular el recorrido de entrada del hero es corto", async ({ page }) => {
+test("la foto precede a más vendidos en celular", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.locator(".commerce-hero-copy h1").waitFor();
-  const shift = await page.evaluate(() =>
-    getComputedStyle(document.querySelector(".commerce-hero-copy") as HTMLElement).getPropertyValue("--hero-copy-shift").trim(),
-  );
-  expect(shift).toBe("-22px");
+  const photo = page.locator(".store-photo-frame");
+  const products = page.locator(".store-bestsellers");
+  await expect(photo).toBeVisible();
+  await expect(products).toBeVisible();
+  const photoBox = await photo.boundingBox();
+  const productsBox = await products.boundingBox();
+  expect(photoBox).not.toBeNull();
+  expect(productsBox).not.toBeNull();
+  expect(photoBox!.y + photoBox!.height).toBeLessThan(productsBox!.y);
 });
