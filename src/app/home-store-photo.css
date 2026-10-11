@@ -1,8 +1,10 @@
-.store-photo-hero { max-width:1440px; margin:24px auto 0; padding:0 28px; }
-.store-photo-frame { position:relative; height:clamp(280px,40vw,540px); margin:0; overflow:hidden; border-radius:18px; background:#e8eef1; }
+.store-photo-hero { width:100%; max-width:none; margin:0; padding:0; }
+.store-photo-frame { position:relative; height:clamp(300px,37vw,720px); margin:0; overflow:hidden; border-radius:0; background:#e8eef1; }
 .store-photo-frame img { object-fit:cover; object-position:center; }
 .store-photo-frame figcaption { position:absolute; bottom:12px; right:14px; left:14px; width:fit-content; margin-left:auto; padding:6px 10px; border-radius:6px; color:white; background:#062b40d9; font-size:11px; line-height:1.4; }
 .store-photo-title { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.winner-products { margin-top:24px; }
+.winner-products .winner-card-media img { object-fit:contain; padding:12px; }
 .store-photo-actions { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:20px 0; }
 .store-photo-actions .hero-buttons { margin:0; flex-shrink:0; }
 .store-photo-actions .button.large { min-height:46px; padding:12px 20px; font-size:14px; }
@@ -15,8 +17,7 @@
 .store-bestsellers-track { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(220px,1fr); gap:18px; overflow-x:auto; padding:2px 2px 14px; scroll-snap-type:x proximity; }
 .store-bestsellers-track .product-card { min-width:0; scroll-snap-align:start; border-radius:12px; background:white; }
 @media(max-width:760px) {
- .store-photo-hero { margin-top:12px; padding:0 14px; }
- .store-photo-frame { height:300px; border-radius:12px; }
+ .store-photo-frame { height:300px; }
  .store-photo-actions { flex-direction:column; align-items:stretch; gap:14px; padding:14px 0; }
  .store-photo-actions .hero-buttons { display:flex; gap:10px; }
  .store-photo-actions .hero-buttons a { flex:1; text-align:center; font-size:12px; padding:12px 8px; }

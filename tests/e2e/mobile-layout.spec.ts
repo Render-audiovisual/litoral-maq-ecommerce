@@ -96,7 +96,7 @@ test.describe("layout móvil", () => {
     expect(await header.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThanOrEqual(130);
 
     const primaryAction = page.locator(".store-photo-frame");
-    const promo = page.locator(".store-bestsellers");
+    const promo = page.locator("#productos-estrella");
     await expect(primaryAction).toBeVisible();
     await expect(promo).toBeVisible();
     const [actionBox, promoBox] = await Promise.all([

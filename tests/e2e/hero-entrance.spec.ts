@@ -9,6 +9,11 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
     await expect(image).toBeVisible();
     await expect(image).toHaveJSProperty("complete", true);
     expect(await image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    const frame = await page.locator(".store-photo-frame").boundingBox();
+    expect(frame).not.toBeNull();
+    expect(frame!.x).toBe(0);
+    expect(frame!.width).toBe(1440);
+    expect(await page.locator(".store-photo-frame").evaluate(el => getComputedStyle(el).borderRadius)).toBe("0px");
     expect(await page.locator(".store-photo-frame").evaluate(el => getComputedStyle(el).animationName)).toBe("none");
   });
 }
@@ -16,7 +21,7 @@ test("la foto precede a más vendidos en celular", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   const photo = page.locator(".store-photo-frame");
-  const products = page.locator(".store-bestsellers");
+  const products = page.locator("#productos-estrella");
   await expect(photo).toBeVisible();
   await expect(products).toBeVisible();
   const photoBox = await photo.boundingBox();
