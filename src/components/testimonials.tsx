@@ -34,7 +34,7 @@ const TESTIMONIALS: Testimonial[] = [
 // El cambio tiene que percibirse sin obligar a esperar: con más de cinco
 // segundos la sección parecía una galería estática. El hover y la reproducción
 // de video siguen pausando el avance para poder mirar el contenido con calma.
-const AUTO_ADVANCE_MS = 3600;
+const AUTO_ADVANCE_MS = 2400;
 
 function TestimonialCard({
   item,

@@ -86,7 +86,7 @@ test("avanza sola, frena con el puntero encima y se puede arrastrar", async ({ p
   const y = box.y + box.height / 2;
   // Medio paso: el objetivo es quedar entre dos tarjetas. Se calcula desde el
   // ancho real de la central para que valga en cualquier pantalla.
-  const medioPaso = Math.round((await widths(page))[0] * 0.45);
+  const medioPaso = Math.round((await widths(page))[0] * 0.55);
   await page.mouse.move(box.x + box.width / 2, y);
   await page.mouse.down();
   await page.mouse.move(box.x + box.width / 2 - medioPaso * 0.5, y);

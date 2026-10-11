@@ -1,5 +1,8 @@
 project_id = "litoral-maq-ecommerce"
 
+[functions.product-bestseller-label]
+verify_jwt = true
+
 [functions.admin-upload-product-photo]
 verify_jwt = true
 

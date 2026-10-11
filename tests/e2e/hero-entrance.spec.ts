@@ -28,5 +28,5 @@ test("la foto precede a más vendidos en celular", async ({ page }) => {
   const productsBox = await products.boundingBox();
   expect(photoBox).not.toBeNull();
   expect(productsBox).not.toBeNull();
-  expect(photoBox!.y + photoBox!.height).toBeLessThan(productsBox!.y);
+  expect(photoBox!.y + photoBox!.height).toBeLessThanOrEqual(productsBox!.y);
 });

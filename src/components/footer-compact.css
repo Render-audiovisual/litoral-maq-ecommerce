@@ -1,0 +1,12 @@
+.footer { padding-top:28px; padding-bottom:18px; gap:22px 40px; }
+.footer-brand img { width:140px; }
+.footer-brand p { font-size:13px; }
+.footer-links { gap:18px; }
+.footer-column { gap:6px; }
+.footer-bottom { padding-top:14px; }
+@media(max-width:760px) {
+ .footer { padding:24px 18px 18px; gap:20px; }
+ .footer-brand { align-items:flex-start; text-align:left; }
+ .footer-links { gap:16px; }
+ .footer-column:first-child { padding-bottom:10px; }
+}

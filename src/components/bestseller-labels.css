@@ -1,0 +1,11 @@
+.label-manager { max-width:1000px; margin:auto; padding:28px 20px; }
+.label-manager h1 { font-size:28px; }
+.label-manager > label,.label-login label { display:flex; flex-direction:column; gap:8px; }
+.label-manager input:not([type=checkbox]) { min-height:44px; padding:10px; border:1px solid #cbd8e0; border-radius:8px; }
+.label-list { margin-top:20px; display:grid; gap:8px; }
+.label-product { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:16px; background:white; border:1px solid #dce6ec; border-radius:8px; }
+.label-product small { display:block; margin-top:5px; color:#687887; }
+.label-check { display:flex; align-items:center; gap:8px; flex:none; min-height:44px; }
+.label-check input { width:20px; height:20px; accent-color:#ff6a00; }
+.label-login { max-width:420px; display:grid; gap:16px; }
+@media(max-width:600px) { .label-product { flex-direction:column; align-items:flex-start; gap:8px; } }

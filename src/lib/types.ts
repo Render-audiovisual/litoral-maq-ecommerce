@@ -17,6 +17,8 @@ export type Product = {
   purchaseLimit?: number;
   active: boolean;
   featured: boolean;
+  /** null/undefined preserves the historical selection until explicitly edited. */
+  bestSeller?: boolean | null;
   description: string | null;
   variants: string[];
   source: string;

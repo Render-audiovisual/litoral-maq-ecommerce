@@ -9,7 +9,7 @@ test('la página principal carga correctamente', async ({ page }) => {
   await expect(page.locator('.hero-promo-slider')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Más vendidos', exact: true })).toBeVisible();
   const starProducts = page.locator('.category-track .winner-card');
-  await expect(starProducts).toHaveCount(8);
+  expect(await starProducts.count()).toBeGreaterThanOrEqual(8);
   for (const card of await starProducts.all()) {
     await expect(card).toContainText('Ver producto');
     await expect(card).not.toContainText('Consultar disponibilidad');
@@ -41,11 +41,14 @@ test('más vendidos dirige a destacados', async ({ page }) => {
 
   await expect(page.getByRole('navigation').getByRole('link', { name: 'Más vendidos' })).toHaveAttribute(
     'href',
-    '/#productos-estrella',
+    '/mas-vendidos',
   );
   await page.getByRole('navigation').getByRole('link', { name: 'Más vendidos' }).click();
-  await expect(page).toHaveURL(/#productos-estrella$/);
-  await expect(page.locator('#productos-estrella')).toBeVisible();
+  await expect(page).toHaveURL(/\/mas-vendidos\/?$/);
+  await expect(page.getByRole('heading', { name: 'Más vendidos', exact: true })).toBeVisible();
+  await expect(page.locator('main .filters')).toHaveCount(0);
+  await expect(page.locator('main select')).toHaveCount(0);
+  expect(await page.locator('main .product-card').count()).toBeGreaterThan(4);
 
 });
 

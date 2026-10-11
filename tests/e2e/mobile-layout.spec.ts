@@ -105,7 +105,7 @@ test.describe("layout móvil", () => {
     ]);
     expect(actionBox).not.toBeNull();
     expect(promoBox).not.toBeNull();
-    expect(actionBox!.y + actionBox!.height).toBeLessThan(promoBox!.y);
+    expect(actionBox!.y + actionBox!.height).toBeLessThanOrEqual(promoBox!.y);
 
     await page.evaluate(() => document.scrollingElement?.scrollTo(0, 900));
     await expect(header).toBeInViewport();

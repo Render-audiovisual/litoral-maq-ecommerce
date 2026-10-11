@@ -36,6 +36,19 @@ function product(name: string, overrides: Partial<Product> = {}): Product {
 }
 
 describe("catálogo inicial", () => {
+  it("includes every explicitly labeled active product without a limit or price restriction", () => {
+    const items = Array.from({ length: 35 }, (_, index) => product(String(index), { bestSeller: true, active: true, image: null, price: 999999 }));
+    expect(getLaunchBestSellers(items)).toHaveLength(35);
+    expect(getLaunchBestSellers([...items, product("hidden", { bestSeller: true, active: false })])).toHaveLength(35);
+  });
+  it("explicitly removed labels do not return through the historical selection", () => {
+    const seed = productsSeed as Product[];
+    const selected = getLaunchBestSellers(seed);
+    expect(selected.length).toBeGreaterThan(0);
+    const removed = new Set(selected.map((item) => item.id));
+    const updated = seed.map((item) => ({ ...item, bestSeller: removed.has(item.id) ? false : null }));
+    expect(getLaunchBestSellers(updated).some((item) => removed.has(item.id))).toBe(false);
+  });
   it("mantiene activos y presentes en Sheet todos los productos elegidos para el carrusel de inicio", () => {
     const seed = productsSeed as Product[];
     const promoIds = ["3757", "3348", "3353", "3378", "3687", "3650", "3732"];

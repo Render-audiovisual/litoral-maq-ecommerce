@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import "./footer-compact.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getWhatsAppUrl } from "@/lib/whatsapp";

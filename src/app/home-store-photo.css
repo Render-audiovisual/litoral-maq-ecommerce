@@ -3,7 +3,21 @@
 .store-photo-frame img { object-fit:cover; object-position:center; }
 .store-photo-frame figcaption { position:absolute; bottom:12px; right:14px; left:14px; width:fit-content; margin-left:auto; padding:6px 10px; border-radius:6px; color:white; background:#062b40d9; font-size:11px; line-height:1.4; }
 .store-photo-title { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
-.winner-products { margin-top:24px; }
+.winner-section.winner-products { margin-top:0; padding:32px 6vw 36px; scroll-margin-top:120px; }
+.winner-products .section-heading { margin-bottom:20px; }
+.winner-products .category-track .winner-card { width:clamp(230px,22vw,300px); flex-basis:clamp(230px,22vw,300px); grid-template-rows:180px auto; }
+.winner-products .winner-card-copy { padding:12px 14px 14px; }
+.winner-products .winner-card-copy h3 { font-size:15px; }
+.winner-products .winner-card-copy strong { font-size:20px; margin-top:8px; }
+.winner-products .winner-card-copy b { padding-top:8px; }
+.testimonials-section.section { padding-top:32px; padding-bottom:28px; }
+.testimonials-section .section-heading { margin-bottom:16px; }
+.testimonial-stage { height:clamp(360px,45vh,460px); margin-top:16px; }
+@media(max-width:760px) {
+ .winner-section.winner-products { padding:24px 16px 26px; }
+ .winner-products .category-track .winner-card { width:68vw; flex-basis:68vw; grid-template-rows:145px auto; }
+ .testimonial-stage { height:360px; }
+}
 .winner-products .winner-card-media img { object-fit:contain; padding:12px; }
 .store-photo-actions { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:20px 0; }
 .store-photo-actions .hero-buttons { margin:0; flex-shrink:0; }
