@@ -8,6 +8,7 @@ import {
   serviceClient,
 } from "../_shared/http.ts";
 import { logEdgeError } from "../_shared/monitoring.ts";
+import { welcomeDiscount } from "../../../src/lib/welcome-discount.ts";
 
 type RequestedLine = { productId: string; quantity: number };
 
@@ -61,6 +62,7 @@ Deno.serve(async (request) => {
     }
     const user = await requireUser(request, db);
     const body = asRecord(await request.json());
+    if(body.welcomeDiscount===true && Deno.env.get("WELCOME_DISCOUNT_ENABLED")!=="true") throw new HttpError(503,"El beneficio de primera compra todavía no está habilitado. No iniciamos el pago.");
     const orderId = String(body.orderId || "").trim();
     if (!/^LM-\d{8}$/.test(orderId)) {
       throw new HttpError(422, "El pedido indicado no es válido.");
@@ -182,7 +184,23 @@ Deno.serve(async (request) => {
         throw new HttpError(409, "La tarifa de envío no es válida.");
       }
     }
-    const total = Number((subtotal + shippingAmount).toFixed(2));
+    let discountAmount = 0;
+    let paymentItems = snapshot;
+    // No client-supplied amount or eligibility is trusted. The benefit is
+    // reserved atomically to one order and consumed by an approved payment.
+    if (Deno.env.get("WELCOME_DISCOUNT_ENABLED")==="true" && !user.is_anonymous && user.email_confirmed_at) {
+      const {data: benefit,error: statusError} = await db.rpc("welcome_discount_status",{p_customer:user.id});
+      if (statusError) throw new HttpError(503,"No pudimos verificar el beneficio de primera compra.");
+      if (benefit?.eligible) {
+        const { data: eligible, error: claimError } = await db.rpc("reserve_welcome_discount", {p_customer:user.id,p_order:orderId});
+        if (claimError) throw new HttpError(409,"El beneficio está asociado a otro pedido pendiente. Reanudá ese pedido o consultanos por WhatsApp.");
+        if (!eligible) throw new HttpError(409,"El beneficio cambió mientras preparábamos el pago. Actualizá el carrito.");
+        const discounted = welcomeDiscount(snapshot);
+        paymentItems = discounted.items;
+        discountAmount = discounted.amount;
+      } else if (body.welcomeDiscount === true) throw new HttpError(409,"El beneficio de primera compra ya no está disponible. Actualizá el carrito.");
+    } else if (body.welcomeDiscount === true) throw new HttpError(403,"Registrate y confirmá tu cuenta para usar el beneficio.");
+    const total = Number((subtotal - discountAmount + shippingAmount).toFixed(2));
 
     const { data: existing, error: existingError } = await db.from("payments")
       .select("preference_id,checkout_url,amount,status").eq(
@@ -193,6 +211,12 @@ Deno.serve(async (request) => {
     if (existingError) {
       throw new HttpError(503, "No pudimos revisar el pago pendiente.");
     }
+    // An already-issued payment retains its agreed amount, including after
+    // a promotion rollback. Never rewrite it as a full-price pending payment.
+    if(existing?.preference_id && existing.checkout_url && existing.status==="pending" && Number(existing.amount)===Number(order.total)) {
+      return json(request,{preferenceId:existing.preference_id,checkoutUrl:existing.checkout_url,reused:true});
+    }
+    if (existing?.preference_id && Number(existing.amount)!==total) throw new HttpError(409,"El precio cambió desde que se preparó este pago. Consultanos para revisar el pedido antes de pagar.");
     if (
       existing?.preference_id && existing.checkout_url &&
       Number(existing.amount) === total && existing.status === "pending"
@@ -221,6 +245,7 @@ Deno.serve(async (request) => {
       lines: snapshot,
       total,
       shipping: shippingAmount,
+      welcome_discount_amount: discountAmount,
       payment_status: "pending",
       payment_reference: "Mercado Pago pendiente",
     }).eq("id", orderId).eq("customer_id", user.id);
@@ -242,7 +267,7 @@ Deno.serve(async (request) => {
     const preference = await new MercadoPagoClient().createPreference({
       orderId,
       payerEmail: order.email,
-      items: snapshot.map((line) => ({
+      items: paymentItems.map((line) => ({
         id: line.productId,
         title: line.productName,
         description: line.productCode || undefined,

@@ -1,0 +1,24 @@
+.welcome-discount { width:min(440px,calc(100vw - 32px)); max-height:calc(100dvh - 32px); overflow:auto; margin:auto; padding:34px 28px 22px; border:0; border-radius:20px; background:#fff; color:#002a49; text-align:center; box-shadow:0 24px 80px #001c3540; }
+.welcome-discount::backdrop { background:#001c358a; }
+.welcome-close { position:absolute; right:8px; top:8px; width:44px; height:44px; border:0; background:transparent; color:#536675; font-size:28px; cursor:pointer; }
+.welcome-logo { position:relative; margin:0 auto 24px; width:128px; height:42px; overflow:hidden; }
+.welcome-logo img { position:absolute; width:180px; height:180px; max-width:none; top:-69px; left:-26px; }
+.welcome-eyebrow { margin:0 0 12px; text-transform:uppercase; font-size:10px; letter-spacing:.12em; font-weight:700; color:#687b88; }
+.welcome-percent { display:flex; align-items:baseline; justify-content:center; gap:0; color:#ff6900; font-size:100px; font-weight:800; line-height:1; letter-spacing:-.08em; }
+.welcome-percent > span { font-size:54px; letter-spacing:-.04em; }
+.welcome-percent small { align-self:flex-end; margin:0 0 9px 12px; font-size:18px; letter-spacing:.02em; }
+.welcome-discount h2 { margin:20px 0 10px; font-size:26px; line-height:1.2; letter-spacing:-.04em; }
+.welcome-discount #welcome-discount-description { margin:0 auto 24px; max-width:29ch; font-size:14px; line-height:1.6; color:#647583; }
+.welcome-register { display:flex; align-items:center; justify-content:center; gap:10px; padding:14px 10px; min-height:50px; border-radius:10px; background:#ff6900; color:white; font-size:14px; font-weight:750; text-decoration:none; }
+.welcome-continue { display:block; margin:4px auto 8px; min-height:44px; border:0; background:transparent; color:#526674; font:inherit; font-size:13px; cursor:pointer; }
+.welcome-terms { margin:0; color:#6a7882; font-size:10px; line-height:1.5; }
+.welcome-preview-reopen { position:fixed; left:16px; bottom:16px; z-index:20; border:1px solid #cfdae2; border-radius:8px; padding:12px; color:#002a49; background:white; cursor:pointer; }
+.welcome-discount a:focus-visible,.welcome-discount button:focus-visible { outline:2px solid #002a49; outline-offset:3px; }
+@media(max-width:380px),(max-height:650px) {
+ .welcome-discount { padding:26px 20px 18px; }
+ .welcome-logo { margin-bottom:16px; }
+ .welcome-percent { font-size:80px; }
+ .welcome-percent > span { font-size:44px; }
+ .welcome-discount h2 { font-size:23px; margin-top:14px; }
+ .welcome-discount #welcome-discount-description { margin-bottom:16px; }
+}

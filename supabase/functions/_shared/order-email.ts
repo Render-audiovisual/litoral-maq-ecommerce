@@ -13,6 +13,7 @@ export type OrderRecord = {
   phone: string | null;
   lines: OrderLine[];
   total: number;
+  welcome_discount_amount?: number;
   shipping: number;
   delivery_method: "envio" | "retiro";
   address: string | null;
@@ -100,10 +101,12 @@ function orderLinesHtml(lines: OrderLine[], fotos: Record<string, string>) {
 /** Subtotal y envío arriba del total: el cliente ve de dónde sale el número. */
 function subtotalRowsHtml(order: OrderRecord) {
   const shipping = Number(order.shipping) || 0;
-  const subtotal = Math.max(0, Number(order.total) - shipping);
+  const discount=Number(order.welcome_discount_amount) || 0;
+  const subtotal = Math.max(0, Number(order.total) - shipping + discount);
   const fila = (etiqueta: string, valor: string) =>
     `<tr><td style="padding:10px 14px 0;color:#475467;font-size:13px">${etiqueta}</td><td style="padding:10px 14px 0;text-align:right;color:#475467;font-size:13px">${valor}</td></tr>`;
   return fila("Productos", money(subtotal)) +
+    (discount>0 ? fila("Primera compra · 5% OFF",`−${money(discount)}`) : "") +
     fila(
       "Envío",
       order.delivery_method === "retiro"

@@ -11,7 +11,7 @@ export function isMercadoPagoEnabled() {
   return process.env.NEXT_PUBLIC_MERCADO_PAGO_ENABLED === "true";
 }
 
-export async function createPaymentPreference(orderId: string) {
+export async function createPaymentPreference(orderId: string,welcomeDiscount=false) {
   if (!isMercadoPagoEnabled()) {
     throw new PaymentIntegrationError("Mercado Pago todavía no está activado.", 503);
   }
@@ -33,7 +33,7 @@ export async function createPaymentPreference(orderId: string) {
         apikey: result.config.publishableKey,
         "content-type": "application/json",
       },
-      body: JSON.stringify({ orderId }),
+      body: JSON.stringify({ orderId,welcomeDiscount }),
     },
   );
   if (!response.ok) {

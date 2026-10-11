@@ -119,6 +119,7 @@ export type Database = {
           dni: string | null;
           lines: Json;
           total: number;
+          welcome_discount_amount?: number;
           shipping: number;
           delivery_method: "envio" | "retiro";
           address: string | null;

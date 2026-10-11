@@ -95,6 +95,7 @@ export type Order = {
   dni?: string;
   lines: OrderLine[];
   total: number;
+  welcomeDiscountAmount?: number;
   shipping: number;
   deliveryMethod: "envio" | "retiro";
   address?: string;

@@ -106,3 +106,11 @@ Deno.test("un correo encolado se omite si ya no aplica al estado actual", () => 
   assert(!orderEmailStillApplies("team_new_order", pendiente), "el equipo no recibe intentos sin pago");
   assert(orderEmailStillApplies("team_new_order", pagado), "el equipo recibe la venta acreditada");
 });
+
+Deno.test("el recibo muestra el descuento sin descontar el envío",()=>{
+  const html=renderOrderEmail("customer_payment_approved",order({total:48500,shipping:1000,welcome_discount_amount:2500,payment_status:"approved"}),STORE).html;
+  assert(html.includes("Primera compra · 5% OFF"),"descuento visible");
+  assert(html.includes("50.000,00"),"subtotal original");
+  assert(html.includes("2.500,00"),"ahorro");
+  assert(html.includes("48.500,00"),"total pagado");
+});

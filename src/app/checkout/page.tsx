@@ -2,12 +2,17 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useCaptcha } from "@/components/use-captcha";
 import { MercadoPagoMark } from "@/components/mercado-pago-mark";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
-import { guestIdFromEmail, normalizeEmail } from "@/lib/auth";
+import { guestIdFromEmail, normalizeEmail, isPermanentCustomerSession } from "@/lib/auth";
+import { checkoutDefaults, mergeCheckoutDefaults } from "@/lib/checkout-defaults";
+import { welcomeDiscount } from "@/lib/welcome-discount";
+import { readWelcomeBenefit, type WelcomeBenefit } from "@/services/welcome-discount";
+import { resolveRequestedProvider } from "@/services/provider";
+import { isWelcomePromotionEnabled } from "@/lib/welcome-promotion";
 import { getAuthAdapter, supportsGuestSessions } from "@/services/auth";
 import {
   quoteShipping,
@@ -38,11 +43,6 @@ type FormField =
   | "locality"
   | "street"
   | "streetNumber";
-
-function splitCustomerName(fullName = "") {
-  const parts = fullName.trim().split(/\s+/).filter(Boolean);
-  return { firstName: parts.shift() || "", lastName: parts.join(" ") };
-}
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -78,26 +78,25 @@ export default function CheckoutPage() {
   // crea ninguna identidad nueva.
   const captcha = useCaptcha();
   const needsGuestSession = !customerSession;
-  const sessionName = splitCustomerName(customerSession?.user.name);
-  const latestOrder = customerSession
-    ? orders.find((order) => order.customerId === customerSession.user.id)
-    : undefined;
-  const [form, setForm] = useState({
-    firstName: sessionName.firstName,
-    lastName: sessionName.lastName,
-    email: customerSession?.user.email || "",
-    dni: latestOrder?.dni || "",
-    phone: customerSession?.user.phone || latestOrder?.phone || "",
-    province: latestOrder?.province || "W",
-    postalCode: latestOrder?.postalCode || "",
-    locality: latestOrder?.locality || "",
-    street: latestOrder?.street || "",
-    streetNumber: latestOrder?.streetNumber || "",
-    floor: latestOrder?.floor || "",
-    apartment: latestOrder?.apartment || "",
-    reference: latestOrder?.addressReference || "",
-  });
+  const defaults = checkoutDefaults(customerSession,orders);
+  const [edits,setForm] = useState<Partial<typeof defaults>>({});
+  // Data arriving after mount populates untouched fields, never overwriting
+  // edits (including a field intentionally cleared by the customer).
+  const form = mergeCheckoutDefaults(defaults,edits);
   const paymentEnabled = isMercadoPagoEnabled();
+  const registered = isPermanentCustomerSession(customerSession) && isWelcomePromotionEnabled();
+  const [benefitResponse,setBenefit] = useState<{customerId:string;value:WelcomeBenefit}|null>(null);
+  const [benefitError,setBenefitError] = useState("");
+  const customerId = registered ? customerSession.user.id : "";
+  const benefit=benefitResponse?.customerId===customerId ? benefitResponse.value : null;
+  useEffect(()=>{
+    if(!customerId || !paymentEnabled) return;
+    let cancelled=false;
+    readWelcomeBenefit().then(value=>{if(!cancelled){setBenefit({customerId,value});setBenefitError(value.reason==="inactive" ? "El beneficio todavía no está habilitado. No iniciamos el pago." : "");}}).catch(()=>{if(!cancelled)setBenefitError("No pudimos verificar el 5%. Actualizá la página antes de pagar.");});
+    return ()=>{cancelled=true;};
+  },[customerId,paymentEnabled]);
+  const applicableBenefit = registered && paymentEnabled && resolveRequestedProvider()==="supabase" && benefit?.eligible && !benefit.pendingOrderId;
+  const discountAmount = applicableBenefit && cart.length ? welcomeDiscount(snapshotOrderLines(cart,products).map(line=>({...line,unitPrice:Number(line.unitPrice)}))).amount : 0;
   // Campos marcados como inválidos en el último intento: borde rojo,
   // aria-invalid y foco al primero. Se desmarcan apenas se editan.
   const [invalidFields, setInvalidFields] = useState<Set<FormField>>(new Set());
@@ -408,7 +407,7 @@ export default function CheckoutPage() {
         dni: form.dni,
         phone: form.phone.trim(),
         lines: snapshotOrderLines(cart, products),
-        total: cartSubtotal + shipping,
+        total: cartSubtotal - discountAmount + shipping,
         shipping,
         deliveryMethod: method,
         address,
@@ -454,7 +453,7 @@ export default function CheckoutPage() {
       const automaticPayment = paymentEnabled;
       if (automaticPayment) {
         try {
-          const preference = await createPaymentPreference(order.id);
+          const preference = await createPaymentPreference(order.id,discountAmount>0);
           window.location.assign(preference.checkoutUrl);
           return;
         } catch {
@@ -967,6 +966,9 @@ export default function CheckoutPage() {
             <span>Subtotal</span>
             <strong>{formatCurrency(cartSubtotal)}</strong>
           </div>
+          {discountAmount>0 && <div><span>Primera compra · 5% OFF</span><strong>−{formatCurrency(discountAmount)}</strong></div>}
+          {benefitError && registered && <p role="alert">{benefitError}</p>}
+          {registered && benefit?.eligible && benefit.pendingOrderId && <p>Tu beneficio está reservado en un pedido pendiente. <Link href={`/checkout/error?pedido=${encodeURIComponent(benefit.pendingOrderId)}`}>Reanudar pedido</Link>. Si venció, consultanos por WhatsApp para revisar el pago.</p>}
           <div>
             <span>Entrega</span>
             <strong>
@@ -982,12 +984,13 @@ export default function CheckoutPage() {
           <hr />
           <div className="summary-total">
             <span>{paymentEnabled ? "Total a pagar ahora" : "Total"}</span>
-            <strong>{formatCurrency(cartSubtotal + (shipping || 0))}</strong>
+            <strong>{formatCurrency(cartSubtotal - discountAmount + (shipping || 0))}</strong>
           </div>
           <button
             className={`button large full${paymentEnabled ? " mercado-pago-button" : " primary"}`}
             disabled={
               loading ||
+              (registered && paymentEnabled && (!benefit || Boolean(benefitError) || Boolean(benefit.eligible && benefit.pendingOrderId))) ||
               quoting ||
               shipping === null ||
               (needsGuestSession && !captcha.solved)
