@@ -3,7 +3,7 @@ test("el carrusel azul muestra productos y lleva a sus fichas", async ({ page })
   await page.goto("/");
   const section = page.locator("#productos-estrella");
   await expect(section.getByRole("heading", { name: "Más vendidos", exact: true })).toBeVisible();
-  await expect(section.locator(".winner-card")).toHaveCount(8);
+  expect(await section.locator(".winner-card").count()).toBeGreaterThanOrEqual(8);
   await expect(section.locator(".winner-card").first()).not.toContainText("Desde");
   await expect(page.locator(".store-bestsellers")).toHaveCount(0);
   const first = section.locator(".winner-card").first();

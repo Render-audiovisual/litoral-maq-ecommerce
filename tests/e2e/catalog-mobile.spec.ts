@@ -6,18 +6,22 @@ test('el catálogo móvil es compacto, filtrable y carga de a 24 productos', asy
 
   const cards = page.locator('.catalog-grid .product-card');
   await expect(cards).toHaveCount(24);
-  const catalogSearch = page.getByRole('searchbox', { name: 'Buscar productos', exact: true });
+  const catalogSearch = page.getByRole('combobox', { name: 'Buscar en el catálogo', exact: true });
   await expect(catalogSearch).toBeVisible();
   // En celular la búsqueda queda a la vista y el resto de los filtros se abre con el botón "Filtros".
-  await expect(page.getByLabel('Categoría')).toBeHidden();
+  await expect(page.getByRole('combobox', { name: 'Marca', exact: true })).toBeHidden();
   await page.getByRole('button', { name: 'Filtros' }).click();
-  await expect(page.getByLabel('Categoría')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Marca', exact: true })).toBeVisible();
 
   await catalogSearch.fill('amoladora');
+  await page.getByRole('button', { name: 'Buscar', exact: true }).click();
+  await expect(page).toHaveURL(/q=amoladora/);
   await expect(cards.first()).toBeVisible();
   expect(await cards.count()).toBeLessThanOrEqual(24);
 
   await catalogSearch.fill('');
+  await page.getByRole('button', { name: 'Buscar', exact: true }).click();
+  await expect(page).not.toHaveURL(/q=amoladora/);
   await page.getByRole('button', { name: 'Mostrar más productos' }).click();
   await expect(cards).toHaveCount(48);
 

@@ -1,0 +1,83 @@
+.catalog-marketplace { background:#f4f6f8; padding-bottom:36px; }
+.catalog-intro { max-width:1440px; margin:auto; padding:24px 32px 18px; }
+.catalog-intro > span { color:#687887; font-size:12px; }
+.catalog-intro h1 { margin:6px 0 0; color:var(--navy); font-size:24px; line-height:1.25; }
+.catalog-marketplace .catalog-layout { display:grid; grid-template-columns:220px minmax(0,1fr); gap:28px; max-width:1440px; padding:0 32px 32px; align-items:start; }
+.catalog-marketplace .filters { background:transparent; border:0; padding:0; margin:0; border-radius:0; }
+.catalog-marketplace .filters-head { padding-bottom:10px; }
+.catalog-marketplace .filters-toggle { display:none; }
+.catalog-marketplace .catalog-category-shortcuts { display:flex; flex-direction:column; overflow:visible; padding:0; gap:2px; }
+.catalog-marketplace .catalog-category-shortcuts button { text-align:left; background:transparent; border:0; border-radius:6px; min-height:36px; padding:8px 10px; color:#506271; font-size:13px; }
+.catalog-marketplace .catalog-category-shortcuts button[aria-pressed="true"] { background:#fff0e4; color:#9c3c00; font-weight:700; box-shadow:inset 3px 0 var(--orange); }
+.catalog-marketplace .filters-more,.catalog-marketplace .filters-more.open { display:grid; grid-template-columns:1fr; gap:18px; background:transparent; border:0; border-top:1px solid #dbe3e8; margin-top:18px; padding:18px 0 0; }
+.catalog-marketplace .filters-more > label:first-child { display:none; }
+.catalog-marketplace .filters-more .price-filter-grid { grid-template-columns:1fr 1fr; gap:8px; }
+.catalog-marketplace .filters-more select,.catalog-marketplace .filters-more input { background:white; min-width:0; width:100%; }
+.catalog-marketplace .check-row input { width:auto; }
+.catalog-marketplace .catalog-toolbar { min-height:44px; padding:0 0 14px; margin-bottom:14px; flex-direction:row; align-items:center; gap:12px; font-size:13px; }
+.marketplace-sort { display:flex; align-items:center; gap:8px; font-size:12px; color:#607180; }
+.marketplace-sort select { min-height:40px; border:1px solid #d6e0e6; border-radius:8px; background:white; color:var(--navy); padding:8px 28px 8px 10px; font:inherit; }
+.catalog-marketplace .catalog-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.catalog-marketplace .product-card { box-shadow:none; border:1px solid #e0e6eb; border-radius:10px; background:white; }
+.catalog-marketplace .product-image { height:210px; background:white; }
+.catalog-marketplace .product-card-body { padding:14px; }
+.catalog-marketplace .product-name { font-size:14px; font-weight:500; line-height:1.45; min-height:40px; }
+.catalog-marketplace .product-price { margin-top:12px; font-size:25px; }
+.catalog-marketplace .product-code { margin-top:4px; }
+.catalog-marketplace .product-card .button { background:#eef5fa; border-color:#cbdfe9; color:var(--navy); min-height:40px; }
+.catalog-marketplace .product-card .button:hover { background:var(--orange); border-color:var(--orange); color:white; }
+.catalog-marketplace.catalog-bestsellers .catalog-layout { grid-template-columns:minmax(0,1fr); }
+.catalog-marketplace.catalog-bestsellers .catalog-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+@media(max-width:1100px) {
+ .catalog-marketplace.catalog-bestsellers .catalog-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:600px) {
+ .catalog-marketplace.catalog-bestsellers .catalog-grid { grid-template-columns:minmax(0,1fr); }
+}
+.catalog-marketplace .catalog-layout > *, .catalog-marketplace .filters-more > *, .catalog-marketplace .product-card > * { min-width:0; }
+.catalog-marketplace .product-price { max-width:100%; overflow-wrap:anywhere; }
+.catalog-marketplace .filters-more .check-row input { width:16px; min-height:0; flex:none; }
+.catalog-marketplace button:focus-visible,.catalog-marketplace select:focus-visible { outline:2px solid var(--navy); outline-offset:3px; }
+@media(max-width:1100px) {
+ .catalog-marketplace .catalog-layout { grid-template-columns:190px minmax(0,1fr); gap:20px; }
+ .catalog-marketplace .catalog-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:900px) {
+ .catalog-intro { padding:18px 14px 12px; }
+ .catalog-intro h1 { font-size:20px; }
+ .catalog-marketplace .catalog-layout { display:block; padding:0 12px 24px; }
+ .catalog-marketplace .filters-head { padding:0; }
+ .catalog-marketplace .filters-toggle { display:inline-flex; }
+ .catalog-marketplace .catalog-category-shortcuts { flex-direction:row; overflow:auto; gap:6px; padding:10px 0; }
+ .catalog-marketplace .catalog-category-shortcuts button { background:white; border:1px solid #dce5eb; min-height:40px; }
+ .catalog-marketplace .filters-more { display:none; }
+ .catalog-marketplace .filters-more.open { display:grid; grid-template-columns:1fr 1fr; background:white; padding:14px; margin:6px 0 16px; border-radius:10px; }
+ .catalog-marketplace .catalog-toolbar { margin-top:10px; flex-direction:row; flex-wrap:nowrap; font-size:12px; }
+ .catalog-marketplace .marketplace-sort { width:auto; flex:0 0 auto; font-size:0; }
+ .catalog-marketplace input,.catalog-marketplace select,.catalog-marketplace textarea { font-size:16px; }
+ .marketplace-sort select { font-size:16px; max-width:160px; }
+ .catalog-marketplace .catalog-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+ .catalog-marketplace .filters-toggle,.catalog-marketplace .catalog-category-shortcuts button,.marketplace-sort select { min-height:44px; }
+ .catalog-marketplace .product-card .button { min-height:44px; }
+}
+@media(max-width:600px) {
+ .catalog-marketplace .catalog-grid { grid-template-columns:1fr; gap:10px; }
+ .catalog-marketplace .product-card { display:grid; grid-template-columns:38% minmax(0,1fr); align-items:center; }
+ .catalog-marketplace .product-image { height:180px; border:0; }
+ .catalog-marketplace .product-card-body { padding:12px; }
+ .catalog-marketplace .product-name { min-height:0; font-size:13px; }
+ .catalog-marketplace .product-card-body .eyebrow { font-size:10px; }
+ .catalog-marketplace .product-price { font-size:22px; margin-top:8px; }
+ .catalog-marketplace .product-card .stock { margin-bottom:8px; }
+ .catalog-marketplace .product-card .button { min-height:44px; }
+ .catalog-marketplace .product-badge { font-size:9px; padding:4px 6px; }
+}
+@media(max-width:360px) {
+ .catalog-marketplace .catalog-toolbar { gap:6px; }
+ .marketplace-sort select { max-width:132px; padding-right:20px; }
+ .catalog-marketplace .product-card { grid-template-columns:34% minmax(0,1fr); }
+ .catalog-marketplace .product-card-body { padding:10px; }
+ .catalog-marketplace .product-price { font-size:20px; }
+ .catalog-marketplace .filters-more.open { grid-template-columns:1fr; }
+ .catalog-marketplace .product-image { height:160px; }
+}

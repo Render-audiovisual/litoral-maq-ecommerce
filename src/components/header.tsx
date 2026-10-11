@@ -129,7 +129,7 @@ export function Header() {
           </span>
         ))}
       </div>
-      <header className={`site-header header-refined${pathname.replace(/\/$/, "") === "/productos" ? " catalog-header" : ""}`}>
+      <header className="site-header header-refined">
         <Link href="/" className="brand" aria-label="Litoral Maq, inicio">
           <Image
             src="/brand/AZUL.png"
@@ -262,7 +262,7 @@ export function Header() {
           <Link href="/productos" aria-current={pathname === "/productos" ? "page" : undefined} onClick={() => setOpen(false)}>
             Productos
           </Link>
-          <Link href="/#productos-estrella" className="nav-offers" onClick={() => setOpen(false)}>
+          <Link href="/mas-vendidos" className="nav-offers" aria-current={pathname.replace(/\/$/, "") === "/mas-vendidos" ? "page" : undefined} onClick={() => setOpen(false)}>
             Más vendidos
           </Link>
           {account && (

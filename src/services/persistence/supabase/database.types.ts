@@ -63,6 +63,7 @@ export type Database = {
           purchase_limit: number;
           active: boolean;
           featured: boolean;
+          best_seller?: boolean | null;
           description: string | null;
           variants: string[];
           source: string;
@@ -92,6 +93,7 @@ export type Database = {
           purchase_limit?: number;
           active?: boolean;
           featured?: boolean;
+          best_seller?: boolean | null;
           description?: string | null;
           variants?: string[];
           source?: string;

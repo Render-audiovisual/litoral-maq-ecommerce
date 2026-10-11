@@ -142,6 +142,12 @@ export function getLaunchProducts(products: Product[]) {
 }
 
 export function getLaunchBestSellers(products: Product[]) {
+  const legacy = getLegacyBestSellers(products);
+  const legacyIds = new Set(legacy.map((product) => product.id));
+  return products.filter((product) => product.active && (product.bestSeller ?? legacyIds.has(product.id)));
+}
+
+function getLegacyBestSellers(products: Product[]) {
   const published = getLaunchProducts(products);
   const preferred = productsInModelOrder(published, LAUNCH_BEST_SELLER_MODELS);
   return [...preferred, ...published.filter((product) => !preferred.some((item) => item.id === product.id))].slice(0, 10);

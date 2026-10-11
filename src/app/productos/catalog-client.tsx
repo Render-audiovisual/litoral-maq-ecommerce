@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import {
   getLaunchBestSellerRankMap,
+  getLaunchBestSellers,
   LAUNCH_FAMILIES,
   matchesLaunchFamily,
 } from "@/lib/launch-catalog";
@@ -12,17 +13,24 @@ import { useStore } from "@/store/store";
 import { getProductAvailability } from "@/lib/product-availability";
 import { searchProducts } from "@/lib/search";
 import "./catalog-refined.css";
+import "./catalog-marketplace.css";
 
 const PAGE_SIZE = 24;
 
-export function CatalogClient() {
+export function CatalogClient({ bestsellersOnly = false }: { bestsellersOnly?: boolean }) {
   const params = useSearchParams();
+  const router = useRouter();
   const initialCategory = params.get("categoria") || "";
   const initialFamily = params.get("familia") || "";
   const initialQuery = params.get("q") || "";
   const offersOnly = initialCategory === "Ofertas";
   const { products } = useStore();
-  const [query, setQuery] = useState(initialQuery);
+  const query = initialQuery;
+  function setQuery(value: string) {
+    const next = new URLSearchParams(params.toString());
+    if (value) next.set("q", value); else next.delete("q");
+    router.replace(`/productos?${next.toString()}`, { scroll: false });
+  }
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [category, setCategory] = useState(
     initialCategory === "Ofertas" ? "" : initialCategory,
@@ -49,6 +57,7 @@ export function CatalogClient() {
     [catalogProducts, family],
   );
   const filtered = useMemo(() => {
+    if (bestsellersOnly) return getLaunchBestSellers(catalogProducts);
     const minimum = minimumPrice === "" ? null : Number(minimumPrice);
     const maximum = maximumPrice === "" ? null : Number(maximumPrice);
     // Mismo matcher que las sugerencias del header: si el cartel ofrece
@@ -74,7 +83,7 @@ export function CatalogClient() {
         const rankB = winnerRanks.get(b.id) ?? Number.MAX_SAFE_INTEGER;
         return rankA - rankB || Number(b.featured) - Number(a.featured) || b.stock - a.stock;
       });
-  }, [catalogProducts, query, family, brand, minimumPrice, maximumPrice, category, onlyAvailable, offersOnly, sort, winnerRanks]);
+  }, [bestsellersOnly, catalogProducts, query, family, brand, minimumPrice, maximumPrice, category, onlyAvailable, offersOnly, sort, winnerRanks]);
 
   function resetVisibleCount() {
     setVisibleCount(PAGE_SIZE);
@@ -88,11 +97,15 @@ export function CatalogClient() {
   }
 
   return (
-    <main className="catalog-page catalog-refined">
+    <main className={`catalog-page catalog-refined catalog-marketplace${bestsellersOnly ? " catalog-bestsellers" : ""}`}>
+      <div className="catalog-intro">
+        <span>Catálogo Litoral Maq</span>
+        <h1>{bestsellersOnly ? "Más vendidos" : query ? `Resultados para “${query}”` : family ? LAUNCH_FAMILIES.find((item) => item.slug === family)?.label : "Máquinas y herramientas"}</h1>
+      </div>
       <div className="catalog-layout">
-        <aside className="filters">
+        {!bestsellersOnly && <aside className="filters">
           <div className="filters-head">
-            <strong>Filtrar productos</strong>
+            <strong>Categorías</strong>
             <button
               type="button"
               className="filters-toggle"
@@ -103,9 +116,6 @@ export function CatalogClient() {
               Filtros{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
             </button>
           </div>
-          <label className="catalog-search">Buscar productos
-            <input type="search" value={query} onChange={(event) => { setQuery(event.target.value); resetVisibleCount(); }} placeholder="¿Qué estás buscando? Ej. taladro, escalera…" />
-          </label>
           <div className="catalog-category-shortcuts" role="group" aria-label="Accesos rápidos del catálogo">
             <button type="button" aria-pressed={!family && !category} onClick={() => { setFamily(""); setCategory(""); setBrand(""); resetVisibleCount(); }}>Todos</button>
             {LAUNCH_FAMILIES.map((item) => <button type="button" key={item.slug} aria-pressed={family === item.slug} onClick={() => { setFamily(item.slug); setCategory(""); setBrand(""); resetVisibleCount(); }}>{item.label}</button>)}
@@ -146,25 +156,24 @@ export function CatalogClient() {
           </label>
           <button type="button" className="button secondary full" onClick={clearFilters}>Limpiar filtros</button>
           </div>
-        </aside>
+        </aside>}
         <section>
           <div className="catalog-toolbar">
             <span role="status" aria-live="polite"><strong>{filtered.length}</strong> productos encontrados</span>
-            <div className="catalog-sort-options" role="group" aria-label="Ordenar productos">
-              <span>Ordenar por</span>
-              {[
-                { value: "featured", label: "Destacados" },
-                { value: "price-asc", label: "Menor precio" },
-                { value: "price-desc", label: "Mayor precio" },
-                { value: "name", label: "Nombre A–Z" },
-              ].map((option) => <button type="button" key={option.value} aria-pressed={sort === option.value} onClick={() => { setSort(option.value); resetVisibleCount(); }}>{option.label}</button>)}
-            </div>
+            {!bestsellersOnly && <label className="marketplace-sort">Ordenar
+              <select value={sort} onChange={(event) => { setSort(event.target.value); resetVisibleCount(); }}>
+                <option value="featured">Destacados</option>
+                <option value="price-asc">Menor precio</option>
+                <option value="price-desc">Mayor precio</option>
+                <option value="name">Nombre A–Z</option>
+              </select>
+            </label>}
           </div>
           {filtered.length ? (
             <div className="product-grid catalog-grid">
               {filtered.slice(0, visibleCount).map((product) => {
                 const winnerRank = winnerRanks.get(product.id);
-                return <ProductCard product={product} badge={winnerRank ? "Más vendido" : undefined} key={product.id} />;
+                return <ProductCard product={product} badge={bestsellersOnly || winnerRank ? "Más vendido" : undefined} key={product.id} />;
               })}
             </div>
           ) : (

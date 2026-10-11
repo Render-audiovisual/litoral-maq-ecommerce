@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { TestimonialsSection } from "@/components/testimonials";
-import { selectStarProducts } from "@/lib/star-products";
+import { getLaunchBestSellers } from "@/lib/launch-catalog";
 import { formatCurrency } from "@/lib/utils";
 import { useContinuousTicker } from "@/hooks/use-continuous-ticker";
 import { useInfinitePointerMarquee } from "@/hooks/use-infinite-pointer-marquee";
@@ -221,7 +221,7 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
 export function HomeClient() {
   const { products } = useStore();
   const activeProducts = products.filter((product) => product.active);
-  const starProducts = selectStarProducts(activeProducts);
+  const starProducts = getLaunchBestSellers(activeProducts).map((product) => ({ product, image: product.image || "" }));
   const categories: CategoryCardData[] = starProducts.map(({ product, image }) => ({
     slug: product.slug, label: product.name, description: product.brand,
     priceFrom: product.price, productCount: 0, representativeProduct: product, image,
@@ -243,7 +243,6 @@ export function HomeClient() {
             <h2>Más vendidos</h2>
             <p>Deslizá y encontrá tu próxima herramienta.</p>
           </div>
-          <Link href="/productos" className="text-link">Ver catálogo →</Link>
         </div>
         <CategoryMarquee categories={categories} />
       </section>

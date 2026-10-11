@@ -9,6 +9,7 @@ import { formatCurrency } from "@/lib/utils";
 import { pageWindow, paginate } from "@/lib/paginate";
 import { googleSheetSyncAdapter } from "@/services/sheet-sync";
 import { ConflictError, rebaseProductEdits } from "@/lib/concurrency";
+import { getLaunchBestSellers } from "@/lib/launch-catalog";
 
 const PAGE_SIZE = 50;
 // Trae lo que cambiaron otras personas del panel. Pausado con la pestaña
@@ -894,6 +895,10 @@ function AdminProductsContent() {
                   }
                 />
                 Producto destacado
+              </label>
+              <label className="check-row">
+                <input type="checkbox" checked={editing.bestSeller ?? getLaunchBestSellers(products).some((product) => product.id === editing.id)} onChange={(event) => setEditing({ ...editing, bestSeller: event.target.checked })} />
+                Etiqueta Más vendido
               </label>
             </div>
             {message && (
