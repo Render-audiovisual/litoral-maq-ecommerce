@@ -20,6 +20,7 @@ export function Footer() {
       <div className="footer-brand">
         <Link
           href="/"
+          className="footer-logo"
           aria-label="Ir al inicio"
           onClick={
             pathname === "/"
@@ -41,18 +42,16 @@ export function Footer() {
           <a href="https://maps.app.goo.gl/3E1dMK6wu6XEVRzR8" target="_blank" rel="noopener noreferrer">
             Sáenz 1587, Corrientes
           </a>
-          <p>Lun a Vie 8 a 17 hs<br />Sáb 8:30 a 12:30 hs</p>
         </section>
 
         <nav className="footer-column" aria-labelledby="footer-explora-title">
           <h2 id="footer-explora-title">Explorá</h2>
           <Link href="/productos">Productos</Link>
-          <Link href="/cuenta/pedidos">Seguimiento de pedidos</Link>
+          <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">WhatsApp comercial</a>
         </nav>
 
         <nav className="footer-column" aria-labelledby="footer-ayuda-title">
           <h2 id="footer-ayuda-title">Ayuda</h2>
-          <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">WhatsApp comercial</a>
           <Link href="/politica-de-privacidad">Privacidad</Link>
           <Link href="/terminos-y-condiciones">Términos y condiciones</Link>
         </nav>
