@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Product } from "@/lib/types";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
+import { productPhoto } from "@/lib/product-photos";
 import {
   availabilityLabel,
   canAddProductToCart,
@@ -26,7 +27,8 @@ export function ProductCard({
   const [added, setAdded] = useState(false);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const productHref = `/producto?slug=${encodeURIComponent(product.slug)}`;
-  const productImage = imageOverride || product.image;
+  const productImage = imageOverride?.trim() || productPhoto(product);
+  const [failedImage, setFailedImage] = useState<string | null>(null);
   const availability = getProductAvailability(product);
 
   useEffect(() => {
@@ -50,12 +52,13 @@ export function ProductCard({
         aria-label={`Ver ${product.name}`}
       />
       <div className="product-image">
-        {productImage ? (
+        {productImage && failedImage !== productImage ? (
           <Image
             src={productImage}
             alt={product.name}
             fill
             sizes="(max-width: 700px) 50vw, 25vw"
+            onError={() => setFailedImage(productImage)}
           />
         ) : (
           <div className="product-placeholder">
