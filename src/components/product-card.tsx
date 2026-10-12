@@ -59,8 +59,12 @@ export function ProductCard({
           />
         ) : (
           <div className="product-placeholder">
-            <span>LM</span>
-            <small>Imagen pendiente</small>
+            <div className="product-placeholder-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" width="72" height="72">
+                <path d="M39 10a15 15 0 0 0-18 19L9 41a8 8 0 0 0 11 11l12-12a15 15 0 0 0 19-18l-9 9-9-2-2-9 8-10Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="15" cy="47" r="2" fill="currentColor" />
+              </svg>
+            </div>
           </div>
         )}
         {badge !== null && (badge || product.featured) && <span className="product-badge">{badge || "Destacado"}</span>}
