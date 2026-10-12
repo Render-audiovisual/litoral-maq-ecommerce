@@ -40,6 +40,8 @@ export function useInfinitePointerMarquee({
   const positionRef = useRef<number | null>(null);
   const draggingRef = useRef(false);
   const draggedRef = useRef(false);
+  const touchingRef = useRef(false);
+  const resumeAfterRef = useRef(0);
   const pointerRef = useRef({ pointerId: -1, startX: 0, lastX: 0, lastTime: 0 });
   const [dragging, setDragging] = useState(false);
   const animationActive = useAnimationActivity(railRef);
@@ -54,7 +56,8 @@ export function useInfinitePointerMarquee({
       last = now;
       const rail = railRef.current;
 
-      if (rail && !draggingRef.current && !paused) {
+      if (rail && !draggingRef.current && !paused && now >= resumeAfterRef.current) {
+        resumeAfterRef.current = 0;
         // Al soltar, la velocidad del gesto decae hasta el automático: cuanto
         // más fuerte el envión, más tarda en volver, pero nunca se detiene.
         velocityRef.current += (autoSpeed - velocityRef.current) * Math.min(1, dt * INERTIA_RESPONSE);
@@ -153,6 +156,7 @@ export function useInfinitePointerMarquee({
   }
 
   function onTouchStart() {
+    touchingRef.current = true;
     draggingRef.current = true;
     velocityRef.current = 0;
     positionRef.current = railRef.current?.scrollLeft ?? 0;
@@ -160,12 +164,20 @@ export function useInfinitePointerMarquee({
 
   function onTouchEnd() {
     positionRef.current = railRef.current?.scrollLeft ?? 0;
+    touchingRef.current = false;
     draggingRef.current = false;
+    // Safari continues native momentum scrolling after touchend. Do not
+    // write scrollLeft until the rail has been quiet, then ease in from zero.
+    resumeAfterRef.current = performance.now() + 1200;
   }
 
   function onScroll() {
-    if (draggingRef.current && railRef.current) {
+    const nativeMomentum = resumeAfterRef.current > performance.now();
+    if ((draggingRef.current || nativeMomentum) && railRef.current) {
       positionRef.current = railRef.current.scrollLeft;
+      if (!touchingRef.current && nativeMomentum) {
+        resumeAfterRef.current = performance.now() + 1200;
+      }
     }
   }
 
