@@ -1304,7 +1304,6 @@ td > small { margin-top: 4px; color: var(--muted); }
   .catalog-grid { grid-template-columns: repeat(3, 1fr); }
   .product-grid { grid-template-columns: repeat(3, 1fr); }
   .product-grid:not(.catalog-grid) .product-card:nth-child(n+7) { display: none; }
-  .catalog-grid .product-card:nth-child(n+7) { display: flex; }
   .commerce-hero { grid-template-columns: .95fr 1.05fr; column-gap: 2vw; }
   .hero-promo-card { width: clamp(180px, 22vw, 240px); }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
