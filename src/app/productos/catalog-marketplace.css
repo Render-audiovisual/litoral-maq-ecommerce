@@ -110,7 +110,7 @@
  .catalog-marketplace .catalog-toolbar > span { margin-right:auto; font-size:11px; white-space:nowrap; }
  .catalog-toolbar-filter { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:8px 10px; border:1px solid #d6e0e6; border-radius:8px; background:white; color:var(--navy); font:inherit; font-size:12px; }
  .catalog-marketplace .marketplace-sort { gap:0; }
- .catalog-marketplace .marketplace-sort select { width:132px; max-width:132px; padding:8px 28px 8px 10px; font-size:12px; min-height:44px; }
+ .catalog-marketplace .marketplace-sort select { width:144px; max-width:144px; padding:8px 28px 8px 10px; font-size:16px; min-height:44px; }
  .catalog-marketplace .catalog-grid,
  .catalog-marketplace.catalog-bestsellers .catalog-grid { grid-template-columns:minmax(0,1fr); }
  .catalog-marketplace .product-card { display:grid; grid-template-columns:clamp(104px,32vw,190px) minmax(0,1fr); align-items:center; }
