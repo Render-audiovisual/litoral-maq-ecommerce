@@ -81,3 +81,22 @@
  .catalog-marketplace .filters-more.open { grid-template-columns:1fr; }
  .catalog-marketplace .product-image { height:160px; }
 }
+
+/* One consistent compact row, whether the product has a photo or an icon. */
+@media(max-width:900px) {
+ .catalog-marketplace .catalog-grid,
+ .catalog-marketplace.catalog-bestsellers .catalog-grid { grid-template-columns:minmax(0,1fr); }
+ .catalog-marketplace .product-card { display:grid; grid-template-columns:clamp(104px,32vw,190px) minmax(0,1fr); align-items:center; }
+ .catalog-marketplace .product-image { grid-column:1; grid-row:1; width:100%; height:180px; min-width:0; border:0; overflow:hidden; }
+ .catalog-marketplace .product-card-body { grid-column:2; grid-row:1; padding:12px; gap:0; }
+ .catalog-marketplace .product-image .product-placeholder { position:absolute; inset:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+ .catalog-marketplace .product-placeholder-icon { flex:none; width:76px; height:76px; }
+ .catalog-marketplace .product-placeholder-icon svg { width:48px; height:48px; }
+ .catalog-marketplace .product-placeholder-icon::after { width:10px; height:10px; border-width:3px; right:0; bottom:4px; }
+ .catalog-marketplace .product-name { min-height:0; margin-block:6px; font-size:14px; line-height:1.4; }
+ .catalog-marketplace .product-card-body .eyebrow { font-size:10px; }
+ .catalog-marketplace .product-price { margin-top:8px; font-size:clamp(19px,5vw,24px); white-space:nowrap; overflow-wrap:normal; }
+ .catalog-marketplace .product-card .stock { margin-bottom:8px; font-size:11px; }
+ .catalog-marketplace .product-card .button { min-height:44px; padding-inline:8px; }
+ .catalog-marketplace .product-badge { max-width:calc(100% - 12px); left:6px; top:6px; font-size:9px; padding:4px 6px; }
+}
