@@ -37,7 +37,7 @@ test('el enlace de ver todos coincide con lo que muestra la grilla', async ({ pa
 
   await verTodos.click();
   await expect(page).toHaveURL(/\/productos\?q=amola/);
-  await expect(page.getByText(`${total} productos encontrados`)).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: `${total} productos` })).toBeVisible();
 });
 
 test('sin coincidencias el cartel lo dice en vez de quedar vacío', async ({ page }) => {

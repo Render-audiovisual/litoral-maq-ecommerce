@@ -99,8 +99,7 @@ export function CatalogClient({ bestsellersOnly = false }: { bestsellersOnly?: b
   return (
     <main className={`catalog-page catalog-refined catalog-marketplace${bestsellersOnly ? " catalog-bestsellers" : ""}`}>
       <div className="catalog-intro">
-        <span>Catálogo Litoral Maq</span>
-        <h1>{bestsellersOnly ? "Más vendidos" : query ? `Resultados para “${query}”` : family ? LAUNCH_FAMILIES.find((item) => item.slug === family)?.label : "Máquinas y herramientas"}</h1>
+        <h1>{bestsellersOnly ? "Más vendidos" : query ? `Resultados para “${query}”` : family ? LAUNCH_FAMILIES.find((item) => item.slug === family)?.label : "Productos"}</h1>
       </div>
       <div className="catalog-layout">
         {!bestsellersOnly && <aside className="filters">
@@ -159,7 +158,8 @@ export function CatalogClient({ bestsellersOnly = false }: { bestsellersOnly?: b
         </aside>}
         <section>
           <div className="catalog-toolbar">
-            <span role="status" aria-live="polite"><strong>{filtered.length}</strong> productos encontrados</span>
+            <span role="status" aria-live="polite"><strong>{filtered.length}</strong> productos</span>
+            {!bestsellersOnly && <button type="button" className="catalog-toolbar-filter" aria-expanded={filtersOpen} aria-controls="catalog-more-filters" onClick={()=>setFiltersOpen(open=>!open)}>Filtros{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}</button>}
             {!bestsellersOnly && <label className="marketplace-sort">Ordenar
               <select value={sort} onChange={(event) => { setSort(event.target.value); resetVisibleCount(); }}>
                 <option value="featured">Destacados</option>

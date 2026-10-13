@@ -259,7 +259,7 @@ export function Header() {
           )}
         </form>
         <nav className={open ? "nav open" : "nav"} aria-label="Navegación principal">
-          <Link href="/productos" aria-current={pathname === "/productos" ? "page" : undefined} onClick={() => setOpen(false)}>
+          <Link href="/productos" aria-current={pathname.replace(/\/$/, "") === "/productos" ? "page" : undefined} onClick={() => setOpen(false)}>
             Productos
           </Link>
           <Link href="/mas-vendidos" className="nav-offers" aria-current={pathname.replace(/\/$/, "") === "/mas-vendidos" ? "page" : undefined} onClick={() => setOpen(false)}>

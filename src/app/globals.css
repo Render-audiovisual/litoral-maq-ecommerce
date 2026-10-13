@@ -78,7 +78,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .search-suggestions-empty a { color: var(--navy); font-weight: 700; text-decoration: underline; }
 .nav { display: flex; align-items: center; gap: clamp(14px, 1.6vw, 26px); font-weight: 650; white-space: nowrap; }
 .nav a { color: var(--ink); text-decoration-thickness: 2px; text-underline-offset: 6px; }
-.nav a:hover, .nav a[aria-current="page"] { color: var(--navy); text-decoration-line: underline; }
+.nav a:hover, .nav a[aria-current="page"] { color: var(--orange-contrast); text-decoration: none; }
 .header-actions { display: flex; align-items: center; gap: 16px; }
 .icon-link, .cart-link { display: flex; align-items: center; gap: 7px; font-weight: 650; }
 .icon-link svg, .menu-button svg { width: 22px; height: 22px; display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -152,7 +152,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 /* Hover sin salto: solo un borde claro sobre el azul y el título subrayado. */
 .winner-card:hover { box-shadow: 0 0 0 2px rgba(255,255,255,.6); }
 .winner-card:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-.winner-card:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
+.winner-card:hover h3 { color: var(--orange-contrast); text-decoration: none; }
 .winner-card-media { position: relative; overflow: hidden; background: #fff; border-bottom: 1px solid var(--line); }
 .winner-card-media img { object-fit: cover; object-position: center 43%; }
 .winner-placeholder { width: 100%; height: 100%; display: grid; place-items: center; color: #b8c7d0; font-size: 54px; font-weight: 800; }
@@ -195,7 +195,7 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
    a 12 px sobre blanco da 2,9:1; el #c94f00 da 4,6:1. */
 .product-card-body .eyebrow { min-height: 16px; color: var(--orange); font-size: 12px; font-weight: 700; letter-spacing: .06em; line-height: 1.35; text-transform: uppercase; }
 .product-name { margin: 6px 0 8px; min-height: calc(3 * 1.35em); color: var(--navy-dark); font-size: 15px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.product-card:hover .product-name { color: var(--navy); text-decoration: underline; text-underline-offset: 3px; }
+.product-card:hover .product-name { color: var(--orange-contrast); text-decoration: none; }
 .product-code { color: #566472; font-size: 12px; }
 .product-price { margin: 14px 0 6px; color: var(--navy); font-size: 21px; font-weight: 800; line-height: 1.15; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
 .stock { margin-bottom: 14px; font-size: 11px; font-weight: 700; }
@@ -592,7 +592,7 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 .cart-thumb img { padding: 6px; object-fit: contain; }
 .cart-product { grid-area: info; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .cart-product a { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: var(--navy); font-size: 15px; font-weight: 700; line-height: 1.35; transition: color .18s ease; }
-.cart-product a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.cart-product a:hover { color: var(--orange-contrast); text-decoration: none; }
 .cart-product small { color: #566472; font-size: 13px; }
 .cart-product span { color: var(--ink); font-size: 14px; }
 .cart-line-controls { grid-area: controls; display: flex; align-items: center; gap: 20px; }
