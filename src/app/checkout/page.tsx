@@ -27,6 +27,7 @@ import {
 } from "@/lib/order-details";
 import { validateCartPurchaseLimits } from "@/lib/purchase-limits";
 import { isValidArgentinePhone } from "@/lib/whatsapp";
+import { checkoutDefaults } from "@/lib/checkout-defaults";
 
 type FormField =
   | "firstName"
@@ -38,11 +39,6 @@ type FormField =
   | "locality"
   | "street"
   | "streetNumber";
-
-function splitCustomerName(fullName = "") {
-  const parts = fullName.trim().split(/\s+/).filter(Boolean);
-  return { firstName: parts.shift() || "", lastName: parts.join(" ") };
-}
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -78,25 +74,16 @@ export default function CheckoutPage() {
   // crea ninguna identidad nueva.
   const captcha = useCaptcha();
   const needsGuestSession = !customerSession;
-  const sessionName = splitCustomerName(customerSession?.user.name);
-  const latestOrder = customerSession
-    ? orders.find((order) => order.customerId === customerSession.user.id)
-    : undefined;
-  const [form, setForm] = useState({
-    firstName: sessionName.firstName,
-    lastName: sessionName.lastName,
-    email: customerSession?.user.email || "",
-    dni: latestOrder?.dni || "",
-    phone: customerSession?.user.phone || latestOrder?.phone || "",
-    province: latestOrder?.province || "W",
-    postalCode: latestOrder?.postalCode || "",
-    locality: latestOrder?.locality || "",
-    street: latestOrder?.street || "",
-    streetNumber: latestOrder?.streetNumber || "",
-    floor: latestOrder?.floor || "",
-    apartment: latestOrder?.apartment || "",
-    reference: latestOrder?.addressReference || "",
-  });
+  const defaults = checkoutDefaults(customerSession, orders);
+  const accountKey = customerSession?.user.id || "guest";
+  const [draft, setDraft] = useState<{ accountKey: string; edits: Partial<typeof defaults> }>({ accountKey, edits: {} });
+  const form = { ...defaults, ...(draft.accountKey === accountKey ? draft.edits : {}) };
+  function patchForm(patch: Partial<typeof form>) {
+    setDraft(current => {
+      const edits = current.accountKey === accountKey ? current.edits : {};
+      return { accountKey, edits: { ...edits, ...patch } };
+    });
+  }
   const paymentEnabled = isMercadoPagoEnabled();
   // Campos marcados como inválidos en el último intento: borde rojo,
   // aria-invalid y foco al primero. Se desmarcan apenas se editan.
@@ -122,7 +109,7 @@ export default function CheckoutPage() {
   }
 
   function updateForm(patch: Partial<typeof form>) {
-    setForm((current) => ({ ...current, ...patch }));
+    patchForm(patch);
     clearInvalid(patch);
     resetQuote();
   }
@@ -138,7 +125,7 @@ export default function CheckoutPage() {
   }
 
   function editContact(patch: Partial<typeof form>) {
-    setForm((current) => ({ ...current, ...patch }));
+    patchForm(patch);
     clearInvalid(patch);
   }
 
