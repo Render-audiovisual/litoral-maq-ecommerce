@@ -8,7 +8,7 @@ import { MercadoPagoMark } from "@/components/mercado-pago-mark";
 import { useStore } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
 import { guestIdFromEmail, normalizeEmail, isPermanentCustomerSession } from "@/lib/auth";
-import { checkoutDefaults, mergeCheckoutDefaults } from "@/lib/checkout-defaults";
+import { checkoutDefaults } from "@/lib/checkout-defaults";
 import { welcomeDiscount } from "@/lib/welcome-discount";
 import { readWelcomeBenefit, type WelcomeBenefit } from "@/services/welcome-discount";
 import { resolveRequestedProvider } from "@/services/provider";
@@ -32,6 +32,8 @@ import {
 } from "@/lib/order-details";
 import { validateCartPurchaseLimits } from "@/lib/purchase-limits";
 import { isValidArgentinePhone } from "@/lib/whatsapp";
+import { readCheckoutDetails, saveCheckoutDetails } from "@/services/checkout-details";
+import type { SavedCheckoutDetails } from "@/lib/saved-checkout-details";
 
 type FormField =
   | "firstName"
@@ -78,25 +80,59 @@ export default function CheckoutPage() {
   // crea ninguna identidad nueva.
   const captcha = useCaptcha();
   const needsGuestSession = !customerSession;
-  const defaults = checkoutDefaults(customerSession,orders);
-  const [edits,setForm] = useState<Partial<typeof defaults>>({});
-  // Data arriving after mount populates untouched fields, never overwriting
-  // edits (including a field intentionally cleared by the customer).
-  const form = mergeCheckoutDefaults(defaults,edits);
+  const [savedDetails, setSavedDetails] = useState<{accountKey:string;details:SavedCheckoutDetails}|null>(null);
+  const [saveFeedback, setSaveFeedback] = useState<{accountKey:string;message:string}|null>(null);
+  const [savingDetails, setSavingDetails] = useState(false);
+  const accountKey = customerSession?.user.id || "guest";
+  const registeredAccount = isPermanentCustomerSession(customerSession) ? customerSession.user.id : "";
+  useEffect(()=>{
+    if(!registeredAccount) return;
+    let cancelled=false;
+    readCheckoutDetails().then(details=>{
+      if(!cancelled && details) setSavedDetails({accountKey:registeredAccount,details});
+    }).catch(()=>{ /* Optional prefill never blocks checkout. */ });
+    return ()=>{cancelled=true;};
+  },[registeredAccount]);
+  const defaults = {...checkoutDefaults(customerSession, orders),...(savedDetails?.accountKey===accountKey ? savedDetails.details : {})};
+  const [draft, setDraft] = useState<{ accountKey: string; edits: Partial<typeof defaults> }>({ accountKey, edits: {} });
+  const form = { ...defaults, ...(draft.accountKey === accountKey ? draft.edits : {}) };
+  function patchForm(patch: Partial<typeof form>) {
+    setDraft(current => {
+      const edits = current.accountKey === accountKey ? current.edits : {};
+      return { accountKey, edits: { ...edits, ...patch } };
+    });
+  }
+  async function saveMyDetails() {
+    const savingAccount=accountKey;
+    setSavingDetails(true);
+    setSaveFeedback(null);
+    try {
+      await saveCheckoutDetails(form, savingAccount);
+      setSavedDetails({accountKey:savingAccount,details:{...form}});
+      setSaveFeedback({accountKey:savingAccount,message:"Datos guardados en tu cuenta para próximas compras, también en otros dispositivos."});
+    } catch(error) { setSaveFeedback({accountKey:savingAccount,message:error instanceof Error ? error.message : "No pudimos guardar tus datos."}); }
+    finally { setSavingDetails(false); }
+  }
   const paymentEnabled = isMercadoPagoEnabled();
   const registered = isPermanentCustomerSession(customerSession) && isWelcomePromotionEnabled();
   const [benefitResponse,setBenefit] = useState<{customerId:string;value:WelcomeBenefit}|null>(null);
-  const [benefitError,setBenefitError] = useState("");
+  const [benefitFeedback,setBenefitFeedback] = useState<{customerId:string;message:string}|null>(null);
   const customerId = registered ? customerSession.user.id : "";
   const benefit=benefitResponse?.customerId===customerId ? benefitResponse.value : null;
+  const benefitError=benefitFeedback?.customerId===customerId ? benefitFeedback.message : "";
   useEffect(()=>{
     if(!customerId || !paymentEnabled) return;
     let cancelled=false;
-    readWelcomeBenefit().then(value=>{if(!cancelled){setBenefit({customerId,value});setBenefitError(value.reason==="inactive" ? "El beneficio todavía no está habilitado. No iniciamos el pago." : "");}}).catch(()=>{if(!cancelled)setBenefitError("No pudimos verificar el 5%. Actualizá la página antes de pagar.");});
+    readWelcomeBenefit().then(value=>{if(!cancelled){setBenefit({customerId,value});setBenefitFeedback({customerId,message:value.reason==="inactive" ? "El beneficio todavía no está habilitado. No iniciamos el pago." : ""});}}).catch(()=>{if(!cancelled)setBenefitFeedback({customerId,message:"No pudimos verificar el 5%. Actualizá la página antes de pagar."});});
     return ()=>{cancelled=true;};
   },[customerId,paymentEnabled]);
   const applicableBenefit = registered && paymentEnabled && resolveRequestedProvider()==="supabase" && benefit?.eligible && !benefit.pendingOrderId;
-  const discountAmount = applicableBenefit && cart.length ? welcomeDiscount(snapshotOrderLines(cart,products).map(line=>({...line,unitPrice:Number(line.unitPrice)}))).amount : 0;
+  let discountAmount = 0;
+  let discountQuoteInvalid = false;
+  if(applicableBenefit && cart.length) {
+    try { discountAmount=welcomeDiscount(snapshotOrderLines(cart,products).map(line=>({...line,unitPrice:Number(line.unitPrice)}))).amount; }
+    catch { discountQuoteInvalid=true; }
+  }
   // Campos marcados como inválidos en el último intento: borde rojo,
   // aria-invalid y foco al primero. Se desmarcan apenas se editan.
   const [invalidFields, setInvalidFields] = useState<Set<FormField>>(new Set());
@@ -121,7 +157,7 @@ export default function CheckoutPage() {
   }
 
   function updateForm(patch: Partial<typeof form>) {
-    setForm((current) => ({ ...current, ...patch }));
+    patchForm(patch);
     clearInvalid(patch);
     resetQuote();
   }
@@ -137,7 +173,7 @@ export default function CheckoutPage() {
   }
 
   function editContact(patch: Partial<typeof form>) {
-    setForm((current) => ({ ...current, ...patch }));
+    patchForm(patch);
     clearInvalid(patch);
   }
 
@@ -533,6 +569,7 @@ export default function CheckoutPage() {
           <section className="form-card checkout-step" id="checkout-step-1" data-step="1">
             <div className="step-number">1</div>
             <h2>Datos de contacto</h2>
+            {registeredAccount && <p className="helper">Revisá tus datos precargados. Podés corregirlos antes de comprar.</p>}
             <div className="form-grid">
               <label>
                 Nombre
@@ -911,6 +948,11 @@ export default function CheckoutPage() {
           <section className="form-card checkout-step" id="checkout-step-3" data-step="3">
             <div className="step-number">3</div>
             <h2>{paymentEnabled ? "Pago" : "Revisión y contacto"}</h2>
+            {registeredAccount && <div className="checkout-save-details">
+              <p className="helper">Guardá tu contacto, DNI y dirección en tu cuenta para próximas compras. Solo se guardan cuando pulsás este botón; no incluye datos de tarjetas.</p>
+              <button type="button" className="button secondary full" disabled={savingDetails} onClick={saveMyDetails}>{savingDetails ? "Guardando…" : "Guardar mis datos para próximas compras"}</button>
+              {saveFeedback?.accountKey === accountKey && <p role="status" className="helper">{saveFeedback.message}</p>}
+            </div>}
             <div className="payment-option">
               {paymentEnabled ? (
                 <MercadoPagoMark />
@@ -968,6 +1010,7 @@ export default function CheckoutPage() {
           </div>
           {discountAmount>0 && <div><span>Primera compra · 5% OFF</span><strong>−{formatCurrency(discountAmount)}</strong></div>}
           {benefitError && registered && <p role="alert">{benefitError}</p>}
+          {discountQuoteInvalid && <p role="alert">Revisá los productos del carrito antes de calcular el beneficio.</p>}
           {registered && benefit?.eligible && benefit.pendingOrderId && <p>Tu beneficio está reservado en un pedido pendiente. <Link href={`/checkout/error?pedido=${encodeURIComponent(benefit.pendingOrderId)}`}>Reanudar pedido</Link>. Si venció, consultanos por WhatsApp para revisar el pago.</p>}
           <div>
             <span>Entrega</span>
@@ -989,7 +1032,7 @@ export default function CheckoutPage() {
           <button
             className={`button large full${paymentEnabled ? " mercado-pago-button" : " primary"}`}
             disabled={
-              loading ||
+              loading || discountQuoteInvalid ||
               (registered && paymentEnabled && (!benefit || Boolean(benefitError) || Boolean(benefit.eligible && benefit.pendingOrderId))) ||
               quoting ||
               shipping === null ||

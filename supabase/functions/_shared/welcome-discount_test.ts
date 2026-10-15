@@ -1,4 +1,4 @@
-import {welcomeDiscount} from "../../../src/lib/welcome-discount.ts";
+import {welcomeDiscount} from "./welcome-discount.ts";
 Deno.test("provider items and discount use the same integer-cent arithmetic",()=>{
   const lines=[{unitPrice:88999.89,quantity:3},{unitPrice:125000.01,quantity:2}];
   const discounted=welcomeDiscount(lines);

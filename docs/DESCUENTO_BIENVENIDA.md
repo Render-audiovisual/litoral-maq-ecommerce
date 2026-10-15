@@ -16,7 +16,7 @@ Implementación preparada; no activar el anuncio sin desplegar y verificar el ba
 La precarga deriva de la cuenta y del pedido propio más reciente, incluso si llegan después de abrir el checkout. No pisa campos que el cliente ya editó o borró. No guarda DNI/direcciones en localStorage ni en profiles. DNI sigue requerido hasta verificar los requisitos operativos de facturación/entrega.
 
 ## Activación
-1. Desplegar migración `20261011200631_welcome_discount.sql`, `welcome-discount`, `payment-create` y consumidores del recibo.
+1. Desplegar migración `20261015040642_welcome_discount_activation.sql`, `welcome-discount`, `payment-create` y consumidores del recibo.
 2. Verificar permisos, sesión registrada/anónima, monto, dos pestañas, reintento y pago pendiente en entorno aislado.
 3. Habilitar la nueva variable de Edge Functions `WELCOME_DISCOUNT_ENABLED=true`.
 4. Habilitar la variable de GitHub Actions `NEXT_PUBLIC_WELCOME_DISCOUNT_ENABLED=true` y desplegar cuando Mercado Pago esté habilitado. No cambia las variables MP existentes.
@@ -26,7 +26,7 @@ El popup espera 10 segundos, se cierra con Escape o botón y no vuelve a mostrar
 
 ## Verificación realizada
 - TypeScript y lint.
-- 423 pruebas unitarias, incluyendo precarga tardía y cálculo monetario.
+- 434 pruebas unitarias, incluyendo guardado por cuenta y cálculo monetario.
 - Deno: cálculo usado por el proveedor y recibo con descuento.
 - PostgreSQL temporal aislado: SQL de la migración, permisos, protección de importe, reintento, aprobación/reembolso y dos transacciones solapadas (una reserva, segunda rechazada).
 - Pruebas existentes del checkout local y restauración de sesión: 10 casos aprobados.

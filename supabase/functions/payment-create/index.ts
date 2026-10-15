@@ -8,7 +8,7 @@ import {
   serviceClient,
 } from "../_shared/http.ts";
 import { logEdgeError } from "../_shared/monitoring.ts";
-import { welcomeDiscount } from "../../../src/lib/welcome-discount.ts";
+import { welcomeDiscount } from "../_shared/welcome-discount.ts";
 
 type RequestedLine = { productId: string; quantity: number };
 
@@ -69,7 +69,7 @@ Deno.serve(async (request) => {
     }
 
     const { data: order, error: orderError } = await db.from("orders").select(
-      "id,customer_id,customer_name,email,dni,phone,street,street_number,postal_code,lines,total,shipping,delivery_method,status,expires_at,payment_status,shipping_quote_id,shipping_status",
+      "id,customer_id,customer_name,email,dni,phone,street,street_number,postal_code,lines,total,shipping,delivery_method,status,expires_at,payment_status,shipping_quote_id,shipping_status,welcome_discount_amount",
     ).eq("id", orderId).maybeSingle();
     if (orderError || !order) {
       throw new HttpError(404, "No encontramos el pedido.");
@@ -184,6 +184,15 @@ Deno.serve(async (request) => {
         throw new HttpError(409, "La tarifa de envío no es válida.");
       }
     }
+    const { data: existing, error: existingError } = await db.from("payments")
+      .select("preference_id,checkout_url,amount,status").eq("order_id", orderId).maybeSingle();
+    if (existingError) throw new HttpError(503,"No pudimos revisar el pago pendiente.");
+    // Reuse an issued preference before reserving a new benefit. Never
+    // silently charge full price when the customer requested the discount.
+    if(existing?.preference_id && existing.checkout_url && existing.status==="pending" && Number(existing.amount)===Number(order.total)) {
+      if(body.welcomeDiscount===true && !(Number(order.welcome_discount_amount)>0)) throw new HttpError(409,"Este pedido ya tiene un pago preparado sin descuento. Consultanos antes de pagar.");
+      return json(request,{preferenceId:existing.preference_id,checkoutUrl:existing.checkout_url,reused:true});
+    }
     let discountAmount = 0;
     let paymentItems = snapshot;
     // No client-supplied amount or eligibility is trusted. The benefit is
@@ -202,20 +211,6 @@ Deno.serve(async (request) => {
     } else if (body.welcomeDiscount === true) throw new HttpError(403,"Registrate y confirmá tu cuenta para usar el beneficio.");
     const total = Number((subtotal - discountAmount + shippingAmount).toFixed(2));
 
-    const { data: existing, error: existingError } = await db.from("payments")
-      .select("preference_id,checkout_url,amount,status").eq(
-        "order_id",
-        orderId,
-      )
-      .maybeSingle();
-    if (existingError) {
-      throw new HttpError(503, "No pudimos revisar el pago pendiente.");
-    }
-    // An already-issued payment retains its agreed amount, including after
-    // a promotion rollback. Never rewrite it as a full-price pending payment.
-    if(existing?.preference_id && existing.checkout_url && existing.status==="pending" && Number(existing.amount)===Number(order.total)) {
-      return json(request,{preferenceId:existing.preference_id,checkoutUrl:existing.checkout_url,reused:true});
-    }
     if (existing?.preference_id && Number(existing.amount)!==total) throw new HttpError(409,"El precio cambió desde que se preparó este pago. Consultanos para revisar el pedido antes de pagar.");
     if (
       existing?.preference_id && existing.checkout_url &&
