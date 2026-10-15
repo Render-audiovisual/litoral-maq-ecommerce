@@ -19,6 +19,7 @@
 .header-refined .nav a:not([aria-current="page"]):hover { color:var(--navy); background:#f3f6f8; }
 .header-refined .header-actions { padding-left: 20px; border-left: 1px solid #e4ebef; gap: 16px; }
 .header-refined .icon-link { font-size: 14px; }
+.header-refined .account-greeting { max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .header-refined .cart-link { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 10px; background: #fff3e9; }
 .header-refined .cart-link strong { top:-3px; right:-3px; border:2px solid white; min-width:22px; height:22px; }
 @media(max-width:900px) {
@@ -36,4 +37,10 @@
   .header-refined .nav { gap: 0; }
   .header-refined .nav .nav-offers { display: flex; }
   .header-refined .header-search button { width: 34px; height: 34px; }
+  .header-refined .account-link svg { display:none; }
+  .header-refined .account-greeting { width:68px; font-size:12px; line-height:1.3; text-align:center; white-space:normal; overflow-wrap:anywhere; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+}
+@media(max-width:560px) {
+  .site-header.header-refined { column-gap:8px; }
+  .header-refined .header-actions { gap:4px; }
 }
