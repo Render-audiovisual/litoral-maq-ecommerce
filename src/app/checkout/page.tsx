@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useCaptcha } from "@/components/use-captcha";
 import { MercadoPagoMark } from "@/components/mercado-pago-mark";
 import { useStore } from "@/store/store";
@@ -28,6 +28,9 @@ import {
 import { validateCartPurchaseLimits } from "@/lib/purchase-limits";
 import { isValidArgentinePhone } from "@/lib/whatsapp";
 import { checkoutDefaults } from "@/lib/checkout-defaults";
+import { isPermanentCustomerSession } from "@/lib/auth";
+import { readCheckoutDetails, saveCheckoutDetails } from "@/services/checkout-details";
+import type { SavedCheckoutDetails } from "@/lib/saved-checkout-details";
 
 type FormField =
   | "firstName"
@@ -74,8 +77,20 @@ export default function CheckoutPage() {
   // crea ninguna identidad nueva.
   const captcha = useCaptcha();
   const needsGuestSession = !customerSession;
-  const defaults = checkoutDefaults(customerSession, orders);
+  const [savedDetails, setSavedDetails] = useState<{accountKey:string;details:SavedCheckoutDetails}|null>(null);
+  const [saveFeedback, setSaveFeedback] = useState<{accountKey:string;message:string}|null>(null);
+  const [savingDetails, setSavingDetails] = useState(false);
   const accountKey = customerSession?.user.id || "guest";
+  const registeredAccount = isPermanentCustomerSession(customerSession) ? customerSession.user.id : "";
+  useEffect(()=>{
+    if(!registeredAccount) return;
+    let cancelled=false;
+    readCheckoutDetails().then(details=>{
+      if(!cancelled && details) setSavedDetails({accountKey:registeredAccount,details});
+    }).catch(()=>{ /* Optional prefill never blocks checkout. */ });
+    return ()=>{cancelled=true;};
+  },[registeredAccount]);
+  const defaults = {...checkoutDefaults(customerSession, orders),...(savedDetails?.accountKey===accountKey ? savedDetails.details : {})};
   const [draft, setDraft] = useState<{ accountKey: string; edits: Partial<typeof defaults> }>({ accountKey, edits: {} });
   const form = { ...defaults, ...(draft.accountKey === accountKey ? draft.edits : {}) };
   function patchForm(patch: Partial<typeof form>) {
@@ -83,6 +98,17 @@ export default function CheckoutPage() {
       const edits = current.accountKey === accountKey ? current.edits : {};
       return { accountKey, edits: { ...edits, ...patch } };
     });
+  }
+  async function saveMyDetails() {
+    const savingAccount=accountKey;
+    setSavingDetails(true);
+    setSaveFeedback(null);
+    try {
+      await saveCheckoutDetails(form, savingAccount);
+      setSavedDetails({accountKey:savingAccount,details:{...form}});
+      setSaveFeedback({accountKey:savingAccount,message:"Datos guardados en tu cuenta para próximas compras, también en otros dispositivos."});
+    } catch(error) { setSaveFeedback({accountKey:savingAccount,message:error instanceof Error ? error.message : "No pudimos guardar tus datos."}); }
+    finally { setSavingDetails(false); }
   }
   const paymentEnabled = isMercadoPagoEnabled();
   // Campos marcados como inválidos en el último intento: borde rojo,
@@ -521,6 +547,7 @@ export default function CheckoutPage() {
           <section className="form-card checkout-step" id="checkout-step-1" data-step="1">
             <div className="step-number">1</div>
             <h2>Datos de contacto</h2>
+            {registeredAccount && <p className="helper">Revisá tus datos precargados. Podés corregirlos antes de comprar.</p>}
             <div className="form-grid">
               <label>
                 Nombre
@@ -899,6 +926,11 @@ export default function CheckoutPage() {
           <section className="form-card checkout-step" id="checkout-step-3" data-step="3">
             <div className="step-number">3</div>
             <h2>{paymentEnabled ? "Pago" : "Revisión y contacto"}</h2>
+            {registeredAccount && <div className="checkout-save-details">
+              <p className="helper">Guardá tu contacto, DNI y dirección en tu cuenta para próximas compras. Solo se guardan cuando pulsás este botón; no incluye datos de tarjetas.</p>
+              <button type="button" className="button secondary full" disabled={savingDetails} onClick={saveMyDetails}>{savingDetails ? "Guardando…" : "Guardar mis datos para próximas compras"}</button>
+              {saveFeedback?.accountKey === accountKey && <p role="status" className="helper">{saveFeedback.message}</p>}
+            </div>}
             <div className="payment-option">
               {paymentEnabled ? (
                 <MercadoPagoMark />

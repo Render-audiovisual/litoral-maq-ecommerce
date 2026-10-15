@@ -146,6 +146,11 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 2.6rem); }
 .category-marquee::-webkit-scrollbar { display: none; }
 .category-marquee.is-dragging { cursor: grabbing; }
 .category-track { width: max-content; }
+@media (max-width: 900px), (pointer: coarse) {
+  .category-track .winner-card[aria-hidden="true"] { display: none; }
+  .category-marquee { scroll-snap-type: x proximity; }
+  .category-track .winner-card { scroll-snap-align: start; }
+}
 .category-marquee img { -webkit-user-drag: none; }
 .winner-card { min-width: 0; overflow: hidden; display: grid; grid-template-rows: 255px auto; border-radius: 8px; background: #fff; transition: box-shadow .18s ease; }
 .category-track .winner-card { width: clamp(310px, 29vw, 410px); flex: 0 0 auto; }
