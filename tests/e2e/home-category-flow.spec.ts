@@ -1,4 +1,14 @@
 import { expect, test } from "@playwright/test";
+test("en celular Más vendidos queda manual, sin copias ni avance automático", async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto("/");
+  const rail=page.locator(".category-marquee");
+  await rail.scrollIntoViewIfNeeded();
+  await expect(rail.locator('.winner-card[aria-hidden="true"]').first()).toBeHidden();
+  const before=await rail.evaluate(el=>el.scrollLeft);
+  await page.waitForTimeout(1800);
+  expect(await rail.evaluate(el=>el.scrollLeft)).toBe(before);
+});
 test("el carrusel azul muestra productos y lleva a sus fichas", async ({ page }) => {
   await page.goto("/");
   const section = page.locator("#productos-estrella");

@@ -1,6 +1,12 @@
 project_id = "litoral-maq-ecommerce"
 
+[functions.checkout-details]
+verify_jwt = true
+
 [functions.product-bestseller-label]
+verify_jwt = true
+
+[functions.welcome-discount]
 verify_jwt = true
 
 [functions.admin-upload-product-photo]

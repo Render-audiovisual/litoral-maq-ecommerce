@@ -17,16 +17,15 @@ for (const carousel of [
     expect(await rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(start + 10);
   });
 
-  test(`el carrusel móvil de ${carousel.name} avanza aunque el navegador redondee scrollLeft`, async ({ page }) => {
+  test(`el carrusel móvil de ${carousel.name} no fuerza avances sobre el scroll nativo`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
     const rail = page.locator(carousel.selector);
     await expect(rail).toBeVisible();
     await rail.scrollIntoViewIfNeeded();
 
-    // Reproduce el comportamiento de navegadores móviles que exponen
-    // scrollLeft únicamente como entero. Sin una posición decimal interna,
-    // el avance automático menor a 1 px por frame se pierde por completo.
+    // Aun si Safari redondea la posición, ningún frame automático debe
+    // escribir sobre el desplazamiento que controla el cliente.
     await rail.evaluate((element) => {
       let roundedScrollLeft = 0;
       Object.defineProperty(element, "scrollLeft", {
@@ -38,7 +37,7 @@ for (const carousel of [
 
     const start = await rail.evaluate((element) => element.scrollLeft);
     await page.waitForTimeout(500);
-    expect(await rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(start + 8);
+    expect(await rail.evaluate((element) => element.scrollLeft)).toBe(start);
   });
 
   test(`el carrusel de ${carousel.name} se arrastra con el mouse y conserva el envión`, async ({ page }) => {
@@ -104,10 +103,7 @@ for (const carousel of [
       clientY: 300,
     });
     await page.waitForTimeout(30);
-    // Las dos muestras van pegadas al gesto: el automático nunca se detiene
-    // (el hook no captura punteros táctiles a propósito) y el riel se sigue
-    // moviendo solo, así que medir contra una referencia vieja mezclaría esa
-    // deriva con lo que se quiere comprobar.
+    // El hook no captura punteros táctiles: el navegador gestiona el gesto.
     const beforeMove = await rail.evaluate((element) => element.scrollLeft);
     await rail.dispatchEvent("pointermove", {
       pointerId: 9,
@@ -127,13 +123,10 @@ for (const carousel of [
       clientY: 300,
     });
 
-    // Al terminar el gesto, el movimiento automático retoma. Se comprueba
-    // con dos muestras propias: la posición inicial que fija la prueba no
-    // sirve de referencia porque el riel es del hook, que la reescribe en el
-    // frame siguiente (a veces antes de poder leerla, a veces después).
+    // Al terminar el gesto NO se retoma el automático en celular.
     await page.waitForTimeout(500);
     const retomado = await rail.evaluate((element) => element.scrollLeft);
     await page.waitForTimeout(400);
-    expect(await rail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(retomado + 4);
+    expect(await rail.evaluate((element) => element.scrollLeft)).toBe(retomado);
   });
 }

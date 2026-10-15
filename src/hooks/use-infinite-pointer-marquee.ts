@@ -13,6 +13,7 @@ type InfinitePointerMarqueeOptions = {
   autoSpeed: number;
   maxFlingSpeed: number;
   paused?: boolean;
+  manualOnMobile?: boolean;
 };
 
 const INERTIA_RESPONSE = 1.5; // extiende ~0,5 s el envión antes de volver al automático
@@ -31,6 +32,7 @@ export function useInfinitePointerMarquee({
   autoSpeed,
   maxFlingSpeed,
   paused = false,
+  manualOnMobile = false,
 }: InfinitePointerMarqueeOptions) {
   const railRef = useRef<HTMLDivElement>(null);
   const velocityRef = useRef(autoSpeed);
@@ -42,6 +44,7 @@ export function useInfinitePointerMarquee({
   const draggedRef = useRef(false);
   const touchingRef = useRef(false);
   const resumeAfterRef = useRef(0);
+  const manualRef = useRef(false);
   const pointerRef = useRef({ pointerId: -1, startX: 0, lastX: 0, lastTime: 0 });
   const [dragging, setDragging] = useState(false);
   const animationActive = useAnimationActivity(railRef);
@@ -50,8 +53,17 @@ export function useInfinitePointerMarquee({
     if (itemCount < 2 || !animationActive) return;
     let raf = 0;
     let last = performance.now();
+    const mobile = window.matchMedia("(max-width: 900px), (pointer: coarse)");
+    function syncMode() {
+      manualRef.current = manualOnMobile && mobile.matches;
+      cancelAnimationFrame(raf);
+      positionRef.current = null;
+      last = performance.now();
+      if (!manualRef.current) raf = requestAnimationFrame(frame);
+    }
 
     function frame(now: number) {
+      if (manualRef.current) return;
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       const rail = railRef.current;
@@ -75,9 +87,10 @@ export function useInfinitePointerMarquee({
       raf = requestAnimationFrame(frame);
     }
 
-    raf = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(raf);
-  }, [animationActive, autoSpeed, itemCount, paused]);
+    syncMode();
+    mobile.addEventListener("change", syncMode);
+    return () => { cancelAnimationFrame(raf); mobile.removeEventListener("change", syncMode); };
+  }, [animationActive, autoSpeed, itemCount, paused, manualOnMobile]);
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     // En pantallas táctiles dejamos que el navegador gestione el scroll
@@ -123,7 +136,7 @@ export function useInfinitePointerMarquee({
       }
     }
 
-    const loopWidth = rail.scrollWidth / 2;
+    const loopWidth = manualRef.current ? 0 : rail.scrollWidth / 2;
     let next = (positionRef.current ?? rail.scrollLeft) - dx;
     if (loopWidth > 0) {
       while (next >= loopWidth) next -= loopWidth;

@@ -195,6 +195,7 @@ function CategoryMarquee({ categories }: { categories: CategoryCardData[] }) {
     itemCount: categories.length,
     autoSpeed: CATEGORY_AUTO_SCROLL_SPEED,
     maxFlingSpeed: CATEGORY_MAX_FLING_SPEED,
+    manualOnMobile: true,
   });
 
   return (

@@ -177,6 +177,7 @@ function rowToOrder(row: OrderRow): Order {
     dni: row.dni ?? undefined,
     lines: row.lines as OrderLine[],
     total: row.total,
+    ...(row.welcome_discount_amount !== undefined ? {welcomeDiscountAmount:row.welcome_discount_amount} : {}),
     shipping: row.shipping,
     deliveryMethod: row.delivery_method,
     address: row.address ?? undefined,

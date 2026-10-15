@@ -6,6 +6,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FloatingWhatsApp } from "@/components/floating-whatsapp";
 import { TabTitleAlert } from "@/components/tab-title-alert";
+import { WelcomeDiscountPreview } from "@/components/welcome-discount-preview";
 import { readStoreDomain } from "@/lib/domain-config";
 
 const montserrat = Montserrat({
@@ -43,6 +44,7 @@ export default function RootLayout({
           <FloatingWhatsApp />
           <TabTitleAlert />
           <Footer />
+          <WelcomeDiscountPreview />
         </StoreProvider>
       </body>
     </html>
