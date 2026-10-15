@@ -44,4 +44,13 @@ test("Mis pedidos aparece al iniciar una cuenta permanente", async ({ page }) =>
   await expect(ordersLink).toBeVisible();
   await expect(ordersLink).toHaveAttribute("href", "/cuenta/pedidos");
   await expect(ordersLink).toHaveAttribute("aria-current", "page");
+  const account=page.getByRole("link",{name:"Mi cuenta",exact:true});
+  await expect(account).toContainText("Hola, Cliente");
+  for(const width of [320,390,1440]) {
+    await page.setViewportSize({width,height:844});
+    await expect(account.locator(".account-greeting")).toBeVisible();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+  }
+  await page.reload();
+  await expect(account).toContainText("Hola, Cliente");
 });

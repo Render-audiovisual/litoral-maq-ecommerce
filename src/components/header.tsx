@@ -13,6 +13,7 @@ import { searchProducts } from "@/lib/search";
 import { formatCurrency } from "@/lib/utils";
 import { availabilityLabel, getProductAvailability } from "@/lib/product-availability";
 import { isAdminSurface } from "@/lib/site-surface";
+import { customerGreeting } from "@/lib/customer-greeting";
 
 /** Desde cuántas letras vale la pena sugerir: con una sola, medio catálogo
  * coincide y el cartel no ayuda. */
@@ -279,15 +280,16 @@ export function Header() {
         <div className="header-actions">
           <Link
             href={account ? "/cuenta/pedidos" : "/login"}
-            className="icon-link"
+            className={account ? "icon-link account-link" : "icon-link"}
             aria-label={account ? "Mi cuenta" : "Ingresar"}
+            title={account ? customerGreeting(account.user.name) : undefined}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <circle cx="12" cy="8" r="4" />
               <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" />
             </svg>
-            <span className="desktop-only">
-              {account ? account.user.name.split(" ")[0] || "Mi cuenta" : "Ingresar"}
+            <span className={account ? "account-greeting" : "desktop-only"}>
+              {account ? customerGreeting(account.user.name) : "Ingresar"}
             </span>
           </Link>
           <Link href="/carrito" className="cart-link" aria-label={`Carrito, ${cartCount} productos`}>
