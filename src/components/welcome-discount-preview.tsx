@@ -8,6 +8,7 @@ import { useStore } from "@/store/store";
 import { isPermanentCustomerSession } from "@/lib/auth";
 import { isWelcomePromotionEnabled } from "@/lib/welcome-promotion";
 import { isMercadoPagoEnabled } from "@/services/payments";
+import { welcomePopupDelay } from "@/lib/welcome-popup-timing";
 import "./welcome-discount-preview.css";
 
 // Design preview only. Do not mount in the public store before the server
@@ -28,7 +29,7 @@ export function WelcomeDiscountPreview({forcePreview=false}:{forcePreview?:boole
     const timeout=setTimeout(()=>{
       modal?.showModal(); title.current?.focus();
       if(!forcePreview) {try {localStorage.setItem("litoral-welcome-seen-v1",String(Date.now()));} catch { /* Private browsing. */ }}
-    },forcePreview ? 0 : 10000);
+    },forcePreview ? 0 : welcomePopupDelay(performance.now()));
     return () => { clearTimeout(timeout); modal?.close(); };
   }, [allowed,forcePreview]);
   function close() { dialog.current?.close(); if(forcePreview) opener.current?.focus(); }
