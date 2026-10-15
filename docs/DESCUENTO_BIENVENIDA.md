@@ -22,7 +22,7 @@ La precarga deriva de la cuenta y del pedido propio más reciente, incluso si ll
 4. Habilitar la variable de GitHub Actions `NEXT_PUBLIC_WELCOME_DISCOUNT_ENABLED=true` y desplegar cuando Mercado Pago esté habilitado. No cambia las variables MP existentes.
 5. Si se deshabilita el anuncio, los pagos ya emitidos deben conservar su importe original.
 
-El popup espera 10 segundos, se cierra con Escape o botón y no vuelve a mostrarse durante 7 días en ese navegador. Se omite en checkout, carrito, acceso, cuenta y administración, y para usuarios registrados. La ruta `/propuesta-descuento` solo existe en desarrollo para aprobar el diseño.
+El popup aparece a los 20 segundos desde la navegación inicial, contando el tiempo de carga. Si la página tarda más de 20 segundos en estar lista, aparece entonces, sin sumar otra espera. Se cierra con Escape o botón y no vuelve a mostrarse durante 7 días en ese navegador. Se omite en checkout, carrito, acceso, cuenta y administración, y para usuarios registrados. La ruta `/propuesta-descuento` solo existe en desarrollo para aprobar el diseño.
 
 ## Verificación realizada
 - TypeScript y lint.
