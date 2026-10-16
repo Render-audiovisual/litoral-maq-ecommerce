@@ -15,6 +15,11 @@ const product = (stock: number, incomplete: string[] = [], active = true): Produ
 });
 
 describe("disponibilidad comercial", () => {
+  it("con stock real bajo el umbral muestra las unidades restantes", () => {
+    expect(availabilityLabel(product(3))).toBe("Últimas 3 unidades");
+    expect(availabilityLabel(product(6))).toBe("Disponible");
+  });
+
   it("un producto publicado (presente en el Sheet, imagen y descripción verificadas) sin cantidad real es disponibilidad gestionada por Sheet, no 'a confirmar'", () => {
     const item = product(0, ["stock"], true);
     expect(getProductAvailability(item)).toBe("sheet-managed");
