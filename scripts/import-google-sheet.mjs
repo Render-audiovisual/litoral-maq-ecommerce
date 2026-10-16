@@ -3,8 +3,8 @@ import path from "node:path";
 
 const SHEET_ID =
   process.env.LITORAL_SHEET_ID ||
-  "17Y7jES70K_Gr-nQO6Om5PtRFu7nnNObDlbsRsXLdIrA";
-const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+  "1T3WNK2xoGUB6_P5yKubJ-A7xpnebXkIMTh4z59UScK8";
+const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${process.env.LITORAL_SHEET_GID || "989804836"}`;
 const DEFAULT_PURCHASE_LIMIT = 3;
 
 const CURATED_ACTIVE_COMPLETIONS = {
@@ -175,11 +175,18 @@ function slugify(value) {
     .replace(/^-|-$/g, "");
 }
 
-const response = await fetch(url);
-if (!response.ok) {
-  throw new Error(`No se pudo descargar la planilla (${response.status}).`);
+// LITORAL_SHEET_CSV: ruta a un CSV local (p. ej. el .xls de Drive exportado).
+let csvText;
+if (process.env.LITORAL_SHEET_CSV) {
+  csvText = await readFile(process.env.LITORAL_SHEET_CSV, "utf8");
+} else {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`No se pudo descargar la planilla (${response.status}).`);
+  }
+  csvText = await response.text();
 }
-const rows = parseCsv(await response.text());
+const rows = parseCsv(csvText.replace(/^﻿/, ""));
 const [headers, ...body] = rows;
 const normalizedHeaders = headers.map((header) =>
   header
@@ -187,12 +194,14 @@ const normalizedHeaders = headers.map((header) =>
     .toLowerCase()
     .replace(/[^a-z0-9]/g, ""),
 );
+const priceIndex = normalizedHeaders.findIndex((h) => h.startsWith("precio"));
+const stockIndex = normalizedHeaders.indexOf("stock");
 const validHeaders =
   ["codigo", "cod", "sku"].includes(normalizedHeaders[0]) &&
   ["articulo", "producto", "nombre"].includes(normalizedHeaders[1]) &&
   // Prefijo, no lista exacta: cubre "precio", "preciocon" y variantes como
   // "Precio con IVA" (normaliza a "precioconiva").
-  (normalizedHeaders[2] || "").startsWith("precio");
+  priceIndex >= 0;
 if (!validHeaders) {
   throw new Error(`Encabezados inesperados: ${headers.join(", ")}`);
 }
@@ -216,10 +225,17 @@ let created = 0;
 let updated = 0;
 
 const sheetProducts = body
-  .map(([code = "", article = "", rawPrice = ""], index) => {
+  .map((cells, index) => {
+    const [code = "", article = ""] = cells;
+    const rawPrice = cells[priceIndex] ?? "";
+    // El Sheet nuevo trae códigos con ceros a la izquierda ("02635"); el
+    // catálogo los guarda sin ceros ("2635").
+    const rawStock = stockIndex >= 0 ? (cells[stockIndex] ?? "").trim() : "";
+    const parsedStock = rawStock === "" ? NaN : Number(rawStock.replace(",", "."));
+    const stock = Number.isFinite(parsedStock) ? Math.max(0, Math.floor(parsedStock)) : null;
     const name = article.trim();
     const price = parsePrice(rawPrice);
-    const cleanCode = code.trim();
+    const cleanCode = code.trim().replace(/^0+(?=\d)/, "");
     if (!name && !cleanCode && price === null) return null;
     if (cleanCode && seenCodes.has(cleanCode)) {
       throw new Error(`El código ${cleanCode} está duplicado en el Sheet.`);
@@ -242,9 +258,11 @@ const sheetProducts = body
         source: "google-sheet",
         sourceRow: index + 2,
         purchaseLimit: existing.purchaseLimit ?? DEFAULT_PURCHASE_LIMIT,
+        stock: stock ?? existing.stock,
         incomplete: existing.incomplete.filter(
           (item) =>
             !["code", "sheet-absent"].includes(item) &&
+            !(item === "stock" && stock !== null) &&
             !(item === "price" && typeof resolvedPrice === "number"),
         ),
       };
@@ -273,7 +291,7 @@ const sheetProducts = body
       brand: inferBrand(name.toUpperCase()),
       image: null,
       images: [],
-      stock: 0,
+      stock: stock ?? 0,
       lowStockThreshold: 5,
       purchaseLimit: DEFAULT_PURCHASE_LIMIT,
       active: false,
@@ -286,7 +304,7 @@ const sheetProducts = body
         !cleanCode && "code",
         resolvedNewPrice === null && "price",
         "image",
-        "stock",
+        stock === null && "stock",
         "description",
       ].filter(Boolean),
     };

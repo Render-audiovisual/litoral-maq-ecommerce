@@ -1,7 +1,7 @@
 import products from "../src/data/products.json" with { type: "json" };
 
 const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/17Y7jES70K_Gr-nQO6Om5PtRFu7nnNObDlbsRsXLdIrA/export?format=csv&gid=0";
+  "https://docs.google.com/spreadsheets/d/1T3WNK2xoGUB6_P5yKubJ-A7xpnebXkIMTh4z59UScK8/export?format=csv&gid=989804836";
 
 function parseCsv(input) {
   const rows = [];

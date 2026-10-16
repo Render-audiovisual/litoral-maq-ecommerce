@@ -7,6 +7,8 @@ export type Product = {
   name: string;
   price: number | null;
   rawPrice: string | null;
+  /** true: el precio lo fijó el panel y el sync del Sheet no lo pisa. */
+  priceLocked?: boolean;
   category: string;
   brand: string;
   image: string | null;

@@ -350,9 +350,10 @@ function AdminProductsContent() {
         </summary>
         <p>
           <strong>Fuente de verdad:</strong> el Google Sheet controla código,
-          nombre, precio y qué productos siguen en catálogo. El panel controla
-          visibilidad, ficha, logística y límite por compra. Sin stock numérico,
-          el límite predeterminado es 3 unidades por producto.
+          nombre, stock y qué productos siguen en catálogo. El precio viene del
+          Sheet, pero se puede editar acá: queda fijado y el Sheet no lo pisa
+          hasta que se vuelva a usar el del Sheet. El panel también controla
+          visibilidad, ficha, logística y límite por compra.
         </p>
       </details>
       <div className="catalog-overview" aria-label="Resumen del catálogo">
@@ -513,7 +514,7 @@ function AdminProductsContent() {
                           }
                           title={
                             managedBySheet(product)
-                              ? "Código, precio y disponibilidad vienen del Google Sheet vigente, administrado por Litoral."
+                              ? "Código, stock y precio base vienen del Google Sheet vigente; el precio se puede fijar desde el panel."
                               : undefined
                           }
                         >
@@ -668,7 +669,7 @@ function AdminProductsContent() {
                 />
                 {editing.source === "google-sheet" && (
                   <small>
-                    Nombre, código y precio se actualizan desde el Google Sheet.
+                    Nombre y código se actualizan desde el Google Sheet.
                   </small>
                 )}
               </label>
@@ -689,17 +690,42 @@ function AdminProductsContent() {
                   min="0"
                   step="0.01"
                   value={editing.price ?? ""}
-                  readOnly={editing.source === "google-sheet"}
-                  onChange={(event) =>
+                  onChange={(event) => {
+                    const price = event.target.value
+                      ? Number(event.target.value)
+                      : null;
                     setEditing({
                       ...editing,
-                      price: event.target.value
-                        ? Number(event.target.value)
-                        : null,
-                    })
-                  }
+                      price,
+                      rawPrice:
+                        price === null
+                          ? null
+                          : `$ ${price.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                      // Editado a mano: el sync del Sheet ya no lo pisa.
+                      priceLocked: editing.source === "google-sheet" ? true : editing.priceLocked,
+                    });
+                  }}
                 />
+                {editing.source === "google-sheet" && (
+                  <small>
+                    {editing.priceLocked
+                      ? "Precio fijado desde el panel: el Sheet no lo modifica."
+                      : "Al cambiarlo, queda fijado y el Sheet deja de pisarlo."}
+                  </small>
+                )}
               </label>
+              {editing.source === "google-sheet" && editing.priceLocked && (
+                <label className="check-row wide">
+                  <input
+                    type="checkbox"
+                    checked={false}
+                    onChange={() =>
+                      setEditing({ ...editing, priceLocked: false })
+                    }
+                  />
+                  Volver a usar el precio del Google Sheet (se aplica en la próxima sincronización)
+                </label>
+              )}
               <label>
                 Categoría
                 <input

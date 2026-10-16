@@ -20,6 +20,14 @@ describe("validador del Sheet ejecutado en servidor", () => {
     ]);
   });
 
+  it("lee stock y quita ceros a la izquierda del código", () => {
+    const parsed = parseCatalogSheet("codigo,articulo,preciocon,stock\n02635,Uno,$100,9\n3,Dos,$200,", 1);
+    expect(parsed.rows).toEqual([
+      expect.objectContaining({ code: "2635", stock: 9 }),
+      expect.objectContaining({ code: "3", stock: null }),
+    ]);
+  });
+
   it("rechaza códigos duplicados antes de tocar la base", () => {
     expect(() => parseCatalogSheet("codigo,articulo,precio\n1,Uno,$100\n1,Dos,$200", 2)).toThrow(/duplicado/i);
   });

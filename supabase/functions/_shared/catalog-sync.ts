@@ -22,13 +22,14 @@ export class CatalogSyncBlockedError extends Error {
   }
 }
 
-const DEFAULT_SHEET_ID = "17Y7jES70K_Gr-nQO6Om5PtRFu7nnNObDlbsRsXLdIrA";
+const DEFAULT_SHEET_ID = "1T3WNK2xoGUB6_P5yKubJ-A7xpnebXkIMTh4z59UScK8";
+const DEFAULT_SHEET_GID = "989804836";
 const FETCH_TIMEOUT_MS = 10_000;
 const FETCH_ATTEMPTS = 2;
 
 function sheetCsvUrl() {
   const sheetId = (Deno.env.get("LITORAL_SHEET_ID") || DEFAULT_SHEET_ID).trim();
-  const gid = (Deno.env.get("LITORAL_SHEET_GID") || "0").trim();
+  const gid = (Deno.env.get("LITORAL_SHEET_GID") || DEFAULT_SHEET_GID).trim();
   if (!/^[a-zA-Z0-9_-]+$/.test(sheetId) || !/^\d+$/.test(gid)) {
     throw new HttpError(503, "La fuente del catálogo no está configurada correctamente.");
   }
@@ -92,6 +93,7 @@ export async function runCatalogSync(
         rawPrice: current.raw_price ?? String(current.price),
         sourceRow,
         slug: current.slug,
+        stock: null,
       });
     }
   }
@@ -108,6 +110,7 @@ export async function runCatalogSync(
       raw_price: row.rawPrice,
       source_row: row.sourceRow,
       slug: row.slug,
+      stock: row.stock,
     })),
     p_source: source,
   });
@@ -116,7 +119,6 @@ export async function runCatalogSync(
   return {
     result: data as Record<string, unknown>,
     warnings: [
-      "El Sheet confirma disponibilidad comercial, pero todavía no informa cantidades físicas.",
       "Se conservaron imágenes, descripciones, categorías, marcas, logística y límites personalizados.",
       ...(parsed.invalidRows.length
         ? [

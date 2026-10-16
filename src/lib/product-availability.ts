@@ -30,6 +30,8 @@ export function availabilityLabel(product: Product) {
   const availability = getProductAvailability(product);
   if (availability === "unknown") return "Consultar disponibilidad";
   if (availability === "sheet-managed") return "Disponible";
-  if (availability === "available") return "Disponible";
+  if (availability === "available") {
+    return product.stock <= product.lowStockThreshold ? `Últimas ${product.stock} unidades` : "Disponible";
+  }
   return "Sin stock";
 }
