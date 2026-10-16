@@ -5,6 +5,8 @@ export type CatalogSheetRow = {
   rawPrice: string;
   sourceRow: number;
   slug: string;
+  // null: el Sheet no trae columna de stock o la celda está vacía.
+  stock: number | null;
 };
 
 export type ParsedCatalogSheet = {
@@ -119,6 +121,7 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
   // "precio" con prefijo: cubre "precio", "preciocon", "preciocontado" y variantes como
   // "Precio con IVA" (normaliza a "precioconiva"), que rompían el match exacto anterior.
   const priceIndex = headers.findIndex((header) => header.startsWith("precio"));
+  const stockIndex = headers.indexOf("stock");
   if ([codeIndex, nameIndex, priceIndex].some((index) => index < 0)) {
     throw new CatalogSheetValidationError(
       `Encabezados inválidos. Se esperaba código, artículo y precio; llegaron: ${rawHeaders.join(", ")}.`,
@@ -132,10 +135,14 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
   for (let index = 1; index < parsedRows.length; index += 1) {
     const sourceRow = index + 1;
     const source = parsedRows[index];
-    const code = (source[codeIndex] || "").trim();
+    // El Sheet trae ceros a la izquierda ("02635"); el catálogo usa "2635".
+    const code = (source[codeIndex] || "").trim().replace(/^0+(?=\d)/, "");
     const name = (source[nameIndex] || "").trim();
     const rawPrice = (source[priceIndex] || "").trim();
     const price = parsePrice(rawPrice);
+    const rawStock = stockIndex >= 0 ? (source[stockIndex] || "").trim() : "";
+    const parsedStock = rawStock === "" ? NaN : Number(rawStock.replace(",", "."));
+    const stock = Number.isFinite(parsedStock) ? Math.max(0, Math.floor(parsedStock)) : null;
     if (!code || !name || price === null) {
       invalidRows.push(sourceRow);
       if (code && name) unpriceable.push({ code, sourceRow });
@@ -152,6 +159,7 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
       rawPrice,
       sourceRow,
       slug: `${slugify(name)}-${slugify(code)}`,
+      stock,
     });
   }
 

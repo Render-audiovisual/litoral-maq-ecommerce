@@ -82,7 +82,7 @@ function fakeDb(options: FakeOptions) {
 }
 
 function parsedWith(rows: number, invalid: number): ParsedCatalogSheet {
-  const make = (i: number) => ({ code: `C${i}`, name: `P${i}`, price: 1, rawPrice: "1", sourceRow: i + 2, slug: `p${i}` });
+  const make = (i: number) => ({ code: `C${i}`, name: `P${i}`, price: 1, rawPrice: "1", sourceRow: i + 2, slug: `p${i}`, stock: null });
   return {
     rows: Array.from({ length: rows }, (_, i) => make(i)),
     headers: [],

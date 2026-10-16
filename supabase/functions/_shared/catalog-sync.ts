@@ -92,6 +92,7 @@ export async function runCatalogSync(
         rawPrice: current.raw_price ?? String(current.price),
         sourceRow,
         slug: current.slug,
+        stock: null,
       });
     }
   }
@@ -108,6 +109,7 @@ export async function runCatalogSync(
       raw_price: row.rawPrice,
       source_row: row.sourceRow,
       slug: row.slug,
+      stock: row.stock,
     })),
     p_source: source,
   });
@@ -116,7 +118,6 @@ export async function runCatalogSync(
   return {
     result: data as Record<string, unknown>,
     warnings: [
-      "El Sheet confirma disponibilidad comercial, pero todavía no informa cantidades físicas.",
       "Se conservaron imágenes, descripciones, categorías, marcas, logística y límites personalizados.",
       ...(parsed.invalidRows.length
         ? [
