@@ -3,8 +3,8 @@ import path from "node:path";
 
 const SHEET_ID =
   process.env.LITORAL_SHEET_ID ||
-  "1T3WNK2xoGUB6_P5yKubJ-A7xpnebXkIMTh4z59UScK8";
-const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${process.env.LITORAL_SHEET_GID || "989804836"}`;
+  "1JeracKoJtCUpyC3erG8SKUxRNlfn2fLX";
+const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${process.env.LITORAL_SHEET_GID || "1272925571"}`;
 const DEFAULT_PURCHASE_LIMIT = 3;
 
 const CURATED_ACTIVE_COMPLETIONS = {

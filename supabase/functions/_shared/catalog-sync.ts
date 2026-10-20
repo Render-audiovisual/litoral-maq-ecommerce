@@ -22,8 +22,8 @@ export class CatalogSyncBlockedError extends Error {
   }
 }
 
-const DEFAULT_SHEET_ID = "1T3WNK2xoGUB6_P5yKubJ-A7xpnebXkIMTh4z59UScK8";
-const DEFAULT_SHEET_GID = "989804836";
+const DEFAULT_SHEET_ID = "1JeracKoJtCUpyC3erG8SKUxRNlfn2fLX";
+const DEFAULT_SHEET_GID = "1272925571";
 const FETCH_TIMEOUT_MS = 10_000;
 const FETCH_ATTEMPTS = 2;
 
