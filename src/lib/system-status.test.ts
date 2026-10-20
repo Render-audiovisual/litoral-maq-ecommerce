@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatAgo, sortAlerts, syncSummary, tickDot, type SystemAlert } from "./system-status";
+import { formatAgo, sortAlerts, syncProblem, syncSummary, tickDot, type SystemAlert } from "./system-status";
 
 const now = new Date("2026-09-25T15:00:00.000Z");
 const minutesAgo = (m: number) => new Date(now.getTime() - m * 60_000).toISOString();
@@ -41,5 +41,25 @@ describe("sortAlerts y syncSummary", () => {
     const base = { startedAt: minutesAgo(5), total: 587, created: 2, updated: 10, retired: 1, errorDetail: null };
     expect(syncSummary({ ...base, status: "succeeded" })).toBe("587 productos: 2 nuevos, 10 actualizados, 1 retirados.");
     expect(syncSummary({ ...base, status: "failed", errorDetail: "Sheet incompleto" })).toBe("Sheet incompleto");
+  });
+});
+
+describe("syncProblem", () => {
+  const now = new Date("2026-10-20T18:00:00Z");
+  const run = (status: "succeeded" | "failed", startedAt: string) => ({
+    status, startedAt, total: 590, created: 0, updated: 0, retired: 0, errorDetail: status === "failed" ? "Google Sheets respondió 400." : null,
+  });
+
+  it("no avisa si la última corrida salió bien y es reciente", () => {
+    expect(syncProblem(run("succeeded", "2026-10-20T16:00:00Z"), now)).toBeNull();
+    expect(syncProblem(null, now)).toBeNull();
+  });
+
+  it("avisa con el motivo si la última corrida falló", () => {
+    expect(syncProblem(run("failed", "2026-10-20T17:00:00Z"), now)).toMatch(/falló.*400/);
+  });
+
+  it("avisa si pasaron 6 horas o más sin sincronizar", () => {
+    expect(syncProblem(run("succeeded", "2026-10-20T11:00:00Z"), now)).toMatch(/no se sincroniza/);
   });
 });

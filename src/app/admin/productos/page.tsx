@@ -10,6 +10,8 @@ import { pageWindow, paginate } from "@/lib/paginate";
 import { googleSheetSyncAdapter } from "@/services/sheet-sync";
 import { ConflictError, rebaseProductEdits } from "@/lib/concurrency";
 import { getLaunchBestSellers } from "@/lib/launch-catalog";
+import { getPersistenceAdapter } from "@/services/persistence";
+import { syncProblem } from "@/lib/system-status";
 
 const PAGE_SIZE = 50;
 // Trae lo que cambiaron otras personas del panel. Pausado con la pestaña
@@ -82,6 +84,7 @@ function AdminProductsContent() {
     searchParams.get("stock") === "bajo" ? "low" : "all",
   );
   const [sortBy, setSortBy] = useState<"name" | "recent">("name");
+  const [priceFilter, setPriceFilter] = useState<"all" | "locked">("all");
   // La página se vuelve a 1 al cambiar filtros, búsqueda u orden; al editar
   // o eliminar se conserva (paginate la acota si la última queda vacía).
   const [page, setPage] = useState(1);
@@ -114,6 +117,17 @@ function AdminProductsContent() {
     "success",
   );
   const [syncing, setSyncing] = useState(false);
+  const [syncWarning, setSyncWarning] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    getPersistenceAdapter()
+      .getSystemStatus()
+      .then((value) => alive && setSyncWarning(syncProblem(value?.lastSync, new Date())))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [syncing]);
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
   const sheetProductCount = products.filter(
     (product) => product.source === "google-sheet",
@@ -121,6 +135,7 @@ function AdminProductsContent() {
   const activeCount = products.filter((product) => product.active).length;
   const inactiveCount = products.length - activeCount;
   const lowStockCount = products.filter((product) => !product.incomplete.includes("stock") && product.stock <= product.lowStockThreshold).length;
+  const lockedPriceCount = products.filter((product) => product.priceLocked).length;
   const missingStockCount = products.filter((product) => product.incomplete.includes("stock")).length;
   const filtered = useMemo(
     () =>
@@ -129,6 +144,7 @@ function AdminProductsContent() {
         .filter((product) =>
           status === "all" ? true : status === "active" ? product.active : !product.active,
         )
+        .filter((product) => priceFilter === "all" || product.priceLocked)
         .filter((product) => {
           if (stockFilter === "low") return !product.incomplete.includes("stock") && product.stock <= product.lowStockThreshold;
           if (stockFilter === "missing") return product.incomplete.includes("stock");
@@ -146,7 +162,7 @@ function AdminProductsContent() {
             ? (b.updatedAt ?? "").localeCompare(a.updatedAt ?? "")
             : a.name.localeCompare(b.name),
         ),
-    [products, query, category, status, stockFilter, sortBy],
+    [products, query, category, status, stockFilter, priceFilter, sortBy],
   );
   const current = paginate(filtered, page, PAGE_SIZE);
 
@@ -361,7 +377,13 @@ function AdminProductsContent() {
         <div className={lowStockCount ? "warning" : ""}><span>Stock bajo</span><strong>{lowStockCount}</strong></div>
         <div className={missingStockCount ? "warning" : ""}><span>Sin confirmar</span><strong>{missingStockCount}</strong></div>
         <div><span>Desde Sheet</span><strong>{sheetProductCount}</strong></div>
+        <div className={lockedPriceCount ? "warning" : ""}><span>Precio fijado</span><strong>{lockedPriceCount}</strong></div>
       </div>
+      {syncWarning && (
+        <div className="error-message" role="alert">
+          {syncWarning}
+        </div>
+      )}
       {message && (
         <div
           className={`${messageKind === "error" ? "error-message" : "success-message"} dismissible`}
@@ -429,6 +451,15 @@ function AdminProductsContent() {
             <option value="low">Stock bajo</option>
             <option value="out">Sin stock</option>
             <option value="missing">Stock sin confirmar</option>
+          </select>
+          <select
+            className="sort-select"
+            value={priceFilter}
+            aria-label="Filtrar por precio"
+            onChange={(event) => { setPriceFilter(event.target.value as typeof priceFilter); setPage(1); }}
+          >
+            <option value="all">Precio: todos</option>
+            <option value="locked">Precio fijado en el panel</option>
           </select>
           <select
             className="sort-select"
@@ -504,7 +535,12 @@ function AdminProductsContent() {
                       </th>
                       <td role="cell" className="cell-code">{product.code}</td>
                       <td role="cell" className="cell-category">{product.category}</td>
-                      <td role="cell" className="cell-price">{formatCurrency(product.price)}</td>
+                      <td role="cell" className="cell-price">
+                        {formatCurrency(product.price)}
+                        {product.priceLocked && (
+                          <small title="Precio fijado desde el panel: el Sheet no lo modifica."> · fijado</small>
+                        )}
+                      </td>
                       <td role="cell" className="cell-stock">
                         <span
                           className={

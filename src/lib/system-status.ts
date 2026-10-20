@@ -69,3 +69,21 @@ export function syncSummary(run: CatalogSyncRun) {
   if (run.status === "failed") return run.errorDetail || "Falló sin detalle.";
   return `${run.total ?? 0} productos: ${run.created ?? 0} nuevos, ${run.updated ?? 0} actualizados, ${run.retired ?? 0} retirados.`;
 }
+
+export const SYNC_STALE_HOURS = 6;
+
+/**
+ * Aviso para el panel de Productos: null si la última sincronización del
+ * Sheet salió bien y es reciente; si no, el motivo en una frase.
+ */
+export function syncProblem(run: CatalogSyncRun | null | undefined, now: Date): string | null {
+  if (!run) return null;
+  if (run.status === "failed") {
+    return `La última sincronización con el Sheet falló (${formatAgo(run.startedAt, now).toLowerCase()}): ${syncSummary(run)}`;
+  }
+  const hours = (now.getTime() - Date.parse(run.startedAt)) / 3_600_000;
+  if (Number.isFinite(hours) && hours >= SYNC_STALE_HOURS) {
+    return `El catálogo no se sincroniza con el Sheet desde ${formatAgo(run.startedAt, now).toLowerCase()}. Los precios y el stock pueden estar desactualizados.`;
+  }
+  return null;
+}
