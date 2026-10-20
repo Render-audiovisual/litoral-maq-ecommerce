@@ -4,7 +4,7 @@ import path from "node:path";
 const SHEET_ID =
   process.env.LITORAL_SHEET_ID ||
   "1JeracKoJtCUpyC3erG8SKUxRNlfn2fLX";
-const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${process.env.LITORAL_SHEET_GID || "1272925571"}`;
+const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv${process.env.LITORAL_SHEET_GID ? `&gid=${process.env.LITORAL_SHEET_GID}` : ""}`;
 const DEFAULT_PURCHASE_LIMIT = 3;
 
 const CURATED_ACTIVE_COMPLETIONS = {

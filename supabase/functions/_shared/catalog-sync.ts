@@ -23,17 +23,18 @@ export class CatalogSyncBlockedError extends Error {
 }
 
 const DEFAULT_SHEET_ID = "1JeracKoJtCUpyC3erG8SKUxRNlfn2fLX";
-const DEFAULT_SHEET_GID = "1272925571";
 const FETCH_TIMEOUT_MS = 10_000;
 const FETCH_ATTEMPTS = 2;
 
 function sheetCsvUrl() {
   const sheetId = (Deno.env.get("LITORAL_SHEET_ID") || DEFAULT_SHEET_ID).trim();
-  const gid = (Deno.env.get("LITORAL_SHEET_GID") || DEFAULT_SHEET_GID).trim();
-  if (!/^[a-zA-Z0-9_-]+$/.test(sheetId) || !/^\d+$/.test(gid)) {
+  // Sin gid: Google exporta la primera pestaña. El .xls de los dueños cambia de
+  // gid cada vez que se vuelve a subir, así que fijarlo rompe el sync (400).
+  const gid = (Deno.env.get("LITORAL_SHEET_GID") || "").trim();
+  if (!/^[a-zA-Z0-9_-]+$/.test(sheetId) || (gid && !/^\d+$/.test(gid))) {
     throw new HttpError(503, "La fuente del catálogo no está configurada correctamente.");
   }
-  return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
+  return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv${gid ? `&gid=${gid}` : ""}`;
 }
 
 export async function fetchSheetCsv() {
