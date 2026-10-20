@@ -455,7 +455,7 @@ function AdminProductsContent() {
           <select
             className="sort-select"
             value={priceFilter}
-            aria-label="Filtrar por precio"
+            aria-label="Filtrar productos fijados"
             onChange={(event) => { setPriceFilter(event.target.value as typeof priceFilter); setPage(1); }}
           >
             <option value="all">Precio: todos</option>
