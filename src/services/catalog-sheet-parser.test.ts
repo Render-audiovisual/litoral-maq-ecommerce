@@ -20,6 +20,11 @@ describe("validador del Sheet ejecutado en servidor", () => {
     ]);
   });
 
+  it("acepta precios con punto decimal del export del sistema (45499.91)", () => {
+    const parsed = parseCatalogSheet("codigo,articulo,preciocon,stock\n1,Uno,45499.91,2\n2,Dos,8500,0", 1);
+    expect(parsed.rows.map((row) => row.price)).toEqual([45499.91, 8500]);
+  });
+
   it("lee stock y quita ceros a la izquierda del código", () => {
     const parsed = parseCatalogSheet("codigo,articulo,preciocon,stock\n02635,Uno,$100,9\n3,Dos,$200,", 1);
     expect(parsed.rows).toEqual([
