@@ -842,7 +842,7 @@ function AdminProductsContent() {
               <div className="form-section-title shipping-fields wide">
                 <h3>Bulto embalado</h3>
                 <p>
-                  Se usa para cotizar Envíopack. Sin estos datos, el producto
+                  Se usa para cotizar con OCA. Sin estos datos, el producto
                   queda en cotización manual.
                 </p>
               </div>

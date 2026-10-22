@@ -56,6 +56,11 @@ export async function createShipping(orderId: string): Promise<ShippingCreationR
   return await response.json() as ShippingCreationResult;
 }
 
+export async function refreshShipping(orderId: string): Promise<{ status: string }> {
+  const response = await authenticatedRequest("shipping-refresh", { orderId });
+  return await response.json() as { status: string };
+}
+
 export async function downloadShippingLabel(orderId: string) {
   const response = await authenticatedRequest("shipping-label", { orderId, format: "pdf" });
   const blob = await response.blob();

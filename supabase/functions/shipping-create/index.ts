@@ -38,14 +38,6 @@ function asPackages(value: unknown) {
   });
 }
 
-function splitName(fullName: string) {
-  const parts = fullName.trim().split(/\s+/);
-  return {
-    firstName: parts.shift() || "Cliente",
-    lastName: parts.join(" ") || "Litoral Maq",
-  };
-}
-
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return handleOptions(request);
   if (request.method !== "POST") {
@@ -124,16 +116,13 @@ Deno.serve(async (request) => {
     // desaparición del servicio obliga a recotizar y confirmar el nuevo total.
     if (new Date(quote.expires_at).getTime() <= Date.now()) {
       const refreshed = await provider.quote({
-        province: String(destination.province || order.province || ""),
         postalCode: String(destination.postalCode || order.postal_code || ""),
-        localityId: destination.localityId
-          ? String(destination.localityId)
-          : undefined,
         deliveryMode: quote.delivery_mode,
         packages,
         totalWeightKg: Number(
           packages.reduce((sum, item) => sum + item.weightKg, 0).toFixed(2),
         ),
+        declaredValue: Number(destination.declaredValue) || 0,
       });
       const current = refreshed.find((item) =>
         item.carrierId === providerQuote.carrierId &&
@@ -223,112 +212,63 @@ Deno.serve(async (request) => {
       claimOwned = true;
     }
 
-    async function persistShipment(
-      shipment: ProviderShipment,
-      providerOrderId: string,
-    ) {
-      let latestMessage = "";
-      if (shipment.state === "P") {
-        try {
-          const tracking = await provider.getTracking(shipment.id);
-          latestMessage = tracking.at(-1)?.message || "";
-        } catch {
-          // El tracking puede tardar en aparecer; la guía sigue siendo válida.
-        }
-      }
-      const normalized = normalizeProviderStatus({
-        state: shipment.state,
-        condition: shipment.condition,
-        latestTrackingMessage: latestMessage,
-      });
-      const labelReady = shipment.state === "P";
-      const now = new Date().toISOString();
-      const shipmentUpdate = {
-        provider_order_id: providerOrderId,
-        provider_shipment_id: shipment.id,
+    const declaredValue = Number(destination.declaredValue) || 0;
+    const shipment: ProviderShipment = await provider.createShipment({
+      externalOrderId: orderId,
+      email: order.email,
+      phone: order.phone || undefined,
+      quote: providerQuote,
+      packages,
+      declaredValue,
+      destination: {
+        recipient: order.customer_name,
+        province: order.province || String(destination.province || ""),
+        postalCode: order.postal_code || String(destination.postalCode || ""),
+        locality: order.locality || String(destination.locality || ""),
+        street: order.street || undefined,
+        streetNumber: order.street_number || undefined,
+        floor: order.floor || undefined,
+        apartment: order.apartment || undefined,
+        reference: order.address_reference || undefined,
+        branchId: quote.branch_id || undefined,
+      },
+    });
+    const normalized = normalizeProviderStatus({ state: shipment.state });
+    const { error: shipmentUpdateError } = await db
+      .from("shipping_shipments")
+      .update({
+        provider_order_id: shipment.orderId,
+        provider_shipment_id: shipment.shipmentId,
         status: normalized,
-        provider_condition: shipment.condition,
-        provider_subcondition: shipment.subcondition,
+        provider_condition: shipment.state,
         tracking_number: shipment.trackingNumber,
-        label_ready: labelReady,
+        label_ready: true,
         last_error: null,
-        updated_at: now,
-      };
-      const { error: shipmentUpdateError } = await db
-        .from("shipping_shipments")
-        .update(shipmentUpdate)
-        .eq("order_id", orderId);
-      if (shipmentUpdateError) {
-        throw new HttpError(
-          503,
-          "La guía se creó, pero no pudimos guardar su estado. Reintentá para reconciliarla.",
-        );
-      }
-      await db.from("orders").update({
-        shipping_provider: provider.id,
-        shipping_carrier: providerQuote.carrierName,
-        shipping_service: providerQuote.service,
-        shipping_status: normalized,
-        shipping_tracking_number: shipment.trackingNumber,
-        shipping_label_ready: labelReady,
-      }).eq("id", orderId);
-      return { normalized, labelReady };
+        updated_at: new Date().toISOString(),
+      })
+      .eq("order_id", orderId);
+    if (shipmentUpdateError) {
+      // La guía ya existe en OCA: no la marcamos como error, pedimos reconciliar.
+      throw new HttpError(
+        503,
+        `La guía se creó en OCA (envío ${shipment.shipmentId}), pero no pudimos guardarla. Avisá a sistemas antes de reintentar.`,
+      );
     }
-
-    let lookup = await provider.findOrder(orderId);
-    let providerOrderId = lookup?.orderId || "";
-    if (!providerOrderId) {
-      const names = splitName(order.customer_name);
-      try {
-        providerOrderId = (await provider.createOrder({
-          externalOrderId: orderId,
-          firstName: names.firstName,
-          lastName: names.lastName,
-          email: order.email,
-          phone: order.phone || undefined,
-          amount: Number(order.total),
-          createdAt: order.created_at,
-          province: order.province || String(destination.province || ""),
-          locality: order.locality || String(destination.locality || ""),
-        })).id;
-      } catch (error) {
-        // Un timeout puede ocurrir después de que Envíopack creó el pedido.
-        lookup = await provider.findOrder(orderId);
-        if (!lookup?.orderId) throw error;
-        providerOrderId = lookup.orderId;
-      }
-    }
-
-    lookup = await provider.findOrder(orderId);
-    let shipment: ProviderShipment;
-    if (lookup?.latestShipmentId) {
-      shipment = await provider.getShipment(lookup.latestShipmentId);
-    } else {
-      shipment = await provider.createShipment({
-        providerOrderId,
-        quote: providerQuote,
-        packages,
-        destination: {
-          recipient: order.customer_name,
-          province: order.province || String(destination.province || ""),
-          postalCode: order.postal_code || String(destination.postalCode || ""),
-          locality: order.locality || String(destination.locality || ""),
-          street: order.street || undefined,
-          streetNumber: order.street_number || undefined,
-          floor: order.floor || undefined,
-          apartment: order.apartment || undefined,
-          reference: order.address_reference || undefined,
-          branchId: quote.branch_id || undefined,
-        },
-      });
-    }
-    const persisted = await persistShipment(shipment, providerOrderId);
+    await db.from("orders").update({
+      shipping_provider: provider.id,
+      shipping_carrier: providerQuote.carrierName,
+      shipping_service: providerQuote.service,
+      shipping_status: normalized,
+      shipping_tracking_number: shipment.trackingNumber,
+      shipping_label_ready: true,
+    }).eq("id", orderId);
+    const persisted = { normalized, labelReady: true };
     return json(request, {
       status: persisted.normalized,
-      shipmentId: shipment.id,
+      shipmentId: shipment.shipmentId,
       trackingNumber: shipment.trackingNumber,
       labelReady: persisted.labelReady,
-      idempotent: Boolean(lookup?.latestShipmentId),
+      idempotent: false,
     });
   } catch (error) {
     // If another request already owns the idempotency claim, the losing

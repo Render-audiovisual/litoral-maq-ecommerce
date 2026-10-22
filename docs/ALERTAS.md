@@ -62,4 +62,4 @@ El endpoint `health` responde **200** cuando el cron corrió hace menos de 15 mi
 
 ## Logs
 
-Los errores de `mercado-pago-webhook`, `enviopack-webhook`, `payment-create`, el envío de correos y las alertas quedan como una línea JSON con `"level":"error"` y `"scope":"<función>"`. Se ven en Supabase → Edge Functions → Logs.
+Los errores de `mercado-pago-webhook`, `shipping-create`, `payment-create`, el envío de correos y las alertas quedan como una línea JSON con `"level":"error"` y `"scope":"<función>"`. Se ven en Supabase → Edge Functions → Logs.

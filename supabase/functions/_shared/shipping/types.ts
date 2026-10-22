@@ -2,10 +2,23 @@ import type { ShippingPackage } from "./domain.ts";
 
 export type DeliveryMode = "D" | "S";
 
+export class ShippingProviderError extends Error {
+  constructor(
+    message: string,
+    readonly status = 502,
+    readonly retryable = false,
+  ) {
+    super(message);
+    this.name = "ShippingProviderError";
+  }
+}
+
 export type ProviderQuote = {
   carrierId: string;
   carrierName: string;
+  /** Cómo entra el paquete al carrier: "D" = retiran en el depósito. */
   dispatchMode: "D" | "S";
+  /** Cómo llega al cliente: "D" = a domicilio, "S" = a sucursal. */
   deliveryMode: DeliveryMode;
   service: string;
   amount: number;
@@ -16,12 +29,11 @@ export type ProviderQuote = {
 };
 
 export type QuoteRequest = {
-  province: string;
   postalCode: string;
-  localityId?: string;
   deliveryMode: DeliveryMode;
   packages: ShippingPackage[];
   totalWeightKg: number;
+  declaredValue: number;
 };
 
 export type ShipmentDestination = {
@@ -37,53 +49,36 @@ export type ShipmentDestination = {
   branchId?: string;
 };
 
-export type CreateProviderOrderInput = {
+export type CreateProviderShipmentInput = {
   externalOrderId: string;
-  firstName: string;
-  lastName: string;
   email: string;
   phone?: string;
-  amount: number;
-  createdAt: string;
-  province: string;
-  locality: string;
-};
-
-export type CreateProviderShipmentInput = {
-  providerOrderId: string;
   quote: ProviderQuote;
   destination: ShipmentDestination;
   packages: ShippingPackage[];
-};
-
-export type ProviderOrderLookup = {
-  orderId: string;
-  latestShipmentId: string | null;
-  shipmentIds: string[];
+  declaredValue: number;
 };
 
 export type ProviderShipment = {
-  id: string;
+  /** Orden de retiro del carrier (sirve para etiqueta y anulación). */
   orderId: string;
-  state: string | null;
-  condition: string | null;
-  subcondition: string | null;
+  /** Número de envío / pieza para seguimiento. */
+  shipmentId: string;
   trackingNumber: string | null;
+  /** Último estado en texto libre del carrier. */
+  state: string | null;
 };
+
+export type TrackingEvent = { date: string; message: string };
 
 export interface ShippingProvider {
   readonly id: string;
-  listLocalities(
-    province: string,
-  ): Promise<Array<{ id: string; name: string }>>;
   quote(request: QuoteRequest): Promise<ProviderQuote[]>;
-  findOrder(externalOrderId: string): Promise<ProviderOrderLookup | null>;
-  createOrder(input: CreateProviderOrderInput): Promise<{ id: string }>;
   createShipment(input: CreateProviderShipmentInput): Promise<ProviderShipment>;
-  getShipment(id: string): Promise<ProviderShipment>;
-  getTracking(id: string): Promise<Array<{ date: string; message: string }>>;
+  getTracking(shipmentId: string): Promise<TrackingEvent[]>;
   getLabel(
-    id: string,
-    format: "pdf" | "jpg",
+    orderId: string,
+    shipmentId: string,
   ): Promise<{ bytes: Uint8Array; contentType: string }>;
+  cancel(orderId: string): Promise<void>;
 }

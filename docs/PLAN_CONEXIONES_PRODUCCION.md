@@ -235,7 +235,9 @@ el backend confirma el pago o cuando la pantalla consulta un pedido aprobado.
 
 ### 7.1 Recomendación
 
-La decisión vigente es **Envíopack como primer agregador multilogística**. La
+> Actualización 2026-10: Envíopack fue descartado (exigía volumen alto). La decisión vigente es **OCA ePak directo**; ver `docs/OCA_INTEGRATION.md`. El texto siguiente es histórico.
+
+La decisión anterior era **Envíopack como primer agregador multilogística**. La
 integración implementada cotiza operadores habilitados desde Corrientes, crea el
 pedido y el envío, descarga etiquetas y recibe tracking por webhook:
 

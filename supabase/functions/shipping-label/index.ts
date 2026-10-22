@@ -17,33 +17,34 @@ Deno.serve(async (request) => {
   try {
     const db = serviceClient();
     await requireAdmin(request, db);
-    const body = await request.json() as { orderId?: string; format?: string };
+    const body = await request.json() as { orderId?: string };
     const orderId = String(body.orderId || "").trim();
-    const format = body.format === "jpg" ? "jpg" : "pdf";
     const { data, error } = await db
       .from("shipping_shipments")
-      .select("provider,provider_shipment_id,label_ready")
+      .select("provider,provider_order_id,provider_shipment_id,label_ready")
       .eq("order_id", orderId)
       .maybeSingle();
-    if (error || !data?.provider_shipment_id) {
+    if (error || !data?.provider_shipment_id || !data.provider_order_id) {
       throw new HttpError(404, "La guía todavía no existe.");
     }
     if (!data.label_ready) {
-      throw new HttpError(409, "Envíopack todavía no confirmó la etiqueta.");
+      throw new HttpError(409, "OCA todavía no confirmó la etiqueta.");
     }
     const provider = getShippingProvider();
     if (data.provider !== provider.id) {
       throw new HttpError(409, "La guía pertenece a otro proveedor logístico.");
     }
-    const label = await provider.getLabel(data.provider_shipment_id, format);
+    const label = await provider.getLabel(
+      data.provider_order_id,
+      data.provider_shipment_id,
+    );
     const responseBody = Uint8Array.from(label.bytes).buffer;
     return new Response(responseBody, {
       status: 200,
       headers: {
         ...corsHeaders(request),
         "content-type": label.contentType,
-        "content-disposition":
-          `attachment; filename="Etiqueta ${orderId}.${format}"`,
+        "content-disposition": `attachment; filename="Etiqueta ${orderId}.pdf"`,
         "cache-control": "private, no-store",
         "x-content-type-options": "nosniff",
       },

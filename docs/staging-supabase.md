@@ -160,7 +160,7 @@ que ya espera `.github/workflows/deploy-hostinger.yml`.
 
 4. **Las Edge Functions se sirven pero no se pueden ejercitar de punta a
    punta.** Las 7 responden en `http://127.0.0.1:54321/functions/v1/<nombre>`
-   (401 o 200, nunca 404), pero necesitan secretos de proveedor (Envíopack,
+   (401 o 200, nunca 404), pero necesitan secretos de proveedor (OCA,
    Mercado Pago, correo) que deliberadamente no se cargaron. Por eso
    `order-notifications` devuelve 500 y el store loguea "el correo quedó en la
    cola para reintento": el pedido se guarda igual, que es el comportamiento
