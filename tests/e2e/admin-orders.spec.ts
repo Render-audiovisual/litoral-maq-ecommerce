@@ -27,7 +27,10 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
     const key = "litoral-orders-v1";
     const orders = JSON.parse(localStorage.getItem(key) || "[]");
     const order = orders.find((item: { customerName?: string }) => item.customerName === "Cliente Pedido E2E");
-    if (order) order.paymentStatus = "approved";
+    if (order) {
+      orders.push({ ...order, id: "LM-REQUEST-E2E", customerName: "Solicitud pendiente E2E", paymentStatus: "pending" });
+      order.paymentStatus = "approved";
+    }
     localStorage.setItem(key, JSON.stringify(orders));
   });
 
@@ -37,6 +40,12 @@ test("un pedido conserva sus productos y se gestiona desde el panel", async ({ p
   await page.getByRole("button", { name: "Ingresar", exact: true }).click();
   await expect(page).toHaveURL(/\/admin$/);
   await page.goto("/admin/pedidos");
+  await expect(page.locator("tbody tr").filter({ hasText: "Solicitud pendiente E2E" })).toHaveCount(0);
+  await page.getByLabel("Circuito comercial").selectOption("requests");
+  const requestRow = page.locator("tbody tr").filter({ hasText: "Solicitud pendiente E2E" });
+  await expect(requestRow).toBeVisible();
+  await expect(requestRow.locator(".status-select")).toBeDisabled();
+  await page.getByLabel("Circuito comercial").selectOption("active");
 
   const row = page.locator("tbody tr").filter({ hasText: "Cliente Pedido E2E" });
   await expect(page).toHaveTitle(/^\(1\) Pedidos pendientes/);

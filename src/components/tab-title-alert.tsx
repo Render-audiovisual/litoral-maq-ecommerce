@@ -1,5 +1,7 @@
 "use client";
 
+import { isConfirmedOperationalOrder } from "@/lib/orders";
+
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useStore } from "@/store/store";
@@ -17,7 +19,7 @@ export function TabTitleAlert() {
   );
   const enabled = !adminSurface;
   const hasCart = cartCount > 0;
-  const pendingOrderCount = orders.filter((order) => order.status === "pendiente").length;
+  const pendingOrderCount = orders.filter((order) => order.status === "pendiente" && isConfirmedOperationalOrder(order)).length;
 
   useEffect(() => {
     if (!adminSurface || pathname === "/admin/login") return;

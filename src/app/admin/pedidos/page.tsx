@@ -47,12 +47,13 @@ function deliveryAmountLabel(order: Order) {
   return formatCurrency(order.shipping);
 }
 
-type CommercialFilter = "active" | "followup" | "delayed" | "paid" | "expired" | "all";
+type CommercialFilter = "active" | "followup" | "delayed" | "paid" | "expired" | "all" | "requests";
 
 /** Filtros que se pueden pedir por URL (?filtro=…), p. ej. desde el Resumen. */
 const URL_FILTERS: Record<string, CommercialFilter> = {
   demorados: "delayed",
   seguimiento: "followup",
+  solicitudes: "requests",
 };
 
 function matchesCommercialFilter(order: Order, filter: CommercialFilter, now: Date) {
@@ -85,11 +86,15 @@ export default function AdminOrdersPage() {
     () => orders.filter(isConfirmedOperationalOrder),
     [orders],
   );
+  const requestOrders = useMemo(() => orders.filter((order) =>
+    !isConfirmedOperationalOrder(order) && order.status === "pendiente" &&
+    (order.paymentStatus ?? "pending") === "pending"), [orders]);
+  const visibleOrders = commercialFilter === "requests" ? requestOrders : operationalOrders;
   const [selectedSnapshot, setSelected] = useState<Order | null>(null);
   // El detalle abierto sigue a la lista: si otra persona mueve el pedido (lo
   // trae el refresco periódico o un conflicto al guardar), se ve al instante.
   const selected = selectedSnapshot
-    ? (operationalOrders.find((order) => order.id === selectedSnapshot.id) ?? selectedSnapshot)
+    ? (orders.find((order) => order.id === selectedSnapshot.id) ?? selectedSnapshot)
     : null;
   const [updatingId, setUpdatingId] = useState("");
   const [message, setMessage] = useState("");
@@ -125,16 +130,16 @@ export default function AdminOrdersPage() {
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    return operationalOrders.filter(
+    return visibleOrders.filter(
       (order) =>
-        matchesCommercialFilter(order, commercialFilter, now) &&
+        (commercialFilter === "requests" || matchesCommercialFilter(order, commercialFilter, now)) &&
         (!status || order.status === status) &&
         (!normalized ||
           [order.id, order.customerName, order.email, order.address].some(
             (value) => value?.toLowerCase().includes(normalized),
           )),
     );
-  }, [operationalOrders, query, status, commercialFilter, now]);
+  }, [visibleOrders, query, status, commercialFilter, now]);
 
   /**
    * Resumen de productos por fila. Antes la columna decía "1 unidades · 1
@@ -397,6 +402,7 @@ export default function AdminOrdersPage() {
             <option value="delayed">Demorados</option>
             <option value="paid">Pagados</option>
             <option value="all">Todos</option>
+            <option value="requests">Solicitudes sin pago (no son ventas)</option>
           </select>
           {delayedCount > 0 && commercialFilter !== "delayed" && (
             <button
@@ -408,14 +414,15 @@ export default function AdminOrdersPage() {
             </button>
           )}
           <span className="order-filters-count" aria-live="polite">
-            {filtered.length} de {operationalOrders.length} pedidos confirmados
+            {filtered.length} de {visibleOrders.length} {commercialFilter === "requests" ? "solicitudes sin pago" : "pedidos confirmados"}
           </span>
         </div>
-        {!operationalOrders.length ? (
+        {commercialFilter === "requests" && <p role="status">Estas solicitudes no son ventas confirmadas. Abrir WhatsApp no prueba que el cliente haya enviado el mensaje ni que haya pagado.</p>}
+        {!visibleOrders.length ? (
           <div className="orders-empty">
-            <h2>Todavía no hay pedidos confirmados</h2>
+            <h2>{commercialFilter === "requests" ? "No hay solicitudes pendientes" : "Todavía no hay pedidos confirmados"}</h2>
             <p>
-              Van a aparecer cuando Mercado Pago acredite el pago.
+              {commercialFilter === "requests" ? "Las solicitudes sin pago se consultan acá, sin sumarse a las ventas." : "Van a aparecer cuando Mercado Pago acredite el pago."}
             </p>
           </div>
         ) : !filtered.length ? (
@@ -521,7 +528,7 @@ export default function AdminOrdersPage() {
                         aria-label={`Estado de ${order.id}`}
                         className={`status-select status-${order.status}`}
                         value={order.status}
-                        disabled={updatingId === order.id}
+                        disabled={updatingId === order.id || !isConfirmedOperationalOrder(order)}
                         onChange={(event) =>
                           void changeStatus(
                             order,
@@ -648,7 +655,7 @@ export default function AdminOrdersPage() {
                   aria-label={`Estado de ${selected.id} en detalle`}
                   className={`status-select status-${selected.status}`}
                   value={selected.status}
-                  disabled={updatingId === selected.id}
+                  disabled={updatingId === selected.id || !isConfirmedOperationalOrder(selected)}
                   onChange={(event) =>
                     void changeStatus(
                       selected,
