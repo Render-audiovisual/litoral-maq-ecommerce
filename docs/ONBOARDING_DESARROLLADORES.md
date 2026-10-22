@@ -112,7 +112,7 @@ ni la `service_role key` de Supabase.
 - `supabase/migrations/` — SQL, siempre aditivo.
 - `docs/` — toda la documentación operativa. Antes de tocar un área,
   buscar si ya hay un doc: `ADMIN_CUENTAS.md`, `ALERTAS.md`,
-  `ENVIOPACK_INTEGRATION.md`, `MERCADO_PAGO_INTEGRATION.md`,
+  `OCA_INTEGRATION.md`, `MERCADO_PAGO_INTEGRATION.md`,
   `staging-supabase.md`, `CATALOGO_Y_CORREOS_OPERATIVOS.md`.
 
 ## 8. Para que Franco lo active

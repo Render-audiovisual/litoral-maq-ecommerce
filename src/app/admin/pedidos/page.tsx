@@ -18,7 +18,7 @@ import {
 import { getOrderDelay } from "@/lib/order-delays";
 import { canRecontactUnpaidOrder, isConfirmedOperationalOrder } from "@/lib/orders";
 import type { Order, PaymentStatus } from "@/lib/types";
-import { createShipping, downloadShippingLabel } from "@/services/shipping";
+import { createShipping, downloadShippingLabel, refreshShipping } from "@/services/shipping";
 import { flushOrderNotifications } from "@/services/order-notifications";
 
 const statuses = Object.keys(ORDER_STATUS_LABELS) as Order["status"][];
@@ -234,6 +234,26 @@ export default function AdminOrdersPage() {
     } catch (caught) {
       setError(
         caught instanceof Error ? caught.message : "No se pudo crear la guía.",
+      );
+    } finally {
+      setShippingAction("");
+    }
+  }
+
+  async function refreshTracking(order: Order) {
+    setShippingAction(order.id);
+    setError("");
+    try {
+      await refreshShipping(order.id);
+      const latest = await refreshOrders();
+      const refreshed = latest.find((item) => item.id === order.id);
+      if (refreshed) setSelected(refreshed);
+      setMessage(`Seguimiento de ${order.id} actualizado.`);
+    } catch (caught) {
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "No se pudo actualizar el seguimiento.",
       );
     } finally {
       setShippingAction("");
@@ -721,6 +741,16 @@ export default function AdminOrdersPage() {
                       {shippingAction === selected.id
                         ? "Descargando…"
                         : "Descargar etiqueta PDF"}
+                    </button>
+                  )}
+                  {selected.shippingLabelReady && (
+                    <button
+                      type="button"
+                      className="button secondary"
+                      disabled={shippingAction === selected.id}
+                      onClick={() => void refreshTracking(selected)}
+                    >
+                      Actualizar seguimiento
                     </button>
                   )}
                   {!selected.shippingQuoteId && (

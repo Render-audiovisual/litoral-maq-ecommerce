@@ -26,8 +26,8 @@ npm run build
 npm run validate:catalog
 ```
 
-La integración logística de Envíopack está documentada en
-[`docs/ENVIOPACK_INTEGRATION.md`](./docs/ENVIOPACK_INTEGRATION.md). El frontend
+La integración logística con OCA ePak está documentada en
+[`docs/OCA_INTEGRATION.md`](./docs/OCA_INTEGRATION.md). El frontend
 continúa siendo estático; cotización, guía, etiqueta y webhook corren en
 Supabase Edge Functions para no exponer credenciales.
 
@@ -91,7 +91,7 @@ en `src/services/mock.ts`.
 - Base de datos: implementar `DatabaseAdapter` y reemplazar `localStorage`.
 - Mercado Pago: sustituir `mockPaymentAdapter`; agregar preferencia, retorno y
   webhook.
-- Envíos: Envíopack implementado como primer proveedor detrás de un contrato
+- Envíos: OCA ePak implementado como proveedor detrás de un contrato
   desacoplado; Andreani puede agregarse como otro adaptador sin cambiar checkout.
 - Imágenes: sustituir `mockImageStorageAdapter` por S3, Cloudinary o equivalente.
 - Google Sheets: sustituir `mockSheetSyncAdapter` por sincronización autenticada.

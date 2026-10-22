@@ -107,11 +107,10 @@ Con el CLI autenticado y vinculado al proyecto `bhtaecnzpuotlsenbdlz`:
 ```bash
 npx supabase functions deploy order-notifications --project-ref bhtaecnzpuotlsenbdlz
 npx supabase functions deploy mercado-pago-webhook --project-ref bhtaecnzpuotlsenbdlz
-npx supabase functions deploy enviopack-webhook --project-ref bhtaecnzpuotlsenbdlz
 npx supabase functions deploy payment-create --project-ref bhtaecnzpuotlsenbdlz
 ```
 
-Los últimos tres despliegues incorporan el límite y el disparo de correos a los webhooks ya preparados. Mantener Mercado Pago y Envíopack apagados hasta sus pruebas específicas.
+Los últimos tres despliegues incorporan el límite y el disparo de correos a los webhooks ya preparados. Mantener Mercado Pago y el envío automático apagados hasta sus pruebas específicas.
 
 ### Reintento automático
 

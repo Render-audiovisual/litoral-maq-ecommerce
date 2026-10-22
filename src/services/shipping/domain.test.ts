@@ -3,7 +3,6 @@ import {
   assessPackages,
   normalizeLocation,
   normalizeProviderStatus,
-  packagesParameter,
 } from "../../../supabase/functions/_shared/shipping/domain";
 
 const product = {
@@ -23,7 +22,6 @@ describe("dominio logístico compartido", () => {
     if (!result.automatic) return;
     expect(result.packages).toHaveLength(2);
     expect(result.totalWeightKg).toBe(9);
-    expect(packagesParameter(result.packages)).toBe("20x30x40,20x30x40");
   });
 
   it("deriva a manual si faltan medidas verificadas", () => {
@@ -42,5 +40,8 @@ describe("dominio logístico compartido", () => {
     expect(normalizeLocation("  Río Cuarto  ")).toBe("rio cuarto");
     expect(normalizeProviderStatus({ latestTrackingMessage: "En distribución" })).toBe("in_transit");
     expect(normalizeProviderStatus({ latestTrackingMessage: "Entregado al destinatario" })).toBe("delivered");
+    expect(normalizeProviderStatus({ state: "OR Pendiente de Impresion" })).toBe("ready");
+    expect(normalizeProviderStatus({ latestTrackingMessage: "En proceso de Retiro - Suc: PLANTA" })).toBe("ready");
+    expect(normalizeProviderStatus({ latestTrackingMessage: "Orden Retiro Anulada" })).toBe("cancelled");
   });
 });

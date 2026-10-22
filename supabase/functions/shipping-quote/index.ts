@@ -1,7 +1,6 @@
 import {
   assessPackages,
   DEFAULT_AUTOMATIC_LIMITS,
-  normalizeLocation,
 } from "../_shared/shipping/domain.ts";
 import { getShippingProvider } from "../_shared/shipping/factory.ts";
 import {
@@ -82,7 +81,7 @@ Deno.serve(async (request) => {
     const { data: rows, error: productsError } = await db
       .from("products")
       .select(
-        "id,name,active,shipping_enabled,shipping_weight_kg,shipping_height_cm,shipping_width_cm,shipping_length_cm",
+        "id,name,price,active,shipping_enabled,shipping_weight_kg,shipping_height_cm,shipping_width_cm,shipping_length_cm",
       )
       .in("id", productIds)
       .eq("active", true);
@@ -130,40 +129,22 @@ Deno.serve(async (request) => {
       });
     }
 
-    const provider = getShippingProvider();
-    let localityId: string | undefined;
-    let localitySuggestions: string[] = [];
-    if (deliveryType === "sucursal") {
-      const locations = await provider.listLocalities(province);
-      const wanted = normalizeLocation(locality);
-      const exact = locations.find((item) =>
-        normalizeLocation(item.name) === wanted
-      );
-      if (!exact) {
-        localitySuggestions = locations
-          .filter((item) =>
-            normalizeLocation(item.name).includes(wanted) ||
-            wanted.includes(normalizeLocation(item.name))
-          )
-          .slice(0, 5)
-          .map((item) => item.name);
-        return json(request, {
-          status: "manual",
-          reason:
-            "No pudimos identificar la localidad para ofrecer sucursales automáticamente.",
-          localitySuggestions,
-        });
-      }
-      localityId = exact.id;
-    }
+    // Valor declarado = precio de lista de lo que viaja, leído del servidor.
+    const priceById = new Map(
+      (rows || []).map((product) => [product.id, Number(product.price) || 0]),
+    );
+    const declaredValue = lines.reduce(
+      (sum, line) => sum + (priceById.get(line.productId) || 0) * line.quantity,
+      0,
+    );
 
+    const provider = getShippingProvider();
     const quotes = await provider.quote({
-      province,
       postalCode,
-      localityId,
       deliveryMode: deliveryType === "sucursal" ? "S" : "D",
       packages: assessment.packages,
       totalWeightKg: assessment.totalWeightKg,
+      declaredValue,
     });
     if (!quotes.length) {
       return json(request, {
@@ -195,7 +176,7 @@ Deno.serve(async (request) => {
       province,
       postalCode,
       locality,
-      localityId: localityId || null,
+      declaredValue,
       deliveryType,
     };
     const records = quotes.slice(0, 20).map((quote) => ({

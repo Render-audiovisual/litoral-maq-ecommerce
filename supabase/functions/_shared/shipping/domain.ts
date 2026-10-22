@@ -138,12 +138,6 @@ export function assessPackages(
   };
 }
 
-export function packagesParameter(packages: ShippingPackage[]) {
-  return packages.map((item) =>
-    `${item.heightCm}x${item.widthCm}x${item.lengthCm}`
-  ).join(",");
-}
-
 export function normalizeLocation(value: string) {
   return value
     .normalize("NFD")
@@ -155,18 +149,18 @@ export function normalizeLocation(value: string) {
 
 export function normalizeProviderStatus(input: {
   state?: string | null;
-  condition?: string | null;
   latestTrackingMessage?: string | null;
 }) {
   const text = normalizeLocation(
-    [input.state, input.condition, input.latestTrackingMessage].filter(Boolean)
-      .join(" "),
+    [input.state, input.latestTrackingMessage].filter(Boolean).join(" "),
   );
   if (/entregad|recibid.*destinat/.test(text)) return "delivered" as const;
-  if (/cancel|rechaz|devuelt|no entreg/.test(text)) return "cancelled" as const;
-  if (/transito|distribucion|despach|viaje|arribo|manifiesto/.test(text)) {
+  if (/cancel|anulad|rechaz|devuelt|no entreg/.test(text)) {
+    return "cancelled" as const;
+  }
+  if (/transito|distribucion|despach|viaje|arribo|manifiesto|reparto/.test(text)) {
     return "in_transit" as const;
   }
-  if (input.state === "P") return "ready" as const;
+  if (/retiro|pendiente|ingresad|admitid/.test(text)) return "ready" as const;
   return "processing" as const;
 }

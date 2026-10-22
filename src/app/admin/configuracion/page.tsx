@@ -189,11 +189,11 @@ export default function AdminSettingsPage() {
       state: "off",
     },
     {
-      name: "Envíopack",
-      variable: "ENVIOPACK_API_KEY",
+      name: "OCA ePak",
+      variable: "OCA_USER",
       status: isShippingEnabled
         ? "Integración automática activa"
-        : "Descartado para la operación actual; integración desactivada",
+        : "Integración lista; pendiente de credenciales y activación",
       state: isShippingEnabled ? "ok" : "off",
     },
     {
@@ -212,10 +212,10 @@ export default function AdminSettingsPage() {
     {
       label: "Envíos",
       value: isShippingEnabled
-        ? "Envíopack automático + respaldo manual"
+        ? "OCA automático + respaldo manual"
         : "Cotización manual",
       detail: isShippingEnabled
-        ? "Cotiza OCA/Urbano; pesos incompletos o bultos fuera de límite pasan a revisión manual."
+        ? "Cotiza con OCA ePak; pesos incompletos o bultos fuera de límite pasan a revisión manual."
         : `El cliente elige empresa (${CARRIERS}) y el equipo le pasa el costo del envío después del pago.`,
     },
     {
