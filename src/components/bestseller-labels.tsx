@@ -11,7 +11,7 @@ import { resolveRequestedProvider } from "@/services/provider";
 import "./bestseller-labels.css";
 
 type Filter = "all" | "tagged" | "untagged";
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 60;
 
 export function BestsellerLabels() {
   const { products, refreshProducts } = useStore();
@@ -97,7 +97,7 @@ export function BestsellerLabels() {
         const checked = isTagged(product.id);
         const photo = productPhoto(product);
         return <label className={`label-product${checked ? " is-tagged" : ""}`} key={product.id}>
-          <span className="label-thumb">{photo && !failedImages.has(photo) ? <Image src={photo} alt="" fill sizes="56px" onError={() => setFailedImages((current) => new Set(current).add(photo))} /> : null}</span>
+          <span className="label-thumb">{photo && !failedImages.has(photo) ? <Image src={photo} alt="" fill sizes="44px" onError={() => setFailedImages((current) => new Set(current).add(photo))} /> : null}</span>
           <span className="label-info"><strong>{product.name}</strong><small>Cód. {product.code}{product.category ? ` · ${product.category}` : ""}</small></span>
           <span className="label-check">
             <span className="label-state">{busy === product.id ? "Guardando…" : checked ? "Más vendido" : "Sin etiqueta"}</span>
