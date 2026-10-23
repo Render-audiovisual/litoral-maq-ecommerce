@@ -8,6 +8,7 @@ import { useStore } from "@/store/store";
 import { isValidAdminSession, isValidCustomerSession } from "@/lib/auth";
 import { getStoreUrl } from "@/lib/domain-config";
 import { isAdminLoginPath } from "@/lib/admin-routing";
+import { countOrdersToPrepare } from "@/lib/orders";
 import {
   ADMIN_ACTIVITY_WRITE_THROTTLE_MS,
   ADMIN_IDLE_CHECK_INTERVAL_MS,
@@ -66,7 +67,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const loggingOutRef = useRef(false);
   const [authCheck, setAuthCheck] = useState(0);
   const pendingOrderCount = useMemo(
-    () => orders.filter((order) => order.status === "pendiente").length,
+    () => countOrdersToPrepare(orders),
     [orders],
   );
 
