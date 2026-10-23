@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseCatalogSheet } from "../../supabase/functions/_shared/catalog-sheet";
+import { MAX_PRICE, parseCatalogSheet, parseStock } from "../../supabase/functions/_shared/catalog-sheet";
 
 describe("validador del Sheet ejecutado en servidor", () => {
   it("acepta encabezados reales, comillas y precios argentinos", () => {
@@ -23,6 +23,28 @@ describe("validador del Sheet ejecutado en servidor", () => {
   it("acepta precios con punto decimal del export del sistema (45499.91)", () => {
     const parsed = parseCatalogSheet("codigo,articulo,preciocon,stock\n1,Uno,45499.91,2\n2,Dos,8500,0", 1);
     expect(parsed.rows.map((row) => row.price)).toEqual([45499.91, 8500]);
+  });
+
+  it("parseStock acepta solo enteros: miles, decimales y texto se descartan", () => {
+    expect(parseStock("12")).toBe(12);
+    expect(parseStock(" 2,0 ")).toBe(2);
+    expect(parseStock("-2828")).toBe(0);
+    expect(parseStock("1.234")).toBeNull();
+    expect(parseStock("1,234")).toBeNull();
+    expect(parseStock("2,5")).toBeNull();
+    expect(parseStock("n/d")).toBeNull();
+    expect(parseStock("")).toBeNull();
+    expect(parseStock("99999999999")).toBeNull();
+  });
+
+  it("descarta filas con precio fuera de rango o nombre enorme, conservando el código como ilegible", () => {
+    const csv = `codigo,articulo,preciocon,stock
+1,Uno,${MAX_PRICE + 1},3
+2,${"x".repeat(201)},100,3
+3,Tres,100,3`;
+    const parsed = parseCatalogSheet(csv, 1);
+    expect(parsed.rows.map((row) => row.code)).toEqual(["3"]);
+    expect(parsed.unpriceable.map((row) => row.code)).toEqual(["1", "2"]);
   });
 
   it("lee stock y quita ceros a la izquierda del código", () => {
