@@ -10,6 +10,7 @@ import { pageWindow, paginate } from "@/lib/paginate";
 import { googleSheetSyncAdapter } from "@/services/sheet-sync";
 import { ConflictError, rebaseProductEdits } from "@/lib/concurrency";
 import { getLaunchBestSellers } from "@/lib/launch-catalog";
+import { LOW_STOCK_HIDE_AT, isBelowVisibilityThreshold } from "@/lib/product-availability";
 import { getPersistenceAdapter } from "@/services/persistence";
 import { syncProblem } from "@/lib/system-status";
 
@@ -246,6 +247,13 @@ function AdminProductsContent() {
   }
 
   async function toggleVisibility(product: Product) {
+    if (!product.active && isBelowVisibilityThreshold(product)) {
+      setMessageKind("error");
+      setMessage(
+        `No se puede mostrar con ${LOW_STOCK_HIDE_AT} unidades o menos: la tienda oculta sola los productos con poco stock. Se muestra de nuevo cuando el stock supere ${LOW_STOCK_HIDE_AT}.`,
+      );
+      return;
+    }
     setPendingProductId(product.id);
     setMessage("");
     try {
@@ -576,7 +584,7 @@ function AdminProductsContent() {
                             <span />
                           </span>
                           <span className="visibility-label" aria-hidden="true">
-                            {product.active ? "Visible" : "Oculto"}
+                            {product.active ? "Visible" : product.autoHidden ? "Oculto por stock" : "Oculto"}
                           </span>
                         </button>
                       </td>

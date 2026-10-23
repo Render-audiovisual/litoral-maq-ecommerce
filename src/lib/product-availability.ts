@@ -22,6 +22,13 @@ export function getProductAvailability(product: Product): ProductAvailability {
   return product.stock > 0 ? "available" : "out-of-stock";
 }
 
+/** Con este stock confirmado o menos, la base oculta el producto de la tienda. */
+export const LOW_STOCK_HIDE_AT = 3;
+
+export function isBelowVisibilityThreshold(product: Product) {
+  return !product.incomplete.includes("stock") && product.stock <= LOW_STOCK_HIDE_AT;
+}
+
 export function canAddProductToCart(product: Product) {
   return product.active && product.price !== null && getProductAvailability(product) !== "out-of-stock";
 }
