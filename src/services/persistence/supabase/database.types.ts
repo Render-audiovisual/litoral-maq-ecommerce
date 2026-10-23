@@ -55,6 +55,7 @@ export type Database = {
           price: number | null;
           raw_price: string | null;
           price_locked: boolean;
+          auto_hidden: boolean;
           category: string;
           brand: string;
           image: string | null;
@@ -86,6 +87,7 @@ export type Database = {
           price?: number | null;
           raw_price?: string | null;
           price_locked?: boolean;
+          auto_hidden?: boolean;
           category: string;
           brand: string;
           image?: string | null;

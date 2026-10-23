@@ -4,6 +4,7 @@ import {
   availabilityLabel,
   canAddProductToCart,
   getProductAvailability,
+  isBelowVisibilityThreshold,
 } from "./product-availability";
 
 const product = (stock: number, incomplete: string[] = [], active = true): Product => ({
@@ -12,6 +13,15 @@ const product = (stock: number, incomplete: string[] = [], active = true): Produ
   images: [], stock, lowStockThreshold: 5, active, featured: false,
   description: null, variants: [], source: "google-sheet", sourceRow: 2,
   incomplete,
+});
+
+describe("umbral de visibilidad por stock", () => {
+  it("oculta con 3 o menos unidades confirmadas y no con stock sin confirmar", () => {
+    expect(isBelowVisibilityThreshold(product(3))).toBe(true);
+    expect(isBelowVisibilityThreshold(product(0))).toBe(true);
+    expect(isBelowVisibilityThreshold(product(4))).toBe(false);
+    expect(isBelowVisibilityThreshold(product(0, ["stock"]))).toBe(false);
+  });
 });
 
 describe("disponibilidad comercial", () => {

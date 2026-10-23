@@ -9,6 +9,8 @@ export type Product = {
   rawPrice: string | null;
   /** true: el precio lo fijó el panel y el sync del Sheet no lo pisa. */
   priceLocked?: boolean;
+  /** true: la base lo ocultó sola por stock bajo (se muestra de nuevo al reponer). */
+  autoHidden?: boolean;
   category: string;
   brand: string;
   image: string | null;
