@@ -99,6 +99,26 @@ function parsePrice(value: string) {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
 }
 
+// Topes de cordura: una celda mal cargada (o un Sheet adulterado) no debe
+// abortar el sync ni publicar precios absurdos. Fuera de rango = fila ilegible,
+// y para productos que ya existen se conserva el precio anterior.
+export const MAX_PRICE = 100_000_000;
+export const MAX_STOCK = 1_000_000;
+export const MAX_NAME_LENGTH = 200;
+
+/**
+ * Solo enteros ("12", "-3", "2,0"). "1.234" (miles) o "2,5" son ambiguos: se
+ * descartan (null = conservar el stock actual) en vez de adivinar. Negativos
+ * del sistema de stock se llevan a 0.
+ */
+export function parseStock(raw: string): number | null {
+  const value = raw.trim();
+  if (!/^-?\d+([.,]0+)?$/.test(value)) return null;
+  const parsed = Math.trunc(Number(value.replace(",", ".")));
+  if (parsed > MAX_STOCK) return null;
+  return Math.max(0, parsed);
+}
+
 function slugify(value: string) {
   return value
     .normalize("NFD")
@@ -141,9 +161,8 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
     const rawPrice = (source[priceIndex] || "").trim();
     const price = parsePrice(rawPrice);
     const rawStock = stockIndex >= 0 ? (source[stockIndex] || "").trim() : "";
-    const parsedStock = rawStock === "" ? NaN : Number(rawStock.replace(",", "."));
-    const stock = Number.isFinite(parsedStock) ? Math.max(0, Math.floor(parsedStock)) : null;
-    if (!code || !name || price === null) {
+    const stock = parseStock(rawStock);
+    if (!code || !name || price === null || price > MAX_PRICE || name.length > MAX_NAME_LENGTH) {
       invalidRows.push(sourceRow);
       if (code && name) unpriceable.push({ code, sourceRow });
       continue;

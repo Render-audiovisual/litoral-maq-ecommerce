@@ -29,7 +29,7 @@ export function validateCartPurchaseLimits(
   for (const line of lines) {
     const product = byId.get(line.productId);
     if (!product)
-      return "Uno de los productos del carrito ya no está disponible.";
+      return `El producto con código ${line.productId} del carrito ya no está disponible (se agotó o salió de la tienda). Quitalo del carrito para continuar.`;
     const limit = getPurchaseLimit(product);
     if (
       !Number.isInteger(line.quantity) ||
