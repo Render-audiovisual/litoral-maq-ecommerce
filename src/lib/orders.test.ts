@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Order, Session } from "@/lib/types";
-import { canRecontactUnpaidOrder, isConfirmedOperationalOrder, selectOwnOrders } from "./orders";
+import { canRecontactUnpaidOrder, countOrdersToPrepare, isConfirmedOperationalOrder, selectOwnOrders } from "./orders";
 
 const sessionA: Session = {
   user: { id: "customer-a@test.com", name: "A", email: "a@test.com", role: "customer" },
@@ -119,5 +119,21 @@ describe("isConfirmedOperationalOrder", () => {
     expect(isConfirmedOperationalOrder(order("approved"))).toBe(true);
     expect(isConfirmedOperationalOrder(order("refunded"))).toBe(true);
     expect(isConfirmedOperationalOrder(order("charged_back"))).toBe(true);
+  });
+});
+
+describe("countOrdersToPrepare", () => {
+  it("cuenta solo pedidos pendientes con pago acreditado", () => {
+    const make = (status: Order["status"], paymentStatus: Order["paymentStatus"]) =>
+      ({ status, paymentStatus }) as Order;
+    expect(
+      countOrdersToPrepare([
+        make("pendiente", "approved"),
+        make("pendiente", "pending"),
+        make("pendiente", "rejected"),
+        make("preparando", "approved"),
+        make("cancelado", "cancelled"),
+      ]),
+    ).toBe(1);
   });
 });

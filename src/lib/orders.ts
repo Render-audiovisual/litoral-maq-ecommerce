@@ -45,3 +45,10 @@ export function isConfirmedOperationalOrder(order: Order) {
     order.paymentStatus ?? "pending",
   );
 }
+
+/** Pedidos cobrados que todavía esperan que alguien empiece a prepararlos. */
+export function countOrdersToPrepare(orders: Order[]) {
+  return orders.filter(
+    (order) => order.status === "pendiente" && isConfirmedOperationalOrder(order),
+  ).length;
+}

@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useStore } from "@/store/store";
 import { isAdminSurface } from "@/lib/site-surface";
+import { countOrdersToPrepare } from "@/lib/orders";
 
 const LEAVING = "🚨 ¡No te vayas!";
 const CHECKOUT = "🛒 Terminá tu compra";
@@ -17,7 +18,7 @@ export function TabTitleAlert() {
   );
   const enabled = !adminSurface;
   const hasCart = cartCount > 0;
-  const pendingOrderCount = orders.filter((order) => order.status === "pendiente").length;
+  const pendingOrderCount = countOrdersToPrepare(orders);
 
   useEffect(() => {
     if (!adminSurface || pathname === "/admin/login") return;
