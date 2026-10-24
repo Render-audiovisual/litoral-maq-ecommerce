@@ -16,7 +16,7 @@ Conclusión: **sin fugas**. Las dos capas funcionan (GRANT y RLS). Las 14 advert
 ## Hallazgos menores (no bloquean el chatbot)
 
 1. **`TRUNCATE` concedido a `anon`** en 10 tablas (default de Supabase). PostgREST no expone TRUNCATE, así que no es explotable por la API, pero conviene revocar. Propuesta en `supabase/migrations/` (pendiente de aprobar).
-2. **`orders_insert_not_employee`**: `with_check = (NOT is_employee()) OR is_admin()` da `true` para anon. Hoy no pasa nada porque anon no tiene `INSERT` en `orders`. Si alguien concede INSERT a anon, esta política lo abre. Revisar si debe ser `RESTRICTIVE`.
+2. ~~`orders_insert_not_employee`~~: **falsa alarma**. La política es `RESTRICTIVE` (verificado en `pg_policies` y en `20260925120000_admin_hardening.sql:55`), así que se suma a `orders_insert_own_or_admin` con AND. Sin cambios.
 3. **`products` expone a anon** columnas internas: `source`, `source_row`, `raw_price`, `price_locked`, `auto_hidden`, `incomplete`. No hay costos ni proveedor. El chatbot debe devolver solo los campos necesarios, no `select *`.
 4. Políticas con rol `{public}` en vez de `{authenticated}` (`orders`, `profiles`, `carts`, etc.). Sin efecto práctico hoy; ordenar si se toca esa área.
 
@@ -24,6 +24,21 @@ Conclusión: **sin fugas**. Las dos capas funcionan (GRANT y RLS). Las 14 advert
 
 - Activar *Leaked password protection* en Supabase Auth (panel).
 
-## Falta probar
+## Cliente con sesión (rol `customer`)
 
-- Cliente con sesión: ve solo sus pedidos, carrito y perfil (`AUDIT_ACCESS_TOKEN` en el script). Requiere un usuario de prueba.
+Probado dentro de una transacción con rollback (`set local role authenticated` + claims JWT de un cliente real, sin tocar datos):
+
+| Consulta | Resultado |
+| --- | --- |
+| `profiles` | 1 visible, 0 ajenos |
+| `orders` | 1 visible, 0 ajenos |
+| `carts` ajenos, `shipping_quotes` ajenos | 0 |
+| `payments` | 1 (el propio) |
+| `audit_log` | 0 |
+| `is_admin()` | false |
+
+Sin fugas entre clientes.
+
+## Corrección (Fase 2)
+
+- `supabase/migrations/20261023120000_revoke_unused_table_privileges.sql`: revoca TRUNCATE, REFERENCES y TRIGGER a `anon` y `authenticated`, y también de los privilegios por defecto. Probada con rollback: queda `anon = SELECT`, `authenticated = SELECT, INSERT, UPDATE, DELETE`. **No aplicada en producción todavía.**
