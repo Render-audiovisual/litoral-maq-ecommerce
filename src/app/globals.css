@@ -549,6 +549,16 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 .manual-shipping-message { margin-top: 16px; padding: 14px 15px; display: flex; flex-direction: column; gap: 4px; border: 1px solid #cfdde8; border-radius: 6px; background: #f2f7fb; color: #2c3d4d; }
 .manual-shipping-message > strong { color: var(--navy-dark); }
 .manual-shipping-message span { font-size: 13px; line-height: 1.5; }
+.carrier-preference { margin: 10px 0 0; padding: 0; border: 0; }
+.carrier-preference legend { margin-bottom: 8px; color: var(--navy-dark); font-size: 13px; font-weight: 700; }
+.carrier-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.carrier-option { min-height: 44px; padding: 10px 12px; flex-direction: row; align-items: center; gap: 10px; border: 1px solid #bfcbd3; border-radius: 6px; background: #fff; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
+.carrier-option:hover { border-color: var(--navy); }
+.carrier-option:has(input:checked) { border-color: var(--navy); box-shadow: 0 0 0 1px var(--navy); }
+.carrier-option:has(input:focus-visible) { outline: 2px solid var(--navy); outline-offset: 2px; }
+.carrier-option input { width: 18px; height: 18px; min-height: 0; margin: 0; flex: none; accent-color: var(--navy); }
+.carrier-option span { color: var(--navy); font-size: 14px; font-weight: 700; }
+@media (max-width: 520px) { .carrier-options { grid-template-columns: 1fr; } }
 .success-message, .error-message { margin-top: 16px; padding: 13px 15px; border-radius: 4px; }
 .success-message { color: #126d40; background: #eaf8f1; border: 1px solid #b9e2ce; }
 .error-message { color: #a12b23; background: #fff0ef; border: 1px solid #f1c3bf; }

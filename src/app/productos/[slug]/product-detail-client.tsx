@@ -32,7 +32,7 @@ const icon = {
 const TRUST = [
   {
     title: "Envíos a todo el país",
-    text: "Por OCA",
+    text: "Por Vía Cargo, OCA o Andreani",
     icon: (
       <svg {...icon}>
         <path d="M2.5 6.5h11v9.5h-11z" />
