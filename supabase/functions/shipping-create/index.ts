@@ -1,3 +1,5 @@
+import { logEdgeError } from "../_shared/monitoring.ts";
+import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
 import { normalizeProviderStatus } from "../_shared/shipping/domain.ts";
 import { getShippingProvider } from "../_shared/shipping/factory.ts";
 import type {
@@ -37,6 +39,8 @@ function asPackages(value: unknown) {
     };
   });
 }
+
+declare const EdgeRuntime: { waitUntil(promise: Promise<unknown>): void };
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return handleOptions(request);
@@ -263,6 +267,19 @@ Deno.serve(async (request) => {
       shipping_label_ready: true,
     }).eq("id", orderId);
     const persisted = { normalized, labelReady: true };
+    // Aviso al cliente con su número de seguimiento. Nunca frena la respuesta.
+    try {
+      await db.from("order_notification_outbox").upsert({
+        order_id: orderId,
+        event_type: "customer_shipment_created",
+        event_key: `order:${orderId}:shipment-created`,
+      }, { onConflict: "event_key" });
+      EdgeRuntime.waitUntil(
+        processPendingOrderNotifications(db, orderId, 10).catch(() => undefined),
+      );
+    } catch (error) {
+      logEdgeError("shipping-create", error, { step: "enqueue_email", orderId });
+    }
     return json(request, {
       status: persisted.normalized,
       shipmentId: shipment.shipmentId,

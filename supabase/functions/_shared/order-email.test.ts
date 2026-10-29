@@ -114,3 +114,23 @@ Deno.test("el recibo muestra el descuento sin descontar el envío",()=>{
   assert(html.includes("2.500,00"),"ahorro");
   assert(html.includes("48.500,00"),"total pagado");
 });
+
+Deno.test("el correo de seguimiento trae el número y cómo consultarlo en OCA", () => {
+  const enviado = order({
+    delivery_method: "envio",
+    payment_status: "approved",
+    status: "preparando",
+    shipping_tracking_number: "9411600000000000003",
+    shipping_carrier: "OCA",
+  });
+  for (const evento of ["customer_shipment_created", "customer_order_shipped"] as const) {
+    const html = renderOrderEmail(evento, enviado, STORE).html;
+    assert(html.includes("9411600000000000003"), `${evento}: incluye el número`);
+    assert(html.includes("oca.com.ar"), `${evento}: dice dónde seguirlo`);
+  }
+  assert(orderEmailStillApplies("customer_shipment_created", enviado), "aplica a un pedido en curso");
+  assert(
+    !orderEmailStillApplies("customer_shipment_created", order({ status: "cancelado", payment_status: "approved" })),
+    "no aplica a un pedido cancelado",
+  );
+});
