@@ -31,7 +31,7 @@ export const ORDER_STATUS_LABELS: Record<Order["status"], string> = {
  * Empresas de envío que el cliente elige cuando el envío no se cotiza en el
  * momento. Litoral Maq le pasa el costo con esa empresa después del pago.
  */
-export const SHIPPING_CARRIER_OPTIONS = ["Vía Cargo", "OCA", "Andreani"] as const;
+export const SHIPPING_CARRIER_OPTIONS = ["OCA"] as const;
 
 /** Provincias con el código que usan los correos (el que guarda el pedido). */
 export const PROVINCES = [

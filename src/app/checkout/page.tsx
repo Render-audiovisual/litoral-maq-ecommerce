@@ -66,9 +66,6 @@ export default function CheckoutPage() {
   const [quoteOptions, setQuoteOptions] = useState<ShippingQuoteOption[]>([]);
   const [selectedQuoteId, setSelectedQuoteId] = useState("");
   const [manualReason, setManualReason] = useState("");
-  // Con envío a coordinar el cliente paga los productos y elige qué logística
-  // prefiere; Litoral Maq confirma el despacho y el costo después del pago.
-  const [preferredCarrier, setPreferredCarrier] = useState("");
   const [quoting, setQuoting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -352,7 +349,6 @@ export default function CheckoutPage() {
   function deliveryIsReady() {
     if (shipping === null) return false;
     if (method === "envio" && !manualReason && !selectedQuoteId) return false;
-    if (method === "envio" && manualReason && !preferredCarrier) return false;
     return true;
   }
 
@@ -360,11 +356,7 @@ export default function CheckoutPage() {
     setError("");
     setDeliveryError("");
     if (!deliveryIsReady()) {
-      setDeliveryError(
-        method === "envio" && manualReason && !preferredCarrier
-          ? "Elegí con qué empresa querés el envío."
-          : "Confirmá la forma de entrega para continuar.",
-      );
+      setDeliveryError("Confirmá la forma de entrega para continuar.");
       return;
     }
     goToMobileStep(3);
@@ -400,11 +392,6 @@ export default function CheckoutPage() {
     }
     if (method === "envio" && !manualReason && !selectedQuoteId) {
       setError("Elegí una opción de envío.");
-      goToMobileStep(2);
-      return;
-    }
-    if (method === "envio" && manualReason && !preferredCarrier) {
-      setError("Elegí con qué empresa querés el envío: Vía Cargo, OCA o Andreani.");
       goToMobileStep(2);
       return;
     }
@@ -462,7 +449,7 @@ export default function CheckoutPage() {
         shippingQuoteId: selectedQuote?.id,
         shippingProvider: selectedQuote?.provider,
         shippingCarrier: selectedQuote?.carrierName ??
-          (method === "envio" && manualReason ? preferredCarrier : undefined),
+          (method === "envio" && manualReason ? SHIPPING_CARRIER_OPTIONS[0] : undefined),
         shippingService: selectedQuote?.service,
         shippingDeliveryType: method === "envio" ? orderDeliveryType : undefined,
         shippingBranchId: selectedQuote?.branchId || undefined,
@@ -893,27 +880,9 @@ export default function CheckoutPage() {
                 <strong>Envío a coordinar</strong>
                 <span>
                   {paymentEnabled
-                    ? "Pagás ahora los productos. Elegí con qué empresa querés recibirlo: después del pago te pasamos el costo del envío, que se abona aparte."
-                    : "Elegí con qué empresa querés recibirlo. Te pasamos el costo del envío, que se abona aparte."}
+                    ? "Pagás ahora los productos. El envío sale por OCA: después del pago te pasamos el costo, que se abona aparte."
+                    : "El envío sale por OCA. Te pasamos el costo, que se abona aparte."}
                 </span>
-                <fieldset className="carrier-preference">
-                  <legend>¿Con qué empresa querés el envío?</legend>
-                  <div className="carrier-options">
-                    {SHIPPING_CARRIER_OPTIONS.map((carrier) => (
-                      <label key={carrier} className="carrier-option">
-                        <input
-                          type="radio"
-                          name="preferred-carrier"
-                          value={carrier}
-                          checked={preferredCarrier === carrier}
-                          onChange={(event) => setPreferredCarrier(event.target.value)}
-                          required
-                        />
-                        <span>{carrier}</span>
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
               </div>
             )}
             {shipping !== null && !manualReason && (

@@ -24,7 +24,6 @@ test("el checkout registra el pedido y no inventa un costo de envío", async ({ 
 
   await expect(page.getByText("Envío a coordinar", { exact: true })).toBeVisible();
   await expect(page.getByText("A cotizar", { exact: true })).toBeVisible();
-  await page.getByRole("radio", { name: "Andreani" }).check();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
 
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
@@ -33,5 +32,5 @@ test("el checkout registra el pedido y no inventa un costo de envío", async ({ 
   const whatsapp = page.getByRole("link", { name: "Continuar por WhatsApp" });
   await expect(whatsapp).toHaveAttribute("href", /wa\.me\/5493794215065/);
   await expect(whatsapp).toHaveAttribute("href", /LM-/);
-  await expect(whatsapp).toHaveAttribute("href", /Eleg%C3%AD%20el%20env%C3%ADo%20por%20Andreani/);
+  await expect(whatsapp).toHaveAttribute("href", /Eleg%C3%AD%20el%20env%C3%ADo%20por%20OCA/);
 });

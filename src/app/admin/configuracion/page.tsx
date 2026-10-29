@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useStore } from "@/store/store";
 import { formatDate } from "@/lib/utils";
-import { SHIPPING_CARRIER_OPTIONS } from "@/lib/order-details";
 import { resolveRequestedProvider } from "@/services/provider";
 import { getPersistenceAdapter } from "@/services/persistence";
 import {
@@ -22,9 +21,6 @@ const STATE_LABEL: Record<IntegrationState, string> = {
   off: "No activa",
   warn: "Requiere atención",
 };
-
-// "Vía Cargo, OCA o Andreani": las mismas empresas que ofrece el checkout.
-const CARRIERS = `${SHIPPING_CARRIER_OPTIONS.slice(0, -1).join(", ")} o ${SHIPPING_CARRIER_OPTIONS.at(-1)}`;
 
 const HEALTH_URL = `${(process.env.NEXT_PUBLIC_SUPABASE_URL || "https://bhtaecnzpuotlsenbdlz.supabase.co").replace(/\/$/, "")}/functions/v1/health`;
 
@@ -193,14 +189,8 @@ export default function AdminSettingsPage() {
       variable: "OCA_USER",
       status: isShippingEnabled
         ? "Integración automática activa"
-        : "Integración lista; pendiente de credenciales y activación",
+        : "Integración lista; falta activar el checkout automático",
       state: isShippingEnabled ? "ok" : "off",
-    },
-    {
-      name: "Andreani",
-      variable: "SHIPPING_PROVIDER",
-      status: "Disponible como opción de envío a coordinar",
-      state: "ok",
     },
   ];
   const operation = [
@@ -216,7 +206,7 @@ export default function AdminSettingsPage() {
         : "Cotización manual",
       detail: isShippingEnabled
         ? "Cotiza con OCA ePak; pesos incompletos o bultos fuera de límite pasan a revisión manual."
-        : `El cliente elige empresa (${CARRIERS}) y el equipo le pasa el costo del envío después del pago.`,
+        : "El envío sale por OCA y el equipo le pasa el costo al cliente después del pago.",
     },
     {
       label: "Pago",
