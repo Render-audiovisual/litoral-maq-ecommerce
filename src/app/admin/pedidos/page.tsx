@@ -244,11 +244,16 @@ export default function AdminOrdersPage() {
     setShippingAction(order.id);
     setError("");
     try {
-      await refreshShipping(order.id);
+      const result = await refreshShipping(order.id);
       const latest = await refreshOrders();
       const refreshed = latest.find((item) => item.id === order.id);
       if (refreshed) setSelected(refreshed);
-      setMessage(`Seguimiento de ${order.id} actualizado.`);
+      const last = result.events?.at(-1);
+      setMessage(
+        last
+          ? `Seguimiento de ${order.id}: ${last.message}${last.date ? ` (${last.date})` : ""}.`
+          : `Seguimiento de ${order.id} actualizado. OCA todavía no informa movimientos.`,
+      );
     } catch (caught) {
       setError(
         caught instanceof Error

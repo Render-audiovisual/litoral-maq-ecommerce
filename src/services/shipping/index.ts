@@ -56,9 +56,14 @@ export async function createShipping(orderId: string): Promise<ShippingCreationR
   return await response.json() as ShippingCreationResult;
 }
 
-export async function refreshShipping(orderId: string): Promise<{ status: string }> {
+export type ShippingRefreshResult = {
+  status: string;
+  events?: { date: string; message: string }[];
+};
+
+export async function refreshShipping(orderId: string): Promise<ShippingRefreshResult> {
   const response = await authenticatedRequest("shipping-refresh", { orderId });
-  return await response.json() as { status: string };
+  return await response.json() as ShippingRefreshResult;
 }
 
 export async function downloadShippingLabel(orderId: string) {
