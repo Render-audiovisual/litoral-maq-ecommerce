@@ -58,3 +58,17 @@ export async function createPaymentPreference(orderId: string,welcomeDiscount=fa
     checkoutUrl: payload.checkoutUrl,
   };
 }
+
+// Arrepentimiento: el cliente cancela su propio pedido mientras no esté pagado.
+// La base valida que el pedido sea suyo y siga pendiente (cancel_own_pending_order).
+export async function cancelOwnPendingOrder(orderId: string) {
+  const result = readSupabaseConfig();
+  if (result.status !== "ok") {
+    throw new PaymentIntegrationError("No se pudo cancelar el pedido ahora.", 503);
+  }
+  const client = getTypedSupabaseClient(result.config) as unknown as {
+    rpc: (fn: string, args: Record<string, unknown>) => Promise<{ error: { message: string } | null }>;
+  };
+  const { error } = await client.rpc("cancel_own_pending_order", { p_order_id: orderId });
+  if (error) throw new PaymentIntegrationError(error.message || "No se pudo cancelar el pedido.", 400);
+}
