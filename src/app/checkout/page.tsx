@@ -1011,6 +1011,7 @@ export default function CheckoutPage() {
           {discountAmount>0 && <div><span>Primera compra · 5% OFF</span><strong>−{formatCurrency(discountAmount)}</strong></div>}
           {benefitError && registered && <p role="alert">{benefitError}</p>}
           {discountQuoteInvalid && <p role="alert">Revisá los productos del carrito antes de calcular el beneficio.</p>}
+          {registered && benefit?.reason === "reserved" && <p>Tu 5% de primera compra quedó en un pedido anterior que ya no se puede pagar. Esta compra va sin descuento; si querés recuperarlo, escribinos por WhatsApp.</p>}
           {registered && benefit?.eligible && benefit.pendingOrderId && <p>Tu beneficio está reservado en un pedido pendiente. <Link href={`/checkout/error?pedido=${encodeURIComponent(benefit.pendingOrderId)}`}>Reanudar pedido</Link>. Si venció, consultanos por WhatsApp para revisar el pago.</p>}
           <div>
             <span>Entrega</span>

@@ -169,7 +169,24 @@ Deno.serve(async (request) => {
       payment_method_id: paymentMethodId,
       payment_type_id: paymentTypeId,
     };
-    if (status === "approved") orderUpdate.status = "preparando";
+    if (status === "approved") {
+      // Un pago que llega tarde sobre un pedido cancelado (link viejo de
+      // Mercado Pago) no revive el pedido: queda cancelado con pago aprobado
+      // para que el equipo lo revise o lo devuelva.
+      const { data: current } = await db.from("orders").select("status").eq(
+        "id",
+        orderId,
+      ).maybeSingle();
+      if (current?.status === "cancelado") {
+        logEdgeError(
+          "mercado-pago-webhook",
+          new Error("Pago aprobado sobre un pedido cancelado: revisar o devolver."),
+          { orderId, paymentId },
+        );
+      } else {
+        orderUpdate.status = "preparando";
+      }
+    }
     if (["refunded", "charged_back"].includes(status)) {
       orderUpdate.status = "cancelado";
     }
