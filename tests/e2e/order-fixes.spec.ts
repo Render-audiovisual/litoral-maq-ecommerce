@@ -45,7 +45,7 @@ test("pedido a sucursal con cotización manual: no guarda la calle y dice sucurs
   await page.getByLabel("Calle").fill("San Juan");
   await page.getByLabel("Número").fill("1234");
   await page.getByText("A sucursal del correo").click();
-  await page.getByRole("button", { name: "Calcular opciones de envío" }).click();
+  // La cotización sale sola apenas contacto y dirección están completos.
   await expect(page.getByText("Envío a coordinar", { exact: true })).toBeVisible();
   await page.getByRole("radio", { name: "OCA" }).check();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();

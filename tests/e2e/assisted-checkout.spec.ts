@@ -20,7 +20,7 @@ test("el checkout registra el pedido y no inventa un costo de envío", async ({ 
   await page.getByLabel("Localidad").fill("Corrientes");
   await page.getByLabel("Calle").fill("San Juan");
   await page.getByLabel("Número").fill("1234");
-  await page.getByRole("button", { name: "Calcular opciones de envío" }).click();
+  // La cotización sale sola apenas contacto y dirección están completos.
 
   await expect(page.getByText("Envío a coordinar", { exact: true })).toBeVisible();
   await expect(page.getByText("A cotizar", { exact: true })).toBeVisible();

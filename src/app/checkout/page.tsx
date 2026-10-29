@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useCaptcha } from "@/components/use-captcha";
 import { MercadoPagoMark } from "@/components/mercado-pago-mark";
 import { useStore } from "@/store/store";
@@ -221,13 +221,14 @@ export default function CheckoutPage() {
     return "";
   }
 
-  function validateDestination() {
+  // Sin efectos secundarios: lo usa también la cotización automática, que no
+  // debe marcar campos en rojo mientras el cliente todavía está escribiendo.
+  function destinationProblem(): { fields: FormField[]; message: string } | null {
     const place: FormField[] = [];
     if (!/^\d{4}$/.test(form.postalCode)) place.push("postalCode");
     if (!form.locality.trim()) place.push("locality");
     if (!form.province || place.length) {
-      flagFields(place);
-      return "Completá provincia, código postal y localidad.";
+      return { fields: place, message: "Completá provincia, código postal y localidad." };
     }
     const street: FormField[] = [];
     if (deliveryType === "domicilio") {
@@ -235,10 +236,16 @@ export default function CheckoutPage() {
       if (!form.streetNumber.trim()) street.push("streetNumber");
     }
     if (street.length) {
-      flagFields(street);
-      return "Completá calle y número para la entrega a domicilio.";
+      return { fields: street, message: "Completá calle y número para la entrega a domicilio." };
     }
-    return "";
+    return null;
+  }
+
+  function validateDestination() {
+    const problem = destinationProblem();
+    if (!problem) return "";
+    flagFields(problem.fields);
+    return problem.message;
   }
 
   async function ensureIdentity(): Promise<{
@@ -334,6 +341,31 @@ export default function CheckoutPage() {
       setQuoting(false);
     }
   }
+
+  // Cotiza solo apenas el cliente completa contacto y dirección: sin botón.
+  // lastAutoQuoteKey evita reintentar en bucle si la cotización falla; un
+  // cambio de dirección o de carrito genera otra clave y vuelve a cotizar.
+  const lastAutoQuoteKey = useRef("");
+  const autoQuoteKey = [
+    method, deliveryType, form.province, form.postalCode, form.locality.trim(),
+    form.street.trim(), form.streetNumber.trim(),
+    cart.map((line) => `${line.productId}:${line.quantity}`).join(","),
+  ].join("|");
+  const contactReady = invalidContactFields().length === 0;
+  const destinationReady = !destinationProblem();
+  useEffect(() => {
+    if (method !== "envio" || quoting || shipping !== null) return;
+    if (!contactReady || !destinationReady) return;
+    if (needsGuestSession && !captcha.solved) return;
+    if (lastAutoQuoteKey.current === autoQuoteKey) return;
+    const timer = window.setTimeout(() => {
+      lastAutoQuoteKey.current = autoQuoteKey;
+      void confirmDelivery();
+    }, 700);
+    return () => window.clearTimeout(timer);
+    // confirmDelivery se recrea en cada render; la clave resume lo que importa.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoQuoteKey, method, quoting, shipping, contactReady, destinationReady, needsGuestSession, captcha.solved]);
 
   function continueFromContact() {
     setError("");
@@ -831,7 +863,7 @@ export default function CheckoutPage() {
                 </div>
               </>
             )}
-            <button
+            {(method === "retiro" || quoting || shipping === null) && <button
               type="button"
               className="button secondary delivery-confirm"
               onClick={confirmDelivery}
@@ -845,7 +877,7 @@ export default function CheckoutPage() {
                 : method === "envio"
                   ? "Calcular opciones de envío"
                   : "Confirmar retiro"}
-            </button>
+            </button>}
             {deliveryError && (
               <div className="error-message" role="alert" id="checkout-form-error">
                 {deliveryError}
