@@ -47,7 +47,6 @@ test("pedido a sucursal con cotización manual: no guarda la calle y dice sucurs
   await page.getByText("A sucursal del correo").click();
   await page.getByRole("button", { name: "Calcular opciones de envío" }).click();
   await expect(page.getByText("Envío a coordinar", { exact: true })).toBeVisible();
-  await page.getByRole("radio", { name: "OCA" }).check();
   await page.getByRole("button", { name: "Enviar solicitud de compra" }).click();
   await expect(page.getByRole("heading", { name: "Recibimos tu pedido" })).toBeVisible();
 
