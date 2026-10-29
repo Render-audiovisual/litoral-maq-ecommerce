@@ -75,6 +75,23 @@ Usuario `test@oca.com.ar`, clave `123456`, cuenta `111757/001`, CUIT
 puerta a sucursal `62342`. En QA el retiro de prueba sale de Lanús (CP 1824):
 usar `OCA_ORIGIN_*` acorde si se quiere un envío de prueba que OCA acepte.
 
+## Peso y medidas de los productos
+
+OCA cotiza con peso y medidas de la caja. Se cargan en una planilla aparte,
+"Litoral Maq · Medidas de envío (OCA)"
+(`https://docs.google.com/spreadsheets/d/1t3htvrQiktwlFEWq6Ez-DlkG0iLNcNGz-fsqlMSairo`),
+y no en la lista de precios, porque los dueños re-suben ese .xls y se perderían
+las columnas.
+
+- Columnas: Código, Peso embalado (kg), Alto, Ancho, Largo (cm). Fuente y Notas
+  son informativas.
+- Se aplica en cada sincronización del catálogo (`runCatalogSync`) vía la
+  función `sync_shipping_dimensions`. Solo toca filas con los 4 datos; marca
+  `shipping_enabled = true`. Si falla, los precios igual se sincronizan y el
+  error queda como aviso.
+- Requisitos: secreto `LITORAL_SHIPPING_SHEET_ID` con el id de la planilla y la
+  planilla compartida como "Cualquier persona con el enlace: lector".
+
 ## Activación
 
 1. Aplicar migraciones (las tablas de `0007_shipping_enviopack.sql` siguen

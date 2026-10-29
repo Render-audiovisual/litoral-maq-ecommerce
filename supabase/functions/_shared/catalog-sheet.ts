@@ -175,3 +175,81 @@ export function parseCatalogSheet(csv: string, minimumRows = 100): ParsedCatalog
 
   return { rows, headers: rawHeaders, invalidRows, unpriceable };
 }
+
+// Planilla aparte con peso y medidas embaladas por código. Va separada de la
+// lista de precios porque los dueños re-suben ese .xls y se perderían columnas.
+
+export type ShippingDimensionsRow = {
+  code: string;
+  weightKg: number;
+  heightCm: number;
+  widthCm: number;
+  lengthCm: number;
+};
+
+export type ParsedShippingDimensions = {
+  rows: ShippingDimensionsRow[];
+  // Filas con código pero algún dato vacío o ilegible: se ignoran.
+  incomplete: number[];
+};
+
+// Acepta "4,5", "4.5", "4,5 kg", "36cm". Devuelve null si no es un número > 0.
+function parseMeasure(value: string) {
+  const match = value.replace(/\s/g, "").replace(",", ".").match(
+    /^(\d+(?:\.\d+)?)[a-z]*$/i,
+  );
+  const parsed = match ? Number(match[1]) : NaN;
+  return Number.isFinite(parsed) && parsed > 0 && parsed < 10_000
+    ? parsed
+    : null;
+}
+
+export function parseShippingDimensionsSheet(
+  csv: string,
+): ParsedShippingDimensions {
+  const parsedRows = parseCsv(csv);
+  const headers = (parsedRows[0] || []).map(normalizeHeader);
+  const index = (prefix: string) =>
+    headers.findIndex((header) => header.startsWith(prefix));
+  const codeIndex = headers.findIndex((header) =>
+    ["codigo", "cod", "sku"].includes(header)
+  );
+  const columns = {
+    weightKg: index("peso"),
+    heightCm: index("alto"),
+    widthCm: index("ancho"),
+    lengthCm: index("largo"),
+  };
+  if (codeIndex < 0 || Object.values(columns).some((i) => i < 0)) {
+    throw new Error(
+      "La planilla de medidas necesita las columnas Código, Peso, Alto, Ancho y Largo.",
+    );
+  }
+
+  const rows: ShippingDimensionsRow[] = [];
+  const incomplete: number[] = [];
+  const seen = new Set<string>();
+  for (let i = 1; i < parsedRows.length; i += 1) {
+    const source = parsedRows[i];
+    const code = (source[codeIndex] || "").trim().replace(/^0+(?=\d)/, "");
+    if (!code || seen.has(code)) continue;
+    const weightKg = parseMeasure(source[columns.weightKg] || "");
+    const heightCm = parseMeasure(source[columns.heightCm] || "");
+    const widthCm = parseMeasure(source[columns.widthCm] || "");
+    const lengthCm = parseMeasure(source[columns.lengthCm] || "");
+    if (!weightKg || !heightCm || !widthCm || !lengthCm) {
+      incomplete.push(i + 1);
+      continue;
+    }
+    seen.add(code);
+    // La base guarda cm enteros: se redondea hacia arriba para no subcotizar.
+    rows.push({
+      code,
+      weightKg: Math.round(weightKg * 100) / 100,
+      heightCm: Math.ceil(heightCm),
+      widthCm: Math.ceil(widthCm),
+      lengthCm: Math.ceil(lengthCm),
+    });
+  }
+  return { rows, incomplete };
+}

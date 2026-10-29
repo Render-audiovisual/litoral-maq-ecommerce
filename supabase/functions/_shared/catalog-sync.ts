@@ -3,6 +3,7 @@ import {
   type CatalogSheetRow,
   type ParsedCatalogSheet,
   parseCatalogSheet,
+  parseShippingDimensionsSheet,
 } from "./catalog-sheet.ts";
 
 export type CatalogDb = ReturnType<typeof serviceClient>;
@@ -37,13 +38,13 @@ function sheetCsvUrl() {
   return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv${gid ? `&gid=${gid}` : ""}`;
 }
 
-export async function fetchSheetCsv() {
+export async function fetchSheetCsv(url = sheetCsvUrl()) {
   let lastError: unknown;
   for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt += 1) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     try {
-      const response = await fetch(`${sheetCsvUrl()}&_=${Date.now()}`, {
+      const response = await fetch(`${url}&_=${Date.now()}`, {
         signal: controller.signal,
         headers: { accept: "text/csv,text/plain;q=0.9" },
       });
@@ -64,6 +65,39 @@ export async function fetchSheetCsv() {
   }
   const reason = lastError instanceof Error ? lastError.message : "respuesta inválida";
   throw new HttpError(503, `No se pudo leer Google Sheets (${reason}). El catálogo actual no fue modificado.`);
+}
+
+// Planilla opcional de peso y medidas de envío (LITORAL_SHIPPING_SHEET_ID).
+// Un error acá no frena la sincronización de precios: vuelve como aviso.
+async function syncShippingDimensions(db: CatalogDb): Promise<string | null> {
+  const sheetId = (Deno.env.get("LITORAL_SHIPPING_SHEET_ID") || "").trim();
+  if (!sheetId) return null;
+  if (!/^[a-zA-Z0-9_-]+$/.test(sheetId)) {
+    return "La planilla de medidas de envío no está bien configurada.";
+  }
+  try {
+    const parsed = parseShippingDimensionsSheet(
+      await fetchSheetCsv(
+        `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`,
+      ),
+    );
+    const { data, error } = await db.rpc("sync_shipping_dimensions", {
+      p_rows: parsed.rows.map((row) => ({
+        code: row.code,
+        weight_kg: row.weightKg,
+        height_cm: row.heightCm,
+        width_cm: row.widthCm,
+        length_cm: row.lengthCm,
+      })),
+    });
+    if (error) throw new Error("la base rechazó la actualización");
+    return `Medidas de envío: ${data ?? 0} producto(s) actualizados desde la planilla (${parsed.rows.length} con datos completos${
+      parsed.incomplete.length ? `, ${parsed.incomplete.length} fila(s) incompletas ignoradas` : ""
+    }).`;
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "error desconocido";
+    return `No se pudieron actualizar las medidas de envío (${reason}). Los precios sí se sincronizaron.`;
+  }
 }
 
 export async function runCatalogSync(
@@ -116,11 +150,12 @@ export async function runCatalogSync(
     p_source: source,
   });
   if (error) throw new HttpError(503, "La base rechazó la sincronización. El catálogo actual no fue modificado.");
+  const dimensionsWarning = await syncShippingDimensions(db);
 
   return {
     result: data as Record<string, unknown>,
     warnings: [
-      "Se conservaron imágenes, descripciones, categorías, marcas, logística y límites personalizados.",
+      "Se conservaron imágenes, descripciones, categorías, marcas y límites personalizados.",
       ...(parsed.invalidRows.length
         ? [
             `Hay ${parsed.invalidRows.length} fila(s) con precio o datos ilegibles en el Sheet (fila ${
@@ -128,6 +163,7 @@ export async function runCatalogSync(
             }${parsed.invalidRows.length > 8 ? "…" : ""}). Se mantuvo el precio anterior donde el producto ya existía; revisá esas celdas en el Sheet (formato de columna angosto suele mostrar "############").`,
           ]
         : []),
+      ...(dimensionsWarning ? [dimensionsWarning] : []),
     ],
   };
 }
