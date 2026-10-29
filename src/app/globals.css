@@ -781,6 +781,8 @@ button.pdp-image:hover .pdp-zoom-hint { opacity: 1; border-color: #bfcbd3; }
 .order-card-facts { margin: 0; padding: 16px 20px 0; display: flex; flex-wrap: wrap; gap: 16px 56px; }
 .order-card-facts dt { color: #566472; font-size: 13px; }
 .order-card-facts dd { margin: 4px 0 0; display: flex; flex-direction: column; gap: 2px; }
+.order-card-actions { display: flex; flex-wrap: wrap; gap: 10px; padding: 4px 20px 18px; }
+.order-card-actions .button { flex: 1 1 180px; }
 .order-card-facts strong { color: var(--ink); font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .order-card-facts small { color: #566472; font-size: 13px; }
 .order-status-message { margin: 16px 20px 0; padding: 10px 12px; border-radius: 6px; background: var(--soft); color: var(--ink); font-size: 14px; line-height: 1.5; }

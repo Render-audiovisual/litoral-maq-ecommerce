@@ -2,17 +2,20 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GoogleSignInButton } from "@/components/google-button";
 import { useStore } from "@/store/store";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { isAnonymousSession, isSessionExpired, isValidCustomerSession } from "@/lib/auth";
 import { selectOwnOrders } from "@/lib/orders";
+import { cancelOwnPendingOrder, createPaymentPreference, isMercadoPagoEnabled } from "@/services/payments";
 import { isActiveOrder, isShippingToCoordinate, orderStatusLabel, orderStatusMessage, resolveOrderLines } from "@/lib/order-details";
 
 export default function CustomerOrdersPage() {
   const router = useRouter();
-  const { customerSession, orders, products, ready, signOutCustomer } = useStore();
+  const { customerSession, orders, products, ready, signOutCustomer, refreshOrders } = useStore();
+  const [busyOrder, setBusyOrder] = useState("");
+  const [orderError, setOrderError] = useState("");
   const loggingOutRef = useRef(false);
 
   useEffect(() => {
@@ -34,6 +37,32 @@ export default function CustomerOrdersPage() {
       router.replace("/");
     } catch {
       loggingOutRef.current = false;
+    }
+  }
+
+  async function payOrder(orderId: string) {
+    setBusyOrder(orderId);
+    setOrderError("");
+    try {
+      const preference = await createPaymentPreference(orderId);
+      window.location.assign(preference.checkoutUrl);
+    } catch (caught) {
+      setOrderError(caught instanceof Error ? caught.message : "No se pudo abrir Mercado Pago.");
+      setBusyOrder("");
+    }
+  }
+
+  async function cancelOrder(orderId: string) {
+    if (!window.confirm("¿Querés cancelar este pedido? Todavía no se cobró nada.")) return;
+    setBusyOrder(orderId);
+    setOrderError("");
+    try {
+      await cancelOwnPendingOrder(orderId);
+      await refreshOrders();
+    } catch (caught) {
+      setOrderError(caught instanceof Error ? caught.message : "No se pudo cancelar el pedido.");
+    } finally {
+      setBusyOrder("");
     }
   }
 
@@ -70,6 +99,7 @@ export default function CustomerOrdersPage() {
         <section>
           <div className="section-heading small"><h2>Mis pedidos</h2>{ownOrders.length > 0 && <Link href="/productos" className="button secondary">Nueva compra</Link>}</div>
           {activeOrders.length > 0 && <div className="account-order-notice"><strong>{activeOrders.length} {activeOrders.length === 1 ? "pedido activo" : "pedidos activos"}</strong><span>Acá vas a ver cada cambio de estado confirmado por Litoral Maq.</span></div>}
+          {orderError && <div className="error-message" role="alert">{orderError}</div>}
           {!ownOrders.length ? (
             <div className="cart-empty account-empty">
               <span className="cart-empty-icon" aria-hidden="true">
@@ -108,6 +138,14 @@ export default function CustomerOrdersPage() {
                         {resolveOrderLines(order, products).map((line) => <li key={`${line.productId}-${line.productCode}`}><span>{line.quantity} × {line.productName}</span><strong>{formatCurrency(line.lineTotal)}</strong></li>)}
                       </ul>
                     </details>
+                    {order.paymentStatus === "pending" && order.status === "pendiente" && isMercadoPagoEnabled() && (
+                      <div className="order-card-actions">
+                        <button type="button" className="button primary" disabled={busyOrder === order.id} onClick={() => void payOrder(order.id)}>
+                          {busyOrder === order.id ? "Procesando…" : "Pagar con Mercado Pago"}
+                        </button>
+                        <button type="button" className="button secondary" disabled={busyOrder === order.id} onClick={() => void cancelOrder(order.id)}>Cancelar pedido</button>
+                      </div>
+                    )}
                   </article>
                 );
               })}
