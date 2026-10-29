@@ -31,12 +31,12 @@ describe("confirmación de pedido por WhatsApp", () => {
     const order = {
       id: "LM-124", lines: [{ productId: "p1", productName: "Amoladora", quantity: 1 }],
       total: 130000, shipping: 0, deliveryMethod: "envio", shippingStatus: "manual_quote",
-      shippingCarrier: "OCA", paymentStatus: "approved", paymentMethodId: "debvisa",
+      shippingCarrier: "Vía Cargo", paymentStatus: "approved", paymentMethodId: "debvisa",
       customerName: "Juan Pérez", address: "San Juan 1234 · Resistencia", province: "Chaco",
     } as Order;
     const text = new URL(getOrderWhatsAppUrl(order, order.id)).searchParams.get("text") || "";
     expect(text).toContain("👋 ¡Hola! Soy *Juan Pérez*.");
-    expect(text).toContain("🚚 *Entrega:* Elegí el envío por OCA · San Juan 1234 · Resistencia · Chaco");
+    expect(text).toContain("🚚 *Entrega:* Elegí el envío por Vía Cargo · San Juan 1234 · Resistencia · Chaco");
     expect(text).toContain("ℹ️ El costo del envío se coordina y abona por separado.");
     expect(text).toContain("Quedo a la espera del costo del envío.");
   });
