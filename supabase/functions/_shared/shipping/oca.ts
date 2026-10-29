@@ -267,10 +267,22 @@ export class OcaProvider implements ShippingProvider {
   }
 
   async getTracking(shipmentId: string): Promise<TrackingEvent[]> {
-    const xml = await this.call("Tracking_PiezaNumeroEnvio", {
-      Pieza: shipmentId,
-    });
-    return parseTracking(xml);
+    try {
+      const xml = await this.call("Tracking_PiezaNumeroEnvio", {
+        Pieza: shipmentId,
+      });
+      return parseTracking(xml);
+    } catch (error) {
+      // Recién creado, OCA a veces responde 500 hasta indexar el envío.
+      if (error instanceof ShippingProviderError && error.retryable) {
+        throw new ShippingProviderError(
+          "OCA todavía no tiene seguimiento de este envío. Probá de nuevo en unos minutos.",
+          503,
+          true,
+        );
+      }
+      throw error;
+    }
   }
 
   async getLabel(orderId: string, shipmentId: string) {
