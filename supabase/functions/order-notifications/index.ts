@@ -7,6 +7,7 @@ import {
   requireUser,
   serviceClient,
 } from "../_shared/http.ts";
+import { refreshOpenShipments } from "../_shared/shipping/refresh.ts";
 import { processPendingOrderNotifications } from "../_shared/order-notifications.ts";
 import { maybeRunAutoCatalogSync } from "../_shared/catalog-auto-sync.ts";
 import { collectFindings } from "../_shared/health-checks.ts";
@@ -106,10 +107,24 @@ Deno.serve(async (request) => {
       } else {
         alerts = await alertsRun;
       }
+      // Seguimiento de OCA de los envíos abiertos; dispara los correos "en
+      // camino" y "entregado". Aislado del resto, en segundo plano.
+      const trackingRun = refreshOpenShipments(db).catch((error) => {
+        logEdgeError("order-notifications", error, { step: "shipping_tracking" });
+        return { checked: 0, refreshed: 0 };
+      });
+      let shippingTracking: unknown;
+      if (typeof EdgeRuntime !== "undefined" && EdgeRuntime) {
+        EdgeRuntime.waitUntil(trackingRun);
+        shippingTracking = { status: "background" };
+      } else {
+        shippingTracking = await trackingRun;
+      }
       return json(
         request,
         {
           lifecycle: lifecycleResult,
+          shippingTracking,
           ...(lifecycleError ? { lifecycleError: lifecycleError.message } : {}),
           notifications,
           catalogSync,

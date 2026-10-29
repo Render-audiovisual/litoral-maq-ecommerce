@@ -49,6 +49,7 @@ export type OrderEmailEvent =
   | "customer_payment_approved"
   | "customer_payment_rejected"
   | "customer_order_ready"
+  | "customer_shipment_created"
   | "customer_order_shipped"
   | "customer_order_delivered"
   | "customer_payment_reminder"
@@ -128,6 +129,9 @@ function subtotalRowsHtml(order: OrderRecord) {
 export function orderEmailStillApplies(eventType: string, order: Pick<OrderRecord, "status" | "payment_status">) {
   if (eventType === "team_new_order") {
     return order.payment_status === "approved";
+  }
+  if (eventType === "customer_shipment_created") {
+    return order.status !== "cancelado";
   }
   if (eventType === "customer_payment_reminder") {
     return order.payment_status === "pending" && order.status === "pendiente";
@@ -275,6 +279,13 @@ function whatsappUrl(order: OrderRecord) {
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
+// Sin link directo: no hay una URL pública de OCA confirmada para el número.
+function trackingHelp(order: OrderRecord) {
+  return order.shipping_tracking_number && /oca/i.test(order.shipping_carrier || "")
+    ? "Podés consultarlo en oca.com.ar, sección seguimiento de envíos. "
+    : "";
+}
+
 function emailCopy(eventType: OrderEmailEvent, order: OrderRecord, mercadoPago: boolean) {
   const tracking = order.shipping_tracking_number
     ? `Seguimiento: <strong>${escapeHtml(order.shipping_tracking_number)}</strong>${
@@ -327,10 +338,15 @@ function emailCopy(eventType: OrderEmailEvent, order: OrderRecord, mercadoPago: 
         ? "Tu pedido está preparado y ya podés retirarlo en Sáenz 1587."
         : "El pedido quedó preparado y está listo para ser despachado.",
     },
+    customer_shipment_created: {
+      subject: `Tu pedido ${order.id} ya tiene número de seguimiento`,
+      title: "Ya tenés tu número de seguimiento",
+      intro: `${tracking} ${trackingHelp(order)}Apenas el paquete salga te avisamos de nuevo por correo.`,
+    },
     customer_order_shipped: {
       subject: `Tu pedido ${order.id} ya fue enviado`,
       title: "Tu pedido está en camino",
-      intro: tracking,
+      intro: `${tracking} ${trackingHelp(order)}`.trim(),
     },
     customer_order_delivered: {
       subject: order.delivery_method === "retiro"
@@ -367,6 +383,7 @@ function emailVisual(eventType: OrderEmailEvent) {
     customer_payment_approved: { emoji: "✅", label: "PAGO CONFIRMADO", color: "#18794e", soft: "#eaf8f1" },
     customer_payment_rejected: { emoji: "⚠️", label: "PAGO NO APROBADO", color: "#b54708", soft: "#fff4e8" },
     customer_order_ready: { emoji: "🛠️", label: "PEDIDO PREPARADO", color: "#0b3c6f", soft: "#eaf4fb" },
+    customer_shipment_created: { emoji: "🏷️", label: "SEGUIMIENTO DISPONIBLE", color: "#0b3c6f", soft: "#eaf4fb" },
     customer_order_shipped: { emoji: "🚚", label: "PEDIDO EN CAMINO", color: "#0b3c6f", soft: "#eaf4fb" },
     customer_order_delivered: { emoji: "🙌", label: "PEDIDO ENTREGADO", color: "#18794e", soft: "#eaf8f1" },
     customer_payment_reminder: { emoji: "⏳", label: "PAGO PENDIENTE", color: "#b54708", soft: "#fff4e8" },
