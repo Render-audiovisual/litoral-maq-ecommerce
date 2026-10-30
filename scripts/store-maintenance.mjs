@@ -50,18 +50,19 @@ ErrorDocument 503 /maintenance.html
   Header always set Cache-Control "no-store, max-age=0"
   Header always set Retry-After "3600"
 </IfModule>
+RewriteCond %{HTTP_HOST} !^admin\\.litoralmaq\\.com(?::[0-9]+)?$ [NC]
 RewriteCond %{REQUEST_URI} !^/maintenance\\.html$
 RewriteCond %{REQUEST_URI} !^/brand/
 RewriteCond %{REQUEST_URI} !^/\\.well-known/
 RewriteRule ^ - [R=503,L]
 `;
 
-export async function applyStoreMaintenance(dir) {
+export async function applyStoreMaintenance(dir, root = true) {
   const entries = await readdir(dir, { withFileTypes: true });
   for (const entry of entries) {
     const file = path.join(dir, entry.name);
-    if (entry.isDirectory() && entry.name !== "_next") await applyStoreMaintenance(file);
+    if (entry.isDirectory() && entry.name !== "_next") await applyStoreMaintenance(file, false);
     else if (entry.isFile() && entry.name.endsWith(".html")) await writeFile(file, MAINTENANCE_HTML);
   }
-  await writeFile(path.join(dir, "maintenance.html"), MAINTENANCE_HTML);
+  if (root) await writeFile(path.join(dir, "maintenance.html"), MAINTENANCE_HTML);
 }
