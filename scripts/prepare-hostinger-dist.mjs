@@ -16,6 +16,7 @@
 import { cp, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { APACHE_SECURITY_HEADERS } from "./security-headers.mjs";
+import { applyStoreMaintenance, MAINTENANCE_REWRITES, STORE_MAINTENANCE_ENABLED } from "./store-maintenance.mjs";
 
 const root = process.cwd();
 const nextExport = path.join(root, "dist");
@@ -82,6 +83,7 @@ RewriteEngine On
 # El panel vive en un subdominio separado. Conservamos esa separación, pero
 # redirigimos los enlaces históricos /admin para que no terminen en un 403.
 RewriteRule ^admin(?:/(.*))?/?$ https://admin.litoralmaq.com/admin/$1 [R=302,L,NE]
+${STORE_MAINTENANCE_ENABLED ? MAINTENANCE_REWRITES : ""}
 
 # Next exporta las rutas como archivos .html. Esto permite abrir /productos
 # y las fichas individuales sin mostrar la extensión. Esta regla debe ir antes
@@ -116,6 +118,8 @@ async function main() {
   // index físico dentro de cada carpeta hace que URL directa, F5 y enlaces
   // compartidos terminen en 200 incluso si DirectorySlash Off es ignorado.
   await materializeDirectoryIndexes(output);
+
+  if (STORE_MAINTENANCE_ENABLED) await applyStoreMaintenance(output);
 
   await writeFile(path.join(output, ".htaccess"), STORE_HTACCESS);
 

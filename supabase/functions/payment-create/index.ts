@@ -9,6 +9,7 @@ import {
 } from "../_shared/http.ts";
 import { logEdgeError } from "../_shared/monitoring.ts";
 import { welcomeDiscount } from "../_shared/welcome-discount.ts";
+import { storeMaintenanceResponse } from "../_shared/store-maintenance.ts";
 
 type RequestedLine = { productId: string; quantity: number };
 
@@ -49,6 +50,10 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") {
     return json(request, { error: "Método no permitido." }, 405);
   }
+  // Owner-requested closure while the domain is migrated to Tiendanube.
+  // Stop BEFORE database access or any Mercado Pago API request.
+  const maintenance = storeMaintenanceResponse(request);
+  if (maintenance) return maintenance;
   const db = serviceClient();
   try {
     // Kill switch del checkout público. Estaba desplegado en producción pero no
