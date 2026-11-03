@@ -28,8 +28,9 @@ function productToInsert(
     name: product.name,
     price: product.price,
     raw_price: product.rawPrice,
-    price_locked: product.priceLocked ?? false,
-    auto_hidden: product.autoHidden ?? false,
+    // undefined = no se envía y el upsert conserva el valor guardado.
+    price_locked: product.priceLocked,
+    auto_hidden: product.autoHidden,
     category: product.category,
     brand: product.brand,
     image: product.image,

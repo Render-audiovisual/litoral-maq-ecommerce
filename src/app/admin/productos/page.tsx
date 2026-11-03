@@ -222,7 +222,11 @@ function AdminProductsContent() {
       await saveProduct(product, original ?? undefined);
       setEditing(null);
       setMessageKind("success");
-      setMessage("Producto guardado correctamente.");
+      setMessage(
+        product.active && isBelowVisibilityThreshold(product)
+          ? `Producto guardado. Con ${LOW_STOCK_HIDE_AT} unidades o menos queda oculto en la tienda hasta que se reponga.`
+          : "Producto guardado correctamente.",
+      );
     } catch (error) {
       if (error instanceof ConflictError && original) {
         // Otra persona guardó antes: se muestra su versión con lo que esta
@@ -949,13 +953,31 @@ function AdminProductsContent() {
               <label className="check-row">
                 <input
                   type="checkbox"
-                  checked={editing.active}
+                  checked={editing.active && !isBelowVisibilityThreshold(editing)}
+                  disabled={isBelowVisibilityThreshold(editing)}
                   onChange={(event) =>
                     setEditing({ ...editing, active: event.target.checked })
                   }
                 />
                 Producto visible
               </label>
+              {isBelowVisibilityThreshold(editing) && (
+                <small className="wide">
+                  Con {LOW_STOCK_HIDE_AT} unidades o menos la tienda lo oculta sola. Se muestra de nuevo cuando el stock supere {LOW_STOCK_HIDE_AT}.
+                </small>
+              )}
+              {original?.autoHidden && !editing.active && (
+                <label className="check-row wide">
+                  <input
+                    type="checkbox"
+                    checked={!editing.autoHidden}
+                    onChange={(event) =>
+                      setEditing({ ...editing, autoHidden: !event.target.checked })
+                    }
+                  />
+                  Dejarlo oculto aunque se reponga el stock
+                </label>
+              )}
               <label className="check-row">
                 <input
                   type="checkbox"
