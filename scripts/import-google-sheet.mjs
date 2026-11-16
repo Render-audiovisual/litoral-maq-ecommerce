@@ -231,8 +231,11 @@ const sheetProducts = body
     // El Sheet nuevo trae códigos con ceros a la izquierda ("02635"); el
     // catálogo los guarda sin ceros ("2635").
     const rawStock = stockIndex >= 0 ? (cells[stockIndex] ?? "").trim() : "";
-    const parsedStock = rawStock === "" ? NaN : Number(rawStock.replace(",", "."));
-    const stock = Number.isFinite(parsedStock) ? Math.max(0, Math.floor(parsedStock)) : null;
+    // Mismo criterio que supabase/functions/_shared/catalog-sheet.ts (parseStock).
+    const stockValue = /^-?\d+([.,]0+)?$/.test(rawStock)
+      ? Math.trunc(Number(rawStock.replace(",", ".")))
+      : NaN;
+    const stock = Number.isFinite(stockValue) && stockValue <= 1_000_000 ? Math.max(0, stockValue) : null;
     const name = article.trim();
     const price = parsePrice(rawPrice);
     const cleanCode = code.trim().replace(/^0+(?=\d)/, "");
